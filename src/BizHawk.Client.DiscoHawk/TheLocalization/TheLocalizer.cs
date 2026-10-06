@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using Microsoft.Win32;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 
@@ -10,7 +11,7 @@ namespace BizHawk.Client.DiscoHawk.TheLocalization
 		{
 			_translaters[""] = new HardEncodingTextTralslaterBase(); //default implementation.
 
-			// 扫描当前程序集所有继承自 speakerBase 的类型
+			// 自动扫描并注册翻译器 Automatically scan and register translators
 			var assembly = typeof(HardEncodingTextTralslaterBase).Assembly;
 			var types = assembly.GetTypes()
 				.Where(t => !t.IsAbstract && t.IsSubclassOf(typeof(HardEncodingTextTralslaterBase)));
@@ -18,10 +19,6 @@ namespace BizHawk.Client.DiscoHawk.TheLocalization
 			{
 				var inst = (HardEncodingTextTralslaterBase) Activator.CreateInstance(t);
 				_translaters[inst.cultureName] = inst;
-				foreach (var kv in inst.cultureNameMapper)
-				{
-					globleCultureNameMapper[kv.Key] = kv.Value;
-				}
 			}
 		}
 		
@@ -29,20 +26,9 @@ namespace BizHawk.Client.DiscoHawk.TheLocalization
 		// Localization instance dictionary, key is cultureName, and value is translator instance.
 		static ConcurrentDictionary<string, HardEncodingTextTralslaterBase> _translaters = new ConcurrentDictionary<string, HardEncodingTextTralslaterBase>();
 
-		// Winform 历史遗留问题：在一些情况下，cultureName 会隐式地转换为意料之外的值，所以需要映射处理。
-		// Winform legacy: In some cases, cultureName will be implicitly converted to unexpected values, so the mapper is needed.
-		static ConcurrentDictionary<string, string> globleCultureNameMapper = new ConcurrentDictionary<string, string>();
-		public static string NormalizeCultureName(string cultureName)
-		{
-			if (globleCultureNameMapper.TryGetValue(cultureName, out var mappedCultureName))
-			{
-				return mappedCultureName;
-			}
-			return cultureName;
-		}
 		static string getCultureName()
 		{
-			return NormalizeCultureName(Thread.CurrentThread.CurrentUICulture.Name);
+			return Thread.CurrentThread.CurrentUICulture.Name;
 		}
 
 		// Translate a plain text. 翻译一条纯文本。

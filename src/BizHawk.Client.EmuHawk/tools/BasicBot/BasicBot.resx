@@ -117,16 +117,2065 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="MainValueRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 16</value>
+  </data>
+  <data name="&gt;&gt;ControlProbabilityPanel.Name" xml:space="preserve">
+    <value>ControlProbabilityPanel</value>
+  </data>
+  <data name="&gt;&gt;label15.Name" xml:space="preserve">
+    <value>label15</value>
+  </data>
+  <data name="&gt;&gt;ControlsBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3BestRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="TieBreaker2Box.TabIndex" type="System.Int32, mscorlib">
+    <value>1003</value>
+  </data>
+  <data name="TieBreak1ValueRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 16</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="&gt;&gt;label13.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="label8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;ControlProbabilityPanel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;StopBtn.Parent" xml:space="preserve">
+    <value>ControlGroupBox</value>
+  </data>
+  <data name="&gt;&gt;StartFromSlotBox.Name" xml:space="preserve">
+    <value>StartFromSlotBox</value>
+  </data>
+  <data name="&gt;&gt;ControlGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Tiebreak2Operator.Items" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BestTieBreak2Box.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2Numeric.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="TieBreaker2Box.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="StopBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;MainValueRadio.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="&gt;&gt;label14.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>End after</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak2Operator.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="$this.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;BestMaximizeBox.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="&gt;&gt;_4ByteMenuItem.Name" xml:space="preserve">
+    <value>_4ByteMenuItem</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak3Operator.Name" xml:space="preserve">
+    <value>Tiebreak3Operator</value>
+  </data>
+  <data name="TieBreak2Numeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreak3ValueRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Start From:</value>
+  </data>
+  <data name="&gt;&gt;MessageLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker2Box.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3ValueRadio.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="&gt;&gt;StopBtn.Name" xml:space="preserve">
+    <value>StopBtn</value>
+  </data>
+  <data name="BestTieBreak1Box.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label7.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="&gt;&gt;ControlProbabilityPanel.Parent" xml:space="preserve">
+    <value>ControlsBox</value>
+  </data>
+  <data name="RunBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;FramesLabel.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="Tiebreak3Operator.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 3</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak3Operator.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Tiebreak1Operator.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 3</value>
+  </data>
+  <data name="MainValueRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>302, 6</value>
+  </data>
+  <data name="label14.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 33</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2ValueRadio.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="TieBreak1ValueRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>302, 6</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="label17.Text" xml:space="preserve">
+    <value>Attempt:</value>
+  </data>
+  <data name="MainValueRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label17.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BestTieBreak1Box.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="BestGroupBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BestGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="BotStatusStrip.Text" xml:space="preserve">
+    <value>statusStrip1</value>
+  </data>
+  <data name="TieBreak3ValueRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="StopBtn.Text" xml:space="preserve">
+    <value>&amp;Stop</value>
+  </data>
+  <data name="&gt;&gt;BotStatusButton.Name" xml:space="preserve">
+    <value>BotStatusButton</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak2Operator.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak3Box.Name" xml:space="preserve">
+    <value>BestTieBreak3Box</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2Numeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TieBreak2Numeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 21</value>
+  </data>
+  <data name="PlayBestButton.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>113, 27</value>
+  </data>
+  <data name="&gt;&gt;ControlGroupBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;BotStatusButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="btnCopyBestInput.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 87</value>
+  </data>
+  <data name="NewMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+N</value>
+  </data>
+  <data name="&gt;&gt;label17.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Tiebreak1Operator.TabIndex" type="System.Int32, mscorlib">
+    <value>1007</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker2Box.Name" xml:space="preserve">
+    <value>TieBreaker2Box</value>
+  </data>
+  <data name="&gt;&gt;MessageLabel.Name" xml:space="preserve">
+    <value>MessageLabel</value>
+  </data>
+  <data name="PlayBestButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;label15.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
+    <value>ControlGroupBox</value>
+  </data>
+  <data name="&gt;&gt;panel5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label11.Name" xml:space="preserve">
+    <value>label11</value>
+  </data>
+  <data name="&gt;&gt;label16.Name" xml:space="preserve">
+    <value>label16</value>
+  </data>
+  <data name="TieBreak1ValueRadio.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 2</value>
+  </data>
+  <data name="TieBreaker2Box.Location" type="System.Drawing.Point, System.Drawing">
+    <value>133, 4</value>
+  </data>
+  <data name="TieBreak3BestRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1011</value>
+  </data>
+  <data name="MemoryDomainsMenuItem.Text" xml:space="preserve">
+    <value>Memory Domains</value>
+  </data>
+  <data name="BestMaximizeBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>163, 12</value>
+  </data>
+  <data name="BestTieBreak1Box.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="ClearBestButton.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="&gt;&gt;MainValueNumeric.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>Address 0x</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>frames</value>
+  </data>
+  <data name="Tiebreak3Operator.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Tiebreak2Operator.Size" type="System.Drawing.Size, System.Drawing">
+    <value>40, 20</value>
+  </data>
+  <data name="TieBreak3BestRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ControlsBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 169</value>
+  </data>
+  <data name="TieBreaker3Box.TabIndex" type="System.Int32, mscorlib">
+    <value>1016</value>
+  </data>
+  <data name="Tiebreak1Operator.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="StopBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 52</value>
+  </data>
+  <data name="BestTieBreak3Box.Location" type="System.Drawing.Point, System.Drawing">
+    <value>163, 67</value>
+  </data>
+  <data name="MainBestRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;ControlsBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label12.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;MaximizeAddressBox.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="OpenMenuItem.Text" xml:space="preserve">
+    <value>&amp;Open...</value>
+  </data>
+  <data name="&gt;&gt;panel3.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="&gt;&gt;MaximizeAddressBox.Name" xml:space="preserve">
+    <value>MaximizeAddressBox</value>
+  </data>
+  <data name="label16.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;BigEndianMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Tiebreak2Operator.Items5" xml:space="preserve">
+    <value>!=</value>
+  </data>
+  <data name="BestTieBreak3Box.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="Tiebreak2Operator.Items3" xml:space="preserve">
+    <value>&lt;=</value>
+  </data>
+  <data name="StatsContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 26</value>
+  </data>
+  <data name="&gt;&gt;DataSizeMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TieBreak1BestRadio.Text" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="ClearBestButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>BasicBot</value>
+  </data>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="Tiebreak1Operator.Items4" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
+  <data name="panel4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 68</value>
+  </data>
+  <data name="&gt;&gt;BestMaximizeBox.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="TieBreaker2Box.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2ValueRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Tiebreak1Operator.Items2" xml:space="preserve">
+    <value>=</value>
+  </data>
+  <data name="panel5.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="FrameLengthNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>60, 23</value>
+  </data>
+  <data name="GoalGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="PlayBestButton.Text" xml:space="preserve">
+    <value>&amp;Play</value>
+  </data>
+  <data name="TieBreak1BestRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label12.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="BestTieBreak1Box.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="ControlsBox.Text" xml:space="preserve">
+    <value>Controls</value>
+  </data>
+  <data name="GoalGroupBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;TieBreak2BestRadio.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;MainBestRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak1Operator.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="label17.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 18</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 6</value>
+  </data>
+  <data name="MainBestRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label13.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="FrameLengthNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>1000</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak3Operator.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="label7.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;StatsContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MaximizeAddressBox.TabIndex" type="System.Int32, mscorlib">
+    <value>1009</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptLogLabel.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;MainValueRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;MemoryDomainsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
+    <value>67, 6</value>
+  </data>
+  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="ClearBestButton.Text" xml:space="preserve">
+    <value>&amp;Clear</value>
+  </data>
+  <data name="TieBreak3BestRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="BestTieBreak2Box.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 21</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptNumberLabel.Name" xml:space="preserve">
+    <value>BestAttemptNumberLabel</value>
+  </data>
+  <data name="ControlProbabilityPanel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1ValueRadio.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Tiebreak 2:</value>
+  </data>
+  <data name="label16.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BigEndianMenuItem.Text" xml:space="preserve">
+    <value>Big Endian</value>
+  </data>
+  <data name="&gt;&gt;OptionsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RunBtn.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="&gt;&gt;label12.Name" xml:space="preserve">
+    <value>label12</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Attempts:</value>
+  </data>
+  <data name="&gt;&gt;maximizeLabeltext.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;FrameLengthNumeric.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="RunBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 52</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3Numeric.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="label14.Text" xml:space="preserve">
+    <value>Tiebreak 1:</value>
+  </data>
+  <data name="SaveMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+S</value>
+  </data>
+  <data name="TieBreak1BestRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreak2BestRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MainBestRadio.Text" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="Tiebreak3Operator.Items2" xml:space="preserve">
+    <value>=</value>
+  </data>
+  <data name="TieBreak1Numeric.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
+    <value>67, 6</value>
+  </data>
+  <data name="StopBtn.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="ClearBestButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;MainValueNumeric.Name" xml:space="preserve">
+    <value>MainValueNumeric</value>
+  </data>
+  <data name="label13.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 15</value>
+  </data>
+  <data name="panel3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BotMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TieBreaker3Box.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreak2ValueRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;TurboWhileBottingMenuItem.Name" xml:space="preserve">
+    <value>TurboWhileBottingMenuItem</value>
+  </data>
+  <data name="BotStatusButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptLogLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TurboWhileBottingMenuItem.Text" xml:space="preserve">
+    <value>Turbo While Botting</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2BestRadio.Name" xml:space="preserve">
+    <value>TieBreak2BestRadio</value>
+  </data>
+  <data name="label6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;TieBreak2Numeric.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="panel1.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="panel4.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="DataSizeMenuItem.Text" xml:space="preserve">
+    <value>Data Size</value>
+  </data>
+  <data name="btnCopyBestInput.ToolTip" xml:space="preserve">
+    <value>"Copy to Clipboard.  Then possible to paste to text file or directly into TasStudio.</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptNumberLabel.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="panel4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>427, 24</value>
+  </data>
+  <data name="&gt;&gt;GoalGroupBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ControlsBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;TieBreak1Numeric.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;BestGroupBox.Name" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="&gt;&gt;StopBtn.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="TieBreak2ValueRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1012</value>
+  </data>
+  <data name="&gt;&gt;helpToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ControlGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>2004</value>
+  </data>
+  <data name="BestGroupBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;RecentSubMenu.Name" xml:space="preserve">
+    <value>RecentSubMenu</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker3Box.Name" xml:space="preserve">
+    <value>TieBreaker3Box</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2BestRadio.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="TieBreak1ValueRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BestAttemptLogLabel.Text" xml:space="preserve">
+    <value>     </value>
+  </data>
+  <data name="&gt;&gt;panel2.Parent" xml:space="preserve">
+    <value>ControlGroupBox</value>
+  </data>
+  <data name="BestTieBreak3Box.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 21</value>
+  </data>
+  <data name="&gt;&gt;panel2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="ControlsBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="MainOperator.Size" type="System.Drawing.Size, System.Drawing">
+    <value>40, 20</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker3Box.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;StopBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="panel3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 47</value>
+  </data>
+  <data name="&gt;&gt;PlayBestButton.Name" xml:space="preserve">
+    <value>PlayBestButton</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2Numeric.Name" xml:space="preserve">
+    <value>TieBreak2Numeric</value>
+  </data>
+  <data name="&gt;&gt;btnCopyBestInput.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="TieBreak3BestRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>256, 6</value>
+  </data>
+  <data name="TieBreak1BestRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1011</value>
+  </data>
+  <data name="&gt;&gt;MainBestRadio.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="panel3.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;NewMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TieBreak2Numeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>357, 4</value>
+  </data>
+  <data name="&gt;&gt;MaximizeAddressBox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
+    <value>FileSubMenu</value>
+  </data>
+  <data name="TieBreak1Numeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>357, 4</value>
+  </data>
+  <data name="ControlsBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>442, 341</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak1Operator.Name" xml:space="preserve">
+    <value>Tiebreak1Operator</value>
+  </data>
+  <data name="&gt;&gt;FrameLengthNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnCopyBestInput.Name" xml:space="preserve">
+    <value>btnCopyBestInput</value>
+  </data>
+  <data name="&gt;&gt;label14.Name" xml:space="preserve">
+    <value>label14</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3BestRadio.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="label15.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="TieBreak2BestRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;BestGroupBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.Parent" xml:space="preserve">
+    <value>ControlGroupBox</value>
+  </data>
+  <data name="MainValueRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1012</value>
+  </data>
+  <data name="&gt;&gt;SaveAsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1BestRadio.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="&gt;&gt;BotStatusStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.StatusStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="panel1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="PlayBestButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 42</value>
+  </data>
+  <data name="BestTieBreak2Box.Location" type="System.Drawing.Point, System.Drawing">
+    <value>163, 49</value>
+  </data>
+  <data name="&gt;&gt;FramesLabel.Name" xml:space="preserve">
+    <value>FramesLabel</value>
+  </data>
+  <data name="&gt;&gt;maximizeLabeltext.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PlayBestButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PlayBestButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3ValueRadio.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="MainValueNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>357, 4</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;FramesLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TieBreak3Numeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 21</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="Tiebreak2Operator.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 3</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker2Box.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="ControlGroupBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="ClearStatsContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Clear</value>
+  </data>
+  <data name="MessageLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 17</value>
+  </data>
+  <data name="RunBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptNumberLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="AttemptsLabel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaximizeAddressBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="maximizeLabeltext.Text" xml:space="preserve">
+    <value>Main Value:</value>
+  </data>
+  <data name="&gt;&gt;BotMenu.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="TieBreak2ValueRadio.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker3Box.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="Tiebreak1Operator.Items5" xml:space="preserve">
+    <value>!=</value>
+  </data>
+  <data name="&gt;&gt;FrameLengthNumeric.Name" xml:space="preserve">
+    <value>FrameLengthNumeric</value>
+  </data>
+  <data name="&gt;&gt;ClearBestButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;label13.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;panel3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SaveAsMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+S</value>
+  </data>
+  <data name="_4ByteMenuItem.Text" xml:space="preserve">
+    <value>4 Bytes</value>
+  </data>
+  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 220</value>
+  </data>
+  <data name="&gt;&gt;panel4.Name" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="&gt;&gt;SaveAsMenuItem.Name" xml:space="preserve">
+    <value>SaveAsMenuItem</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Frames:</value>
+  </data>
+  <data name="MainBestRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>256, 6</value>
+  </data>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label8.Name" xml:space="preserve">
+    <value>label8</value>
+  </data>
+  <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 70</value>
+  </data>
+  <data name="&gt;&gt;SaveMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>707, 542</value>
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>Address 0x</value>
+  </data>
+  <data name="&gt;&gt;StartFromSlotBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="StopBtn.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="TieBreak3ValueRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 16</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak1Box.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel6.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;FramesLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker1Box.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="BotStatusStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 520</value>
+  </data>
+  <data name="&gt;&gt;_1ByteMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;_4ByteMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="GoalGroupBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;label10.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="StartFromSlotBox.TabIndex" type="System.Int32, mscorlib">
+    <value>2000</value>
+  </data>
+  <data name="&gt;&gt;panel6.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak2Box.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="MainValueNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreak1Numeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 21</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3Numeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;_2ByteMenuItem.Name" xml:space="preserve">
+    <value>_2ByteMenuItem</value>
+  </data>
+  <data name="&gt;&gt;label15.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="&gt;&gt;SaveMenuItem.Name" xml:space="preserve">
+    <value>SaveMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DataSizeMenuItem.Name" xml:space="preserve">
+    <value>DataSizeMenuItem</value>
+  </data>
+  <data name="GoalGroupBox.Text" xml:space="preserve">
+    <value> </value>
+  </data>
+  <data name="&gt;&gt;label10.Name" xml:space="preserve">
+    <value>label10</value>
+  </data>
+  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 115</value>
+  </data>
+  <data name="panel2.TabIndex" type="System.Int32, mscorlib">
+    <value>2003</value>
+  </data>
+  <data name="maximizeLabeltext.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FramesLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>61, 16</value>
+  </data>
+  <data name="Tiebreak3Operator.Items5" xml:space="preserve">
+    <value>!=</value>
+  </data>
+  <data name="StopBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>2002</value>
+  </data>
+  <data name="panel6.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="TieBreaker1Box.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Tiebreak3Operator.Items3" xml:space="preserve">
+    <value>&lt;=</value>
+  </data>
+  <data name="&gt;&gt;NewMenuItem.Name" xml:space="preserve">
+    <value>NewMenuItem</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2BestRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="panel6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 111</value>
+  </data>
+  <data name="&gt;&gt;ControlsBox.Name" xml:space="preserve">
+    <value>ControlsBox</value>
+  </data>
+  <data name="panel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BestTieBreak3Box.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="TieBreak2ValueRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 16</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1Numeric.Name" xml:space="preserve">
+    <value>TieBreak1Numeric</value>
+  </data>
+  <data name="TieBreak3Numeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>357, 4</value>
+  </data>
+  <data name="StartFromSlotBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
+  </data>
+  <data name="&gt;&gt;panel2.Name" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="&gt;&gt;BotStatusStrip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label6.Name" xml:space="preserve">
+    <value>label6</value>
+  </data>
+  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TieBreak3Numeric.TabIndex" type="System.Int32, mscorlib">
+    <value>1013</value>
+  </data>
+  <data name="ControlProbabilityPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak2Operator.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="&gt;&gt;panel5.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="Tiebreak2Operator.Items4" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
+  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;OptionsSubMenu.Name" xml:space="preserve">
+    <value>OptionsSubMenu</value>
+  </data>
+  <data name="Tiebreak2Operator.Items2" xml:space="preserve">
+    <value>=</value>
+  </data>
+  <data name="&gt;&gt;StatsContextMenu.Name" xml:space="preserve">
+    <value>StatsContextMenu</value>
+  </data>
+  <data name="&gt;&gt;AttemptsLabel.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="BestAttemptNumberLabel.Text" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="TieBreak3ValueRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>302, 6</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
+    <value>toolStripSeparator3</value>
+  </data>
+  <data name="&gt;&gt;StartFromSlotBox.Parent" xml:space="preserve">
+    <value>ControlGroupBox</value>
+  </data>
+  <data name="BotStatusButton.Text" xml:space="preserve">
+    <value> </value>
+  </data>
+  <data name="StartFromSlotBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>71, 23</value>
+  </data>
+  <data name="maximizeLabeltext.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 6</value>
+  </data>
+  <data name="_2ByteMenuItem.Text" xml:space="preserve">
+    <value>2 Bytes</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="Tiebreak1Operator.Items1" xml:space="preserve">
+    <value>&gt;=</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptNumberLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;panel4.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="panel2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 78</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Address 0x</value>
+  </data>
+  <data name="ControlProbabilityPanel.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="BotStatusButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
+  </data>
+  <data name="&gt;&gt;btnCopyBestInput.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak3Box.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="TieBreaker3Box.Location" type="System.Drawing.Point, System.Drawing">
+    <value>133, 4</value>
+  </data>
+  <data name="&gt;&gt;helpToolStripMenuItem.Name" xml:space="preserve">
+    <value>helpToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;AttemptsLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;btnCopyBestInput.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RunBtn.Text" xml:space="preserve">
+    <value>&amp;Run</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptLogLabel.Name" xml:space="preserve">
+    <value>BestAttemptLogLabel</value>
+  </data>
+  <data name="&gt;&gt;BotStatusStrip.Name" xml:space="preserve">
+    <value>BotStatusStrip</value>
+  </data>
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 6</value>
+  </data>
+  <data name="label16.Text" xml:space="preserve">
+    <value>Tiebreak 3:</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="&gt;&gt;label17.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="TieBreak3Numeric.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="MaximizeAddressBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>133, 4</value>
+  </data>
+  <data name="&gt;&gt;panel3.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="MessageLabel.Text" xml:space="preserve">
+    <value>          </value>
+  </data>
+  <data name="panel1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Courier New, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;PlayBestButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;BestAttemptLogLabel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="TieBreak3ValueRadio.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="MainValueRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;panel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
+    <value>67, 6</value>
+  </data>
+  <data name="label11.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreak2BestRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="BestTieBreak3Box.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BestGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 341</value>
+  </data>
+  <data name="btnCopyBestInput.Text" xml:space="preserve">
+    <value>&amp;Copy</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1BestRadio.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;panel4.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="&gt;&gt;label13.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="MainOperator.Items" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="MainOperator.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ControlProbabilityPanel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreak2BestRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>256, 6</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ClearBestButton.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="MainValueRadio.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="ControlGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>460, 25</value>
+  </data>
+  <data name="BestMaximizeBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;TieBreak2ValueRadio.Name" xml:space="preserve">
+    <value>TieBreak2ValueRadio</value>
+  </data>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="StopBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1BestRadio.Name" xml:space="preserve">
+    <value>TieBreak1BestRadio</value>
+  </data>
+  <data name="&gt;&gt;panel5.Name" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="TieBreak1BestRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>256, 6</value>
+  </data>
+  <data name="&gt;&gt;FrameLengthNumeric.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="label11.Text" xml:space="preserve">
+    <value>Address 0x</value>
+  </data>
+  <data name="&gt;&gt;maximizeLabeltext.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1ValueRadio.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="Tiebreak3Operator.Items1" xml:space="preserve">
+    <value>&gt;=</value>
+  </data>
+  <data name="TieBreak2Numeric.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak2Box.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak1Box.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="Tiebreak2Operator.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="panel2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>140, 30</value>
+  </data>
+  <data name="&gt;&gt;ControlGroupBox.Name" xml:space="preserve">
+    <value>ControlGroupBox</value>
+  </data>
+  <data name="OptionsSubMenu.Text" xml:space="preserve">
+    <value>&amp;Options</value>
+  </data>
+  <data name="label9.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label15.Text" xml:space="preserve">
+    <value>Tiebreak 2:</value>
+  </data>
+  <data name="&gt;&gt;TieBreak2ValueRadio.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="panel6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Tiebreak 1:</value>
+  </data>
+  <data name="panel5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 90</value>
+  </data>
+  <data name="BestTieBreak2Box.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1Numeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MainOperator.Items5" xml:space="preserve">
+    <value>!=</value>
+  </data>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TieBreak2ValueRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label14.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ControlGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MainOperator.Items2" xml:space="preserve">
+    <value>=</value>
+  </data>
+  <data name="TieBreak3ValueRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1012</value>
+  </data>
+  <data name="&gt;&gt;BestMaximizeBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
+    <value>GrowAndShrink</value>
+  </data>
+  <data name="Tiebreak1Operator.Items" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="&gt;&gt;label9.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MainOperator.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TieBreak3BestRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="&gt;&gt;MainValueRadio.Name" xml:space="preserve">
+    <value>MainValueRadio</value>
+  </data>
+  <data name="BestMaximizeBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 21</value>
+  </data>
+  <data name="TieBreaker3Box.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="MainBestRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="&gt;&gt;BotMenu.Name" xml:space="preserve">
+    <value>BotMenu</value>
+  </data>
+  <data name="panel5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>427, 24</value>
+  </data>
+  <data name="_1ByteMenuItem.Text" xml:space="preserve">
+    <value>1 Byte</value>
+  </data>
+  <data name="&gt;&gt;label8.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak3Box.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak2Box.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="&gt;&gt;BestGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="label15.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FramesLabel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>panel2</value>
+  </data>
+  <data name="&gt;&gt;label9.Name" xml:space="preserve">
+    <value>label9</value>
+  </data>
+  <data name="&gt;&gt;OpenMenuItem.Name" xml:space="preserve">
+    <value>OpenMenuItem</value>
+  </data>
+  <data name="StartFromSlotBox.Items3" xml:space="preserve">
+    <value>Slot 4</value>
+  </data>
+  <data name="StartFromSlotBox.Items2" xml:space="preserve">
+    <value>Slot 3</value>
+  </data>
+  <data name="StartFromSlotBox.Items1" xml:space="preserve">
+    <value>Slot 2</value>
+  </data>
+  <data name="StartFromSlotBox.Items7" xml:space="preserve">
+    <value>Slot 8</value>
+  </data>
+  <data name="StartFromSlotBox.Items6" xml:space="preserve">
+    <value>Slot 7</value>
+  </data>
+  <data name="StartFromSlotBox.Items5" xml:space="preserve">
+    <value>Slot 6</value>
+  </data>
+  <data name="StartFromSlotBox.Items4" xml:space="preserve">
+    <value>Slot 5</value>
+  </data>
+  <data name="StartFromSlotBox.Items9" xml:space="preserve">
+    <value>Slot 10</value>
+  </data>
+  <data name="StartFromSlotBox.Items8" xml:space="preserve">
+    <value>Slot 9</value>
+  </data>
+  <data name="Tiebreak2Operator.TabIndex" type="System.Int32, mscorlib">
+    <value>1008</value>
+  </data>
+  <data name="BestTieBreak1Box.Location" type="System.Drawing.Point, System.Drawing">
+    <value>163, 30</value>
+  </data>
+  <data name="StatsContextMenu.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label7.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="SaveAsMenuItem.Text" xml:space="preserve">
+    <value>Save &amp;As...</value>
+  </data>
+  <data name="panel2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TieBreaker2Box.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BestGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>461, 169</value>
+  </data>
+  <data name="&gt;&gt;label15.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3Numeric.Name" xml:space="preserve">
+    <value>TieBreak3Numeric</value>
+  </data>
+  <data name="&gt;&gt;MainOperator.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="panel3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>427, 24</value>
+  </data>
+  <data name="&gt;&gt;ControlsBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label11.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 27</value>
+  </data>
+  <data name="GoalGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 25</value>
+  </data>
+  <data name="label15.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 52</value>
+  </data>
+  <data name="MainBestRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1011</value>
+  </data>
+  <data name="TieBreaker1Box.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3BestRadio.Parent" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="&gt;&gt;MainOperator.Name" xml:space="preserve">
+    <value>MainOperator</value>
+  </data>
+  <data name="TieBreak1ValueRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Tiebreak3Operator.Items" xml:space="preserve">
+    <value>&gt;</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker1Box.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1ValueRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label16.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="btnCopyBestInput.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="btnCopyBestInput.TabIndex" type="System.Int32, mscorlib">
+    <value>2005</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="BestMaximizeBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="label10.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;TieBreaker2Box.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;panel5.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="GoalGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>442, 138</value>
+  </data>
+  <data name="Tiebreak3Operator.TabIndex" type="System.Int32, mscorlib">
+    <value>1017</value>
+  </data>
+  <data name="PlayBestButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Tiebreak3Operator.Size" type="System.Drawing.Size, System.Drawing">
+    <value>40, 20</value>
+  </data>
+  <data name="ControlProbabilityPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="ControlsBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3BestRadio.Name" xml:space="preserve">
+    <value>TieBreak3BestRadio</value>
+  </data>
+  <data name="&gt;&gt;_2ByteMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BotStatusStrip.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MainOperator.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 3</value>
+  </data>
+  <data name="panel4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="panel5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ClearBestButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 65</value>
+  </data>
+  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 27</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker1Box.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="AttemptsLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>61, 2</value>
+  </data>
+  <data name="&gt;&gt;AttemptsLabel.Name" xml:space="preserve">
+    <value>AttemptsLabel</value>
+  </data>
+  <data name="&gt;&gt;label16.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RecentSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BotMenu.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;MaximizeAddressBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1Numeric.Parent" xml:space="preserve">
+    <value>panel4</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3ValueRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BotStatusStrip.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="MaximizeAddressBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="BotStatusButton.ToolTipText" xml:space="preserve">
+    <value> </value>
+  </data>
+  <data name="TieBreak2BestRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1011</value>
+  </data>
+  <data name="TieBreak3Numeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 6</value>
+  </data>
+  <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="Tiebreak1Operator.Items3" xml:space="preserve">
+    <value>&lt;=</value>
+  </data>
+  <data name="&gt;&gt;OpenMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GoalGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ControlGroupBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
+    <value>toolStripSeparator2</value>
+  </data>
+  <data name="BestTieBreak2Box.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;toolStripSeparator4.Name" xml:space="preserve">
+    <value>toolStripSeparator4</value>
+  </data>
+  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="TieBreak1Numeric.TabIndex" type="System.Int32, mscorlib">
+    <value>1013</value>
+  </data>
+  <data name="&gt;&gt;StartFromSlotBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Tiebreak 3:</value>
+  </data>
+  <data name="ControlProbabilityPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>430, 323</value>
+  </data>
+  <data name="TieBreak2Numeric.TabIndex" type="System.Int32, mscorlib">
+    <value>1013</value>
+  </data>
+  <data name="&gt;&gt;ControlProbabilityPanel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;TurboWhileBottingMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BestMaximizeBox.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="BotMenu.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;MemoryDomainsMenuItem.Name" xml:space="preserve">
+    <value>MemoryDomainsMenuItem</value>
+  </data>
+  <data name="btnCopyBestInput.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1BestRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ClearBestButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BigEndianMenuItem.Name" xml:space="preserve">
+    <value>BigEndianMenuItem</value>
+  </data>
+  <data name="&gt;&gt;label9.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label17.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="&gt;&gt;panel3.Name" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="TieBreak2BestRadio.Text" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak1Operator.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TieBreaker1Box.Location" type="System.Drawing.Point, System.Drawing">
+    <value>133, 4</value>
+  </data>
+  <data name="&gt;&gt;panel6.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="&gt;&gt;MainBestRadio.Name" xml:space="preserve">
+    <value>MainBestRadio</value>
+  </data>
+  <data name="MainValueNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>1013</value>
+  </data>
+  <data name="label14.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MainValueNumeric.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="BestAttemptNumberLabel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BestTieBreak1Box.Name" xml:space="preserve">
+    <value>BestTieBreak1Box</value>
+  </data>
+  <data name="TieBreak1ValueRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>1012</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3ValueRadio.Name" xml:space="preserve">
+    <value>TieBreak3ValueRadio</value>
+  </data>
+  <data name="MainOperator.Items1" xml:space="preserve">
+    <value>&gt;=</value>
+  </data>
+  <data name="MainOperator.TabIndex" type="System.Int32, mscorlib">
+    <value>1010</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 16</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ControlGroupBox.Text" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="&gt;&gt;MainBestRadio.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;label7.Name" xml:space="preserve">
+    <value>label7</value>
+  </data>
+  <data name="Tiebreak3Operator.Items4" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker1Box.Name" xml:space="preserve">
+    <value>TieBreaker1Box</value>
+  </data>
+  <data name="&gt;&gt;TieBreak1ValueRadio.Name" xml:space="preserve">
+    <value>TieBreak1ValueRadio</value>
+  </data>
+  <data name="&gt;&gt;ClearStatsContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label13.Name" xml:space="preserve">
+    <value>label13</value>
+  </data>
+  <data name="&gt;&gt;label6.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MainOperator.Items4" xml:space="preserve">
+    <value>&lt;</value>
+  </data>
+  <data name="BestTieBreak3Box.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak1Operator.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;BestTieBreak2Box.Name" xml:space="preserve">
+    <value>BestTieBreak2Box</value>
+  </data>
+  <data name="TieBreak2ValueRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>302, 6</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GoalGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BotStatusButton.RightToLeftAutoMirrorImage" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.Name" xml:space="preserve">
+    <value>RunBtn</value>
+  </data>
+  <data name="label14.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;BestMaximizeBox.Name" xml:space="preserve">
+    <value>BestMaximizeBox</value>
+  </data>
+  <data name="StartFromSlotBox.Items" xml:space="preserve">
+    <value>Slot 1</value>
+  </data>
+  <data name="&gt;&gt;BotMenu.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="NewMenuItem.Text" xml:space="preserve">
+    <value>&amp;New</value>
+  </data>
+  <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
+    <value>67, 6</value>
+  </data>
+  <data name="&gt;&gt;label14.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="BotStatusStrip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>707, 22</value>
+  </data>
+  <data name="TieBreaker3Box.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="Tiebreak2Operator.Items1" xml:space="preserve">
+    <value>&gt;=</value>
+  </data>
+  <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="BestAttemptLogLabel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ClearBestButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2003</value>
+  </data>
+  <data name="TieBreaker1Box.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="MaximizeAddressBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;PlayBestButton.Parent" xml:space="preserve">
+    <value>BestGroupBox</value>
+  </data>
+  <data name="TieBreak1Numeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label10.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RunBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>2001</value>
+  </data>
+  <data name="FrameLengthNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>46, 21</value>
+  </data>
+  <data name="TieBreak3BestRadio.Text" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="&gt;&gt;label12.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="panel6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>427, 24</value>
+  </data>
+  <data name="&gt;&gt;MainValueNumeric.Parent" xml:space="preserve">
+    <value>panel3</value>
+  </data>
+  <data name="&gt;&gt;label11.Parent" xml:space="preserve">
+    <value>panel5</value>
+  </data>
+  <data name="&gt;&gt;GoalGroupBox.Name" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;ClearStatsContextMenuItem.Name" xml:space="preserve">
+    <value>ClearStatsContextMenuItem</value>
+  </data>
+  <data name="TieBreak1BestRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="ClearBestButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;maximizeLabeltext.Name" xml:space="preserve">
+    <value>maximizeLabeltext</value>
+  </data>
+  <data name="AttemptsLabel.Text" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="FrameLengthNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BotStatusStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="FramesLabel.Text" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;_1ByteMenuItem.Name" xml:space="preserve">
+    <value>_1ByteMenuItem</value>
+  </data>
+  <data name="&gt;&gt;MainValueNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label17.Name" xml:space="preserve">
+    <value>label17</value>
+  </data>
+  <data name="label13.Text" xml:space="preserve">
+    <value>Main Value:</value>
+  </data>
+  <data name="StartFromSlotBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 20</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;AttemptsLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BestGroupBox.Text" xml:space="preserve">
+    <value>Best</value>
+  </data>
+  <data name="SaveMenuItem.Text" xml:space="preserve">
+    <value>&amp;Save</value>
+  </data>
+  <data name="ControlGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 138</value>
+  </data>
+  <data name="&gt;&gt;panel4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ClearBestButton.Name" xml:space="preserve">
+    <value>ClearBestButton</value>
+  </data>
+  <data name="MainValueNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>61, 21</value>
+  </data>
+  <data name="&gt;&gt;TieBreak3Numeric.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="OpenMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+O</value>
+  </data>
+  <data name="MainOperator.Items3" xml:space="preserve">
+    <value>&lt;=</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BestAttemptLogLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 7</value>
+  </data>
+  <data name="PlayBestButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2004</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
+  </data>
+  <data name="&gt;&gt;MainOperator.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak2Operator.Name" xml:space="preserve">
+    <value>Tiebreak2Operator</value>
+  </data>
+  <data name="&gt;&gt;MainValueRadio.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>GoalGroupBox</value>
+  </data>
+  <data name="&gt;&gt;TieBreaker3Box.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BestGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BestTieBreak1Box.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 21</value>
+  </data>
+  <data name="label13.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;panel6.Name" xml:space="preserve">
+    <value>panel6</value>
+  </data>
+  <data name="Tiebreak1Operator.Size" type="System.Drawing.Size, System.Drawing">
+    <value>40, 20</value>
+  </data>
+  <data name="&gt;&gt;Tiebreak3Operator.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="BestAttemptNumberLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>59, 18</value>
+  </data>
+  <data name="TieBreaker1Box.TabIndex" type="System.Int32, mscorlib">
+    <value>1002</value>
+  </data>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
   <metadata name="BotMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </metadata>
-  <metadata name="BotStatusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>119, 17</value>
   </metadata>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>400, 17</value>
   </metadata>
   <metadata name="StatsContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>248, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="BotStatusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>119, 17</value>
   </metadata>
 </root>

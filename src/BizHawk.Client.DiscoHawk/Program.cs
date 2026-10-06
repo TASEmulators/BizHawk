@@ -166,8 +166,7 @@ namespace BizHawk.Client.DiscoHawk
 				var cultureName = $"{new AssemblyName(requested).CultureName}";
 				if (!string.IsNullOrEmpty(cultureName))
 				{
-					var nomalizedCultureName = TheLocalizer.NormalizeCultureName(cultureName);
-					var fnameWithCulture = Path.Combine(directory, nomalizedCultureName, dllname);
+					var fnameWithCulture = Path.Combine(directory, cultureName, dllname);
 					if (File.Exists(fnameWithCulture))
 					{
 						return Assembly.LoadFile(fnameWithCulture);

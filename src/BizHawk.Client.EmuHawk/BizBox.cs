@@ -1,9 +1,11 @@
-using System.Linq;
-using System.Windows.Forms;
-
 using BizHawk.Client.EmuHawk.Properties;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores;
+using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Resources;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {

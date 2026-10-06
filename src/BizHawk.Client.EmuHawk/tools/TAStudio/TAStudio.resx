@@ -117,19 +117,1192 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;NewTASMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;StartNewProjectFromNowMenuItem.Name" xml:space="preserve">
+    <value>StartNewProjectFromNowMenuItem</value>
+  </data>
+  <data name="&gt;&gt;GoToFrameMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CancelSeekContextMenuItem.Name" xml:space="preserve">
+    <value>CancelSeekContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator16.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;recentMacrosToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;StateHistoryIntegrityCheckMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Name" xml:space="preserve">
+    <value>MainVertialSplit</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ColumnRightClickMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>170, 114</value>
+  </data>
+  <data name="NewInputRollContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 22</value>
+  </data>
+  <data name="ForumThreadMenuItem.Text" xml:space="preserve">
+    <value>Forum Thread...</value>
+  </data>
+  <data name="BranchesMarkersSplit.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 484</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="OpenTASMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+O</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CloneFramesMenuItem.Text" xml:space="preserve">
+    <value>&amp;Clone</value>
+  </data>
+  <data name="&gt;&gt;CloneXTimesContextMenuItem.Name" xml:space="preserve">
+    <value>CloneXTimesContextMenuItem</value>
+  </data>
+  <data name="pasteToolStripMenuItem.Text" xml:space="preserve">
+    <value>Paste</value>
+  </data>
+  <data name="&gt;&gt;ColumnsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="HelpSubMenu.Text" xml:space="preserve">
+    <value>&amp;Help</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
+    <value>FileSubMenu</value>
+  </data>
+  <data name="ClearFramesMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;MarkerControl.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ClearFramesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="pasteInsertToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+Shift+V</value>
+  </data>
+  <data name="&gt;&gt;StartNewProjectFromNowMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BranchesMarkersSplit.SplitterDistance" type="System.Int32, mscorlib">
+    <value>270</value>
+  </data>
+  <data name="DeselectContextMenuItem.Text" xml:space="preserve">
+    <value>Deselect</value>
+  </data>
+  <data name="&gt;&gt;RightClickMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CommentsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel1.Name" xml:space="preserve">
+    <value>MainVertialSplit.Panel1</value>
+  </data>
+  <data name="GoToFrameMenuItem.Text" xml:space="preserve">
+    <value>Go to Frame...</value>
+  </data>
+  <data name="NewFromCurrentSaveRamMenuItem.Text" xml:space="preserve">
+    <value>&amp;Current SaveRam</value>
+  </data>
+  <data name="pasteToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+V</value>
+  </data>
+  <data name="&gt;&gt;ReselectClipboardMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PasteMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SaveBackupMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TASEditorManualOnlineMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator6.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripStatusLabel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;recentMacrosToolStripMenuItem.Name" xml:space="preserve">
+    <value>recentMacrosToolStripMenuItem</value>
+  </data>
+  <data name="SelectBetweenMarkersMenuItem.Text" xml:space="preserve">
+    <value>Select between Markers</value>
+  </data>
+  <data name="&gt;&gt;SaveAsTASMenuItem.Name" xml:space="preserve">
+    <value>SaveAsTASMenuItem</value>
+  </data>
+  <data name="NewTASMenuItem.Text" xml:space="preserve">
+    <value>&amp;New</value>
+  </data>
+  <data name="&gt;&gt;OpenTASMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BookMarkControl.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;cutToolStripMenuItem.Name" xml:space="preserve">
+    <value>cutToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;CloneContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RedoMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;CutMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator17.Name" xml:space="preserve">
+    <value>toolStripSeparator17</value>
+  </data>
+  <data name="&gt;&gt;TasStatusStrip.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;MarkerControl.Parent" xml:space="preserve">
+    <value>BranchesMarkersSplit.Panel2</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator15.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ColumnRightClickMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator15.Name" xml:space="preserve">
+    <value>toolStripSeparator15</value>
+  </data>
+  <data name="&gt;&gt;SetMarkerWithTextContextMenuItem.Name" xml:space="preserve">
+    <value>SetMarkerWithTextContextMenuItem</value>
+  </data>
+  <data name="ClearGreenzoneMenuItem.Text" xml:space="preserve">
+    <value>&amp;Clear Savestate History</value>
+  </data>
+  <data name="&gt;&gt;UngreenzoneContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BranchesMarkersSplit.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;GreenzoneICheckSeparator.Name" xml:space="preserve">
+    <value>GreenzoneICheckSeparator</value>
+  </data>
+  <data name="&gt;&gt;separateToolStripMenuItem.Name" xml:space="preserve">
+    <value>separateToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator6.Name" xml:space="preserve">
+    <value>toolStripSeparator6</value>
+  </data>
+  <data name="&gt;&gt;NewFromNowMenuItem.Name" xml:space="preserve">
+    <value>NewFromNowMenuItem</value>
+  </data>
+  <data name="&gt;&gt;StartFromNowSeparator.Name" xml:space="preserve">
+    <value>StartFromNowSeparator</value>
+  </data>
+  <data name="BookMarkControl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 100</value>
+  </data>
+  <data name="&gt;&gt;NewFromCurrentSaveRamMenuItem.Name" xml:space="preserve">
+    <value>NewFromCurrentSaveRamMenuItem</value>
+  </data>
+  <data name="&gt;&gt;HeaderMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TasPlaybackBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 100</value>
+  </data>
+  <data name="&gt;&gt;StartANewProjectFromSaveRamMenuItem.Name" xml:space="preserve">
+    <value>StartANewProjectFromSaveRamMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DeleteInputRollContextMenuItem.Name" xml:space="preserve">
+    <value>DeleteInputRollContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;TasPlaybackBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;CloneFramesXTimesMenuItem.Name" xml:space="preserve">
+    <value>CloneFramesXTimesMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator16.Name" xml:space="preserve">
+    <value>toolStripSeparator16</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel2.Name" xml:space="preserve">
+    <value>BranchesMarkersSplit.Panel2</value>
+  </data>
+  <data name="&gt;&gt;BookMarkControl.Name" xml:space="preserve">
+    <value>BookMarkControl</value>
+  </data>
+  <data name="NewFromSubMenu.Text" xml:space="preserve">
+    <value>New From</value>
+  </data>
+  <data name="&gt;&gt;aboutToolStripMenuItem.Name" xml:space="preserve">
+    <value>aboutToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;pasteInsertToolStripMenuItem.Name" xml:space="preserve">
+    <value>pasteInsertToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;MetaSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="cutToolStripMenuItem.Text" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="&gt;&gt;AutoHoldContextMenuItem.Name" xml:space="preserve">
+    <value>AutoHoldContextMenuItem</value>
+  </data>
+  <data name="BranchesMarkersSplit.Panel1MinSize" type="System.Int32, mscorlib">
+    <value>200</value>
+  </data>
+  <data name="HeaderMenuItem.Text" xml:space="preserve">
+    <value>&amp;Header...</value>
+  </data>
+  <data name="&gt;&gt;SetMarkersContextMenuItem.Name" xml:space="preserve">
+    <value>SetMarkersContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator19.Name" xml:space="preserve">
+    <value>toolStripSeparator19</value>
+  </data>
+  <data name="&gt;&gt;SelectionRedoMenuItem.Name" xml:space="preserve">
+    <value>SelectionRedoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;InsertNumFramesMenuItem.Name" xml:space="preserve">
+    <value>InsertNumFramesMenuItem</value>
+  </data>
+  <data name="&gt;&gt;NewInputRollContextMenuItem.Name" xml:space="preserve">
+    <value>NewInputRollContextMenuItem</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>509, 532</value>
+  </data>
+  <data name="&gt;&gt;TasPlaybackBox.Name" xml:space="preserve">
+    <value>TasPlaybackBox</value>
+  </data>
+  <data name="&gt;&gt;OpenTASMenuItem.Name" xml:space="preserve">
+    <value>OpenTASMenuItem</value>
+  </data>
+  <data name="HideColumnContextMenuItem.Text" xml:space="preserve">
+    <value>Hide column</value>
+  </data>
+  <data name="&gt;&gt;CancelSeekContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel2.Parent" xml:space="preserve">
+    <value>MainVertialSplit</value>
+  </data>
+  <data name="ReselectClipboardMenuItem.Text" xml:space="preserve">
+    <value>Reselect Clipboard</value>
+  </data>
+  <data name="aboutToolStripMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="DeselectMenuItem.Text" xml:space="preserve">
+    <value>Deselect</value>
+  </data>
+  <data name="&gt;&gt;SettingsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InsertFrameMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CloneFramesXTimesMenuItem.Text" xml:space="preserve">
+    <value>Clone # Times</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator7.Name" xml:space="preserve">
+    <value>toolStripSeparator7</value>
+  </data>
+  <data name="DeleteInputRollContextMenuItem.Text" xml:space="preserve">
+    <value>Delete input roll</value>
+  </data>
+  <data name="saveSelectionToMacroToolStripMenuItem.Text" xml:space="preserve">
+    <value>Save Selection to Macro</value>
+  </data>
+  <data name="AutoHoldContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 22</value>
+  </data>
+  <data name="&gt;&gt;SelectAllMenuItem.Name" xml:space="preserve">
+    <value>SelectAllMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator1.Name" xml:space="preserve">
+    <value>toolStripSeparator1</value>
+  </data>
+  <data name="&gt;&gt;MarkerControl.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.MarkerControl, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CloneFramesMenuItem.Name" xml:space="preserve">
+    <value>CloneFramesMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator18.Name" xml:space="preserve">
+    <value>toolStripSeparator18</value>
+  </data>
+  <data name="&gt;&gt;PasteInsertMenuItem.Name" xml:space="preserve">
+    <value>PasteInsertMenuItem</value>
+  </data>
+  <data name="NewFromNowMenuItem.Text" xml:space="preserve">
+    <value>&amp;Now</value>
+  </data>
+  <data name="CloneXTimesContextMenuItem.Text" xml:space="preserve">
+    <value>Clone # Times</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SelectionRedoMenuItem.Text" xml:space="preserve">
+    <value>Selection Redo</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator20.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RecentSubMenu.Name" xml:space="preserve">
+    <value>RecentSubMenu</value>
+  </data>
+  <data name="CommentsMenuItem.Text" xml:space="preserve">
+    <value>&amp;Comments...</value>
+  </data>
+  <data name="StateHistoryIntegrityCheckMenuItem.Text" xml:space="preserve">
+    <value>State History Integrity Check</value>
+  </data>
+  <data name="UndoMenuItem.Text" xml:space="preserve">
+    <value>&amp;Undo</value>
+  </data>
+  <data name="TAStudioSettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>166, 22</value>
+  </data>
+  <data name="&gt;&gt;InsertFrameMenuItem.Name" xml:space="preserve">
+    <value>InsertFrameMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DeselectMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ShowColumnsContextMenuItem.Text" xml:space="preserve">
+    <value>Show columns</value>
+  </data>
+  <data name="&gt;&gt;HelpSubMenu.Name" xml:space="preserve">
+    <value>HelpSubMenu</value>
+  </data>
+  <data name="InsertNumFramesMenuItem.Text" xml:space="preserve">
+    <value>Insert # of Frames</value>
+  </data>
+  <data name="OpenTASMenuItem.Text" xml:space="preserve">
+    <value>&amp;Open</value>
+  </data>
+  <data name="&gt;&gt;NewInputRollContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;SelectBetweenMarkersMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="placeMacroAtSelectionToolStripMenuItem.Text" xml:space="preserve">
+    <value>Place Macro at Selection</value>
+  </data>
+  <data name="&gt;&gt;cutToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TruncateContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BookMarkControl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 170</value>
+  </data>
+  <data name="TruncateContextMenuItem.Text" xml:space="preserve">
+    <value>Truncate Movie</value>
+  </data>
+  <data name="&gt;&gt;InsertFrameContextMenuItem.Name" xml:space="preserve">
+    <value>InsertFrameContextMenuItem</value>
+  </data>
+  <data name="CloneContextMenuItem.Text" xml:space="preserve">
+    <value>Clone</value>
+  </data>
+  <data name="&gt;&gt;NewFromCurrentSaveRamMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="&gt;&gt;HideColumnContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;TasStatusStrip.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BranchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MessageStatusLabel.Name" xml:space="preserve">
+    <value>MessageStatusLabel</value>
+  </data>
+  <data name="&gt;&gt;TAStudioSettingsToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;showUndoHistoryToolStripMenuItem.Name" xml:space="preserve">
+    <value>showUndoHistoryToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;copyToolStripMenuItem.Name" xml:space="preserve">
+    <value>copyToolStripMenuItem</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;ToBk2MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InsertNumFramesContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;StartFromNowSeparator.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SelectBetweenMarkersMenuItem.Name" xml:space="preserve">
+    <value>SelectBetweenMarkersMenuItem</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Name" xml:space="preserve">
+    <value>BranchesMarkersSplit</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SetMarkersContextMenuItem.Text" xml:space="preserve">
+    <value>Set Markers</value>
+  </data>
+  <data name="SelectBetweenMarkersContextMenuItem.Text" xml:space="preserve">
+    <value>Select between Markers</value>
+  </data>
+  <data name="&gt;&gt;RightClickMenu.Name" xml:space="preserve">
+    <value>RightClickMenu</value>
+  </data>
+  <data name="&gt;&gt;SelectBetweenMarkersContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CopyMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+C</value>
+  </data>
+  <data name="&gt;&gt;ClearFramesMenuItem.Name" xml:space="preserve">
+    <value>ClearFramesMenuItem</value>
+  </data>
+  <data name="InsertFrameMenuItem.Text" xml:space="preserve">
+    <value>&amp;Insert</value>
+  </data>
+  <data name="&gt;&gt;SubtitlesMenuItem.Name" xml:space="preserve">
+    <value>SubtitlesMenuItem</value>
+  </data>
+  <data name="MarkerControl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 210</value>
+  </data>
+  <data name="&gt;&gt;StartANewProjectFromSaveRamMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator7.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;EditSubMenu.Name" xml:space="preserve">
+    <value>EditSubMenu</value>
+  </data>
+  <data name="&gt;&gt;InsertNumFramesContextMenuItem.Name" xml:space="preserve">
+    <value>InsertNumFramesContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;PasteMenuItem.Name" xml:space="preserve">
+    <value>PasteMenuItem</value>
+  </data>
+  <data name="&gt;&gt;RedoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TasPlaybackBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.PlaybackBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TasPlaybackBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Top</value>
+  </data>
+  <data name="ToBk2MenuItem.Text" xml:space="preserve">
+    <value>&amp;Export to Bk2</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel1.Parent" xml:space="preserve">
+    <value>MainVertialSplit</value>
+  </data>
+  <data name="StartNewProjectFromNowMenuItem.Text" xml:space="preserve">
+    <value>Start a new project from Now</value>
+  </data>
+  <data name="MarkerControl.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;SaveBackupMenuItem.Name" xml:space="preserve">
+    <value>SaveBackupMenuItem</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="recentMacrosToolStripMenuItem.Text" xml:space="preserve">
+    <value>Recent Macros</value>
+  </data>
+  <data name="BranchesMarkersSplit.Panel2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteFramesMenuItem.Text" xml:space="preserve">
+    <value>&amp;Delete</value>
+  </data>
+  <data name="&gt;&gt;StateHistoryIntegrityCheckMenuItem.Name" xml:space="preserve">
+    <value>StateHistoryIntegrityCheckMenuItem</value>
+  </data>
+  <data name="&gt;&gt;pasteToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ToBk2MenuItem.Name" xml:space="preserve">
+    <value>ToBk2MenuItem</value>
+  </data>
+  <data name="&gt;&gt;saveSelectionToMacroToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ForumThreadMenuItem.Name" xml:space="preserve">
+    <value>ForumThreadMenuItem</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;CommentsMenuItem.Name" xml:space="preserve">
+    <value>CommentsMenuItem</value>
+  </data>
+  <data name="SaveAsTASMenuItem.Text" xml:space="preserve">
+    <value>Save As</value>
+  </data>
+  <data name="&gt;&gt;ShowColumnsContextMenuItem.Name" xml:space="preserve">
+    <value>ShowColumnsContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator17.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;HideColumnContextMenuItem.Name" xml:space="preserve">
+    <value>HideColumnContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ForumThreadMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SelectionRedoMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;RemoveMarkersContextMenuItem.Name" xml:space="preserve">
+    <value>RemoveMarkersContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator18.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SaveBk2BackupMenuItem.Name" xml:space="preserve">
+    <value>SaveBk2BackupMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator22.Name" xml:space="preserve">
+    <value>toolStripSeparator22</value>
+  </data>
+  <data name="copyToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+C</value>
+  </data>
+  <data name="MessageStatusLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>116, 17</value>
+  </data>
+  <data name="&gt;&gt;SaveTASMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SplicerStatusLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;UngreenzoneContextMenuItem.Name" xml:space="preserve">
+    <value>UngreenzoneContextMenuItem</value>
+  </data>
+  <data name="cutToolStripMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+X</value>
+  </data>
+  <data name="&gt;&gt;pasteToolStripMenuItem.Name" xml:space="preserve">
+    <value>pasteToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ColumnsSubMenu.Name" xml:space="preserve">
+    <value>ColumnsSubMenu</value>
+  </data>
+  <data name="ClearFramesMenuItem.Text" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="CutMenuItem.Text" xml:space="preserve">
+    <value>&amp;Cut</value>
+  </data>
+  <data name="TasPlaybackBox.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 41</value>
+  </data>
+  <data name="ColumnsSubMenu.Text" xml:space="preserve">
+    <value>&amp;Columns</value>
+  </data>
+  <data name="&gt;&gt;ProgressBar.Name" xml:space="preserve">
+    <value>ProgressBar</value>
+  </data>
+  <data name="&gt;&gt;ShowColumnsContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator19.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel2.Name" xml:space="preserve">
+    <value>MainVertialSplit.Panel2</value>
+  </data>
+  <data name="MainVertialSplit.Panel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;GreenzoneICheckSeparator.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RedoMenuItem.Text" xml:space="preserve">
+    <value>&amp;Redo</value>
+  </data>
+  <data name="BranchesMarkersSplit.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
+    <value>Horizontal</value>
+  </data>
+  <data name="ProgressBar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 16</value>
+  </data>
+  <data name="&gt;&gt;ClearGreenzoneMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="toolStripStatusLabel2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>256, 17</value>
+  </data>
+  <data name="&gt;&gt;TASMenu.Name" xml:space="preserve">
+    <value>TASMenu</value>
+  </data>
+  <data name="InsertFrameContextMenuItem.Text" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="&gt;&gt;TruncateMenuItem.Name" xml:space="preserve">
+    <value>TruncateMenuItem</value>
+  </data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;About</value>
+  </data>
+  <data name="&gt;&gt;SelectAllMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BranchesMarkersSplit.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 4</value>
+  </data>
+  <data name="MessageStatusLabel.Text" xml:space="preserve">
+    <value>TAStudio engaged</value>
+  </data>
+  <data name="MarkerControl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;separateToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="TasStatusStrip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 510</value>
+  </data>
+  <data name="&gt;&gt;TruncateMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BookMarkControl.Parent" xml:space="preserve">
+    <value>BranchesMarkersSplit.Panel1</value>
+  </data>
+  <data name="SubtitlesMenuItem.Text" xml:space="preserve">
+    <value>&amp;Subtitles...</value>
+  </data>
+  <data name="StartANewProjectFromSaveRamMenuItem.Text" xml:space="preserve">
+    <value>Start a new project from SaveRam</value>
+  </data>
+  <data name="&gt;&gt;pasteInsertToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SelectAllMenuItem.Text" xml:space="preserve">
+    <value>Select &amp;All</value>
+  </data>
+  <data name="&gt;&gt;placeMacroAtSelectionToolStripMenuItem.Name" xml:space="preserve">
+    <value>placeMacroAtSelectionToolStripMenuItem</value>
+  </data>
+  <data name="SelectAllMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteFramesContextMenuItem.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator5.Name" xml:space="preserve">
+    <value>toolStripSeparator5</value>
+  </data>
+  <data name="TasPlaybackBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Parent" xml:space="preserve">
+    <value>MainVertialSplit.Panel2</value>
+  </data>
+  <data name="&gt;&gt;BookMarkControl.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="copyToolStripMenuItem.Text" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="BookMarkControl.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;DeselectContextMenuItem.Name" xml:space="preserve">
+    <value>DeselectContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;SplicerStatusLabel.Name" xml:space="preserve">
+    <value>SplicerStatusLabel</value>
+  </data>
+  <data name="&gt;&gt;SetMarkersContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TASMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>TAStudio</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator5.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NewFromNowMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InsertNumFramesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ClearContextMenuItem.Text" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="InsertNumFramesContextMenuItem.Text" xml:space="preserve">
+    <value>Insert # of Frames</value>
+  </data>
+  <data name="&gt;&gt;PasteInsertMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MainVertialSplit.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 21</value>
+  </data>
+  <data name="SelectionUndoMenuItem.Text" xml:space="preserve">
+    <value>Selection Undo</value>
+  </data>
+  <data name="&gt;&gt;CloneFramesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="InsertNumFramesMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;DeleteFramesMenuItem.Name" xml:space="preserve">
+    <value>DeleteFramesMenuItem</value>
+  </data>
+  <data name="&gt;&gt;TASEditorManualOnlineMenuItem.Name" xml:space="preserve">
+    <value>TASEditorManualOnlineMenuItem</value>
+  </data>
+  <data name="&gt;&gt;aboutToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NewFromSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GoToFrameMenuItem.Name" xml:space="preserve">
+    <value>GoToFrameMenuItem</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;TASMenu.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="SaveBk2BackupMenuItem.Text" xml:space="preserve">
+    <value>Save Bk2 Backup</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel1.Name" xml:space="preserve">
+    <value>BranchesMarkersSplit.Panel1</value>
+  </data>
+  <data name="&gt;&gt;TasPlaybackBox.Parent" xml:space="preserve">
+    <value>BranchesMarkersSplit.Panel1</value>
+  </data>
+  <data name="HideColumnContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 22</value>
+  </data>
+  <data name="&gt;&gt;DeleteFramesContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CloneFramesXTimesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;copyToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DeselectMenuItem.Name" xml:space="preserve">
+    <value>DeselectMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripStatusLabel2.Name" xml:space="preserve">
+    <value>toolStripStatusLabel2</value>
+  </data>
+  <data name="SetMarkerWithTextContextMenuItem.Text" xml:space="preserve">
+    <value>Set Marker with Text</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ShowColumnsContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 22</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
+    <value>toolStripSeparator3</value>
+  </data>
+  <data name="&gt;&gt;DeleteFramesContextMenuItem.Name" xml:space="preserve">
+    <value>DeleteFramesContextMenuItem</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="&gt;&gt;UndoMenuItem.Name" xml:space="preserve">
+    <value>UndoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;UndoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CutMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+X</value>
+  </data>
+  <data name="&gt;&gt;SettingsSubMenu.Name" xml:space="preserve">
+    <value>SettingsSubMenu</value>
+  </data>
+  <data name="&gt;&gt;CloneXTimesContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ProgressBar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripProgressBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="UngreenzoneContextMenuItem.Text" xml:space="preserve">
+    <value>Clear Greenzone</value>
+  </data>
+  <data name="&gt;&gt;TAStudioSettingsToolStripMenuItem.Name" xml:space="preserve">
+    <value>TAStudioSettingsToolStripMenuItem</value>
+  </data>
+  <data name="SaveAsTASMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+S</value>
+  </data>
+  <data name="SplicerStatusLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>20, 17</value>
+  </data>
+  <data name="&gt;&gt;CloneContextMenuItem.Name" xml:space="preserve">
+    <value>CloneContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;SubtitlesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;HelpSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SaveAsTASMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;saveSelectionToMacroToolStripMenuItem.Name" xml:space="preserve">
+    <value>saveSelectionToMacroToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ReselectClipboardMenuItem.Name" xml:space="preserve">
+    <value>ReselectClipboardMenuItem</value>
+  </data>
+  <data name="ColumnRightClickMenu.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;toolStripSeparator20.Name" xml:space="preserve">
+    <value>toolStripSeparator20</value>
+  </data>
+  <data name="NewInputRollContextMenuItem.Text" xml:space="preserve">
+    <value>New input roll</value>
+  </data>
+  <data name="TasPlaybackBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;TruncateContextMenuItem.Name" xml:space="preserve">
+    <value>TruncateContextMenuItem</value>
+  </data>
+  <data name="MainVertialSplit.Size" type="System.Drawing.Size, System.Drawing">
+    <value>507, 487</value>
+  </data>
+  <data name="PasteInsertMenuItem.Text" xml:space="preserve">
+    <value>&amp;Paste Insert</value>
+  </data>
+  <data name="&gt;&gt;CopyMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;TasStatusStrip.Name" xml:space="preserve">
+    <value>TasStatusStrip</value>
+  </data>
+  <data name="&gt;&gt;CopyMenuItem.Name" xml:space="preserve">
+    <value>CopyMenuItem</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel2.Parent" xml:space="preserve">
+    <value>BranchesMarkersSplit</value>
+  </data>
+  <data name="&gt;&gt;NewTASMenuItem.Name" xml:space="preserve">
+    <value>NewTASMenuItem</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;MessageStatusLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator8.Name" xml:space="preserve">
+    <value>toolStripSeparator8</value>
+  </data>
+  <data name="&gt;&gt;SetMarkerWithTextContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MetaSubMenu.Text" xml:space="preserve">
+    <value>&amp;Metadata</value>
+  </data>
+  <data name="&gt;&gt;EditSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="StateHistoryIntegrityCheckMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+I</value>
+  </data>
+  <data name="MarkerControl.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.Panel1.Parent" xml:space="preserve">
+    <value>BranchesMarkersSplit</value>
+  </data>
+  <data name="SaveTASMenuItem.Text" xml:space="preserve">
+    <value>&amp;Save</value>
+  </data>
+  <data name="&gt;&gt;SelectBetweenMarkersContextMenuItem.Name" xml:space="preserve">
+    <value>SelectBetweenMarkersContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;BranchesMarkersSplit.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="TruncateMenuItem.Text" xml:space="preserve">
+    <value>&amp;Truncate Movie</value>
+  </data>
+  <data name="BranchesMarkersSplit.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="MainVertialSplit.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;BookMarkControl.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BookmarksBranchesBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="pasteInsertToolStripMenuItem.Text" xml:space="preserve">
+    <value>Paste Insert</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="MainVertialSplit.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="TasStatusStrip.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;InsertFrameContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DeleteFramesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CutMenuItem.Name" xml:space="preserve">
+    <value>CutMenuItem</value>
+  </data>
+  <data name="&gt;&gt;TasStatusStrip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="SettingsSubMenu.Text" xml:space="preserve">
+    <value>&amp;Settings</value>
+  </data>
+  <data name="TASEditorManualOnlineMenuItem.Text" xml:space="preserve">
+    <value>TAS Editor Manual Online...</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;ColumnRightClickMenu.Name" xml:space="preserve">
+    <value>ColumnRightClickMenu</value>
+  </data>
+  <data name="&gt;&gt;MetaSubMenu.Name" xml:space="preserve">
+    <value>MetaSubMenu</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator22.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RedoMenuItem.Name" xml:space="preserve">
+    <value>RedoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ClearContextMenuItem.Name" xml:space="preserve">
+    <value>ClearContextMenuItem</value>
+  </data>
+  <data name="showUndoHistoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>Show Undo History</value>
+  </data>
+  <data name="&gt;&gt;SelectionRedoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BranchContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Branch</value>
+  </data>
+  <data name="SaveBackupMenuItem.Text" xml:space="preserve">
+    <value>Save Backup</value>
+  </data>
+  <data name="CancelSeekContextMenuItem.Text" xml:space="preserve">
+    <value>Cancel Seek</value>
+  </data>
+  <data name="&gt;&gt;DeselectContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BranchContextMenuItem.Name" xml:space="preserve">
+    <value>BranchContextMenuItem</value>
+  </data>
+  <data name="PasteMenuItem.Text" xml:space="preserve">
+    <value>&amp;Paste</value>
+  </data>
+  <data name="MainVertialSplit.SplitterDistance" type="System.Int32, mscorlib">
+    <value>295</value>
+  </data>
+  <data name="TAStudioSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Open settings...</value>
+  </data>
+  <data name="&gt;&gt;MarkerControl.Name" xml:space="preserve">
+    <value>MarkerControl</value>
+  </data>
+  <data name="DeleteInputRollContextMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 22</value>
+  </data>
+  <data name="&gt;&gt;NewFromSubMenu.Name" xml:space="preserve">
+    <value>NewFromSubMenu</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>200, 140</value>
+  </data>
+  <data name="&gt;&gt;showUndoHistoryToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;AutoHoldContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RecentSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SelectionUndoMenuItem.Name" xml:space="preserve">
+    <value>SelectionUndoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ClearContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SelectionUndoMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="AutoHoldContextMenuItem.Text" xml:space="preserve">
+    <value>Auto-hold</value>
+  </data>
+  <data name="BranchesMarkersSplit.Panel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CopyMenuItem.Text" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="&gt;&gt;RemoveMarkersContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MainVertialSplit.Panel2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TASMenu.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;SaveBk2BackupMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SaveTASMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+S</value>
+  </data>
+  <data name="&gt;&gt;DeleteInputRollContextMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HeaderMenuItem.Name" xml:space="preserve">
+    <value>HeaderMenuItem</value>
+  </data>
+  <data name="PasteMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+V</value>
+  </data>
+  <data name="&gt;&gt;TASMenu.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;MainVertialSplit.Panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ClearGreenzoneMenuItem.Name" xml:space="preserve">
+    <value>ClearGreenzoneMenuItem</value>
+  </data>
+  <data name="&gt;&gt;SaveTASMenuItem.Name" xml:space="preserve">
+    <value>SaveTASMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator8.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RemoveMarkersContextMenuItem.Text" xml:space="preserve">
+    <value>Remove Markers</value>
+  </data>
+  <data name="RightClickMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>276, 502</value>
+  </data>
+  <data name="EditSubMenu.Text" xml:space="preserve">
+    <value>&amp;Edit</value>
+  </data>
+  <data name="&gt;&gt;placeMacroAtSelectionToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SelectionUndoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <metadata name="ColumnRightClickMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>486, 17</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>388, 17</value>
+  </metadata>
+  <metadata name="RightClickMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>249, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
   <metadata name="TASMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
   <metadata name="TasStatusStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>121, 17</value>
-  </metadata>
-  <metadata name="RightClickMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>249, 17</value>
-  </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>388, 17</value>
-  </metadata>
-  <metadata name="ColumnRightClickMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>486, 17</value>
   </metadata>
 </root>

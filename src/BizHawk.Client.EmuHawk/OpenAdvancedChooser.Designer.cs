@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OpenAdvancedChooser));
             this.label3 = new BizHawk.WinForms.Controls.LocSzLabelEx();
             this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.btnLibretroLaunchNoGame = new System.Windows.Forms.Button();
@@ -48,143 +49,104 @@
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(6, 25);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(198, 45);
-            this.label3.Text = "Load a ROM with the classic BizHawk autodetection method. But why not just use Op" +
-    "en Rom?";
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(6, 26);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Text = "Current Core:";
             // 
             // btnLibretroLaunchNoGame
             // 
-            this.btnLibretroLaunchNoGame.Location = new System.Drawing.Point(217, 50);
+            resources.ApplyResources(this.btnLibretroLaunchNoGame, "btnLibretroLaunchNoGame");
             this.btnLibretroLaunchNoGame.Name = "btnLibretroLaunchNoGame";
-            this.btnLibretroLaunchNoGame.Size = new System.Drawing.Size(102, 23);
-            this.btnLibretroLaunchNoGame.TabIndex = 1;
-            this.btnLibretroLaunchNoGame.Text = "Launch No Game";
             this.btnLibretroLaunchNoGame.UseVisualStyleBackColor = true;
             this.btnLibretroLaunchNoGame.Click += new System.EventHandler(this.btnLibretroLaunchNoGame_Click);
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(370, 221);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // groupBox2
             // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.txtLibretroCore);
             this.groupBox2.Controls.Add(this.btnLibretroLaunchGame);
             this.groupBox2.Controls.Add(this.btnSetLibretroCore);
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Controls.Add(this.btnLibretroLaunchNoGame);
-            this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(433, 81);
-            this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Libretro";
             // 
             // txtLibretroCore
             // 
+            resources.ApplyResources(this.txtLibretroCore, "txtLibretroCore");
             this.txtLibretroCore.AllowDrop = true;
-            this.txtLibretroCore.Location = new System.Drawing.Point(81, 23);
             this.txtLibretroCore.Name = "txtLibretroCore";
             this.txtLibretroCore.ReadOnly = true;
-            this.txtLibretroCore.Size = new System.Drawing.Size(314, 20);
-            this.txtLibretroCore.TabIndex = 6;
             this.txtLibretroCore.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtLibretroCore_DragDrop);
             this.txtLibretroCore.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtLibretroCore_DragEnter);
             // 
             // btnLibretroLaunchGame
             // 
-            this.btnLibretroLaunchGame.Location = new System.Drawing.Point(325, 50);
+            resources.ApplyResources(this.btnLibretroLaunchGame, "btnLibretroLaunchGame");
             this.btnLibretroLaunchGame.Name = "btnLibretroLaunchGame";
-            this.btnLibretroLaunchGame.Size = new System.Drawing.Size(102, 23);
-            this.btnLibretroLaunchGame.TabIndex = 5;
-            this.btnLibretroLaunchGame.Text = "Launch Game";
             this.btnLibretroLaunchGame.UseVisualStyleBackColor = true;
             this.btnLibretroLaunchGame.Click += new System.EventHandler(this.btnLibretroLaunchGame_Click);
             // 
             // btnSetLibretroCore
             // 
-            this.btnSetLibretroCore.AutoSize = true;
-            this.btnSetLibretroCore.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSetLibretroCore.Location = new System.Drawing.Point(401, 21);
+            resources.ApplyResources(this.btnSetLibretroCore, "btnSetLibretroCore");
             this.btnSetLibretroCore.Name = "btnSetLibretroCore";
-            this.btnSetLibretroCore.Size = new System.Drawing.Size(26, 23);
-            this.btnSetLibretroCore.TabIndex = 4;
-            this.btnSetLibretroCore.Text = "...";
             this.btnSetLibretroCore.UseVisualStyleBackColor = true;
             this.btnSetLibretroCore.Click += new System.EventHandler(this.btnSetLibretroCore_Click);
             // 
             // groupBox3
             // 
+            resources.ApplyResources(this.groupBox3, "groupBox3");
             this.groupBox3.Controls.Add(this.btnClassicLaunchGame);
             this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Location = new System.Drawing.Point(235, 99);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(210, 100);
-            this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "BizHawk Classic";
             // 
             // btnClassicLaunchGame
             // 
-            this.btnClassicLaunchGame.Location = new System.Drawing.Point(102, 71);
+            resources.ApplyResources(this.btnClassicLaunchGame, "btnClassicLaunchGame");
             this.btnClassicLaunchGame.Name = "btnClassicLaunchGame";
-            this.btnClassicLaunchGame.Size = new System.Drawing.Size(102, 23);
-            this.btnClassicLaunchGame.TabIndex = 6;
-            this.btnClassicLaunchGame.Text = "Launch Game";
             this.btnClassicLaunchGame.UseVisualStyleBackColor = true;
             this.btnClassicLaunchGame.Click += new System.EventHandler(this.btnClassicLaunchGame_Click);
             // 
             // groupBox1
             // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.btnMAMELaunchGame);
-            this.groupBox1.Location = new System.Drawing.Point(13, 99);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(216, 100);
-            this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "MAME Arcade";
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(6, 25);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(204, 42);
-            this.label1.Text = "Load .zip archive as MAME Arcade ROM (do not unzip)";
             this.label1.Click += new System.EventHandler(this.btnMAMELaunchGame_Click);
             // 
             // btnMAMELaunchGame
             // 
-            this.btnMAMELaunchGame.Location = new System.Drawing.Point(108, 71);
+            resources.ApplyResources(this.btnMAMELaunchGame, "btnMAMELaunchGame");
             this.btnMAMELaunchGame.Name = "btnMAMELaunchGame";
-            this.btnMAMELaunchGame.Size = new System.Drawing.Size(102, 23);
-            this.btnMAMELaunchGame.TabIndex = 0;
-            this.btnMAMELaunchGame.Text = "Launch Game";
             this.btnMAMELaunchGame.UseVisualStyleBackColor = true;
             this.btnMAMELaunchGame.Click += new System.EventHandler(this.btnMAMELaunchGame_Click);
             // 
             // OpenAdvancedChooser
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(457, 256);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -193,8 +155,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "OpenAdvancedChooser";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Open Advanced";
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);

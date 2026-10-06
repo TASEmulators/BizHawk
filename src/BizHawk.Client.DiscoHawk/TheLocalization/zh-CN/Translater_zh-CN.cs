@@ -13,7 +13,7 @@
 			theDictionary["FFmpeg missing"] = "未找到 FFmpeg";
 			theDictionary["This function requires FFmpeg, but it doesn't appear to have been downloaded.\n"
 			+ "EmuHawk can automatically download it: you just need to set up A/V recording with the FFmpeg writer."]
-			= "该功能需要 FFmpeg，但尚未下载。\nEmuHawk 可自动下载 FFmpeg：只需将音视频录制的输出器设置为 FFmpeg。";
+			= "该功能需要 FFmpeg，但尚未下载。\nEmuHawk 可自动下载 FFmpeg：只需在 Bizhawk 配置 AV录制器为 FFmpeg 并开始录制即可。";
 
 			theDictionary["Do you want to overwrite existing files? Choosing \"No\" will simply skip those. You could also \"Cancel\" the extraction entirely.\n\ncaused by file: {0}"]
 			= "是否覆盖已有文件？选择“否”将跳过这些文件，选择“取消”则终止全部提取操作。\n\n涉及文件：{0}";

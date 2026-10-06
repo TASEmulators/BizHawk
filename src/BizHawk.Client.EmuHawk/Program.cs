@@ -1,25 +1,25 @@
-using System.Diagnostics;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-
 using BizHawk.BizInvoke;
 using BizHawk.Bizware.Audio;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Bizware.Graphics.Controls;
 using BizHawk.Bizware.Input;
+using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.CustomControls;
+using BizHawk.Client.EmuHawk.TheLocalization;
 using BizHawk.Common;
 using BizHawk.Common.PathExtensions;
 using BizHawk.Common.StringExtensions;
-using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.CustomControls;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.DiscSystem;
 using BizHawk.WinForms.Controls;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -442,6 +442,24 @@ namespace BizHawk.Client.EmuHawk
 				// load missing assemblies by trying to find them in the dll directory
 				var dllname = $"{new AssemblyName(requested).Name}.dll";
 				var directory = Path.Combine(AppContext.BaseDirectory, "dll");
+
+				// 为了实现本地化，我们必须在这里处理 cultureName 字段，
+				// In order to realize localization, we must process the cultureName field here,
+				// 让系统优先选择对应 cultureName 的资源包，找不到再选择默认的资源包，
+				// so that the system can choose the resource package corresponding to cultureName first,
+				// and then choose the default resource package if it cannot be found.
+				// by ElderMeow 猫妖喵长老注
+				var cultureName = $"{new AssemblyName(requested).CultureName}";
+				if (!string.IsNullOrEmpty(cultureName))
+				{
+					var fnameWithCulture = Path.Combine(directory, cultureName, dllname);
+					if (File.Exists(fnameWithCulture))
+					{
+						return Assembly.LoadFile(fnameWithCulture);
+					}
+				}
+				// cultureName processing completed.
+
 				var fname = Path.Combine(directory, dllname);
 				// it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unmanaged) assemblies can't load
 				return File.Exists(fname) ? Assembly.LoadFile(fname) : null;

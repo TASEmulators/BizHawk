@@ -117,13 +117,571 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="DisassemblerContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>229, 17</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>767, 517</value>
+  </data>
+  <data name="&gt;&gt;RefreshMenuItem.Name" xml:space="preserve">
+    <value>RefreshMenuItem</value>
+  </data>
+  <data name="&gt;&gt;StepIntoBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerView.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="RunBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ToPCBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="StepOverBtn.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="StepIntoMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;CancelSeekBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ToPCBtn.Text" xml:space="preserve">
+    <value>To PC</value>
+  </data>
+  <data name="&gt;&gt;AddBreakpointContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RegisterPanel.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.RegisterBoxControl, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SeekToBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="RunBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BreakpointsGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RunBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 399</value>
+  </data>
+  <data name="SeekToBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 274</value>
+  </data>
+  <data name="&gt;&gt;StepIntoBtn.Name" xml:space="preserve">
+    <value>StepIntoBtn</value>
+  </data>
+  <data name="RegistersGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;SeekToBox.Name" xml:space="preserve">
+    <value>SeekToBox</value>
+  </data>
+  <data name="&gt;&gt;BreakPointControl1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;StepOutBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="RegisterPanel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 18</value>
+  </data>
+  <data name="SeekToBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 246</value>
+  </data>
+  <data name="StepOutMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="BreakPointControl1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="RegisterPanel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;fileToolStripMenuItem.Name" xml:space="preserve">
+    <value>fileToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RegistersGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;StepOutBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RegisterPanel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;RegistersGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="RegisterPanel.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SeekToBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="StepOverBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;StepOutBtn.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Cpu:  Use '[' or ']' to change address, hold 'shift' for speed.</value>
+  </data>
+  <data name="RegistersGroupBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>GenericDebugger</value>
+  </data>
+  <data name="StepOutBtn.Text" xml:space="preserve">
+    <value>Step Out</value>
+  </data>
+  <data name="&gt;&gt;BreakPointControl1.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BreakpointControl, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SeekToBtn.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;RegistersGroupBox.Name" xml:space="preserve">
+    <value>RegistersGroupBox</value>
+  </data>
+  <data name="&gt;&gt;StepOutMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="StepIntoBtn.Text" xml:space="preserve">
+    <value>Step Into</value>
+  </data>
+  <data name="&gt;&gt;DebugSubMenu.Name" xml:space="preserve">
+    <value>DebugSubMenu</value>
+  </data>
+  <data name="&gt;&gt;BreakpointsGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;SeekToBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="AddBreakpointContextMenuItem.Text" xml:space="preserve">
+    <value>Add Breakpoint</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerContextMenu.Name" xml:space="preserve">
+    <value>DisassemblerContextMenu</value>
+  </data>
+  <data name="&gt;&gt;StepOutBtn.Name" xml:space="preserve">
+    <value>StepOutBtn</value>
+  </data>
+  <data name="&gt;&gt;RefreshMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="StepIntoBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 47</value>
+  </data>
+  <data name="RegisterPanel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Courier New, 9pt</value>
+  </data>
+  <data name="&gt;&gt;ToPCBtn.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="StepOverBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerView.Name" xml:space="preserve">
+    <value>DisassemblerView</value>
+  </data>
+  <data name="StepOverMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>F10</value>
+  </data>
+  <data name="StepOverMenuItem.Text" xml:space="preserve">
+    <value>Step O&amp;ver</value>
+  </data>
+  <data name="&gt;&gt;SeekToBtn.Name" xml:space="preserve">
+    <value>SeekToBtn</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator1.Name" xml:space="preserve">
+    <value>toolStripSeparator1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;StepIntoMenuItem.Name" xml:space="preserve">
+    <value>StepIntoMenuItem</value>
+  </data>
+  <data name="StepOutBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="BreakpointsGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>425, 246</value>
+  </data>
+  <data name="StepOutBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="DisassemblerBox.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="StepOverBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="StepOutBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 479</value>
+  </data>
+  <data name="&gt;&gt;BreakpointsGroupBox.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;fileToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RegistersGroupBox.Text" xml:space="preserve">
+    <value>Registers</value>
+  </data>
+  <data name="&gt;&gt;SeekToBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;BreakPointControl1.Parent" xml:space="preserve">
+    <value>BreakpointsGroupBox</value>
+  </data>
+  <data name="&gt;&gt;ToPCBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CancelSeekBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="SeekToBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;SeekToBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="SeekToBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="StepOutMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Shift+F11</value>
+  </data>
+  <data name="DisassemblerView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>395, 414</value>
+  </data>
+  <data name="&gt;&gt;StepOverBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RegisterPanel.Parent" xml:space="preserve">
+    <value>RegistersGroupBox</value>
+  </data>
+  <data name="StepIntoMenuItem.Text" xml:space="preserve">
+    <value>Step &amp;Into</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerBox.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;ToPCBtn.Name" xml:space="preserve">
+    <value>ToPCBtn</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BreakpointsGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>239, 259</value>
+  </data>
+  <data name="DisassemblerView.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Courier New, 8pt</value>
+  </data>
+  <data name="RegisterPanel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>316, 193</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>DisassemblerBox</value>
+  </data>
+  <data name="SeekToBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="DisassemblerBox.Text" xml:space="preserve">
+    <value>Disassembler</value>
+  </data>
+  <data name="&gt;&gt;RegistersGroupBox.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="ToPCBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 21</value>
+  </data>
+  <data name="BreakPointControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 18</value>
+  </data>
+  <data name="StepOverBtn.Text" xml:space="preserve">
+    <value>Step Over</value>
+  </data>
+  <data name="RunBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;CancelSeekBtn.Name" xml:space="preserve">
+    <value>CancelSeekBtn</value>
+  </data>
+  <data name="ToPCBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>351, 12</value>
+  </data>
+  <data name="CancelSeekBtn.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="&gt;&gt;StepOverBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CancelSeekBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="StepIntoBtn.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="DisassemblerContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>169, 26</value>
+  </data>
+  <data name="SeekToBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="SeekToBtn.Text" xml:space="preserve">
+    <value>Seek To:</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;DebugSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerView.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RegistersGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>425, 25</value>
+  </data>
+  <data name="&gt;&gt;BreakpointsGroupBox.Name" xml:space="preserve">
+    <value>BreakpointsGroupBox</value>
+  </data>
+  <data name="&gt;&gt;CancelSeekBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BreakPointControl1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;SeekToBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="DisassemblerView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 62</value>
+  </data>
+  <data name="&gt;&gt;CancelSeekBtn.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="BreakPointControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>225, 236</value>
+  </data>
+  <data name="StepIntoBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;RegisterPanel.Name" xml:space="preserve">
+    <value>RegisterPanel</value>
+  </data>
+  <data name="RefreshMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F5</value>
+  </data>
+  <data name="SeekToBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;ToPCBtn.Parent" xml:space="preserve">
+    <value>DisassemblerBox</value>
+  </data>
+  <data name="RunBtn.Text" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="RegistersGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>330, 216</value>
+  </data>
+  <data name="&gt;&gt;StepOverMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DisassemblerView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;BreakpointsGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;StepIntoBtn.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="BreakpointsGroupBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;StepOverBtn.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="StepIntoMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>F11</value>
+  </data>
+  <data name="DebugSubMenu.Text" xml:space="preserve">
+    <value>&amp;Debug</value>
+  </data>
+  <data name="RefreshMenuItem.Text" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CancelSeekBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;RegisterPanel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;StepOverMenuItem.Name" xml:space="preserve">
+    <value>StepOverMenuItem</value>
+  </data>
+  <data name="StepOverBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 452</value>
+  </data>
+  <data name="StepOutMenuItem.Text" xml:space="preserve">
+    <value>Step Ou&amp;t</value>
+  </data>
+  <data name="&gt;&gt;BreakPointControl1.Name" xml:space="preserve">
+    <value>BreakPointControl1</value>
+  </data>
+  <data name="DisassemblerBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;StepIntoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RunBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="CancelSeekBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="StepOverMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;SeekToBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="DisassemblerView.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="StepOutBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="DisassemblerBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>407, 481</value>
+  </data>
+  <data name="StepOutBtn.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="ToPCBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerBox.Name" xml:space="preserve">
+    <value>DisassemblerBox</value>
+  </data>
+  <data name="CancelSeekBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 298</value>
+  </data>
+  <data name="&gt;&gt;DisassemblerView.Parent" xml:space="preserve">
+    <value>DisassemblerBox</value>
+  </data>
+  <data name="&gt;&gt;StepIntoBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BreakpointsGroupBox.Text" xml:space="preserve">
+    <value>Breakpoints</value>
+  </data>
+  <data name="DisassemblerBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 25</value>
+  </data>
+  <data name="&gt;&gt;RunBtn.Name" xml:space="preserve">
+    <value>RunBtn</value>
+  </data>
+  <data name="SeekToBox.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;StepOutMenuItem.Name" xml:space="preserve">
+    <value>StepOutMenuItem</value>
+  </data>
+  <data name="StepIntoBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>680, 426</value>
+  </data>
+  <data name="&gt;&gt;AddBreakpointContextMenuItem.Name" xml:space="preserve">
+    <value>AddBreakpointContextMenuItem</value>
+  </data>
+  <data name="StepIntoBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;StepOverBtn.Name" xml:space="preserve">
+    <value>StepOverBtn</value>
+  </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>132, 17</value>
+  </metadata>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="DisassemblerContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>229, 17</value>
   </metadata>
 </root>

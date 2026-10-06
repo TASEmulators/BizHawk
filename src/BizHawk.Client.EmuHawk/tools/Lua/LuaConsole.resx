@@ -117,16 +117,1000 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="ScriptListContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>126, 17</value>
-  </metadata>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+  <data name="ClearRegisteredFunctionsLogContextItem.Text" xml:space="preserve">
+    <value>Clear Registered Functions</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator6.Name" xml:space="preserve">
+    <value>toolStripSeparator6</value>
+  </data>
+  <data name="&gt;&gt;SelectAllContextItem.Name" xml:space="preserve">
+    <value>SelectAllContextItem</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ConsoleContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 120</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator9.Name" xml:space="preserve">
+    <value>toolStripSeparator9</value>
+  </data>
+  <data name="SettingsSubMenu.Text" xml:space="preserve">
+    <value>&amp;Settings</value>
+  </data>
+  <data name="ClearConsoleMenuItem.Text" xml:space="preserve">
+    <value>&amp;Clear Output</value>
+  </data>
+  <data name="&gt;&gt;PauseScriptMenuItem.Name" xml:space="preserve">
+    <value>PauseScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;RefreshScriptToolbarItem.Name" xml:space="preserve">
+    <value>RefreshScriptToolbarItem</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel2</value>
+  </data>
+  <data name="&gt;&gt;PauseToolbarItem.Name" xml:space="preserve">
+    <value>PauseToolbarItem</value>
+  </data>
+  <data name="NumberOfScripts.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="StopAllScriptsMenuItem.Text" xml:space="preserve">
+    <value>Stop All Scripts</value>
+  </data>
+  <data name="&gt;&gt;ReloadWhenScriptFileChangesMenuItem.Name" xml:space="preserve">
+    <value>ReloadWhenScriptFileChangesMenuItem</value>
+  </data>
+  <data name="&gt;&gt;RecentSessionsSubMenu.Name" xml:space="preserve">
+    <value>RecentSessionsSubMenu</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="EditToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="toolStripButtonMoveDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="splitContainer1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>584, 270</value>
+  </data>
+  <data name="OpenSessionMenuItem.Text" xml:space="preserve">
+    <value>&amp;Open Session...</value>
+  </data>
+  <data name="&gt;&gt;ScriptListContextMenu.Name" xml:space="preserve">
+    <value>ScriptListContextMenu</value>
+  </data>
+  <data name="ToggleScriptToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="NewScriptMenuItem.Text" xml:space="preserve">
+    <value>New Script</value>
+  </data>
+  <data name="OutputBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>288, 225</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="OpenSessionMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+O</value>
+  </data>
+  <data name="ScriptSubMenu.Text" xml:space="preserve">
+    <value>&amp;Script</value>
+  </data>
+  <data name="RefreshScriptToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="OnlineDocsMenuItem.Text" xml:space="preserve">
+    <value>Documentation online...</value>
+  </data>
+  <data name="&gt;&gt;FunctionsListMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
+    <value>FileSubMenu</value>
+  </data>
+  <data name="NewSessionMenuItem.Text" xml:space="preserve">
+    <value>&amp;New Session</value>
+  </data>
+  <data name="NumberOfScripts.Text" xml:space="preserve">
+    <value>0 script     </value>
+  </data>
+  <data name="&gt;&gt;toolStripButtonMoveDown.Name" xml:space="preserve">
+    <value>toolStripButtonMoveDown</value>
+  </data>
+  <data name="&gt;&gt;ScriptSubMenu.Name" xml:space="preserve">
+    <value>ScriptSubMenu</value>
+  </data>
+  <data name="DuplicateToolbarButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;NewSessionMenuItem.Name" xml:space="preserve">
+    <value>NewSessionMenuItem</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Name" xml:space="preserve">
+    <value>splitContainer1</value>
+  </data>
+  <data name="&gt;&gt;ClearConsoleToolbarButton.Name" xml:space="preserve">
+    <value>ClearConsoleToolbarButton</value>
+  </data>
+  <data name="&gt;&gt;ClearRegisteredFunctionsContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RegisterNotePadMenuItem.Name" xml:space="preserve">
+    <value>RegisterNotePadMenuItem</value>
+  </data>
+  <data name="NewSessionMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+N</value>
+  </data>
+  <data name="MoveUpToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;RegisterSublimeText2MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ToggleScriptMenuItem.Text" xml:space="preserve">
+    <value>&amp;Toggle</value>
+  </data>
+  <data name="&gt;&gt;RecentScriptsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PauseScriptContextItem.Text" xml:space="preserve">
+    <value>Pause or Resume</value>
+  </data>
+  <data name="&gt;&gt;DisableScriptsOnLoadMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;EditScriptContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InsertSeparatorToolbarItem.Name" xml:space="preserve">
+    <value>InsertSeparatorToolbarItem</value>
+  </data>
+  <data name="RemoveScriptToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="splitContainer1.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;FunctionsListMenuItem.Name" xml:space="preserve">
+    <value>FunctionsListMenuItem</value>
+  </data>
+  <data name="&gt;&gt;MoveDownMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RefreshScriptToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="RemoveScriptMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Delete</value>
+  </data>
+  <data name="&gt;&gt;EditScriptMenuItem.Name" xml:space="preserve">
+    <value>EditScriptMenuItem</value>
+  </data>
+  <data name="DuplicateToolbarButton.Text" xml:space="preserve">
+    <value>Duplicate Script</value>
+  </data>
+  <data name="NewScriptMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+N</value>
+  </data>
+  <data name="&gt;&gt;OutputMessages.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="HelpSubMenu.Text" xml:space="preserve">
+    <value>&amp;Help</value>
+  </data>
+  <data name="InsertSeparatorMenuItem.Text" xml:space="preserve">
+    <value>Insert Separator</value>
+  </data>
+  <data name="&gt;&gt;InsertSeparatorMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;OutputMessages.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;OpenScriptToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;LuaListView.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MoveUpToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="splitContainer1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 50</value>
+  </data>
+  <data name="DuplicateToolbarButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;SaveSessionMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.Parent" xml:space="preserve">
+    <value>splitContainer1</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>584, 320</value>
+  </data>
+  <data name="MoveDownMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+D</value>
+  </data>
+  <data name="InputBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>288, 20</value>
+  </data>
+  <data name="&gt;&gt;SaveSessionAsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SaveSessionAsMenuItem.Name" xml:space="preserve">
+    <value>SaveSessionAsMenuItem</value>
+  </data>
+  <data name="RefreshScriptMenuItem.Text" xml:space="preserve">
+    <value>&amp;Re&amp;fresh</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="LuaListView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 19</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ToggleScriptContextItem.Name" xml:space="preserve">
+    <value>ToggleScriptContextItem</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.Name" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="PauseToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;StopAllScriptsContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="ToggleScriptToolbarItem.Text" xml:space="preserve">
+    <value>Toggle Script</value>
+  </data>
+  <data name="&gt;&gt;NumberOfScripts.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="&gt;&gt;SettingsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RegisterNotePadMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator7.Name" xml:space="preserve">
+    <value>toolStripSeparator7</value>
+  </data>
+  <data name="&gt;&gt;OnlineDocsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SelectAllMenuItem.Name" xml:space="preserve">
+    <value>SelectAllMenuItem</value>
+  </data>
+  <data name="toolStripButtonMoveDown.Text" xml:space="preserve">
+    <value>Move Down</value>
+  </data>
+  <data name="&gt;&gt;RegisterSublimeText2MenuItem.Name" xml:space="preserve">
+    <value>RegisterSublimeText2MenuItem</value>
+  </data>
+  <data name="&gt;&gt;RemoveScriptMenuItem.Name" xml:space="preserve">
+    <value>RemoveScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;OnlineDocsMenuItem.Name" xml:space="preserve">
+    <value>OnlineDocsMenuItem</value>
+  </data>
+  <data name="EditToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
+  <data name="OpenScriptMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+O</value>
+  </data>
+  <data name="SaveSessionAsMenuItem.Text" xml:space="preserve">
+    <value>Save Session &amp;As...</value>
+  </data>
+  <data name="&gt;&gt;HelpSubMenu.Name" xml:space="preserve">
+    <value>HelpSubMenu</value>
+  </data>
+  <data name="&gt;&gt;RecentSessionsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;EraseToolbarItem.Name" xml:space="preserve">
+    <value>EraseToolbarItem</value>
+  </data>
+  <data name="InsertSeparatorToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;ReturnAllIfNoneSelectedMenuItem.Name" xml:space="preserve">
+    <value>ReturnAllIfNoneSelectedMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NewScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="OutputBox.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;RemoveScriptContextItem.Name" xml:space="preserve">
+    <value>RemoveScriptContextItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripButtonMoveDown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PauseToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="ClearConsoleToolbarButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="OutputBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 16</value>
+  </data>
+  <data name="&gt;&gt;ConsoleContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MoveUpMenuItem.Text" xml:space="preserve">
+    <value>Move &amp;Up</value>
+  </data>
+  <data name="&gt;&gt;RegisterToTextEditorsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ClearConsoleMenuItem.Name" xml:space="preserve">
+    <value>ClearConsoleMenuItem</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>300, 270</value>
+  </data>
+  <data name="RemoveScriptContextItem.Text" xml:space="preserve">
+    <value>&amp;Remove</value>
+  </data>
+  <data name="EditScriptMenuItem.Text" xml:space="preserve">
+    <value>&amp;Edit Script</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="ClearConsoleToolbarButton.Text" xml:space="preserve">
+    <value>Clear Output</value>
+  </data>
+  <data name="NewScriptToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="InsertSeparatorMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+I</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator8.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ClearConsoleMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ClearConsoleToolbarButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;RegisteredFunctionsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InsertSeperatorContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ClearConsoleContextItem.Name" xml:space="preserve">
+    <value>ClearConsoleContextItem</value>
+  </data>
+  <data name="&gt;&gt;EditToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;OutputBox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;InputBox.Name" xml:space="preserve">
+    <value>InputBox</value>
+  </data>
+  <data name="&gt;&gt;ReturnAllIfNoneSelectedMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="NewScriptToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator7.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PauseScriptContextItem.Name" xml:space="preserve">
+    <value>PauseScriptContextItem</value>
+  </data>
+  <data name="&gt;&gt;MoveUpMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator10.Name" xml:space="preserve">
+    <value>toolStripSeparator10</value>
+  </data>
+  <data name="OpenScriptMenuItem.Text" xml:space="preserve">
+    <value>&amp;Open Script...</value>
+  </data>
+  <data name="&gt;&gt;RemoveScriptToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RegisteredFunctionsContextItem.Name" xml:space="preserve">
+    <value>RegisteredFunctionsContextItem</value>
+  </data>
+  <data name="splitContainer1.SplitterDistance" type="System.Int32, mscorlib">
+    <value>280</value>
+  </data>
+  <data name="&gt;&gt;StopAllScriptsMenuItem.Name" xml:space="preserve">
+    <value>StopAllScriptsMenuItem</value>
+  </data>
+  <data name="RegisteredFunctionsMenuItem.Text" xml:space="preserve">
+    <value>&amp;Registered Functions...</value>
+  </data>
+  <data name="&gt;&gt;DuplicateScriptMenuItem.Name" xml:space="preserve">
+    <value>DuplicateScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ClearConsoleContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;EditToolbarItem.Name" xml:space="preserve">
+    <value>EditToolbarItem</value>
+  </data>
+  <data name="&gt;&gt;NewScriptToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;NewScriptToolbarItem.Name" xml:space="preserve">
+    <value>NewScriptToolbarItem</value>
+  </data>
+  <data name="RecentSessionsSubMenu.Text" xml:space="preserve">
+    <value>Recent Sessions</value>
+  </data>
+  <data name="RegisterSublimeText2MenuItem.Text" xml:space="preserve">
+    <value>&amp;Sublime Text 2</value>
+  </data>
+  <data name="&gt;&gt;ToggleScriptToolbarItem.Name" xml:space="preserve">
+    <value>ToggleScriptToolbarItem</value>
+  </data>
+  <data name="&gt;&gt;OutputBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RichTextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CopyContextItem.Name" xml:space="preserve">
+    <value>CopyContextItem</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;OutputBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="InputBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;ToggleScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitContainer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RefreshScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ScriptContextSeparator.Name" xml:space="preserve">
+    <value>ScriptContextSeparator</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="InputBox.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Courier New, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;StopAllScriptsContextItem.Name" xml:space="preserve">
+    <value>StopAllScriptsContextItem</value>
+  </data>
+  <data name="RegisterToTextEditorsSubMenu.Text" xml:space="preserve">
+    <value>Register To Text Editors</value>
+  </data>
+  <data name="&gt;&gt;OpenScriptToolbarItem.Name" xml:space="preserve">
+    <value>OpenScriptToolbarItem</value>
+  </data>
+  <data name="&gt;&gt;MoveUpMenuItem.Name" xml:space="preserve">
+    <value>MoveUpMenuItem</value>
+  </data>
+  <data name="&gt;&gt;NumberOfScripts.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ScriptSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InsertSeparatorMenuItem.Name" xml:space="preserve">
+    <value>InsertSeparatorMenuItem</value>
+  </data>
+  <data name="&gt;&gt;NumberOfScripts.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LuaListView.Name" xml:space="preserve">
+    <value>LuaListView</value>
+  </data>
+  <data name="&gt;&gt;OpenSessionMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel1.Parent" xml:space="preserve">
+    <value>splitContainer1</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;InsertSeparatorToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EraseToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SaveSessionAsMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+S</value>
+  </data>
+  <data name="&gt;&gt;DuplicateToolbarButton.Name" xml:space="preserve">
+    <value>DuplicateToolbarButton</value>
+  </data>
+  <data name="&gt;&gt;ScriptContextSeparator.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ScriptListContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 164</value>
+  </data>
+  <data name="MoveUpToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="ClearConsoleContextItem.Text" xml:space="preserve">
+    <value>&amp;Clear</value>
+  </data>
+  <data name="EraseToolbarItem.Text" xml:space="preserve">
+    <value>Erase Stale/Stuck Lua Drawing Layers</value>
+  </data>
+  <data name="&gt;&gt;SelectAllMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="InsertSeparatorToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="StopAllScriptsContextItem.Text" xml:space="preserve">
+    <value>Stop All Scripts</value>
+  </data>
+  <data name="ToggleScriptToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator9.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator4.Name" xml:space="preserve">
+    <value>toolStripSeparator4</value>
+  </data>
+  <data name="&gt;&gt;OutputMessages.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="OpenScriptToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;PauseScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CopyContextItem.Text" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="&gt;&gt;RegisteredFunctionsContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="toolStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;ToggleScriptToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MoveDownMenuItem.Text" xml:space="preserve">
+    <value>Move &amp;Down</value>
+  </data>
+  <data name="DisableScriptsOnLoadMenuItem.Text" xml:space="preserve">
+    <value>Disable Scripts on Load</value>
+  </data>
+  <data name="SelectAllMenuItem.Text" xml:space="preserve">
+    <value>Select &amp;All</value>
+  </data>
+  <data name="SelectAllMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+A</value>
+  </data>
+  <data name="RefreshScriptToolbarItem.Text" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="&gt;&gt;DuplicateToolbarButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator5.Name" xml:space="preserve">
+    <value>toolStripSeparator5</value>
+  </data>
+  <data name="InputBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 246</value>
+  </data>
+  <data name="&gt;&gt;InsertSeperatorContextItem.Name" xml:space="preserve">
+    <value>InsertSeperatorContextItem</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>LuaConsole</value>
+  </data>
+  <data name="&gt;&gt;InputBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator5.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ToggleScriptContextItem.Text" xml:space="preserve">
+    <value>&amp;Toggle</value>
+  </data>
+  <data name="groupBox1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;ClearRegisteredFunctionsLogContextItem.Name" xml:space="preserve">
+    <value>ClearRegisteredFunctionsLogContextItem</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ReturnAllIfNoneSelectedMenuItem.Text" xml:space="preserve">
+    <value>Toggle All if None Selected</value>
+  </data>
+  <data name="InsertSeperatorContextItem.Text" xml:space="preserve">
+    <value>Insert Seperator</value>
+  </data>
+  <data name="&gt;&gt;OpenSessionMenuItem.Name" xml:space="preserve">
+    <value>OpenSessionMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
+    <value>toolStripSeparator2</value>
+  </data>
+  <data name="NewScriptToolbarItem.Text" xml:space="preserve">
+    <value>New Lua Script</value>
+  </data>
+  <data name="RegisterNotePadMenuItem.Text" xml:space="preserve">
+    <value>Notepad++</value>
+  </data>
+  <data name="SaveSessionMenuItem.Text" xml:space="preserve">
+    <value>&amp;Save Session</value>
+  </data>
+  <data name="&gt;&gt;EraseToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SplitterPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EditToolbarItem.Text" xml:space="preserve">
+    <value>Edit Script</value>
+  </data>
+  <data name="&gt;&gt;InputBox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;RegisteredFunctionsMenuItem.Name" xml:space="preserve">
+    <value>RegisteredFunctionsMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DisableScriptsOnLoadMenuItem.Name" xml:space="preserve">
+    <value>DisableScriptsOnLoadMenuItem</value>
+  </data>
+  <data name="splitContainer1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="LuaListView.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="OutputMessages.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 304</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
+    <value>toolStripSeparator3</value>
+  </data>
+  <data name="InsertSeparatorToolbarItem.Text" xml:space="preserve">
+    <value>Insert Separator</value>
+  </data>
+  <data name="&gt;&gt;RemoveScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;OpenScriptMenuItem.Name" xml:space="preserve">
+    <value>OpenScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ReloadWhenScriptFileChangesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ClearConsoleToolbarButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ConsoleContextMenu.Name" xml:space="preserve">
+    <value>ConsoleContextMenu</value>
+  </data>
+  <data name="RecentScriptsSubMenu.Text" xml:space="preserve">
+    <value>Recent Scripts</value>
+  </data>
+  <data name="&gt;&gt;SettingsSubMenu.Name" xml:space="preserve">
+    <value>SettingsSubMenu</value>
+  </data>
+  <data name="FunctionsListMenuItem.Text" xml:space="preserve">
+    <value>&amp;Lua Functions List</value>
+  </data>
+  <data name="&gt;&gt;RemoveScriptContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MoveUpToolbarItem.Text" xml:space="preserve">
+    <value>Move Up</value>
+  </data>
+  <data name="&gt;&gt;DuplicateScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="OpenScriptToolbarItem.Text" xml:space="preserve">
+    <value>Open Script</value>
+  </data>
+  <data name="&gt;&gt;OpenScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;HelpSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RefreshScriptMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F5</value>
+  </data>
+  <data name="ReloadWhenScriptFileChangesMenuItem.Text" xml:space="preserve">
+    <value>Reload When Script File Changes</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CopyContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 25</value>
+  </data>
+  <data name="&gt;&gt;RefreshScriptToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RecentScriptsSubMenu.Name" xml:space="preserve">
+    <value>RecentScriptsSubMenu</value>
+  </data>
+  <data name="&gt;&gt;OutputMessages.Name" xml:space="preserve">
+    <value>OutputMessages</value>
+  </data>
+  <data name="PauseToolbarItem.Text" xml:space="preserve">
+    <value>Pause or Resume</value>
+  </data>
+  <data name="&gt;&gt;RefreshScriptMenuItem.Name" xml:space="preserve">
+    <value>RefreshScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.Name" xml:space="preserve">
+    <value>splitContainer1.Panel2</value>
+  </data>
+  <data name="RemoveScriptMenuItem.Text" xml:space="preserve">
+    <value>&amp;Remove Script</value>
+  </data>
+  <data name="&gt;&gt;ClearRegisteredFunctionsLogContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SelectAllContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Panel2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="toolStripButtonMoveDown.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="OutputMessages.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="OutputBox.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;EditScriptMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RemoveScriptToolbarItem.Name" xml:space="preserve">
+    <value>RemoveScriptToolbarItem</value>
+  </data>
+  <data name="EraseToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NumberOfScripts.Name" xml:space="preserve">
+    <value>NumberOfScripts</value>
+  </data>
+  <data name="&gt;&gt;InputBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;MoveUpToolbarItem.Name" xml:space="preserve">
+    <value>MoveUpToolbarItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator6.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ClearRegisteredFunctionsContextItem.Text" xml:space="preserve">
+    <value>Clear Registered Functions</value>
+  </data>
+  <data name="LuaListView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="SaveSessionMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+S</value>
+  </data>
+  <data name="&gt;&gt;PauseScriptContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;splitContainer1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ToggleScriptContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;StopAllScriptsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="EditScriptMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+E</value>
+  </data>
+  <data name="&gt;&gt;ToggleScriptMenuItem.Name" xml:space="preserve">
+    <value>ToggleScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;LuaListView.Parent" xml:space="preserve">
+    <value>splitContainer1.Panel1</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="&gt;&gt;OutputBox.Name" xml:space="preserve">
+    <value>OutputBox</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>400, 169</value>
+  </data>
+  <data name="InputBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;NewSessionMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MoveUpMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+U</value>
+  </data>
+  <data name="OutputBox.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Courier New, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;LuaListView.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;PauseToolbarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="RegisteredFunctionsMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>F12</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator10.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DuplicateScriptMenuItem.Text" xml:space="preserve">
+    <value>&amp;Duplicate Script</value>
+  </data>
+  <data name="OpenScriptToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;SaveSessionMenuItem.Name" xml:space="preserve">
+    <value>SaveSessionMenuItem</value>
+  </data>
+  <data name="&gt;&gt;NewScriptMenuItem.Name" xml:space="preserve">
+    <value>NewScriptMenuItem</value>
+  </data>
+  <data name="&gt;&gt;EditScriptContextItem.Name" xml:space="preserve">
+    <value>EditScriptContextItem</value>
+  </data>
+  <data name="&gt;&gt;RegisterToTextEditorsSubMenu.Name" xml:space="preserve">
+    <value>RegisterToTextEditorsSubMenu</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ClearRegisteredFunctionsContextItem.Name" xml:space="preserve">
+    <value>ClearRegisteredFunctionsContextItem</value>
+  </data>
+  <data name="FunctionsListMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F1</value>
+  </data>
+  <data name="RemoveScriptToolbarItem.Text" xml:space="preserve">
+    <value>Remove Script</value>
+  </data>
+  <data name="RegisteredFunctionsContextItem.Text" xml:space="preserve">
+    <value>&amp;Registered Functions</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator8.Name" xml:space="preserve">
+    <value>toolStripSeparator8</value>
+  </data>
+  <data name="&gt;&gt;ScriptListContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="LuaListView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>273, 245</value>
+  </data>
+  <data name="OutputBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="SelectAllContextItem.Text" xml:space="preserve">
+    <value>Select &amp;All</value>
+  </data>
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="EditScriptContextItem.Text" xml:space="preserve">
+    <value>&amp;Edit</value>
+  </data>
+  <data name="ToggleScriptMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+T</value>
+  </data>
+  <data name="&gt;&gt;MoveDownMenuItem.Name" xml:space="preserve">
+    <value>MoveDownMenuItem</value>
+  </data>
+  <data name="PauseScriptMenuItem.Text" xml:space="preserve">
+    <value>Pause or Resume</value>
+  </data>
+  <data name="RemoveScriptToolbarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="OutputMessages.Text" xml:space="preserve">
+    <value>                                 </value>
+  </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
   <metadata name="ConsoleContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>333, 17</value>
   </metadata>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>228, 17</value>
+  </metadata>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="ScriptListContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>126, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
 </root>

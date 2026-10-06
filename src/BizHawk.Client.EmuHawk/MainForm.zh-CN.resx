@@ -1,0 +1,739 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="OpenRomMenuItem.Text" xml:space="preserve">
+    <value>打开 ROM（O）</value>
+  </data>
+  <data name="RecentRomSubMenu.Text" xml:space="preserve">
+    <value>历史（&amp;R）</value>
+  </data>
+  <data name="OpenAdvancedMenuItem.Text" xml:space="preserve">
+    <value>高级打开（&amp;V）</value>
+  </data>
+  <data name="CloseRomMenuItem.Text" xml:space="preserve">
+    <value>关闭 ROM（&amp;C）</value>
+  </data>
+  <data name="SaveNamedStateMenuItem.Text" xml:space="preserve">
+    <value>将进度另存为</value>
+  </data>
+  <data name="AutosaveLastSlotMenuItem.Text" xml:space="preserve">
+    <value>自动存入上个进度槽</value>
+  </data>
+  <data name="SaveStateSubMenu.Text" xml:space="preserve">
+    <value>保存进度（&amp;S）</value>
+  </data>
+  <data name="LoadNamedStateMenuItem.Text" xml:space="preserve">
+    <value>加载指定进度</value>
+  </data>
+  <data name="AutoloadLastSlotMenuItem.Text" xml:space="preserve">
+    <value>自动加载上个进度槽</value>
+  </data>
+  <data name="LoadStateSubMenu.Text" xml:space="preserve">
+    <value>加载进度（&amp;L）</value>
+  </data>
+  <data name="SelectSlot1MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 1</value>
+  </data>
+  <data name="SelectSlot2MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 2</value>
+  </data>
+  <data name="SelectSlot3MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 3</value>
+  </data>
+  <data name="SelectSlot4MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 4</value>
+  </data>
+  <data name="SelectSlot5MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 5</value>
+  </data>
+  <data name="SelectSlot6MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 6</value>
+  </data>
+  <data name="SelectSlot7MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 7</value>
+  </data>
+  <data name="SelectSlot8MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 8</value>
+  </data>
+  <data name="SelectSlot9MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 9</value>
+  </data>
+  <data name="SelectSlot0MenuItem.Text" xml:space="preserve">
+    <value>选择进度槽 10</value>
+  </data>
+  <data name="PreviousSlotMenuItem.Text" xml:space="preserve">
+    <value>前一个进度槽</value>
+  </data>
+  <data name="NextSlotMenuItem.Text" xml:space="preserve">
+    <value>后一个进度槽</value>
+  </data>
+  <data name="SaveToCurrentSlotMenuItem.Text" xml:space="preserve">
+    <value>存入当前进度槽</value>
+  </data>
+  <data name="LoadCurrentSlotMenuItem.Text" xml:space="preserve">
+    <value>加载当前进度槽</value>
+  </data>
+  <data name="SaveSlotSubMenu.Text" xml:space="preserve">
+    <value>进度槽(&amp;L)</value>
+  </data>
+  <data name="FlushSaveRAMMenuItem.Text" xml:space="preserve">
+    <value>冲刷保存 RAM（&amp;F）</value>
+  </data>
+  <data name="SaveRAMSubMenu.Text" xml:space="preserve">
+    <value>保存 RAM（&amp;R）</value>
+  </data>
+  <data name="ReadonlyMenuItem.Text" xml:space="preserve">
+    <value>只读</value>
+  </data>
+  <data name="RecentMovieSubMenu.Text" xml:space="preserve">
+    <value>历史</value>
+  </data>
+  <data name="RecordMovieMenuItem.Text" xml:space="preserve">
+    <value>录制影片（&amp;R）</value>
+  </data>
+  <data name="PlayMovieMenuItem.Text" xml:space="preserve">
+    <value>播放影片（&amp;P）</value>
+  </data>
+  <data name="StopMovieMenuItem.Text" xml:space="preserve">
+    <value>停止播放</value>
+  </data>
+  <data name="PlayFromBeginningMenuItem.Text" xml:space="preserve">
+    <value>从头播放</value>
+  </data>
+  <data name="SaveMovieMenuItem.Text" xml:space="preserve">
+    <value>保存影片（&amp;S）</value>
+  </data>
+  <data name="SaveMovieAsMenuItem.Text" xml:space="preserve">
+    <value>影片另存为</value>
+  </data>
+  <data name="StopMovieWithoutSavingMenuItem.Text" xml:space="preserve">
+    <value>停止播放且不保存</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="toolStripSeparator25.Size" type="System.Drawing.Size, System.Drawing">
+    <value>181, 6</value>
+  </data>
+  <data name="ImportMoviesMenuItem.Text" xml:space="preserve">
+    <value>导入影片</value>
+  </data>
+  <data name="AutomaticallyBackupMoviesMenuItem.Text" xml:space="preserve">
+    <value>自动备份影片</value>
+  </data>
+  <data name="FullMovieLoadstatesMenuItem.Text" xml:space="preserve">
+    <value>完整的影片加载状态</value>
+  </data>
+  <data name="MovieEndFinishMenuItem.Text" xml:space="preserve">
+    <value>切换到完成</value>
+  </data>
+  <data name="MovieEndRecordMenuItem.Text" xml:space="preserve">
+    <value>切换到录制</value>
+  </data>
+  <data name="MovieEndStopMenuItem.Text" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="MovieEndPauseMenuItem.Text" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+  <data name="toolStripSeparator32.Size" type="System.Drawing.Size, System.Drawing">
+    <value>133, 6</value>
+  </data>
+  <data name="MovieEndPlaySoundMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 22</value>
+  </data>
+  <data name="MovieEndPlaySoundMenuItem.Text" xml:space="preserve">
+    <value>播放声音</value>
+  </data>
+  <data name="MovieEndSubMenu.Text" xml:space="preserve">
+    <value>影片结束时</value>
+  </data>
+  <data name="MovieSubMenu.Text" xml:space="preserve">
+    <value>影片（&amp;M）</value>
+  </data>
+  <data name="RecordAVMenuItem.Text" xml:space="preserve">
+    <value>开始录制（&amp;R）</value>
+  </data>
+  <data name="ConfigAndRecordAVMenuItem.Text" xml:space="preserve">
+    <value>配置并开始录制</value>
+  </data>
+  <data name="StopAVMenuItem.Text" xml:space="preserve">
+    <value>停止录制（&amp;S）</value>
+  </data>
+  <data name="CaptureOSDMenuItem.Text" xml:space="preserve">
+    <value>捕获 OSD</value>
+  </data>
+  <data name="CaptureLuaMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="CaptureLuaMenuItem.Text" xml:space="preserve">
+    <value>捕获 Lua</value>
+  </data>
+  <data name="SynclessRecordingMenuItem.Text" xml:space="preserve">
+    <value>异步录制工具（&amp;Y）</value>
+  </data>
+  <data name="AVSubMenu.Text" xml:space="preserve">
+    <value>&amp;AVI/WAV 录制</value>
+  </data>
+  <data name="ScreenshotMenuItem.Text" xml:space="preserve">
+    <value>截图</value>
+  </data>
+  <data name="ScreenshotAsMenuItem.Text" xml:space="preserve">
+    <value>截图另存为</value>
+  </data>
+  <data name="ScreenshotClipboardMenuItem.Text" xml:space="preserve">
+    <value>截图（从模拟器显存）到剪切板</value>
+  </data>
+  <data name="ScreenshotClientClipboardMenuItem.Text" xml:space="preserve">
+    <value>截图（从屏幕）到剪切板</value>
+  </data>
+  <data name="ScreenshotCaptureOSDMenuItem1.Text" xml:space="preserve">
+    <value>捕获 OSD</value>
+  </data>
+  <data name="ScreenshotSubMenu.Text" xml:space="preserve">
+    <value>截图（&amp;N）</value>
+  </data>
+  <data name="ExitMenuItem.Text" xml:space="preserve">
+    <value>退出(&amp;X)</value>
+  </data>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>文件（&amp;F）</value>
+  </data>
+  <data name="PauseMenuItem.Text" xml:space="preserve">
+    <value>暂停（&amp;P）</value>
+  </data>
+  <data name="RebootCoreMenuItem.Text" xml:space="preserve">
+    <value>重启内核（&amp;R）</value>
+  </data>
+  <data name="SoftResetMenuItem.Text" xml:space="preserve">
+    <value>软重启（&amp;S）</value>
+  </data>
+  <data name="HardResetMenuItem.Text" xml:space="preserve">
+    <value>硬重启（&amp;H）</value>
+  </data>
+  <data name="EmulationSubMenu.Text" xml:space="preserve">
+    <value>模拟（&amp;E）</value>
+  </data>
+  <data name="WindowSizeSubMenu.Text" xml:space="preserve">
+    <value>窗口大小（&amp;W）</value>
+  </data>
+  <data name="SwitchToFullscreenMenuItem.Text" xml:space="preserve">
+    <value>切换至全屏</value>
+  </data>
+  <data name="DisplayFPSMenuItem.Text" xml:space="preserve">
+    <value>显示帧率</value>
+  </data>
+  <data name="DisplayFrameCounterMenuItem.Text" xml:space="preserve">
+    <value>显示帧数</value>
+  </data>
+  <data name="DisplayLagCounterMenuItem.Text" xml:space="preserve">
+    <value>显示延迟帧数</value>
+  </data>
+  <data name="DisplayInputMenuItem.Text" xml:space="preserve">
+    <value>显示帧数</value>
+  </data>
+  <data name="DisplayRerecordCountMenuItem.Text" xml:space="preserve">
+    <value>显示重录次数</value>
+  </data>
+  <data name="DisplaySubtitlesMenuItem.Text" xml:space="preserve">
+    <value>显示字幕</value>
+  </data>
+  <data name="DisplayStatusBarMenuItem.Text" xml:space="preserve">
+    <value>显示状态栏</value>
+  </data>
+  <data name="DisplayMessagesMenuItem.Text" xml:space="preserve">
+    <value>显示消息</value>
+  </data>
+  <data name="DisplayLogWindowMenuItem.Text" xml:space="preserve">
+    <value>打开日志窗口（&amp;L）</value>
+  </data>
+  <data name="ViewSubMenu.Text" xml:space="preserve">
+    <value>视图（&amp;V）</value>
+  </data>
+  <data name="ControllersMenuItem.Text" xml:space="preserve">
+    <value>控制器（&amp;C）</value>
+  </data>
+  <data name="HotkeysMenuItem.Text" xml:space="preserve">
+    <value>快捷键（&amp;H）</value>
+  </data>
+  <data name="DisplayConfigMenuItem.Text" xml:space="preserve">
+    <value>显示</value>
+  </data>
+  <data name="SoundMenuItem.Text" xml:space="preserve">
+    <value>声音（&amp;S）</value>
+  </data>
+  <data name="PathsMenuItem.Text" xml:space="preserve">
+    <value>路径</value>
+  </data>
+  <data name="FirmwareMenuItem.Text" xml:space="preserve">
+    <value>固件（&amp;F）</value>
+  </data>
+  <data name="MessagesMenuItem.Text" xml:space="preserve">
+    <value>屏显消息（&amp;M）</value>
+  </data>
+  <data name="AutofireMenuItem.Text" xml:space="preserve">
+    <value>连发（&amp;A）</value>
+  </data>
+  <data name="RewindOptionsMenuItem.Text" xml:space="preserve">
+    <value>倒带与进度（&amp;R）</value>
+  </data>
+  <data name="extensionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>文件扩展名</value>
+  </data>
+  <data name="ClientOptionsMenuItem.Text" xml:space="preserve">
+    <value>定制选项（&amp;C）</value>
+  </data>
+  <data name="ProfilesMenuItem.Text" xml:space="preserve">
+    <value>配置文件选项（&amp;P）</value>
+  </data>
+  <data name="ClockThrottleMenuItem.Text" xml:space="preserve">
+    <value>时钟限制</value>
+  </data>
+  <data name="AudioThrottleMenuItem.Text" xml:space="preserve">
+    <value>音频限制</value>
+  </data>
+  <data name="VsyncThrottleMenuItem.Text" xml:space="preserve">
+    <value>垂直同步限制</value>
+  </data>
+  <data name="VsyncEnabledMenuItem.Text" xml:space="preserve">
+    <value>启用垂直同步</value>
+  </data>
+  <data name="miUnthrottled.Text" xml:space="preserve">
+    <value>不限制</value>
+  </data>
+  <data name="MinimizeSkippingMenuItem.Text" xml:space="preserve">
+    <value>自动最少跳帧</value>
+  </data>
+  <data name="NeverSkipMenuItem.Text" xml:space="preserve">
+    <value>不跳帧</value>
+  </data>
+  <data name="toolStripMenuItem17.Text" xml:space="preserve">
+    <value>跳过 1 至 9 帧</value>
+  </data>
+  <data name="Speed50MenuItem.Text" xml:space="preserve">
+    <value>0.5 倍速</value>
+  </data>
+  <data name="Speed75MenuItem.Text" xml:space="preserve">
+    <value>0.75 倍速</value>
+  </data>
+  <data name="Speed100MenuItem.Text" xml:space="preserve">
+    <value>1 倍速</value>
+  </data>
+  <data name="Speed150MenuItem.Text" xml:space="preserve">
+    <value>1.5 倍速</value>
+  </data>
+  <data name="Speed200MenuItem.Text" xml:space="preserve">
+    <value>2 倍速</value>
+  </data>
+  <data name="Speed400MenuItem.Text" xml:space="preserve">
+    <value>4 倍速</value>
+  </data>
+  <data name="SpeedSkipSubMenu.Text" xml:space="preserve">
+    <value>速度/跳帧</value>
+  </data>
+  <data name="BothHkAndControllerMenuItem.Text" xml:space="preserve">
+    <value>输入与快捷键同级</value>
+  </data>
+  <data name="InputOverHkMenuItem.Text" xml:space="preserve">
+    <value>输入优先于快捷键</value>
+  </data>
+  <data name="HkOverInputMenuItem.Text" xml:space="preserve">
+    <value>快捷键优先于输入</value>
+  </data>
+  <data name="KeyPrioritySubMenu.Text" xml:space="preserve">
+    <value>按键优先级</value>
+  </data>
+  <data name="CoresSubMenu.Text" xml:space="preserve">
+    <value>首选内核</value>
+  </data>
+  <data name="SaveConfigMenuItem.Text" xml:space="preserve">
+    <value>保存配置</value>
+  </data>
+  <data name="SaveConfigAsMenuItem.Text" xml:space="preserve">
+    <value>将配置另存为</value>
+  </data>
+  <data name="LoadConfigMenuItem.Text" xml:space="preserve">
+    <value>加载配置</value>
+  </data>
+  <data name="LoadConfigFromMenuItem.Text" xml:space="preserve">
+    <value>加载指定配置</value>
+  </data>
+  <data name="ConfigSubMenu.Text" xml:space="preserve">
+    <value>配置（&amp;C）</value>
+  </data>
+  <data name="ToolBoxMenuItem.Text" xml:space="preserve">
+    <value>工具箱（&amp;T）</value>
+  </data>
+  <data name="RamWatchMenuItem.Text" xml:space="preserve">
+    <value>监视 RAM（&amp;W）</value>
+  </data>
+  <data name="RamSearchMenuItem.Text" xml:space="preserve">
+    <value>搜索 RAM（&amp;S）</value>
+  </data>
+  <data name="LuaConsoleMenuItem.Text" xml:space="preserve">
+    <value>Lua 控制台</value>
+  </data>
+  <data name="HexEditorMenuItem.Text" xml:space="preserve">
+    <value>十六进制编辑器（&amp;H）</value>
+  </data>
+  <data name="TraceLoggerMenuItem.Text" xml:space="preserve">
+    <value>跟踪记录器（&amp;L）</value>
+  </data>
+  <data name="DebuggerMenuItem.Text" xml:space="preserve">
+    <value>调试器（&amp;D）</value>
+  </data>
+  <data name="CodeDataLoggerMenuItem.Text" xml:space="preserve">
+    <value>代码数据记录器</value>
+  </data>
+  <data name="MacroToolMenuItem.Text" xml:space="preserve">
+    <value>宏工具（&amp;M）</value>
+  </data>
+  <data name="VirtualPadMenuItem.Text" xml:space="preserve">
+    <value>虚拟手柄</value>
+  </data>
+  <data name="BasicBotMenuItem.Text" xml:space="preserve">
+    <value>基础智能机器人</value>
+  </data>
+  <data name="CheatsMenuItem.Text" xml:space="preserve">
+    <value>作弊码</value>
+  </data>
+  <data name="GameSharkConverterMenuItem.Text" xml:space="preserve">
+    <value>作弊码转换器</value>
+  </data>
+  <data name="MultiDiskBundlerFileMenuItem.Text" xml:space="preserve">
+    <value>多碟绑定</value>
+  </data>
+  <data name="BatchRunnerMenuItem.Text" xml:space="preserve">
+    <value>批处理工具</value>
+  </data>
+  <data name="dummyExternalTool.Text" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="ExternalToolMenuItem.Text" xml:space="preserve">
+    <value>扩展工具</value>
+  </data>
+  <data name="StartRetroAchievementsMenuItem.Text" xml:space="preserve">
+    <value>打开 RetroAchievements （&amp;S）</value>
+  </data>
+  <data name="ToolsSubMenu.Text" xml:space="preserve">
+    <value>工具（&amp;T）</value>
+  </data>
+  <data name="NESPPUViewerMenuItem.Text" xml:space="preserve">
+    <value>查看 PPU（&amp;P）</value>
+  </data>
+  <data name="NESNametableViewerMenuItem.Text" xml:space="preserve">
+    <value>查看命名表（&amp;N）</value>
+  </data>
+  <data name="MusicRipperMenuItem.Text" xml:space="preserve">
+    <value>音频提取器</value>
+  </data>
+  <data name="NesControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>控制器</value>
+  </data>
+  <data name="NESGraphicSettingsMenuItem.Text" xml:space="preserve">
+    <value>图像</value>
+  </data>
+  <data name="NESSoundChannelsMenuItem.Text" xml:space="preserve">
+    <value>声音</value>
+  </data>
+  <data name="VSSettingsMenuItem.Text" xml:space="preserve">
+    <value>VS街机设置</value>
+  </data>
+  <data name="MovieSettingsMenuItem.Text" xml:space="preserve">
+    <value>高级设置</value>
+  </data>
+  <data name="FdsEjectDiskMenuItem.Text" xml:space="preserve">
+    <value>弹出磁碟（&amp;E）</value>
+  </data>
+  <data name="FDSControlsMenuItem.Text" xml:space="preserve">
+    <value>磁碟机控制</value>
+  </data>
+  <data name="VSInsertCoinP1MenuItem.Text" xml:space="preserve">
+    <value>P1 投币</value>
+  </data>
+  <data name="VSInsertCoinP2MenuItem.Text" xml:space="preserve">
+    <value>P2 投币</value>
+  </data>
+  <data name="VSServiceSwitchMenuItem.Text" xml:space="preserve">
+    <value>服务开关</value>
+  </data>
+  <data name="VSControlsMenuItem.Text" xml:space="preserve">
+    <value>VS街机控制</value>
+  </data>
+  <data name="BarcodeReaderMenuItem.Text" xml:space="preserve">
+    <value>条码读取器</value>
+  </data>
+  <data name="KeypadMenuItem.Text" xml:space="preserve">
+    <value>键盘</value>
+  </data>
+  <data name="LoadTIFileMenuItem.Text" xml:space="preserve">
+    <value>加载 TI-83 文件</value>
+  </data>
+  <data name="paletteToolStripMenuItem.Text" xml:space="preserve">
+    <value>调色板</value>
+  </data>
+  <data name="A7800ControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>控制器</value>
+  </data>
+  <data name="A7800FilterSettingsMenuItem.Text" xml:space="preserve">
+    <value>滤镜设置</value>
+  </data>
+  <data name="GBcoreSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="SameBoyColorChooserMenuItem.Text" xml:space="preserve">
+    <value>自定义调色板（&amp;C）</value>
+  </data>
+  <data name="GBGPUViewerMenuItem.Text" xml:space="preserve">
+    <value>查看 GPU</value>
+  </data>
+  <data name="GBPrinterViewerMenuItem.Text" xml:space="preserve">
+    <value>GB 打印机视图（&amp;P）</value>
+  </data>
+  <data name="PSXControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>控制器/记忆卡</value>
+  </data>
+  <data name="PSXOptionsMenuItem.Text" xml:space="preserve">
+    <value>选项（&amp;O）</value>
+  </data>
+  <data name="PSXDiscControlsMenuItem.Text" xml:space="preserve">
+    <value>光盘控制（&amp;D）</value>
+  </data>
+  <data name="PSXHashDiscsToolStripMenuItem.Text" xml:space="preserve">
+    <value>计算光盘的哈希（&amp;H）</value>
+  </data>
+  <data name="SNESControllerConfigurationMenuItem.Text" xml:space="preserve">
+    <value>控制器</value>
+  </data>
+  <data name="SnesGfxDebuggerMenuItem.Text" xml:space="preserve">
+    <value>图像调试器</value>
+  </data>
+  <data name="SnesOptionsMenuItem.Text" xml:space="preserve">
+    <value>选项（&amp;O）</value>
+  </data>
+  <data name="ColecoControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>控制器（&amp;C）</value>
+  </data>
+  <data name="ColecoSkipBiosMenuItem.Text" xml:space="preserve">
+    <value>尝试跳过 BIOS 介绍（&amp;S）</value>
+  </data>
+  <data name="ColecoUseSGMMenuItem.Text" xml:space="preserve">
+    <value>使用超级游戏模块（&amp;U）</value>
+  </data>
+  <data name="N64PluginSettingsMenuItem.Text" xml:space="preserve">
+    <value>插件</value>
+  </data>
+  <data name="N64ControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>控制器</value>
+  </data>
+  <data name="N64CircularAnalogRangeMenuItem.Text" xml:space="preserve">
+    <value>循环摇杆范围</value>
+  </data>
+  <data name="MupenStyleLagMenuItem.Text" xml:space="preserve">
+    <value>Mupen 风格延迟帧（&amp;M）</value>
+  </data>
+  <data name="N64ExpansionSlotMenuItem.Text" xml:space="preserve">
+    <value>使用扩展插槽（&amp;U）</value>
+  </data>
+  <data name="Ares64SettingsMenuItem.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="Ares64CircularAnalogRangeMenuItem.Text" xml:space="preserve">
+    <value>循环摇杆范围</value>
+  </data>
+  <data name="GBLsettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="AppleDisksSubMenu.Text" xml:space="preserve">
+    <value>磁碟</value>
+  </data>
+  <data name="settingsToolStripMenuItem1.Text" xml:space="preserve">
+    <value>设置（&amp;S）</value>
+  </data>
+  <data name="C64DisksSubMenu.Text" xml:space="preserve">
+    <value>磁碟</value>
+  </data>
+  <data name="C64SettingsMenuItem.Text" xml:space="preserve">
+    <value>设置（&amp;S）</value>
+  </data>
+  <data name="IntVControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>控制器</value>
+  </data>
+  <data name="ZXSpectrumCoreEmulationSettingsMenuItem.Text" xml:space="preserve">
+    <value>内核模拟设置</value>
+  </data>
+  <data name="ZXSpectrumControllerConfigurationMenuItem.Text" xml:space="preserve">
+    <value>摇杆设置</value>
+  </data>
+  <data name="ZXSpectrumAudioSettingsMenuItem.Text" xml:space="preserve">
+    <value>音频设置</value>
+  </data>
+  <data name="ZXSpectrumNonSyncSettingsMenuItem.Text" xml:space="preserve">
+    <value>非同步设置</value>
+  </data>
+  <data name="ZXSpectrumTapesSubMenu.Text" xml:space="preserve">
+    <value>磁带</value>
+  </data>
+  <data name="ZXSpectrumDisksSubMenu.Text" xml:space="preserve">
+    <value>磁碟</value>
+  </data>
+  <data name="ZXSpectrumExportSnapshotMenuItemMenuItem.Text" xml:space="preserve">
+    <value>扩展插槽</value>
+  </data>
+  <data name="ZXSpectrumMediaMenuItem.Text" xml:space="preserve">
+    <value>媒体</value>
+  </data>
+  <data name="amstradCPCCoreEmulationSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>内核模拟设置</value>
+  </data>
+  <data name="AmstradCPCAudioSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>音频设置</value>
+  </data>
+  <data name="AmstradCPCNonSyncSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>非同步设置</value>
+  </data>
+  <data name="AmstradCPCTapesSubMenu.Text" xml:space="preserve">
+    <value>磁带</value>
+  </data>
+  <data name="AmstradCPCDisksSubMenu.Text" xml:space="preserve">
+    <value>磁碟</value>
+  </data>
+  <data name="AmstradCPCMediaToolStripMenuItem.Text" xml:space="preserve">
+    <value>媒体</value>
+  </data>
+  <data name="OnlineHelpMenuItem.Text" xml:space="preserve">
+    <value>在浏览器打开 TASVideos 百科</value>
+  </data>
+  <data name="ForumsMenuItem.Text" xml:space="preserve">
+    <value>在浏览器打开论坛</value>
+  </data>
+  <data name="FeaturesMenuItem.Text" xml:space="preserve">
+    <value>特性（&amp;F）</value>
+  </data>
+  <data name="AboutMenuItem.Text" xml:space="preserve">
+    <value>关于（&amp;A）</value>
+  </data>
+  <data name="HelpSubMenu.Text" xml:space="preserve">
+    <value>帮助（&amp;H）</value>
+  </data>
+  <data name="SaveSlotsStatusLabel.Text" xml:space="preserve">
+    <value>进度槽</value>
+  </data>
+  <data name="UpdateNotification.Text" xml:space="preserve">
+    <value>可更新！</value>
+  </data>
+</root>

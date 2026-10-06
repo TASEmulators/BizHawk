@@ -138,5 +138,18 @@ namespace BizHawk.Client.EmuHawk
 		public virtual void HandleHotkeyUpdate() { }
 
 		public virtual void OnPauseToggle(bool newPauseState) { }
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ToolFormBase));
+            this.SuspendLayout();
+            // 
+            // ToolFormBase
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "ToolFormBase";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

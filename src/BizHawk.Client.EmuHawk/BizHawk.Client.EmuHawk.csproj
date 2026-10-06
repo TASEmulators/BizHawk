@@ -13,6 +13,23 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
+	
+	<!-- 本项目文件夹路径和命名空间不严格匹配，为了本地化，我们需要特别处理本地化 resx 文件的 LogicalName 。 -->
+	<!-- folder path and namespace of this project are not strictly matched. In order to localize, we need to specially handle the LogicalName of the localized resx file. -->
+	<ItemGroup>
+		<!-- 第一步：先移除所有自动探测的 zh-CN.resx，消除自动生成冲突 -->
+		<!-- We should first remove all the auto-detected zh-CN.resx to eliminate the auto-generation conflict.-->
+		<EmbeddedResource Remove="**\*.zh-CN.resx" />
+		<!-- 第二步：重新手动包含所有 tools 下嵌套的 zh-CN.resx 并重新指定 LogicalName 和 ManifestResourceName-->
+		<!-- Then manually include them again and reset LogicalName and ManifestResourceName.-->
+		<EmbeddedResource Include="**\*.zh-CN.resx">
+			<LogicalName>BizHawk.Client.EmuHawk.%(Filename).resources</LogicalName>
+			<ManifestResourceName>BizHawk.Client.EmuHawk.%(Filename)._zh_CN</ManifestResourceName>
+			<!-- 使用正则获取文件名主干 Use regex to get file name trunk. -->
+			<DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '\.zh-CN$', '')).cs</DependentUpon>
+		</EmbeddedResource>
+	</ItemGroup>
+		
 	<ItemGroup>
 		<Reference Include="PresentationFramework" />
 	</ItemGroup>
@@ -506,8 +523,5 @@
 		<Compile Update="tools/Watch/WatchEditor.cs" SubType="Form" />
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="TheLocalization\" />
 	</ItemGroup>
 </Project>

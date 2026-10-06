@@ -30,135 +30,102 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.btnClose = new System.Windows.Forms.Button();
-			this.btnClear = new System.Windows.Forms.Button();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.buttonCopy = new System.Windows.Forms.Button();
-			this.buttonCopyAll = new System.Windows.Forms.Button();
-			this.AddToGameDbBtn = new System.Windows.Forms.Button();
-			this.virtualListView1 = new System.Windows.Forms.ListView();
-			this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-			this.MenuStrip = new MenuStripEx();
-			this.tableLayoutPanel1.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// btnClose
-			// 
-			this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnClose.Location = new System.Drawing.Point(597, 3);
-			this.btnClose.Name = "btnClose";
-			this.btnClose.Size = new System.Drawing.Size(75, 24);
-			this.btnClose.TabIndex = 2;
-			this.btnClose.Text = "Close";
-			this.btnClose.UseVisualStyleBackColor = true;
-			this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
-			// 
-			// btnClear
-			// 
-			this.btnClear.Location = new System.Drawing.Point(3, 3);
-			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(75, 24);
-			this.btnClear.TabIndex = 1;
-			this.btnClear.Text = "&Clear";
-			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
-			// 
-			// tableLayoutPanel1
-			// 
-			this.tableLayoutPanel1.AutoSize = true;
-			this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.tableLayoutPanel1.ColumnCount = 5;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tableLayoutPanel1.Controls.Add(this.btnClear, 0, 0);
-			this.tableLayoutPanel1.Controls.Add(this.btnClose, 4, 0);
-			this.tableLayoutPanel1.Controls.Add(this.buttonCopy, 1, 0);
-			this.tableLayoutPanel1.Controls.Add(this.buttonCopyAll, 2, 0);
-			this.tableLayoutPanel1.Controls.Add(this.AddToGameDbBtn, 3, 0);
-			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 367);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(675, 30);
-			this.tableLayoutPanel1.TabIndex = 5;
-			// 
-			// buttonCopy
-			// 
-			this.buttonCopy.Location = new System.Drawing.Point(84, 3);
-			this.buttonCopy.Name = "buttonCopy";
-			this.buttonCopy.Size = new System.Drawing.Size(75, 24);
-			this.buttonCopy.TabIndex = 3;
-			this.buttonCopy.Text = "Copy Sel.";
-			this.buttonCopy.UseVisualStyleBackColor = true;
-			this.buttonCopy.Click += new System.EventHandler(this.ButtonCopy_Click);
-			// 
-			// buttonCopyAll
-			// 
-			this.buttonCopyAll.Location = new System.Drawing.Point(165, 3);
-			this.buttonCopyAll.Name = "buttonCopyAll";
-			this.buttonCopyAll.Size = new System.Drawing.Size(75, 24);
-			this.buttonCopyAll.TabIndex = 4;
-			this.buttonCopyAll.Text = "Copy All";
-			this.buttonCopyAll.UseVisualStyleBackColor = true;
-			this.buttonCopyAll.Click += new System.EventHandler(this.ButtonCopyAll_Click);
-			// 
-			// AddToGameDbBtn
-			// 
-			this.AddToGameDbBtn.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.AddToGameDbBtn.Location = new System.Drawing.Point(246, 3);
-			this.AddToGameDbBtn.Name = "AddToGameDbBtn";
-			this.AddToGameDbBtn.Size = new System.Drawing.Size(109, 24);
-			this.AddToGameDbBtn.TabIndex = 5;
-			this.AddToGameDbBtn.Text = "Add to database";
-			this.AddToGameDbBtn.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.AddToGameDbBtn.UseVisualStyleBackColor = true;
-			this.AddToGameDbBtn.Click += new System.EventHandler(this.AddToGameDbBtn_Click);
-			// 
-			// virtualListView1
-			// 
-			this.virtualListView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LogWindow));
+            this.btnClose = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.buttonCopy = new System.Windows.Forms.Button();
+            this.buttonCopyAll = new System.Windows.Forms.Button();
+            this.AddToGameDbBtn = new System.Windows.Forms.Button();
+            this.virtualListView1 = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.MenuStrip = new BizHawk.WinForms.Controls.MenuStripEx();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // btnClose
+            // 
+            resources.ApplyResources(this.btnClose, "btnClose");
+            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnClose.Name = "btnClose";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.BtnClose_Click);
+            // 
+            // btnClear
+            // 
+            resources.ApplyResources(this.btnClear, "btnClear");
+            this.btnClear.Name = "btnClear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
+            // 
+            // tableLayoutPanel1
+            // 
+            resources.ApplyResources(this.tableLayoutPanel1, "tableLayoutPanel1");
+            this.tableLayoutPanel1.Controls.Add(this.btnClear, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.btnClose, 4, 0);
+            this.tableLayoutPanel1.Controls.Add(this.buttonCopy, 1, 0);
+            this.tableLayoutPanel1.Controls.Add(this.buttonCopyAll, 2, 0);
+            this.tableLayoutPanel1.Controls.Add(this.AddToGameDbBtn, 3, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            // 
+            // buttonCopy
+            // 
+            resources.ApplyResources(this.buttonCopy, "buttonCopy");
+            this.buttonCopy.Name = "buttonCopy";
+            this.buttonCopy.UseVisualStyleBackColor = true;
+            this.buttonCopy.Click += new System.EventHandler(this.ButtonCopy_Click);
+            // 
+            // buttonCopyAll
+            // 
+            resources.ApplyResources(this.buttonCopyAll, "buttonCopyAll");
+            this.buttonCopyAll.Name = "buttonCopyAll";
+            this.buttonCopyAll.UseVisualStyleBackColor = true;
+            this.buttonCopyAll.Click += new System.EventHandler(this.ButtonCopyAll_Click);
+            // 
+            // AddToGameDbBtn
+            // 
+            resources.ApplyResources(this.AddToGameDbBtn, "AddToGameDbBtn");
+            this.AddToGameDbBtn.Name = "AddToGameDbBtn";
+            this.AddToGameDbBtn.UseVisualStyleBackColor = true;
+            this.AddToGameDbBtn.Click += new System.EventHandler(this.AddToGameDbBtn_Click);
+            // 
+            // virtualListView1
+            // 
+            resources.ApplyResources(this.virtualListView1, "virtualListView1");
+            this.virtualListView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
-			this.virtualListView1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.virtualListView1.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.virtualListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-			this.virtualListView1.HideSelection = false;
-			this.virtualListView1.Location = new System.Drawing.Point(0, 24);
-			this.virtualListView1.Name = "virtualListView1";
-			this.virtualListView1.Size = new System.Drawing.Size(675, 343);
-			this.virtualListView1.TabIndex = 8;
-			this.virtualListView1.UseCompatibleStateImageBehavior = false;
-			this.virtualListView1.View = System.Windows.Forms.View.Details;
-			this.virtualListView1.VirtualMode = true;
-			this.virtualListView1.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ListView_QueryItemText);
-			this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.ListView_ClientSizeChanged);
-			this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListView_KeyDown);
-			// 
-			// MenuStrip
-			// 
-			this.MenuStrip.TabIndex = 9;
-			// 
-			// LogWindow
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.btnClose;
-			this.ClientSize = new System.Drawing.Size(675, 397);
-			this.Controls.Add(this.virtualListView1);
-			this.Controls.Add(this.tableLayoutPanel1);
-			this.Controls.Add(this.MenuStrip);
-			this.MainMenuStrip = this.MenuStrip;
-			this.MinimumSize = new System.Drawing.Size(171, 97);
-			this.Name = "LogWindow";
-			this.ShowIcon = true;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Load += new System.EventHandler(this.LogWindow_Load);
-			this.tableLayoutPanel1.ResumeLayout(false);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.virtualListView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.virtualListView1.HideSelection = false;
+            this.virtualListView1.Name = "virtualListView1";
+            this.virtualListView1.UseCompatibleStateImageBehavior = false;
+            this.virtualListView1.View = System.Windows.Forms.View.Details;
+            this.virtualListView1.VirtualMode = true;
+            this.virtualListView1.RetrieveVirtualItem += new System.Windows.Forms.RetrieveVirtualItemEventHandler(this.ListView_QueryItemText);
+            this.virtualListView1.ClientSizeChanged += new System.EventHandler(this.ListView_ClientSizeChanged);
+            this.virtualListView1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ListView_KeyDown);
+            // 
+            // columnHeader1
+            // 
+            resources.ApplyResources(this.columnHeader1, "columnHeader1");
+            // 
+            // MenuStrip
+            // 
+            resources.ApplyResources(this.MenuStrip, "MenuStrip");
+            // 
+            // LogWindow
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btnClose;
+            this.Controls.Add(this.virtualListView1);
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.MenuStrip);
+            this.MainMenuStrip = this.MenuStrip;
+            this.Name = "LogWindow";
+            this.Load += new System.EventHandler(this.LogWindow_Load);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

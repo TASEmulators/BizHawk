@@ -30,141 +30,143 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.TASMenu = new BizHawk.WinForms.Controls.MenuStripEx();
-			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NewTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NewFromSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NewFromNowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NewFromCurrentSaveRamMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.OpenTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveAsTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveBackupMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveBk2BackupMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.saveSelectionToMacroToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.placeMacroAtSelectionToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.recentMacrosToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator22 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.toolStripSeparator20 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ToBk2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.EditSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.UndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RedoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.showUndoHistoryToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SelectionUndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SelectionRedoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.DeselectMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SelectBetweenMarkersMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ReselectClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.GoToFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.PasteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.PasteInsertMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CutMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ClearFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DeleteFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.InsertFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.InsertNumFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CloneFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CloneFramesXTimesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.TruncateMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ClearGreenzoneMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.GreenzoneICheckSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.StateHistoryIntegrityCheckMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.MetaSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.HeaderMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CommentsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SubtitlesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.TAStudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ColumnsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.HelpSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.TASEditorManualOnlineMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ForumThreadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.aboutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.TasStatusStrip = new BizHawk.WinForms.Controls.StatusStripEx();
-			this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
-			this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-			this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
-			this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
-			this.RightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.SetMarkersContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SetMarkerWithTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RemoveMarkersContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator15 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.DeselectContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SelectBetweenMarkersContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator16 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.UngreenzoneContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CancelSeekContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator17 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.copyToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.pasteToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.pasteInsertToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.cutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.separateToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ClearContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DeleteFramesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.InsertFrameContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.InsertNumFramesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CloneContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CloneXTimesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator18 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.TruncateContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.BranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.StartFromNowSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.StartNewProjectFromNowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.StartANewProjectFromSaveRamMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
-			this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
-			this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.ColumnRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.AutoHoldContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.HideColumnContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.ShowColumnsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.NewInputRollContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.DeleteInputRollContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.TASMenu.SuspendLayout();
-			this.TasStatusStrip.SuspendLayout();
-			this.RightClickMenu.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).BeginInit();
-			this.BranchesMarkersSplit.Panel1.SuspendLayout();
-			this.BranchesMarkersSplit.Panel2.SuspendLayout();
-			this.BranchesMarkersSplit.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).BeginInit();
-			this.MainVertialSplit.Panel2.SuspendLayout();
-			this.MainVertialSplit.SuspendLayout();
-			this.ColumnRightClickMenu.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// TASMenu
-			// 
-			this.TASMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudio));
+            this.TASMenu = new BizHawk.WinForms.Controls.MenuStripEx();
+            this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.NewTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.NewFromSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.NewFromNowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.NewFromCurrentSaveRamMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.OpenTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveAsTASMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveBackupMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveBk2BackupMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.toolStripSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.saveSelectionToMacroToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.placeMacroAtSelectionToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.recentMacrosToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator22 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.toolStripSeparator20 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.ToBk2MenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.EditSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.UndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.RedoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.showUndoHistoryToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SelectionUndoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SelectionRedoMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.DeselectMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SelectBetweenMarkersMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SelectAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ReselectClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.GoToFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.PasteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.PasteInsertMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CutMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.ClearFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DeleteFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.InsertFrameMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.InsertNumFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CloneFramesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CloneFramesXTimesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.TruncateMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ClearGreenzoneMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.GreenzoneICheckSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.StateHistoryIntegrityCheckMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.MetaSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.HeaderMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CommentsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SubtitlesMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.TAStudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ColumnsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.HelpSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.TASEditorManualOnlineMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ForumThreadMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.aboutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator19 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.TasStatusStrip = new BizHawk.WinForms.Controls.StatusStripEx();
+            this.MessageStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.SplicerStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.TasPlaybackBox = new BizHawk.Client.EmuHawk.PlaybackBox();
+            this.MarkerControl = new BizHawk.Client.EmuHawk.MarkerControl();
+            this.RightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.SetMarkersContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SetMarkerWithTextContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.RemoveMarkersContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator15 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.DeselectContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SelectBetweenMarkersContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator16 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.UngreenzoneContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CancelSeekContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator17 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.copyToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.pasteToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.pasteInsertToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.cutToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.separateToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.ClearContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DeleteFramesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.InsertFrameContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.InsertNumFramesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CloneContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CloneXTimesContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator18 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.TruncateContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.BranchContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.StartFromNowSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.StartNewProjectFromNowMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.StartANewProjectFromSaveRamMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.BookMarkControl = new BizHawk.Client.EmuHawk.BookmarksBranchesBox();
+            this.BranchesMarkersSplit = new System.Windows.Forms.SplitContainer();
+            this.MainVertialSplit = new System.Windows.Forms.SplitContainer();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ColumnRightClickMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.AutoHoldContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.HideColumnContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowColumnsContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewInputRollContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeleteInputRollContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.TASMenu.SuspendLayout();
+            this.TasStatusStrip.SuspendLayout();
+            this.RightClickMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).BeginInit();
+            this.BranchesMarkersSplit.Panel1.SuspendLayout();
+            this.BranchesMarkersSplit.Panel2.SuspendLayout();
+            this.BranchesMarkersSplit.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).BeginInit();
+            this.MainVertialSplit.Panel2.SuspendLayout();
+            this.MainVertialSplit.SuspendLayout();
+            this.ColumnRightClickMenu.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // TASMenu
+            // 
+            resources.ApplyResources(this.TASMenu, "TASMenu");
+            this.TASMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EditSubMenu,
             this.MetaSubMenu,
             this.SettingsSubMenu,
             this.ColumnsSubMenu,
             this.HelpSubMenu});
-			this.TASMenu.TabIndex = 0;
-			this.TASMenu.ShowItemToolTips = true;
-			// 
-			// FileSubMenu
-			// 
-			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TASMenu.ShowItemToolTips = true;
+            // 
+            // FileSubMenu
+            // 
+            resources.ApplyResources(this.FileSubMenu, "FileSubMenu");
+            this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewTASMenuItem,
             this.NewFromSubMenu,
             this.OpenTASMenuItem,
@@ -179,93 +181,105 @@ namespace BizHawk.Client.EmuHawk
             this.recentMacrosToolStripMenuItem,
             this.toolStripSeparator20,
             this.ToBk2MenuItem});
-			this.FileSubMenu.Text = "&File";
-			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
-			// 
-			// NewTASMenuItem
-			// 
-			this.NewTASMenuItem.Text = "&New";
-			this.NewTASMenuItem.Click += new System.EventHandler(this.NewTasMenuItem_Click);
-			// 
-			// NewFromSubMenu
-			// 
-			this.NewFromSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
+            // 
+            // NewTASMenuItem
+            // 
+            resources.ApplyResources(this.NewTASMenuItem, "NewTASMenuItem");
+            this.NewTASMenuItem.Click += new System.EventHandler(this.NewTasMenuItem_Click);
+            // 
+            // NewFromSubMenu
+            // 
+            resources.ApplyResources(this.NewFromSubMenu, "NewFromSubMenu");
+            this.NewFromSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewFromNowMenuItem,
             this.NewFromCurrentSaveRamMenuItem});
-			this.NewFromSubMenu.Text = "New From";
-			this.NewFromSubMenu.DropDownOpened += new System.EventHandler(this.NewFromSubMenu_DropDownOpened);
-			// 
-			// NewFromNowMenuItem
-			// 
-			this.NewFromNowMenuItem.Text = "&Now";
-			this.NewFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
-			// 
-			// NewFromCurrentSaveRamMenuItem
-			// 
-			this.NewFromCurrentSaveRamMenuItem.Text = "&Current SaveRam";
-			this.NewFromCurrentSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
-			// 
-			// OpenTASMenuItem
-			// 
-			this.OpenTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.OpenTASMenuItem.Text = "&Open";
-			this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTasMenuItem_Click);
-			// 
-			// SaveTASMenuItem
-			// 
-			this.SaveTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveTASMenuItem.Text = "&Save";
-			this.SaveTASMenuItem.Click += new System.EventHandler(this.SaveTasMenuItem_Click);
-			// 
-			// SaveAsTASMenuItem
-			// 
-			this.SaveAsTASMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.SaveAsTASMenuItem.Text = "Save As";
-			this.SaveAsTASMenuItem.Click += new System.EventHandler(this.SaveAsTasMenuItem_Click);
-			// 
-			// SaveBackupMenuItem
-			// 
-			this.SaveBackupMenuItem.Text = "Save Backup";
-			this.SaveBackupMenuItem.Click += new System.EventHandler(this.SaveBackupMenuItem_Click);
-			// 
-			// SaveBk2BackupMenuItem
-			// 
-			this.SaveBk2BackupMenuItem.Text = "Save Bk2 Backup";
-			this.SaveBk2BackupMenuItem.Click += new System.EventHandler(this.SaveBk2BackupMenuItem_Click);
-			// 
-			// RecentSubMenu
-			// 
-			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewFromSubMenu.DropDownOpened += new System.EventHandler(this.NewFromSubMenu_DropDownOpened);
+            // 
+            // NewFromNowMenuItem
+            // 
+            resources.ApplyResources(this.NewFromNowMenuItem, "NewFromNowMenuItem");
+            this.NewFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
+            // 
+            // NewFromCurrentSaveRamMenuItem
+            // 
+            resources.ApplyResources(this.NewFromCurrentSaveRamMenuItem, "NewFromCurrentSaveRamMenuItem");
+            this.NewFromCurrentSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
+            // 
+            // OpenTASMenuItem
+            // 
+            resources.ApplyResources(this.OpenTASMenuItem, "OpenTASMenuItem");
+            this.OpenTASMenuItem.Click += new System.EventHandler(this.OpenTasMenuItem_Click);
+            // 
+            // SaveTASMenuItem
+            // 
+            resources.ApplyResources(this.SaveTASMenuItem, "SaveTASMenuItem");
+            this.SaveTASMenuItem.Click += new System.EventHandler(this.SaveTasMenuItem_Click);
+            // 
+            // SaveAsTASMenuItem
+            // 
+            resources.ApplyResources(this.SaveAsTASMenuItem, "SaveAsTASMenuItem");
+            this.SaveAsTASMenuItem.Click += new System.EventHandler(this.SaveAsTasMenuItem_Click);
+            // 
+            // SaveBackupMenuItem
+            // 
+            resources.ApplyResources(this.SaveBackupMenuItem, "SaveBackupMenuItem");
+            this.SaveBackupMenuItem.Click += new System.EventHandler(this.SaveBackupMenuItem_Click);
+            // 
+            // SaveBk2BackupMenuItem
+            // 
+            resources.ApplyResources(this.SaveBk2BackupMenuItem, "SaveBk2BackupMenuItem");
+            this.SaveBk2BackupMenuItem.Click += new System.EventHandler(this.SaveBk2BackupMenuItem_Click);
+            // 
+            // RecentSubMenu
+            // 
+            resources.ApplyResources(this.RecentSubMenu, "RecentSubMenu");
+            this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.RecentSubMenu.Text = "Recent";
-			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
-			// 
-			// saveSelectionToMacroToolStripMenuItem
-			// 
-			this.saveSelectionToMacroToolStripMenuItem.Text = "Save Selection to Macro";
-			this.saveSelectionToMacroToolStripMenuItem.Click += new System.EventHandler(this.SaveSelectionToMacroMenuItem_Click);
-			// 
-			// placeMacroAtSelectionToolStripMenuItem
-			// 
-			this.placeMacroAtSelectionToolStripMenuItem.Text = "Place Macro at Selection";
-			this.placeMacroAtSelectionToolStripMenuItem.Click += new System.EventHandler(this.PlaceMacroAtSelectionMenuItem_Click);
-			// 
-			// recentMacrosToolStripMenuItem
-			// 
-			this.recentMacrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
+            // 
+            // toolStripSeparator3
+            // 
+            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
+            // 
+            // toolStripSeparator1
+            // 
+            resources.ApplyResources(this.toolStripSeparator1, "toolStripSeparator1");
+            // 
+            // saveSelectionToMacroToolStripMenuItem
+            // 
+            resources.ApplyResources(this.saveSelectionToMacroToolStripMenuItem, "saveSelectionToMacroToolStripMenuItem");
+            this.saveSelectionToMacroToolStripMenuItem.Click += new System.EventHandler(this.SaveSelectionToMacroMenuItem_Click);
+            // 
+            // placeMacroAtSelectionToolStripMenuItem
+            // 
+            resources.ApplyResources(this.placeMacroAtSelectionToolStripMenuItem, "placeMacroAtSelectionToolStripMenuItem");
+            this.placeMacroAtSelectionToolStripMenuItem.Click += new System.EventHandler(this.PlaceMacroAtSelectionMenuItem_Click);
+            // 
+            // recentMacrosToolStripMenuItem
+            // 
+            resources.ApplyResources(this.recentMacrosToolStripMenuItem, "recentMacrosToolStripMenuItem");
+            this.recentMacrosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator22});
-			this.recentMacrosToolStripMenuItem.Text = "Recent Macros";
-			this.recentMacrosToolStripMenuItem.DropDownOpened += new System.EventHandler(this.RecentMacrosMenuItem_DropDownOpened);
-			// 
-			// ToBk2MenuItem
-			// 
-			this.ToBk2MenuItem.Text = "&Export to Bk2";
-			this.ToBk2MenuItem.Click += new System.EventHandler(this.ToBk2MenuItem_Click);
-			// 
-			// EditSubMenu
-			// 
-			this.EditSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.recentMacrosToolStripMenuItem.DropDownOpened += new System.EventHandler(this.RecentMacrosMenuItem_DropDownOpened);
+            // 
+            // toolStripSeparator22
+            // 
+            resources.ApplyResources(this.toolStripSeparator22, "toolStripSeparator22");
+            // 
+            // toolStripSeparator20
+            // 
+            resources.ApplyResources(this.toolStripSeparator20, "toolStripSeparator20");
+            // 
+            // ToBk2MenuItem
+            // 
+            resources.ApplyResources(this.ToBk2MenuItem, "ToBk2MenuItem");
+            this.ToBk2MenuItem.Click += new System.EventHandler(this.ToBk2MenuItem_Click);
+            // 
+            // EditSubMenu
+            // 
+            resources.ApplyResources(this.EditSubMenu, "EditSubMenu");
+            this.EditSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.UndoMenuItem,
             this.RedoMenuItem,
             this.showUndoHistoryToolStripMenuItem,
@@ -294,253 +308,255 @@ namespace BizHawk.Client.EmuHawk
             this.ClearGreenzoneMenuItem,
             this.GreenzoneICheckSeparator,
             this.StateHistoryIntegrityCheckMenuItem});
-			this.EditSubMenu.Text = "&Edit";
-			this.EditSubMenu.DropDownClosed += new System.EventHandler(this.EditSubMenu_DropDownClosed);
-			this.EditSubMenu.DropDownOpened += new System.EventHandler(this.EditSubMenu_DropDownOpened);
-			// 
-			// UndoMenuItem
-			// 
-			this.UndoMenuItem.Text = "&Undo";
-			this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
-			// 
-			// RedoMenuItem
-			// 
-			this.RedoMenuItem.Enabled = false;
-			this.RedoMenuItem.Text = "&Redo";
-			this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
-			// 
-			// showUndoHistoryToolStripMenuItem
-			// 
-			this.showUndoHistoryToolStripMenuItem.Text = "Show Undo History";
-			this.showUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.ShowUndoHistoryMenuItem_Click);
-			// 
-			// SelectionUndoMenuItem
-			// 
-			this.SelectionUndoMenuItem.Enabled = false;
-			this.SelectionUndoMenuItem.Text = "Selection Undo";
-			// 
-			// SelectionRedoMenuItem
-			// 
-			this.SelectionRedoMenuItem.Enabled = false;
-			this.SelectionRedoMenuItem.Text = "Selection Redo";
-			// 
-			// DeselectMenuItem
-			// 
-			this.DeselectMenuItem.Text = "Deselect";
-			this.DeselectMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
-			// 
-			// SelectBetweenMarkersMenuItem
-			// 
-			this.SelectBetweenMarkersMenuItem.Text = "Select between Markers";
-			this.SelectBetweenMarkersMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
-			// 
-			// SelectAllMenuItem
-			// 
-			this.SelectAllMenuItem.ShortcutKeyDisplayString = "";
-			this.SelectAllMenuItem.Text = "Select &All";
-			this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
-			// 
-			// ReselectClipboardMenuItem
-			// 
-			this.ReselectClipboardMenuItem.Text = "Reselect Clipboard";
-			this.ReselectClipboardMenuItem.Click += new System.EventHandler(this.ReselectClipboardMenuItem_Click);
-			// 
-			// ReselectClipboardMenuItem
-			// 
-			this.GoToFrameMenuItem.Text = "Go to Frame...";
-			this.GoToFrameMenuItem.Click += new System.EventHandler(this.GoToFrameMenuItem_Click);
-			// 
-			// CopyMenuItem
-			// 
-			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Text = "Copy";
-			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
-			// 
-			// PasteMenuItem
-			// 
-			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.PasteMenuItem.Text = "&Paste";
-			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
-			// 
-			// PasteInsertMenuItem
-			// 
-			this.PasteInsertMenuItem.Text = "&Paste Insert";
-			this.PasteInsertMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
-			// 
-			// CutMenuItem
-			// 
-			this.CutMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-			this.CutMenuItem.Text = "&Cut";
-			this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
-			// 
-			// ClearFramesMenuItem
-			// 
-			this.ClearFramesMenuItem.ShortcutKeyDisplayString = "";
-			this.ClearFramesMenuItem.Text = "Clear";
-			this.ClearFramesMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
-			// 
-			// DeleteFramesMenuItem
-			// 
-			this.DeleteFramesMenuItem.Text = "&Delete";
-			this.DeleteFramesMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
-			// 
-			// InsertFrameMenuItem
-			// 
-			this.InsertFrameMenuItem.Text = "&Insert";
-			this.InsertFrameMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
-			// 
-			// InsertNumFramesMenuItem
-			// 
-			this.InsertNumFramesMenuItem.ShortcutKeyDisplayString = "";
-			this.InsertNumFramesMenuItem.Text = "Insert # of Frames";
-			this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
-			// 
-			// CloneFramesMenuItem
-			// 
-			this.CloneFramesMenuItem.Text = "&Clone";
-			this.CloneFramesMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
-			// 
-			// CloneFramesXTimesMenuItem
-			// 
-			this.CloneFramesXTimesMenuItem.Text = "Clone # Times";
-			this.CloneFramesXTimesMenuItem.Click += new System.EventHandler(this.CloneFramesXTimesMenuItem_Click);
-			// 
-			// TruncateMenuItem
-			// 
-			this.TruncateMenuItem.Text = "&Truncate Movie";
-			this.TruncateMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
-			// 
-			// ClearGreenzoneMenuItem
-			// 
-			this.ClearGreenzoneMenuItem.Text = "&Clear Savestate History";
-			this.ClearGreenzoneMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
-			// 
-			// StateHistoryIntegrityCheckMenuItem
-			// 
-			this.StateHistoryIntegrityCheckMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.I)));
-			this.StateHistoryIntegrityCheckMenuItem.Text = "State History Integrity Check";
-			this.StateHistoryIntegrityCheckMenuItem.Click += new System.EventHandler(this.StateHistoryIntegrityCheckMenuItem_Click);
-			// 
-			// MetaSubMenu
-			// 
-			this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditSubMenu.DropDownClosed += new System.EventHandler(this.EditSubMenu_DropDownClosed);
+            this.EditSubMenu.DropDownOpened += new System.EventHandler(this.EditSubMenu_DropDownOpened);
+            // 
+            // UndoMenuItem
+            // 
+            resources.ApplyResources(this.UndoMenuItem, "UndoMenuItem");
+            this.UndoMenuItem.Click += new System.EventHandler(this.UndoMenuItem_Click);
+            // 
+            // RedoMenuItem
+            // 
+            resources.ApplyResources(this.RedoMenuItem, "RedoMenuItem");
+            this.RedoMenuItem.Click += new System.EventHandler(this.RedoMenuItem_Click);
+            // 
+            // showUndoHistoryToolStripMenuItem
+            // 
+            resources.ApplyResources(this.showUndoHistoryToolStripMenuItem, "showUndoHistoryToolStripMenuItem");
+            this.showUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.ShowUndoHistoryMenuItem_Click);
+            // 
+            // SelectionUndoMenuItem
+            // 
+            resources.ApplyResources(this.SelectionUndoMenuItem, "SelectionUndoMenuItem");
+            // 
+            // SelectionRedoMenuItem
+            // 
+            resources.ApplyResources(this.SelectionRedoMenuItem, "SelectionRedoMenuItem");
+            // 
+            // toolStripSeparator5
+            // 
+            resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
+            // 
+            // DeselectMenuItem
+            // 
+            resources.ApplyResources(this.DeselectMenuItem, "DeselectMenuItem");
+            this.DeselectMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
+            // 
+            // SelectBetweenMarkersMenuItem
+            // 
+            resources.ApplyResources(this.SelectBetweenMarkersMenuItem, "SelectBetweenMarkersMenuItem");
+            this.SelectBetweenMarkersMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
+            // 
+            // SelectAllMenuItem
+            // 
+            resources.ApplyResources(this.SelectAllMenuItem, "SelectAllMenuItem");
+            this.SelectAllMenuItem.Click += new System.EventHandler(this.SelectAllMenuItem_Click);
+            // 
+            // ReselectClipboardMenuItem
+            // 
+            resources.ApplyResources(this.ReselectClipboardMenuItem, "ReselectClipboardMenuItem");
+            this.ReselectClipboardMenuItem.Click += new System.EventHandler(this.ReselectClipboardMenuItem_Click);
+            // 
+            // GoToFrameMenuItem
+            // 
+            resources.ApplyResources(this.GoToFrameMenuItem, "GoToFrameMenuItem");
+            this.GoToFrameMenuItem.Click += new System.EventHandler(this.GoToFrameMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            resources.ApplyResources(this.toolStripSeparator7, "toolStripSeparator7");
+            // 
+            // CopyMenuItem
+            // 
+            resources.ApplyResources(this.CopyMenuItem, "CopyMenuItem");
+            this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
+            // 
+            // PasteMenuItem
+            // 
+            resources.ApplyResources(this.PasteMenuItem, "PasteMenuItem");
+            this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            // 
+            // PasteInsertMenuItem
+            // 
+            resources.ApplyResources(this.PasteInsertMenuItem, "PasteInsertMenuItem");
+            this.PasteInsertMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
+            // 
+            // CutMenuItem
+            // 
+            resources.ApplyResources(this.CutMenuItem, "CutMenuItem");
+            this.CutMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            resources.ApplyResources(this.toolStripSeparator8, "toolStripSeparator8");
+            // 
+            // ClearFramesMenuItem
+            // 
+            resources.ApplyResources(this.ClearFramesMenuItem, "ClearFramesMenuItem");
+            this.ClearFramesMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
+            // 
+            // DeleteFramesMenuItem
+            // 
+            resources.ApplyResources(this.DeleteFramesMenuItem, "DeleteFramesMenuItem");
+            this.DeleteFramesMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
+            // 
+            // InsertFrameMenuItem
+            // 
+            resources.ApplyResources(this.InsertFrameMenuItem, "InsertFrameMenuItem");
+            this.InsertFrameMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
+            // 
+            // InsertNumFramesMenuItem
+            // 
+            resources.ApplyResources(this.InsertNumFramesMenuItem, "InsertNumFramesMenuItem");
+            this.InsertNumFramesMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
+            // 
+            // CloneFramesMenuItem
+            // 
+            resources.ApplyResources(this.CloneFramesMenuItem, "CloneFramesMenuItem");
+            this.CloneFramesMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
+            // 
+            // CloneFramesXTimesMenuItem
+            // 
+            resources.ApplyResources(this.CloneFramesXTimesMenuItem, "CloneFramesXTimesMenuItem");
+            this.CloneFramesXTimesMenuItem.Click += new System.EventHandler(this.CloneFramesXTimesMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            resources.ApplyResources(this.toolStripSeparator6, "toolStripSeparator6");
+            // 
+            // TruncateMenuItem
+            // 
+            resources.ApplyResources(this.TruncateMenuItem, "TruncateMenuItem");
+            this.TruncateMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
+            // 
+            // ClearGreenzoneMenuItem
+            // 
+            resources.ApplyResources(this.ClearGreenzoneMenuItem, "ClearGreenzoneMenuItem");
+            this.ClearGreenzoneMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
+            // 
+            // GreenzoneICheckSeparator
+            // 
+            resources.ApplyResources(this.GreenzoneICheckSeparator, "GreenzoneICheckSeparator");
+            // 
+            // StateHistoryIntegrityCheckMenuItem
+            // 
+            resources.ApplyResources(this.StateHistoryIntegrityCheckMenuItem, "StateHistoryIntegrityCheckMenuItem");
+            this.StateHistoryIntegrityCheckMenuItem.Click += new System.EventHandler(this.StateHistoryIntegrityCheckMenuItem_Click);
+            // 
+            // MetaSubMenu
+            // 
+            resources.ApplyResources(this.MetaSubMenu, "MetaSubMenu");
+            this.MetaSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.HeaderMenuItem,
             this.CommentsMenuItem,
             this.SubtitlesMenuItem});
-			this.MetaSubMenu.Text = "&Metadata";
-			// 
-			// HeaderMenuItem
-			// 
-			this.HeaderMenuItem.Text = "&Header...";
-			this.HeaderMenuItem.Click += new System.EventHandler(this.HeaderMenuItem_Click);
-			// 
-			// CommentsMenuItem
-			// 
-			this.CommentsMenuItem.Text = "&Comments...";
-			this.CommentsMenuItem.Click += new System.EventHandler(this.CommentsMenuItem_Click);
-			// 
-			// SubtitlesMenuItem
-			// 
-			this.SubtitlesMenuItem.Text = "&Subtitles...";
-			this.SubtitlesMenuItem.Click += new System.EventHandler(this.SubtitlesMenuItem_Click);
-			// 
-			// SettingsSubMenu
-			// 
-			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // HeaderMenuItem
+            // 
+            resources.ApplyResources(this.HeaderMenuItem, "HeaderMenuItem");
+            this.HeaderMenuItem.Click += new System.EventHandler(this.HeaderMenuItem_Click);
+            // 
+            // CommentsMenuItem
+            // 
+            resources.ApplyResources(this.CommentsMenuItem, "CommentsMenuItem");
+            this.CommentsMenuItem.Click += new System.EventHandler(this.CommentsMenuItem_Click);
+            // 
+            // SubtitlesMenuItem
+            // 
+            resources.ApplyResources(this.SubtitlesMenuItem, "SubtitlesMenuItem");
+            this.SubtitlesMenuItem.Click += new System.EventHandler(this.SubtitlesMenuItem_Click);
+            // 
+            // SettingsSubMenu
+            // 
+            resources.ApplyResources(this.SettingsSubMenu, "SettingsSubMenu");
+            this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TAStudioSettingsToolStripMenuItem});
-			this.SettingsSubMenu.Text = "&Settings";
-			// 
-			// TAStudioSettingsToolStripMenuItem
-			// 
-			this.TAStudioSettingsToolStripMenuItem.Name = "TAStudioSettingsToolStripMenuItem";
-			this.TAStudioSettingsToolStripMenuItem.Size = new System.Drawing.Size(156, 22);
-			this.TAStudioSettingsToolStripMenuItem.Text = "Open settings...";
-			this.TAStudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.TAStudioSettingsToolStripMenuItem_Click);
-			// 
-			// ColumnsSubMenu
-			// 
-			this.ColumnsSubMenu.Text = "&Columns";
-			// 
-			// HelpSubMenu
-			// 
-			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // TAStudioSettingsToolStripMenuItem
+            // 
+            resources.ApplyResources(this.TAStudioSettingsToolStripMenuItem, "TAStudioSettingsToolStripMenuItem");
+            this.TAStudioSettingsToolStripMenuItem.Name = "TAStudioSettingsToolStripMenuItem";
+            this.TAStudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.TAStudioSettingsToolStripMenuItem_Click);
+            // 
+            // ColumnsSubMenu
+            // 
+            resources.ApplyResources(this.ColumnsSubMenu, "ColumnsSubMenu");
+            // 
+            // HelpSubMenu
+            // 
+            resources.ApplyResources(this.HelpSubMenu, "HelpSubMenu");
+            this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.TASEditorManualOnlineMenuItem,
             this.ForumThreadMenuItem,
             this.aboutToolStripMenuItem});
-			this.HelpSubMenu.Text = "&Help";
-			// 
-			// TASEditorManualOnlineMenuItem
-			// 
-			this.TASEditorManualOnlineMenuItem.Text = "TAS Editor Manual Online...";
-			this.TASEditorManualOnlineMenuItem.Click += new System.EventHandler(this.TASEditorManualOnlineMenuItem_Click);
-			// 
-			// ForumThreadMenuItem
-			// 
-			this.ForumThreadMenuItem.Text = "Forum Thread...";
-			this.ForumThreadMenuItem.Click += new System.EventHandler(this.ForumThreadMenuItem_Click);
-			// 
-			// aboutToolStripMenuItem
-			// 
-			this.aboutToolStripMenuItem.Enabled = false;
-			this.aboutToolStripMenuItem.Text = "&About";
-			// 
-			// TasStatusStrip
-			// 
-			this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // TASEditorManualOnlineMenuItem
+            // 
+            resources.ApplyResources(this.TASEditorManualOnlineMenuItem, "TASEditorManualOnlineMenuItem");
+            this.TASEditorManualOnlineMenuItem.Click += new System.EventHandler(this.TASEditorManualOnlineMenuItem_Click);
+            // 
+            // ForumThreadMenuItem
+            // 
+            resources.ApplyResources(this.ForumThreadMenuItem, "ForumThreadMenuItem");
+            this.ForumThreadMenuItem.Click += new System.EventHandler(this.ForumThreadMenuItem_Click);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            resources.ApplyResources(this.aboutToolStripMenuItem, "aboutToolStripMenuItem");
+            // 
+            // toolStripSeparator19
+            // 
+            resources.ApplyResources(this.toolStripSeparator19, "toolStripSeparator19");
+            // 
+            // TasStatusStrip
+            // 
+            resources.ApplyResources(this.TasStatusStrip, "TasStatusStrip");
+            this.TasStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MessageStatusLabel,
             this.ProgressBar,
             this.toolStripStatusLabel2,
             this.SplicerStatusLabel});
-			this.TasStatusStrip.Location = new System.Drawing.Point(0, 554);
-			this.TasStatusStrip.Name = "TasStatusStrip";
-			this.TasStatusStrip.TabIndex = 4;
-			// 
-			// MessageStatusLabel
-			// 
-			this.MessageStatusLabel.Name = "MessageStatusLabel";
-			this.MessageStatusLabel.Size = new System.Drawing.Size(103, 17);
-			this.MessageStatusLabel.Text = "TAStudio engaged";
-			// 
-			// ProgressBar
-			// 
-			this.ProgressBar.Name = "ProgressBar";
-			this.ProgressBar.Size = new System.Drawing.Size(100, 16);
-			// 
-			// toolStripStatusLabel2
-			// 
-			this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-			this.toolStripStatusLabel2.Size = new System.Drawing.Size(269, 17);
-			this.toolStripStatusLabel2.Spring = true;
-			// 
-			// SplicerStatusLabel
-			// 
-			this.SplicerStatusLabel.Name = "SplicerStatusLabel";
-			this.SplicerStatusLabel.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
-			this.SplicerStatusLabel.Size = new System.Drawing.Size(20, 17);
-			// 
-			// TasPlaybackBox
-			// 
-			this.TasPlaybackBox.Dock = System.Windows.Forms.DockStyle.Top;
-			this.TasPlaybackBox.Location = new System.Drawing.Point(0, 0);
-			this.TasPlaybackBox.Margin = new System.Windows.Forms.Padding(3, 3, 3, 44);
-			this.TasPlaybackBox.Name = "TasPlaybackBox";
-			this.TasPlaybackBox.Size = new System.Drawing.Size(200, 108);
-			this.TasPlaybackBox.TabIndex = 5;
-			this.TasPlaybackBox.Tastudio = null;
-			// 
-			// MarkerControl
-			// 
-			this.MarkerControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.MarkerControl.Location = new System.Drawing.Point(0, 0);
-			this.MarkerControl.Name = "MarkerControl";
-			this.MarkerControl.Size = new System.Drawing.Size(200, 227);
-			this.MarkerControl.TabIndex = 6;
-			this.MarkerControl.Tastudio = null;
-			// 
-			// RightClickMenu
-			// 
-			this.RightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.TasStatusStrip.Name = "TasStatusStrip";
+            // 
+            // MessageStatusLabel
+            // 
+            resources.ApplyResources(this.MessageStatusLabel, "MessageStatusLabel");
+            this.MessageStatusLabel.Name = "MessageStatusLabel";
+            // 
+            // ProgressBar
+            // 
+            resources.ApplyResources(this.ProgressBar, "ProgressBar");
+            this.ProgressBar.Name = "ProgressBar";
+            // 
+            // toolStripStatusLabel2
+            // 
+            resources.ApplyResources(this.toolStripStatusLabel2, "toolStripStatusLabel2");
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Spring = true;
+            // 
+            // SplicerStatusLabel
+            // 
+            resources.ApplyResources(this.SplicerStatusLabel, "SplicerStatusLabel");
+            this.SplicerStatusLabel.Name = "SplicerStatusLabel";
+            this.SplicerStatusLabel.Padding = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            // 
+            // TasPlaybackBox
+            // 
+            resources.ApplyResources(this.TasPlaybackBox, "TasPlaybackBox");
+            this.TasPlaybackBox.Name = "TasPlaybackBox";
+            this.TasPlaybackBox.Tastudio = null;
+            // 
+            // MarkerControl
+            // 
+            resources.ApplyResources(this.MarkerControl, "MarkerControl");
+            this.MarkerControl.Name = "MarkerControl";
+            this.MarkerControl.Tastudio = null;
+            // 
+            // RightClickMenu
+            // 
+            resources.ApplyResources(this.RightClickMenu, "RightClickMenu");
+            this.RightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetMarkersContextMenuItem,
             this.SetMarkerWithTextContextMenuItem,
             this.RemoveMarkersContextMenuItem,
@@ -568,249 +584,255 @@ namespace BizHawk.Client.EmuHawk
             this.StartFromNowSeparator,
             this.StartNewProjectFromNowMenuItem,
             this.StartANewProjectFromSaveRamMenuItem});
-			this.RightClickMenu.Name = "RightClickMenu";
-			this.RightClickMenu.Size = new System.Drawing.Size(253, 502);
-			this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
-			// 
-			// SetMarkersContextMenuItem
-			// 
-			this.SetMarkersContextMenuItem.Text = "Set Markers";
-			this.SetMarkersContextMenuItem.Click += new System.EventHandler(this.SetMarkersMenuItem_Click);
-			// 
-			// SetMarkerWithTextContextMenuItem
-			// 
-			this.SetMarkerWithTextContextMenuItem.Text = "Set Marker with Text";
-			this.SetMarkerWithTextContextMenuItem.Click += new System.EventHandler(this.SetMarkerWithTextMenuItem_Click);
-			// 
-			// RemoveMarkersContextMenuItem
-			// 
-			this.RemoveMarkersContextMenuItem.Text = "Remove Markers";
-			this.RemoveMarkersContextMenuItem.Click += new System.EventHandler(this.RemoveMarkersMenuItem_Click);
-			// 
-			// DeselectContextMenuItem
-			// 
-			this.DeselectContextMenuItem.Text = "Deselect";
-			this.DeselectContextMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
-			// 
-			// SelectBetweenMarkersContextMenuItem
-			// 
-			this.SelectBetweenMarkersContextMenuItem.Text = "Select between Markers";
-			this.SelectBetweenMarkersContextMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
-			// 
-			// UngreenzoneContextMenuItem
-			// 
-			this.UngreenzoneContextMenuItem.Text = "Clear Greenzone";
-			this.UngreenzoneContextMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
-			// 
-			// CancelSeekContextMenuItem
-			// 
-			this.CancelSeekContextMenuItem.Text = "Cancel Seek";
-			this.CancelSeekContextMenuItem.Click += new System.EventHandler(this.CancelSeekContextMenuItem_Click);
-			// 
-			// copyToolStripMenuItem
-			// 
-			this.copyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.copyToolStripMenuItem.Text = "Copy";
-			this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
-			// 
-			// pasteToolStripMenuItem
-			// 
-			this.pasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.pasteToolStripMenuItem.Text = "Paste";
-			this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
-			// 
-			// pasteInsertToolStripMenuItem
-			// 
-			this.pasteInsertToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Shift+V";
-			this.pasteInsertToolStripMenuItem.Text = "Paste Insert";
-			this.pasteInsertToolStripMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
-			// 
-			// cutToolStripMenuItem
-			// 
-			this.cutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X";
-			this.cutToolStripMenuItem.Text = "Cut";
-			this.cutToolStripMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
-			// 
-			// ClearContextMenuItem
-			// 
-			this.ClearContextMenuItem.Text = "Clear";
-			this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
-			// 
-			// DeleteFramesContextMenuItem
-			// 
-			this.DeleteFramesContextMenuItem.Text = "Delete";
-			this.DeleteFramesContextMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
-			// 
-			// InsertFrameContextMenuItem
-			// 
-			this.InsertFrameContextMenuItem.Text = "Insert";
-			this.InsertFrameContextMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
-			// 
-			// InsertNumFramesContextMenuItem
-			// 
-			this.InsertNumFramesContextMenuItem.Text = "Insert # of Frames";
-			this.InsertNumFramesContextMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
-			// 
-			// CloneContextMenuItem
-			// 
-			this.CloneContextMenuItem.Text = "Clone";
-			this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
-			// 
-			// CloneXTimesContextMenuItem
-			// 
-			this.CloneXTimesContextMenuItem.Text = "Clone # Times";
-			this.CloneXTimesContextMenuItem.Click += new System.EventHandler(this.CloneFramesXTimesMenuItem_Click);
-			// 
-			// TruncateContextMenuItem
-			// 
-			this.TruncateContextMenuItem.Text = "Truncate Movie";
-			this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
-			// 
-			// BranchContextMenuItem
-			// 
-			this.BranchContextMenuItem.Text = "&Branch";
-			this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
-			// 
-			// StartNewProjectFromNowMenuItem
-			// 
-			this.StartNewProjectFromNowMenuItem.Text = "Start a new project from Now";
-			this.StartNewProjectFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
-			// 
-			// StartANewProjectFromSaveRamMenuItem
-			// 
-			this.StartANewProjectFromSaveRamMenuItem.Text = "Start a new project from SaveRam";
-			this.StartANewProjectFromSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
-			// 
-			// BookMarkControl
-			// 
-			this.BookMarkControl.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.BookMarkControl.Location = new System.Drawing.Point(0, 108);
-			this.BookMarkControl.Name = "BookMarkControl";
-			this.BookMarkControl.Size = new System.Drawing.Size(200, 185);
-			this.BookMarkControl.TabIndex = 8;
-			this.BookMarkControl.Tastudio = null;
-			// 
-			// BranchesMarkersSplit
-			// 
-			this.BranchesMarkersSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BranchesMarkersSplit.Location = new System.Drawing.Point(4, 4);
-			this.BranchesMarkersSplit.Name = "BranchesMarkersSplit";
-			this.BranchesMarkersSplit.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// BranchesMarkersSplit.Panel1
-			// 
-			this.BranchesMarkersSplit.Panel1.Controls.Add(this.BookMarkControl);
-			this.BranchesMarkersSplit.Panel1.Controls.Add(this.TasPlaybackBox);
-			this.BranchesMarkersSplit.Panel1MinSize = 200;
-			// 
-			// BranchesMarkersSplit.Panel2
-			// 
-			this.BranchesMarkersSplit.Panel2.Controls.Add(this.MarkerControl);
-			this.BranchesMarkersSplit.Size = new System.Drawing.Size(200, 524);
-			this.BranchesMarkersSplit.SplitterDistance = 293;
-			this.BranchesMarkersSplit.TabIndex = 9;
-			this.BranchesMarkersSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
-			// 
-			// MainVertialSplit
-			// 
-			this.MainVertialSplit.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.MainVertialSplit.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-			this.MainVertialSplit.Location = new System.Drawing.Point(2, 23);
-			this.MainVertialSplit.Name = "MainVertialSplit";
-			// 
-			// MainVertialSplit.Panel2
-			// 
-			this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
-			this.MainVertialSplit.Size = new System.Drawing.Size(507, 528);
-			this.MainVertialSplit.SplitterDistance = 295;
-			this.MainVertialSplit.TabIndex = 10;
-			this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
-			// 
-			// ColumnRightClickMenu
-			// 
-			this.ColumnRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RightClickMenu.Name = "RightClickMenu";
+            this.RightClickMenu.Opened += new System.EventHandler(this.RightClickMenu_Opened);
+            // 
+            // SetMarkersContextMenuItem
+            // 
+            resources.ApplyResources(this.SetMarkersContextMenuItem, "SetMarkersContextMenuItem");
+            this.SetMarkersContextMenuItem.Click += new System.EventHandler(this.SetMarkersMenuItem_Click);
+            // 
+            // SetMarkerWithTextContextMenuItem
+            // 
+            resources.ApplyResources(this.SetMarkerWithTextContextMenuItem, "SetMarkerWithTextContextMenuItem");
+            this.SetMarkerWithTextContextMenuItem.Click += new System.EventHandler(this.SetMarkerWithTextMenuItem_Click);
+            // 
+            // RemoveMarkersContextMenuItem
+            // 
+            resources.ApplyResources(this.RemoveMarkersContextMenuItem, "RemoveMarkersContextMenuItem");
+            this.RemoveMarkersContextMenuItem.Click += new System.EventHandler(this.RemoveMarkersMenuItem_Click);
+            // 
+            // toolStripSeparator15
+            // 
+            resources.ApplyResources(this.toolStripSeparator15, "toolStripSeparator15");
+            // 
+            // DeselectContextMenuItem
+            // 
+            resources.ApplyResources(this.DeselectContextMenuItem, "DeselectContextMenuItem");
+            this.DeselectContextMenuItem.Click += new System.EventHandler(this.DeselectMenuItem_Click);
+            // 
+            // SelectBetweenMarkersContextMenuItem
+            // 
+            resources.ApplyResources(this.SelectBetweenMarkersContextMenuItem, "SelectBetweenMarkersContextMenuItem");
+            this.SelectBetweenMarkersContextMenuItem.Click += new System.EventHandler(this.SelectBetweenMarkersMenuItem_Click);
+            // 
+            // toolStripSeparator16
+            // 
+            resources.ApplyResources(this.toolStripSeparator16, "toolStripSeparator16");
+            // 
+            // UngreenzoneContextMenuItem
+            // 
+            resources.ApplyResources(this.UngreenzoneContextMenuItem, "UngreenzoneContextMenuItem");
+            this.UngreenzoneContextMenuItem.Click += new System.EventHandler(this.ClearGreenzoneMenuItem_Click);
+            // 
+            // CancelSeekContextMenuItem
+            // 
+            resources.ApplyResources(this.CancelSeekContextMenuItem, "CancelSeekContextMenuItem");
+            this.CancelSeekContextMenuItem.Click += new System.EventHandler(this.CancelSeekContextMenuItem_Click);
+            // 
+            // toolStripSeparator17
+            // 
+            resources.ApplyResources(this.toolStripSeparator17, "toolStripSeparator17");
+            // 
+            // copyToolStripMenuItem
+            // 
+            resources.ApplyResources(this.copyToolStripMenuItem, "copyToolStripMenuItem");
+            this.copyToolStripMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
+            // 
+            // pasteToolStripMenuItem
+            // 
+            resources.ApplyResources(this.pasteToolStripMenuItem, "pasteToolStripMenuItem");
+            this.pasteToolStripMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            // 
+            // pasteInsertToolStripMenuItem
+            // 
+            resources.ApplyResources(this.pasteInsertToolStripMenuItem, "pasteInsertToolStripMenuItem");
+            this.pasteInsertToolStripMenuItem.Click += new System.EventHandler(this.PasteInsertMenuItem_Click);
+            // 
+            // cutToolStripMenuItem
+            // 
+            resources.ApplyResources(this.cutToolStripMenuItem, "cutToolStripMenuItem");
+            this.cutToolStripMenuItem.Click += new System.EventHandler(this.CutMenuItem_Click);
+            // 
+            // separateToolStripMenuItem
+            // 
+            resources.ApplyResources(this.separateToolStripMenuItem, "separateToolStripMenuItem");
+            // 
+            // ClearContextMenuItem
+            // 
+            resources.ApplyResources(this.ClearContextMenuItem, "ClearContextMenuItem");
+            this.ClearContextMenuItem.Click += new System.EventHandler(this.ClearFramesMenuItem_Click);
+            // 
+            // DeleteFramesContextMenuItem
+            // 
+            resources.ApplyResources(this.DeleteFramesContextMenuItem, "DeleteFramesContextMenuItem");
+            this.DeleteFramesContextMenuItem.Click += new System.EventHandler(this.DeleteFramesMenuItem_Click);
+            // 
+            // InsertFrameContextMenuItem
+            // 
+            resources.ApplyResources(this.InsertFrameContextMenuItem, "InsertFrameContextMenuItem");
+            this.InsertFrameContextMenuItem.Click += new System.EventHandler(this.InsertFrameMenuItem_Click);
+            // 
+            // InsertNumFramesContextMenuItem
+            // 
+            resources.ApplyResources(this.InsertNumFramesContextMenuItem, "InsertNumFramesContextMenuItem");
+            this.InsertNumFramesContextMenuItem.Click += new System.EventHandler(this.InsertNumFramesMenuItem_Click);
+            // 
+            // CloneContextMenuItem
+            // 
+            resources.ApplyResources(this.CloneContextMenuItem, "CloneContextMenuItem");
+            this.CloneContextMenuItem.Click += new System.EventHandler(this.CloneFramesMenuItem_Click);
+            // 
+            // CloneXTimesContextMenuItem
+            // 
+            resources.ApplyResources(this.CloneXTimesContextMenuItem, "CloneXTimesContextMenuItem");
+            this.CloneXTimesContextMenuItem.Click += new System.EventHandler(this.CloneFramesXTimesMenuItem_Click);
+            // 
+            // toolStripSeparator18
+            // 
+            resources.ApplyResources(this.toolStripSeparator18, "toolStripSeparator18");
+            // 
+            // TruncateContextMenuItem
+            // 
+            resources.ApplyResources(this.TruncateContextMenuItem, "TruncateContextMenuItem");
+            this.TruncateContextMenuItem.Click += new System.EventHandler(this.TruncateMenuItem_Click);
+            // 
+            // BranchContextMenuItem
+            // 
+            resources.ApplyResources(this.BranchContextMenuItem, "BranchContextMenuItem");
+            this.BranchContextMenuItem.Click += new System.EventHandler(this.BranchContextMenuItem_Click);
+            // 
+            // StartFromNowSeparator
+            // 
+            resources.ApplyResources(this.StartFromNowSeparator, "StartFromNowSeparator");
+            // 
+            // StartNewProjectFromNowMenuItem
+            // 
+            resources.ApplyResources(this.StartNewProjectFromNowMenuItem, "StartNewProjectFromNowMenuItem");
+            this.StartNewProjectFromNowMenuItem.Click += new System.EventHandler(this.StartNewProjectFromNowMenuItem_Click);
+            // 
+            // StartANewProjectFromSaveRamMenuItem
+            // 
+            resources.ApplyResources(this.StartANewProjectFromSaveRamMenuItem, "StartANewProjectFromSaveRamMenuItem");
+            this.StartANewProjectFromSaveRamMenuItem.Click += new System.EventHandler(this.StartANewProjectFromSaveRamMenuItem_Click);
+            // 
+            // BookMarkControl
+            // 
+            resources.ApplyResources(this.BookMarkControl, "BookMarkControl");
+            this.BookMarkControl.Name = "BookMarkControl";
+            this.BookMarkControl.Tastudio = null;
+            // 
+            // BranchesMarkersSplit
+            // 
+            resources.ApplyResources(this.BranchesMarkersSplit, "BranchesMarkersSplit");
+            this.BranchesMarkersSplit.Name = "BranchesMarkersSplit";
+            // 
+            // BranchesMarkersSplit.Panel1
+            // 
+            resources.ApplyResources(this.BranchesMarkersSplit.Panel1, "BranchesMarkersSplit.Panel1");
+            this.BranchesMarkersSplit.Panel1.Controls.Add(this.BookMarkControl);
+            this.BranchesMarkersSplit.Panel1.Controls.Add(this.TasPlaybackBox);
+            this.toolTip1.SetToolTip(this.BranchesMarkersSplit.Panel1, resources.GetString("BranchesMarkersSplit.Panel1.ToolTip"));
+            // 
+            // BranchesMarkersSplit.Panel2
+            // 
+            resources.ApplyResources(this.BranchesMarkersSplit.Panel2, "BranchesMarkersSplit.Panel2");
+            this.BranchesMarkersSplit.Panel2.Controls.Add(this.MarkerControl);
+            this.toolTip1.SetToolTip(this.BranchesMarkersSplit.Panel2, resources.GetString("BranchesMarkersSplit.Panel2.ToolTip"));
+            this.BranchesMarkersSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
+            // 
+            // MainVertialSplit
+            // 
+            resources.ApplyResources(this.MainVertialSplit, "MainVertialSplit");
+            this.MainVertialSplit.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.MainVertialSplit.Name = "MainVertialSplit";
+            // 
+            // MainVertialSplit.Panel1
+            // 
+            resources.ApplyResources(this.MainVertialSplit.Panel1, "MainVertialSplit.Panel1");
+            this.toolTip1.SetToolTip(this.MainVertialSplit.Panel1, resources.GetString("MainVertialSplit.Panel1.ToolTip"));
+            // 
+            // MainVertialSplit.Panel2
+            // 
+            resources.ApplyResources(this.MainVertialSplit.Panel2, "MainVertialSplit.Panel2");
+            this.MainVertialSplit.Panel2.Controls.Add(this.BranchesMarkersSplit);
+            this.toolTip1.SetToolTip(this.MainVertialSplit.Panel2, resources.GetString("MainVertialSplit.Panel2.ToolTip"));
+            this.MainVertialSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainVerticalSplit_SplitterMoved);
+            // 
+            // ColumnRightClickMenu
+            // 
+            resources.ApplyResources(this.ColumnRightClickMenu, "ColumnRightClickMenu");
+            this.ColumnRightClickMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.AutoHoldContextMenuItem,
             this.HideColumnContextMenuItem,
             this.ShowColumnsContextMenuItem,
             this.NewInputRollContextMenuItem,
             this.DeleteInputRollContextMenuItem});
-			this.ColumnRightClickMenu.Name = "ColumnRightClickMenu";
-			this.ColumnRightClickMenu.Size = new System.Drawing.Size(181, 92);
-			this.ColumnRightClickMenu.Opened += new System.EventHandler(this.ColumnRightClickMenu_Opened);
-			// 
-			// AutoHoldContextMenuItem
-			// 
-			this.AutoHoldContextMenuItem.Name = "AutoHoldContextMenuItem";
-			this.AutoHoldContextMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.AutoHoldContextMenuItem.Text = "Auto-hold";
-			this.AutoHoldContextMenuItem.Click += new System.EventHandler(this.AutoHoldContextMenuItem_Click);
-			// 
-			// HideColumnContextMenuItem
-			// 
-			this.HideColumnContextMenuItem.Name = "HideColumnContextMenuItem";
-			this.HideColumnContextMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.HideColumnContextMenuItem.Text = "Hide column";
-			this.HideColumnContextMenuItem.Click += new System.EventHandler(this.HideColumnContextMenuItem_Click);
-			// 
-			// ShowColumnsContextMenuItem
-			// 
-			this.ShowColumnsContextMenuItem.Name = "ShowColumnsContextMenuItem";
-			this.ShowColumnsContextMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.ShowColumnsContextMenuItem.Text = "Show columns";
-			// 
-			// NewInputRollContextMenuItem
-			// 
-			this.NewInputRollContextMenuItem.Name = "NewInputRollContextMenuItem";
-			this.NewInputRollContextMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.NewInputRollContextMenuItem.Text = "New input roll";
-			this.NewInputRollContextMenuItem.Click += new System.EventHandler(this.NewInputRollContextMenuItem_Click);
-			// 
-			// DeleteInputRollContextMenuItem
-			// 
-			this.DeleteInputRollContextMenuItem.Name = "DeleteInputRollContextMenuItem";
-			this.DeleteInputRollContextMenuItem.Size = new System.Drawing.Size(180, 22);
-			this.DeleteInputRollContextMenuItem.Text = "Delete input roll";
-			this.DeleteInputRollContextMenuItem.Click += new System.EventHandler(this.DeleteInputRollContextMenuItem_Click);
-			// 
-			// TAStudio
-			// 
-			this.AllowDrop = true;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(509, 576);
-			this.Controls.Add(this.MainVertialSplit);
-			this.Controls.Add(this.TasStatusStrip);
-			this.Controls.Add(this.TASMenu);
-			this.KeyPreview = true;
-			this.MainMenuStrip = this.TASMenu;
-			this.MinimumSize = new System.Drawing.Size(200, 148);
-			this.Name = "TAStudio";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Deactivate += new System.EventHandler(this.TAStudio_Deactivate);
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
-			this.Load += new System.EventHandler(this.Tastudio_Load);
-			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
-			this.Resize += new System.EventHandler(this.TAStudio_Resize);
-			this.TASMenu.ResumeLayout(false);
-			this.TASMenu.PerformLayout();
-			this.TasStatusStrip.ResumeLayout(false);
-			this.TasStatusStrip.PerformLayout();
-			this.RightClickMenu.ResumeLayout(false);
-			this.BranchesMarkersSplit.Panel1.ResumeLayout(false);
-			this.BranchesMarkersSplit.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).EndInit();
-			this.BranchesMarkersSplit.ResumeLayout(false);
-			this.MainVertialSplit.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).EndInit();
-			this.MainVertialSplit.ResumeLayout(false);
-			this.ColumnRightClickMenu.ResumeLayout(false);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.ColumnRightClickMenu.Name = "ColumnRightClickMenu";
+            this.toolTip1.SetToolTip(this.ColumnRightClickMenu, resources.GetString("ColumnRightClickMenu.ToolTip"));
+            this.ColumnRightClickMenu.Opened += new System.EventHandler(this.ColumnRightClickMenu_Opened);
+            // 
+            // AutoHoldContextMenuItem
+            // 
+            resources.ApplyResources(this.AutoHoldContextMenuItem, "AutoHoldContextMenuItem");
+            this.AutoHoldContextMenuItem.Name = "AutoHoldContextMenuItem";
+            this.AutoHoldContextMenuItem.Click += new System.EventHandler(this.AutoHoldContextMenuItem_Click);
+            // 
+            // HideColumnContextMenuItem
+            // 
+            resources.ApplyResources(this.HideColumnContextMenuItem, "HideColumnContextMenuItem");
+            this.HideColumnContextMenuItem.Name = "HideColumnContextMenuItem";
+            this.HideColumnContextMenuItem.Click += new System.EventHandler(this.HideColumnContextMenuItem_Click);
+            // 
+            // ShowColumnsContextMenuItem
+            // 
+            resources.ApplyResources(this.ShowColumnsContextMenuItem, "ShowColumnsContextMenuItem");
+            this.ShowColumnsContextMenuItem.Name = "ShowColumnsContextMenuItem";
+            // 
+            // NewInputRollContextMenuItem
+            // 
+            resources.ApplyResources(this.NewInputRollContextMenuItem, "NewInputRollContextMenuItem");
+            this.NewInputRollContextMenuItem.Name = "NewInputRollContextMenuItem";
+            this.NewInputRollContextMenuItem.Click += new System.EventHandler(this.NewInputRollContextMenuItem_Click);
+            // 
+            // DeleteInputRollContextMenuItem
+            // 
+            resources.ApplyResources(this.DeleteInputRollContextMenuItem, "DeleteInputRollContextMenuItem");
+            this.DeleteInputRollContextMenuItem.Name = "DeleteInputRollContextMenuItem";
+            this.DeleteInputRollContextMenuItem.Click += new System.EventHandler(this.DeleteInputRollContextMenuItem_Click);
+            // 
+            // TAStudio
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AllowDrop = true;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.MainVertialSplit);
+            this.Controls.Add(this.TasStatusStrip);
+            this.Controls.Add(this.TASMenu);
+            this.KeyPreview = true;
+            this.MainMenuStrip = this.TASMenu;
+            this.Name = "TAStudio";
+            this.Deactivate += new System.EventHandler(this.TAStudio_Deactivate);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Tastudio_Closing);
+            this.Load += new System.EventHandler(this.Tastudio_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TAStudio_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
+            this.Resize += new System.EventHandler(this.TAStudio_Resize);
+            this.TASMenu.ResumeLayout(false);
+            this.TASMenu.PerformLayout();
+            this.TasStatusStrip.ResumeLayout(false);
+            this.TasStatusStrip.PerformLayout();
+            this.RightClickMenu.ResumeLayout(false);
+            this.BranchesMarkersSplit.Panel1.ResumeLayout(false);
+            this.BranchesMarkersSplit.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.BranchesMarkersSplit)).EndInit();
+            this.BranchesMarkersSplit.ResumeLayout(false);
+            this.MainVertialSplit.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.MainVertialSplit)).EndInit();
+            this.MainVertialSplit.ResumeLayout(false);
+            this.ColumnRightClickMenu.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

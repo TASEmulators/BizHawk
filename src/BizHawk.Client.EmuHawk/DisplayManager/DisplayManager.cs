@@ -4,6 +4,7 @@ using System.Drawing;
 using BizHawk.Bizware.Graphics;
 using BizHawk.Bizware.Graphics.Controls;
 using BizHawk.Client.Common;
+using BizHawk.Client.EmuHawk.TheLocalization;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
@@ -54,7 +55,8 @@ namespace BizHawk.Client.EmuHawk
 			IGL gl,
 			PresentationPanel presentationPanel,
 			Func<bool> getIsSecondaryThrottlingDisabled)
-				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateGuiRenderer())
+				: base(config, emulator, inputManager, movieSession, gl.DispMethodEnum, gl, gl.CreateGuiRenderer(),
+					  TheLocalizer.GetCustomizedFontPathAndFirstName()) // 在这里获取并传入本地化字体。 Try to use customized font.
 		{
 			_presentationPanel = presentationPanel;
 			_getIsSecondaryThrottlingDisabled = getIsSecondaryThrottlingDisabled;

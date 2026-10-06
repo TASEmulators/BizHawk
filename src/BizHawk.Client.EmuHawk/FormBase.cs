@@ -144,5 +144,18 @@ namespace BizHawk.Client.EmuHawk
 			// this is necessary to trap alt+char combinations so that only our hotkey system gets them
 			return (ModifierKeys & Keys.Alt) != 0 || base.ProcessDialogChar(charCode);
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormBase));
+            this.SuspendLayout();
+            // 
+            // FormBase
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "FormBase";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

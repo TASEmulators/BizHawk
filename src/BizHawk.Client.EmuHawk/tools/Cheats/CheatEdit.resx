@@ -117,4 +117,511 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;AddButton.Name" xml:space="preserve">
+    <value>AddButton</value>
+  </data>
+  <data name="NameLabel.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="&gt;&gt;AddressLabel.ZOrder" xml:space="preserve">
+    <value>19</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ValueBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 21</value>
+  </data>
+  <data name="&gt;&gt;AddressHexIndLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CompareTypeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 125</value>
+  </data>
+  <data name="&gt;&gt;SizeDropDown.Name" xml:space="preserve">
+    <value>SizeDropDown</value>
+  </data>
+  <data name="&gt;&gt;ValueLabel.Name" xml:space="preserve">
+    <value>ValueLabel</value>
+  </data>
+  <data name="SizeDropDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 20</value>
+  </data>
+  <data name="ValueHexIndLabel.Text" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="DisplayTypeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 219</value>
+  </data>
+  <data name="&gt;&gt;CompareBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.WatchValueBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;AddressBox.Name" xml:space="preserve">
+    <value>AddressBox</value>
+  </data>
+  <data name="SizeDropDown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 184</value>
+  </data>
+  <data name="&gt;&gt;NameBox.ZOrder" xml:space="preserve">
+    <value>20</value>
+  </data>
+  <data name="&gt;&gt;AddressHexIndLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="DomainDropDown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 154</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AddressBox.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;CompareLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DomainLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NameLabel.Name" xml:space="preserve">
+    <value>NameLabel</value>
+  </data>
+  <data name="&gt;&gt;CompareHexIndLabel.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="CompareTypeLabel.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>BottomLeft</value>
+  </data>
+  <data name="ValueLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>33, 69</value>
+  </data>
+  <data name="&gt;&gt;ValueBox.Name" xml:space="preserve">
+    <value>ValueBox</value>
+  </data>
+  <data name="DisplayTypeDropDown.Items1" xml:space="preserve">
+    <value>2 Byte</value>
+  </data>
+  <data name="AddButton.Text" xml:space="preserve">
+    <value>&amp;Add</value>
+  </data>
+  <data name="&gt;&gt;CompareLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CompareBox.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;AddressLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;BigEndianCheckBox.Name" xml:space="preserve">
+    <value>BigEndianCheckBox</value>
+  </data>
+  <data name="&gt;&gt;ValueLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropDown.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="EditButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 23</value>
+  </data>
+  <data name="&gt;&gt;DomainDropDown.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;DomainLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="AddressBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>113, 39</value>
+  </data>
+  <data name="DisplayTypeLabel.Text" xml:space="preserve">
+    <value>Display As</value>
+  </data>
+  <data name="&gt;&gt;ValueBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="EditButton.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="DisplayTypeDropDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 20</value>
+  </data>
+  <data name="AddressHexIndLabel.Text" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="AddressLabel.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="&gt;&gt;SizeLabel.Name" xml:space="preserve">
+    <value>SizeLabel</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>191, 298</value>
+  </data>
+  <data name="&gt;&gt;SizeLabel.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;CompareBox.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;ValueHexIndLabel.Name" xml:space="preserve">
+    <value>ValueHexIndLabel</value>
+  </data>
+  <data name="&gt;&gt;BigEndianCheckBox.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>CheatEdit</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="EditButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;DomainLabel.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="AddButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeDropDown.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;CompareBox.Name" xml:space="preserve">
+    <value>CompareBox</value>
+  </data>
+  <data name="NameBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="CompareTypeDropDown.Items" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BigEndianCheckBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropDown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;NameLabel.ZOrder" xml:space="preserve">
+    <value>21</value>
+  </data>
+  <data name="&gt;&gt;BigEndianCheckBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DomainDropDown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;EditButton.Name" xml:space="preserve">
+    <value>EditButton</value>
+  </data>
+  <data name="DomainLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 158</value>
+  </data>
+  <data name="SizeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>40, 190</value>
+  </data>
+  <data name="&gt;&gt;CompareBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="SizeDropDown.Items1" xml:space="preserve">
+    <value>2 Byte</value>
+  </data>
+  <data name="SizeDropDown.Items2" xml:space="preserve">
+    <value>4 Byte</value>
+  </data>
+  <data name="ValueBox.MaxLength" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="CompareBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>113, 91</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="AddressBox.MaxLength" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;ValueBox.ZOrder" xml:space="preserve">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;AddressBox.ZOrder" xml:space="preserve">
+    <value>17</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeLabel.Name" xml:space="preserve">
+    <value>DisplayTypeLabel</value>
+  </data>
+  <data name="&gt;&gt;AddressLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BigEndianCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="&gt;&gt;AddressBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;CompareHexIndLabel.Name" xml:space="preserve">
+    <value>CompareHexIndLabel</value>
+  </data>
+  <data name="DomainLabel.Text" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="AddButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 265</value>
+  </data>
+  <data name="ValueHexIndLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>92, 69</value>
+  </data>
+  <data name="&gt;&gt;ValueLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SizeLabel.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="ValueLabel.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="&gt;&gt;SizeDropDown.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeDropDown.Name" xml:space="preserve">
+    <value>CompareTypeDropDown</value>
+  </data>
+  <data name="EditButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ValueHexIndLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropDown.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;CompareLabel.Name" xml:space="preserve">
+    <value>CompareLabel</value>
+  </data>
+  <data name="&gt;&gt;ValueHexIndLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="DomainDropDown.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="CompareBox.MaxLength" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeDropDown.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CompareHexIndLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DisplayTypeDropDown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 213</value>
+  </data>
+  <data name="&gt;&gt;ValueHexIndLabel.ZOrder" xml:space="preserve">
+    <value>15</value>
+  </data>
+  <data name="CompareLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 95</value>
+  </data>
+  <data name="NameBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>70, 12</value>
+  </data>
+  <data name="NameBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 21</value>
+  </data>
+  <data name="DisplayTypeDropDown.Items2" xml:space="preserve">
+    <value>4 Byte</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeDropDown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;NameBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeLabel.Name" xml:space="preserve">
+    <value>CompareTypeLabel</value>
+  </data>
+  <data name="CompareHexIndLabel.Text" xml:space="preserve">
+    <value>0x</value>
+  </data>
+  <data name="CompareLabel.Text" xml:space="preserve">
+    <value>Compare</value>
+  </data>
+  <data name="DomainDropDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 20</value>
+  </data>
+  <data name="EditButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>113, 265</value>
+  </data>
+  <data name="&gt;&gt;AddressHexIndLabel.ZOrder" xml:space="preserve">
+    <value>18</value>
+  </data>
+  <data name="&gt;&gt;AddButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;CompareLabel.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="ValueBox.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="DisplayTypeDropDown.Items" xml:space="preserve">
+    <value>1 Byte</value>
+  </data>
+  <data name="CompareTypeLabel.Text" xml:space="preserve">
+    <value>Compare Type</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;NameLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeLabel.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;CompareTypeLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;AddressLabel.Name" xml:space="preserve">
+    <value>AddressLabel</value>
+  </data>
+  <data name="EditButton.Text" xml:space="preserve">
+    <value>Ov&amp;erwrite</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropDown.Name" xml:space="preserve">
+    <value>DisplayTypeDropDown</value>
+  </data>
+  <data name="DisplayTypeDropDown.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="AddressBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 21</value>
+  </data>
+  <data name="BigEndianCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>101, 242</value>
+  </data>
+  <data name="CompareTypeDropDown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 20</value>
+  </data>
+  <data name="AddButton.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="&gt;&gt;DomainLabel.Name" xml:space="preserve">
+    <value>DomainLabel</value>
+  </data>
+  <data name="&gt;&gt;ValueBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.WatchValueBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BigEndianCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;NameLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;EditButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="AddressHexIndLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>92, 43</value>
+  </data>
+  <data name="AddButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;CompareHexIndLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;DomainDropDown.Name" xml:space="preserve">
+    <value>DomainDropDown</value>
+  </data>
+  <data name="ValueBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>113, 65</value>
+  </data>
+  <data name="&gt;&gt;NameBox.Name" xml:space="preserve">
+    <value>NameBox</value>
+  </data>
+  <data name="SizeDropDown.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;EditButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="BigEndianCheckBox.Text" xml:space="preserve">
+    <value>Big Endian</value>
+  </data>
+  <data name="&gt;&gt;SizeLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ValueLabel.ZOrder" xml:space="preserve">
+    <value>16</value>
+  </data>
+  <data name="CompareBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 21</value>
+  </data>
+  <data name="&gt;&gt;AddButton.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;SizeDropDown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ValueBox.Text" xml:space="preserve">
+    <value>00</value>
+  </data>
+  <data name="AddButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 23</value>
+  </data>
+  <data name="BigEndianCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="&gt;&gt;DomainDropDown.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;SizeDropDown.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;AddressBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NameBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;SizeLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;EditButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AddressHexIndLabel.Name" xml:space="preserve">
+    <value>AddressHexIndLabel</value>
+  </data>
+  <data name="CompareTypeDropDown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>113, 122</value>
+  </data>
+  <data name="CompareTypeDropDown.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="SizeDropDown.Items" xml:space="preserve">
+    <value>1 Byte</value>
+  </data>
+  <data name="NameLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>32, 16</value>
+  </data>
+  <data name="&gt;&gt;AddButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AddressLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 43</value>
+  </data>
+  <data name="CompareHexIndLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>92, 95</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

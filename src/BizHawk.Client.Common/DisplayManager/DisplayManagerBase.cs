@@ -58,8 +58,10 @@ namespace BizHawk.Client.Common
 			IMovieSession movieSession,
 			EDispMethod dispMethod,
 			IGL gl,
-			IGuiRenderer renderer)
+			IGuiRenderer renderer,
+			string usedPixelFontPathAndFirstName = null) // to load localization font 试图在这里传入字体信息
 		{
+			_customizedFontPathAndFirstName = usedPixelFontPathAndFirstName;
 			GlobalConfig = config;
 			GlobalEmulator = emulator;
 			SnowyVP = new()
@@ -165,6 +167,7 @@ namespace BizHawk.Client.Common
 		// rendering resources:
 		protected readonly IGL _gl;
 
+		private string _customizedFontPathAndFirstName = null;
 		private StringRenderer _theOneFont;
 		private StringRenderer Font
 		{
@@ -181,6 +184,34 @@ namespace BizHawk.Client.Common
 
 				if (_theOneFont?.LineHeight != fontSize)
 				{
+					// 如果定义了字体，优先加载定制的字体。 If customized font is defined, the customized font will be loaded first.
+					if (!string.IsNullOrEmpty(_customizedFontPathAndFirstName)) 
+					{
+						using var fontInfoData = ReflectionCache.EmbeddedResourceStream($"Resources.{_customizedFontPathAndFirstName}{fontSize}px.fnt");
+						List<Stream> texturesData = new List<Stream>();
+						int index = 0;
+						while (true)
+						{
+							// Load textures resources: 加载纹理资源： Resources.fontname16px_0.png，_1.png ...
+							using var theTextureData = ReflectionCache.EmbeddedResourceStream($"Resources.{_customizedFontPathAndFirstName}{fontSize}px_{index}.png");
+							if (theTextureData == null)
+							{
+								//theTextureData [i] 为空表示最后一张纹理已加载。
+								//theTextureData [i] is null indicates that last texture have been loaded.
+								break;
+							}
+							texturesData.Add(theTextureData);
+							index += 1;
+						}
+						// 至少要有一张贴图才算有效字体
+						// At least one map is required to be a valid font. 
+						if (texturesData.Count > 0)
+						{
+							_theOneFont = new(_gl, fontInfoData, texturesData.ToArray());
+							return _theOneFont;
+						}
+					}
+					// The old font loader can only load one font. 旧的字体加载逻辑，只能加载固定字体。
 					using var fontInfo = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px.fnt");
 					using var tex = ReflectionCache.EmbeddedResourceStream($"Resources.courier{fontSize}px_0.png");
 					_theOneFont = new(_gl, fontInfo, tex);

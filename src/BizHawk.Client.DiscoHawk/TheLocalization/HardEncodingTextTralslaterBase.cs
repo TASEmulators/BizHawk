@@ -8,10 +8,6 @@ namespace BizHawk.Client.DiscoHawk.TheLocalization
 		// The corresponding translator will be applied according to the cultureName.
 		internal string cultureName = "default";
 
-		// Winform 历史遗留问题：在一些情况下，cultureName 会隐式地转换为意料之外的值，所以需要映射处理。
-		// Winform legacy: In some cases, cultureName will be implicitly converted to unexpected values, so the mapper is needed. 
-		internal ConcurrentDictionary<string, string> cultureNameMapper = new ConcurrentDictionary<string, string>();
-
 		// The dictionary used to translate. 字典，文字对照表。
 		protected ConcurrentDictionary<string, string> theDictionary = new ConcurrentDictionary<string, string>();
 
