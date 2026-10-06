@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							else
 							{
 								ppu.vec_scale = portA_ret;
-								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
+//								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
 							}
 						}
 						else
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Vectrex
 							else
 							{
 								ppu.vec_scale = portA_ret;
-								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
+//								if (portA_ret != 0) { Console.WriteLine("scale: " + portA_ret); }
 							}
 						}
 						else
