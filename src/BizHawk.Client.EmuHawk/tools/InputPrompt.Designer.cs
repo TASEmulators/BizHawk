@@ -28,74 +28,58 @@
         /// </summary>
         private void InitializeComponent()
         {
-			this.PromptLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.PromptBox = new System.Windows.Forms.TextBox();
-			this.OK = new System.Windows.Forms.Button();
-			this.Cancel = new System.Windows.Forms.Button();
-			this.SuspendLayout();
-			// 
-			// PromptLabel
-			// 
-			this.PromptLabel.Location = new System.Drawing.Point(33, 9);
-			this.PromptLabel.Name = "PromptLabel";
-			this.PromptLabel.Text = "Enter a value:";
-			// 
-			// PromptBox
-			// 
-			this.PromptBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.PromptBox.Location = new System.Drawing.Point(36, 25);
-			this.PromptBox.Name = "PromptBox";
-			this.PromptBox.Size = new System.Drawing.Size(164, 20);
-			this.PromptBox.TabIndex = 1;
-			this.PromptBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PromptBox_KeyPress);
-			// 
-			// OK
-			// 
-			this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OK.Location = new System.Drawing.Point(36, 67);
-			this.OK.Name = "OK";
-			this.OK.Size = new System.Drawing.Size(75, 23);
-			this.OK.TabIndex = 2;
-			this.OK.Text = "&OK";
-			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.Ok_Click);
-			// 
-			// Cancel
-			// 
-			this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.Cancel.Location = new System.Drawing.Point(125, 67);
-			this.Cancel.Name = "Cancel";
-			this.Cancel.Size = new System.Drawing.Size(75, 23);
-			this.Cancel.TabIndex = 3;
-			this.Cancel.Text = "&Cancel";
-			this.Cancel.UseVisualStyleBackColor = true;
-			this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
-			// 
-			// InputPrompt
-			// 
-			this.AcceptButton = this.OK;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.CancelButton = this.Cancel;
-			this.ClientSize = new System.Drawing.Size(235, 106);
-			this.Controls.Add(this.Cancel);
-			this.Controls.Add(this.OK);
-			this.Controls.Add(this.PromptBox);
-			this.Controls.Add(this.PromptLabel);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(241, 138);
-			this.Name = "InputPrompt";
-			this.ShowIcon = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Input Prompt";
-			this.TopMost = true;
-			this.Load += new System.EventHandler(this.InputPrompt_Load);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InputPrompt));
+            this.PromptLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.PromptBox = new System.Windows.Forms.TextBox();
+            this.OK = new System.Windows.Forms.Button();
+            this.Cancel = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // PromptLabel
+            // 
+            resources.ApplyResources(this.PromptLabel, "PromptLabel");
+            this.PromptLabel.Name = "PromptLabel";
+            // 
+            // PromptBox
+            // 
+            resources.ApplyResources(this.PromptBox, "PromptBox");
+            this.PromptBox.Name = "PromptBox";
+            this.PromptBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.PromptBox_KeyPress);
+            // 
+            // OK
+            // 
+            resources.ApplyResources(this.OK, "OK");
+            this.OK.Name = "OK";
+            this.OK.UseVisualStyleBackColor = true;
+            this.OK.Click += new System.EventHandler(this.Ok_Click);
+            // 
+            // Cancel
+            // 
+            resources.ApplyResources(this.Cancel, "Cancel");
+            this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.Cancel.Name = "Cancel";
+            this.Cancel.UseVisualStyleBackColor = true;
+            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+            // 
+            // InputPrompt
+            // 
+            this.AcceptButton = this.OK;
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.Cancel;
+            this.Controls.Add(this.Cancel);
+            this.Controls.Add(this.OK);
+            this.Controls.Add(this.PromptBox);
+            this.Controls.Add(this.PromptLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "InputPrompt";
+            this.ShowIcon = false;
+            this.TopMost = true;
+            this.Load += new System.EventHandler(this.InputPrompt_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

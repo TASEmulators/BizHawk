@@ -118,19 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
-    <value>文件（&amp;F）</value>
+    <value>文件(&amp;F)</value>
   </data>
   <data name="DebugSubMenu.Text" xml:space="preserve">
-    <value>调试（&amp;D）</value>
+    <value>调试(&amp;D)</value>
   </data>
   <data name="StepIntoMenuItem.Text" xml:space="preserve">
-    <value>单步进入（&amp;I）</value>
+    <value>单步进入(&amp;I)</value>
   </data>
   <data name="StepOverMenuItem.Text" xml:space="preserve">
-    <value>单步跳过（&amp;V）</value>
+    <value>单步跳过(&amp;V)</value>
   </data>
   <data name="StepOutMenuItem.Text" xml:space="preserve">
-    <value>单步跳出（&amp;T）</value>
+    <value>单步跳出(&amp;T)</value>
+  </data>
+  <data name="RefreshMenuItem.Text" xml:space="preserve">
+    <value>刷新</value>
   </data>
   <data name="BreakpointsGroupBox.Text" xml:space="preserve">
     <value>断点</value>
@@ -144,6 +147,9 @@
   </data>
   <data name="ToPCBtn.Text" xml:space="preserve">
     <value>跳转到 PC</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>CPU：使用 '[' 或 ']' 来改变地址，按住 'shift' 加速。</value>
   </data>
   <data name="DisassemblerBox.Text" xml:space="preserve">
     <value>反汇编器</value>
@@ -160,22 +166,10 @@
   <data name="SeekToBtn.Text" xml:space="preserve">
     <value>搜索至：</value>
   </data>
-  <data name="SeekToBtn.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="SeekToBox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="CancelSeekBtn.Text" xml:space="preserve">
     <value>取消</value>
   </data>
-  <data name="CancelSeekBtn.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="RunBtn.Text" xml:space="preserve">
     <value>运行</value>
-  </data>
-  <data name="RunBtn.ToolTip" xml:space="preserve">
-    <value />
   </data>
 </root>

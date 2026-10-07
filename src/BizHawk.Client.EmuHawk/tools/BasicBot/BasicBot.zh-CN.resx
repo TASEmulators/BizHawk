@@ -117,35 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FileSubMenu.Text" xml:space="preserve">
-    <value>文件（&amp;F）</value>
-  </data>
-  <data name="OptionsSubMenu.Text" xml:space="preserve">
-    <value>选项（&amp;O）</value>
-  </data>
-  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
-    <value>帮助</value>
-  </data>
   <data name="NewMenuItem.Text" xml:space="preserve">
-    <value>新建（&amp;N）</value>
+    <value>新建(&amp;N)</value>
   </data>
   <data name="OpenMenuItem.Text" xml:space="preserve">
-    <value>打开（&amp;O）</value>
+    <value>打开(&amp;O)</value>
   </data>
   <data name="SaveMenuItem.Text" xml:space="preserve">
-    <value>保存（&amp;S）</value>
+    <value>保存(&amp;S)</value>
   </data>
   <data name="SaveAsMenuItem.Text" xml:space="preserve">
-    <value>另存为（&amp;A）</value>
+    <value>另存为(&amp;A)</value>
   </data>
   <data name="RecentSubMenu.Text" xml:space="preserve">
     <value>历史</value>
   </data>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>文件(&amp;F)</value>
+  </data>
   <data name="MemoryDomainsMenuItem.Text" xml:space="preserve">
     <value>内存域</value>
-  </data>
-  <data name="DataSizeMenuItem.Text" xml:space="preserve">
-    <value>数据大小</value>
   </data>
   <data name="_1ByteMenuItem.Text" xml:space="preserve">
     <value>1 字节</value>
@@ -156,26 +147,32 @@
   <data name="_4ByteMenuItem.Text" xml:space="preserve">
     <value>4 字节</value>
   </data>
+  <data name="DataSizeMenuItem.Text" xml:space="preserve">
+    <value>数据大小</value>
+  </data>
   <data name="BigEndianMenuItem.Text" xml:space="preserve">
     <value>大端序</value>
   </data>
   <data name="TurboWhileBottingMenuItem.Text" xml:space="preserve">
     <value>机器人运行时快进</value>
   </data>
+  <data name="OptionsSubMenu.Text" xml:space="preserve">
+    <value>选项(&amp;O)</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>帮助</value>
+  </data>
   <data name="ControlsBox.Text" xml:space="preserve">
     <value>控制器</value>
   </data>
-  <data name="BestGroupBox.Text" xml:space="preserve">
-    <value>最佳</value>
-  </data>
   <data name="btnCopyBestInput.Text" xml:space="preserve">
-    <value>复制（&amp;C）</value>
+    <value>复制(&amp;C)</value>
   </data>
   <data name="PlayBestButton.Text" xml:space="preserve">
-    <value>开始（&amp;P）</value>
+    <value>开始(&amp;P)</value>
   </data>
   <data name="ClearBestButton.Text" xml:space="preserve">
-    <value>清空（&amp;C）</value>
+    <value>清空(&amp;C)</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BestAttemptNumberLabel.Location" type="System.Drawing.Point, System.Drawing">
@@ -198,6 +195,9 @@
   </data>
   <data name="label13.Text" xml:space="preserve">
     <value>主值：</value>
+  </data>
+  <data name="BestGroupBox.Text" xml:space="preserve">
+    <value>最佳</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>10, 2</value>
@@ -287,7 +287,7 @@
     <value>最佳</value>
   </data>
   <data name="StopBtn.Text" xml:space="preserve">
-    <value>停止（&amp;S）</value>
+    <value>停止(&amp;S)</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>开始于：</value>

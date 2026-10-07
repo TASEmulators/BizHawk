@@ -48,6 +48,7 @@
             // 
             resources.ApplyResources(this.AddBtn, "AddBtn");
             this.AddBtn.Name = "AddBtn";
+            this.toolTip1.SetToolTip(this.AddBtn, resources.GetString("AddBtn.ToolTip"));
             this.AddBtn.UseVisualStyleBackColor = true;
             this.AddBtn.Click += new System.EventHandler(this.AddButton_Click);
             // 
@@ -59,17 +60,20 @@
             this.BreakpointTypeGroupbox.Controls.Add(this.ReadRadio);
             this.BreakpointTypeGroupbox.Name = "BreakpointTypeGroupbox";
             this.BreakpointTypeGroupbox.TabStop = false;
+            this.toolTip1.SetToolTip(this.BreakpointTypeGroupbox, resources.GetString("BreakpointTypeGroupbox.ToolTip"));
             // 
             // ExecuteRadio
             // 
             resources.ApplyResources(this.ExecuteRadio, "ExecuteRadio");
             this.ExecuteRadio.Name = "ExecuteRadio";
+            this.toolTip1.SetToolTip(this.ExecuteRadio, resources.GetString("ExecuteRadio.ToolTip"));
             this.ExecuteRadio.UseVisualStyleBackColor = true;
             // 
             // WriteRadio
             // 
             resources.ApplyResources(this.WriteRadio, "WriteRadio");
             this.WriteRadio.Name = "WriteRadio";
+            this.toolTip1.SetToolTip(this.WriteRadio, resources.GetString("WriteRadio.ToolTip"));
             this.WriteRadio.UseVisualStyleBackColor = true;
             // 
             // ReadRadio
@@ -78,12 +82,14 @@
             this.ReadRadio.Checked = true;
             this.ReadRadio.Name = "ReadRadio";
             this.ReadRadio.TabStop = true;
+            this.toolTip1.SetToolTip(this.ReadRadio, resources.GetString("ReadRadio.ToolTip"));
             this.ReadRadio.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            this.toolTip1.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
             // 
             // CancelBtn
             // 
@@ -134,6 +140,7 @@
             this.MinimizeBox = false;
             this.Name = "AddBreakpointDialog";
             this.ShowIcon = false;
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.AddBreakpointDialog_Load);
             this.BreakpointTypeGroupbox.ResumeLayout(false);
             this.BreakpointTypeGroupbox.PerformLayout();

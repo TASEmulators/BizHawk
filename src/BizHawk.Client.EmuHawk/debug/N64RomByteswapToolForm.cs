@@ -80,5 +80,18 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			});
 			ResumeLayout();
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64RomByteswapToolForm));
+            this.SuspendLayout();
+            // 
+            // N64RomByteswapToolForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "N64RomByteswapToolForm";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

@@ -28,31 +28,27 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.btnExport = new System.Windows.Forms.Button();
-			this.SuspendLayout();
-			// 
-			// btnExport
-			// 
-			this.btnExport.Location = new System.Drawing.Point(57, 29);
-			this.btnExport.Name = "btnExport";
-			this.btnExport.Size = new System.Drawing.Size(75, 23);
-			this.btnExport.TabIndex = 0;
-			this.btnExport.Text = "Export";
-			this.btnExport.UseVisualStyleBackColor = true;
-			this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
-			// 
-			// SynclessRecordingTools
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(274, 128);
-			this.Controls.Add(this.btnExport);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "SynclessRecordingTools";
-			this.Text = "Syncless Recording";
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SynclessRecordingTools));
+            this.btnExport = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // btnExport
+            // 
+            resources.ApplyResources(this.btnExport, "btnExport");
+            this.btnExport.Name = "btnExport";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.BtnExport_Click);
+            // 
+            // SynclessRecordingTools
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.btnExport);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "SynclessRecordingTools";
+            this.ResumeLayout(false);
 
 		}
 

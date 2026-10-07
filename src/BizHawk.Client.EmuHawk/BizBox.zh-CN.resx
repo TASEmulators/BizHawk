@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OK.Text" xml:space="preserve">
-    <value>确定（&amp;O）</value>
+    <value>确定(&amp;O)</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="linkLabel1.Size" type="System.Drawing.Size, System.Drawing">
@@ -137,7 +137,7 @@
     <value>贡献者</value>
   </data>
   <data name="DeveloperBuildLabel.Text" xml:space="preserve">
-    <value>开发人员构建</value>
+    <value>开发构建版</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>关于 EmuHawk (by 猫妖喵长老汉化)</value>

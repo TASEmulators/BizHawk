@@ -135,5 +135,18 @@ namespace BizHawk.Client.EmuHawk
 				return createParams;
 			}
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScreenshotForm));
+            this.SuspendLayout();
+            // 
+            // ScreenshotForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "ScreenshotForm";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

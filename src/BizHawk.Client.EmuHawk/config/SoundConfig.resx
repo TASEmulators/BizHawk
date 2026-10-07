@@ -117,4 +117,563 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>404, 258</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="cbEnableRWFF.Location" type="System.Drawing.Point, System.Drawing">
+    <value>58, 18</value>
+  </data>
+  <data name="&gt;&gt;Cancel.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;grpOutputMethod.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cbEnableRWFF.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbEnableRWFF.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;OK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbEnableNormal.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="cbEnableMaster.Size" type="System.Drawing.Size, System.Drawing">
+    <value>138, 16</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="nudNormal.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 206</value>
+  </data>
+  <data name="rbOutputMethodOpenAL.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="grpOutputMethod.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;tbNormal.Name" xml:space="preserve">
+    <value>tbNormal</value>
+  </data>
+  <data name="listBoxSoundDevices.ItemHeight" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="cbMuteFrameAdvance.Location" type="System.Drawing.Point, System.Drawing">
+    <value>139, 63</value>
+  </data>
+  <data name="&gt;&gt;grpSoundVol.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="rbOutputMethodXAudio2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;grpOutputMethod.Name" xml:space="preserve">
+    <value>grpOutputMethod</value>
+  </data>
+  <data name="&gt;&gt;nudRWFF.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="tbNormal.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 49</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeLabel.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodOpenAL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;grpOutputMethod.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="nudNormal.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="OK.Text" xml:space="preserve">
+    <value>&amp;OK</value>
+  </data>
+  <data name="SoundDeviceLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>135, 82</value>
+  </data>
+  <data name="cbEnableNormal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 16</value>
+  </data>
+  <data name="&gt;&gt;Cancel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbEnableRWFF.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="nudNormal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 21</value>
+  </data>
+  <data name="cbEnableMaster.Text" xml:space="preserve">
+    <value>Sound Master Enable</value>
+  </data>
+  <data name="rbOutputMethodOpenAL.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 32</value>
+  </data>
+  <data name="OK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>SoundConfig</value>
+  </data>
+  <data name="&gt;&gt;grpSoundVol.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BufferSizeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>135, 194</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;cbEnableMaster.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="rbOutputMethodOpenAL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="grpOutputMethod.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 67</value>
+  </data>
+  <data name="&gt;&gt;grpOutputMethod.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="cbEnableRWFF.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 16</value>
+  </data>
+  <data name="Cancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;cbEnableRWFF.Name" xml:space="preserve">
+    <value>cbEnableRWFF</value>
+  </data>
+  <data name="&gt;&gt;Cancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbEnableMaster.Name" xml:space="preserve">
+    <value>cbEnableMaster</value>
+  </data>
+  <data name="tbRWFF.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;nudRWFF.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Controls whether cores
+even generate audio.</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodOpenAL.Parent" xml:space="preserve">
+    <value>grpOutputMethod</value>
+  </data>
+  <data name="Cancel.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;OK.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="nudRWFF.Location" type="System.Drawing.Point, System.Drawing">
+    <value>58, 206</value>
+  </data>
+  <data name="&gt;&gt;tbRWFF.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="nudRWFF.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 21</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 39</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeUnitsLabel.Name" xml:space="preserve">
+    <value>BufferSizeUnitsLabel</value>
+  </data>
+  <data name="&gt;&gt;cbEnableRWFF.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;grpSoundVol.Name" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeUnitsLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;cbEnableNormal.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodXAudio2.Parent" xml:space="preserve">
+    <value>grpOutputMethod</value>
+  </data>
+  <data name="&gt;&gt;SoundDeviceLabel.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;Cancel.Name" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="&gt;&gt;tbNormal.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;listBoxSoundDevices.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;grpSoundVol.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Sound Configuration</value>
+  </data>
+  <data name="&gt;&gt;OK.Name" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="grpSoundVol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>117, 235</value>
+  </data>
+  <data name="listBoxSoundDevices.Location" type="System.Drawing.Point, System.Drawing">
+    <value>138, 102</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeNumeric.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="tbNormal.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cbMuteFrameAdvance.Name" xml:space="preserve">
+    <value>cbMuteFrameAdvance</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="BufferSizeUnitsLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>267, 194</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>279, 242</value>
+  </data>
+  <data name="BufferSizeUnitsLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="cbEnableMaster.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;listBoxSoundDevices.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="grpSoundVol.Text" xml:space="preserve">
+    <value>Volume</value>
+  </data>
+  <data name="&gt;&gt;cbEnableNormal.Name" xml:space="preserve">
+    <value>cbEnableNormal</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BufferSizeNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 21</value>
+  </data>
+  <data name="tbRWFF.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 151</value>
+  </data>
+  <data name="&gt;&gt;nudNormal.Name" xml:space="preserve">
+    <value>nudNormal</value>
+  </data>
+  <data name="&gt;&gt;nudRWFF.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tbNormal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 151</value>
+  </data>
+  <data name="cbMuteFrameAdvance.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;SoundDeviceLabel.Name" xml:space="preserve">
+    <value>SoundDeviceLabel</value>
+  </data>
+  <data name="&gt;&gt;tbRWFF.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="OK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>236, 225</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;cbEnableRWFF.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="listBoxSoundDevices.Size" type="System.Drawing.Size, System.Drawing">
+    <value>254, 88</value>
+  </data>
+  <data name="&gt;&gt;tbRWFF.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="&gt;&gt;tbNormal.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbMuteFrameAdvance.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="SoundDeviceLabel.Text" xml:space="preserve">
+    <value>Sound Device:</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="cbEnableMaster.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="cbEnableNormal.Text" xml:space="preserve">
+    <value>Ena.</value>
+  </data>
+  <data name="grpOutputMethod.Location" type="System.Drawing.Point, System.Drawing">
+    <value>292, 11</value>
+  </data>
+  <data name="listBoxSoundDevices.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="Cancel.Text" xml:space="preserve">
+    <value>&amp;Cancel</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeUnitsLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="rbOutputMethodXAudio2.Text" xml:space="preserve">
+    <value>XAudio2</value>
+  </data>
+  <data name="listBoxSoundDevices.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;cbEnableMaster.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BufferSizeNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>202, 192</value>
+  </data>
+  <data name="nudRWFF.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="cbEnableNormal.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="rbOutputMethodXAudio2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>56, 39</value>
+  </data>
+  <data name="&gt;&gt;tbNormal.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodXAudio2.Name" xml:space="preserve">
+    <value>rbOutputMethodXAudio2</value>
+  </data>
+  <data name="cbMuteFrameAdvance.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="BufferSizeLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="rbOutputMethodXAudio2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 16</value>
+  </data>
+  <data name="&gt;&gt;nudRWFF.Name" xml:space="preserve">
+    <value>nudRWFF</value>
+  </data>
+  <data name="&gt;&gt;OK.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbMuteFrameAdvance.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cbEnableMaster.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="cbEnableMaster.Location" type="System.Drawing.Point, System.Drawing">
+    <value>139, 15</value>
+  </data>
+  <data name="BufferSizeUnitsLabel.Text" xml:space="preserve">
+    <value>milliseconds</value>
+  </data>
+  <data name="&gt;&gt;cbMuteFrameAdvance.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodXAudio2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeUnitsLabel.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="grpOutputMethod.Text" xml:space="preserve">
+    <value>Output Method</value>
+  </data>
+  <data name="Cancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodOpenAL.Name" xml:space="preserve">
+    <value>rbOutputMethodOpenAL</value>
+  </data>
+  <data name="&gt;&gt;cbMuteFrameAdvance.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbEnableNormal.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="tbRWFF.Location" type="System.Drawing.Point, System.Drawing">
+    <value>64, 49</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>RW &amp;&amp; FF</value>
+  </data>
+  <data name="&gt;&gt;tbRWFF.Name" xml:space="preserve">
+    <value>tbRWFF</value>
+  </data>
+  <data name="&gt;&gt;nudNormal.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="BufferSizeNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="tbNormal.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
+    <value>Vertical</value>
+  </data>
+  <data name="rbOutputMethodOpenAL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 40</value>
+  </data>
+  <data name="BufferSizeLabel.Text" xml:space="preserve">
+    <value>Buffer Size:</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeNumeric.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;listBoxSoundDevices.Name" xml:space="preserve">
+    <value>listBoxSoundDevices</value>
+  </data>
+  <data name="grpSoundVol.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="grpSoundVol.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 11</value>
+  </data>
+  <data name="cbEnableRWFF.Text" xml:space="preserve">
+    <value>Ena.</value>
+  </data>
+  <data name="&gt;&gt;nudNormal.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbOutputMethodOpenAL.Text" xml:space="preserve">
+    <value>OpenAL</value>
+  </data>
+  <data name="BufferSizeNumeric.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="rbOutputMethodXAudio2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;SoundDeviceLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeNumeric.Name" xml:space="preserve">
+    <value>BufferSizeNumeric</value>
+  </data>
+  <data name="label3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="tbRWFF.Orientation" type="System.Windows.Forms.Orientation, System.Windows.Forms">
+    <value>Vertical</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodXAudio2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="OK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;nudNormal.Parent" xml:space="preserve">
+    <value>grpSoundVol</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbEnableNormal.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="cbEnableNormal.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;BufferSizeLabel.Name" xml:space="preserve">
+    <value>BufferSizeLabel</value>
+  </data>
+  <data name="&gt;&gt;rbOutputMethodOpenAL.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="cbMuteFrameAdvance.Text" xml:space="preserve">
+    <value>Mute Frame Advance</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;listBoxSoundDevices.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Cancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>317, 225</value>
+  </data>
+  <data name="&gt;&gt;SoundDeviceLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="OK.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

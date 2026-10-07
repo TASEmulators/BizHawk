@@ -152,6 +152,9 @@
   <data name="ReadRadio.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 18</value>
   </data>
+  <data name="BreakpointTypeGroupbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;BreakpointTypeGroupbox.Name" xml:space="preserve">
     <value>BreakpointTypeGroupbox</value>
   </data>
@@ -161,17 +164,8 @@
   <data name="&gt;&gt;AddressBox.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="label2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="AddressBox.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
-  </data>
-  <data name="WriteRadio.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="&gt;&gt;AddressMaskBox.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ReadRadio.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -186,14 +180,11 @@
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="ReadRadio.Text" xml:space="preserve">
-    <value>Read</value>
-  </data>
   <data name="AddressBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>135, 21</value>
   </data>
-  <data name="&gt;&gt;BreakpointTypeGroupbox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;AddressMaskBox.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="CancelBtn.Location" type="System.Drawing.Point, System.Drawing">
     <value>83, 106</value>
@@ -201,17 +192,23 @@
   <data name="label2.Text" xml:space="preserve">
     <value>Mask 0x</value>
   </data>
-  <data name="ReadRadio.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;BreakpointTypeGroupbox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="ExecuteRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>119, 18</value>
   </data>
   <data name="&gt;&gt;AddressBox.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;CancelBtn.Name" xml:space="preserve">
+    <value>CancelBtn</value>
+  </data>
   <data name="CancelBtn.TabIndex" type="System.Int32, mscorlib">
     <value>101</value>
   </data>
-  <data name="ExecuteRadio.Location" type="System.Drawing.Point, System.Drawing">
-    <value>119, 18</value>
+  <data name="ReadRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="BreakpointTypeGroupbox.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -222,11 +219,17 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="ExecuteRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;WriteRadio.Name" xml:space="preserve">
     <value>WriteRadio</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="CancelBtn.Text" xml:space="preserve">
     <value>&amp;Cancel</value>
@@ -273,6 +276,9 @@
   <data name="AddressBox.Text" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="AddressBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="WriteRadio.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
@@ -297,14 +303,17 @@
   <data name="AddressMaskBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>77, 29</value>
   </data>
+  <data name="ExecuteRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="AddressBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>77, 5</value>
   </data>
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;CancelBtn.Name" xml:space="preserve">
-    <value>CancelBtn</value>
+  <data name="&gt;&gt;BreakpointTypeGroupbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;AddBtn.ZOrder" xml:space="preserve">
     <value>6</value>
@@ -312,13 +321,16 @@
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="CancelBtn.Size" type="System.Drawing.Size, System.Drawing">
     <value>60, 21</value>
   </data>
   <data name="ExecuteRadio.Size" type="System.Drawing.Size, System.Drawing">
     <value>65, 16</value>
   </data>
-  <data name="AddressBox.ToolTip" xml:space="preserve">
+  <data name="label2.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="CancelBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -330,6 +342,9 @@
   <data name="AddBtn.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
   </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;ExecuteRadio.Name" xml:space="preserve">
     <value>ExecuteRadio</value>
   </data>
@@ -339,10 +354,16 @@
   <data name="&gt;&gt;ExecuteRadio.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="WriteRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="WriteRadio.Location" type="System.Drawing.Point, System.Drawing">
     <value>63, 18</value>
   </data>
   <data name="CancelBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddBtn.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="WriteRadio.Text" xml:space="preserve">
@@ -351,14 +372,14 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>224, 135</value>
   </data>
-  <data name="ExecuteRadio.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="ReadRadio.Text" xml:space="preserve">
+    <value>Read</value>
   </data>
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;AddressMaskBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;WriteRadio.Parent" xml:space="preserve">
     <value>BreakpointTypeGroupbox</value>
@@ -387,11 +408,11 @@
   <data name="AddressMaskBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>135, 21</value>
   </data>
-  <data name="&gt;&gt;BreakpointTypeGroupbox.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="ReadRadio.ToolTip" xml:space="preserve">
+    <value />
   </data>
-  <data name="&gt;&gt;AddressMaskBox.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="WriteRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="AddressMaskBox.Text" xml:space="preserve">
     <value>FFFFFFFF</value>

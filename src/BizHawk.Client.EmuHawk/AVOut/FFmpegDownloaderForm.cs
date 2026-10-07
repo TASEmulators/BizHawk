@@ -34,5 +34,19 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override bool PreChmodCheck(FileStream extracted)
 			=> SHA256Checksum.ComputeDigestHex(extracted.ReadAllBytes()) == FFmpegService.DownloadSHA256Checksum;
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FFmpegDownloaderForm));
+            this.SuspendLayout();
+            // 
+            // FFmpegDownloaderForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "FFmpegDownloaderForm";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+		}
 	}
 }

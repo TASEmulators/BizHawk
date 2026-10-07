@@ -30,42 +30,44 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.menuStrip1 = new BizHawk.WinForms.Controls.MenuStripEx();
-			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.NewMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.OpenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AppendMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.miAutoStart = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.miAutoSave = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.miAutoResume = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ClearMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DisassembleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStrip1 = new BizHawk.WinForms.Controls.ToolStripEx();
-			this.tsbLoggingActive = new System.Windows.Forms.ToolStripButton();
-			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.tsbViewUpdate = new System.Windows.Forms.ToolStripButton();
-			this.tsbViewStyle = new System.Windows.Forms.ToolStripComboBox();
-			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.tsbExportText = new System.Windows.Forms.ToolStripButton();
-			this.lvCDL = new BizHawk.Client.EmuHawk.InputRoll();
-			this.menuStrip1.SuspendLayout();
-			this.toolStrip1.SuspendLayout();
-			this.SuspendLayout();
-			//
-			// menuStrip1
-			//
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CDL));
+            this.menuStrip1 = new BizHawk.WinForms.Controls.MenuStripEx();
+            this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.NewMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.OpenMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveAsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.AppendMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.RecentSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.miAutoStart = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.miAutoSave = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.miAutoResume = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.ClearMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DisassembleMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStrip1 = new BizHawk.WinForms.Controls.ToolStripEx();
+            this.tsbLoggingActive = new System.Windows.Forms.ToolStripButton();
+            this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.tsbViewUpdate = new System.Windows.Forms.ToolStripButton();
+            this.tsbViewStyle = new System.Windows.Forms.ToolStripComboBox();
+            this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.tsbExportText = new System.Windows.Forms.ToolStripButton();
+            this.lvCDL = new BizHawk.Client.EmuHawk.InputRoll();
+            this.menuStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // menuStrip1
+            // 
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu});
-			this.menuStrip1.TabIndex = 2;
-			//
-			// FileSubMenu
-			//
-			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // FileSubMenu
+            // 
+            resources.ApplyResources(this.FileSubMenu, "FileSubMenu");
+            this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewMenuItem,
             this.OpenMenuItem,
             this.SaveMenuItem,
@@ -78,170 +80,161 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator2,
             this.ClearMenuItem,
             this.DisassembleMenuItem});
-			this.FileSubMenu.Text = "&File";
-			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
-			//
-			// NewMenuItem
-			//
-			this.NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-			this.NewMenuItem.Text = "&New";
-			this.NewMenuItem.Click += new System.EventHandler(this.NewMenuItem_Click);
-			//
-			// OpenMenuItem
-			//
-			this.OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.OpenMenuItem.Text = "&Open...";
-			this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
-			//
-			// SaveMenuItem
-			//
-			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Text = "&Save";
-			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
-			//
-			// SaveAsMenuItem
-			//
-			this.SaveAsMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
-            | System.Windows.Forms.Keys.S)));
-			this.SaveAsMenuItem.Text = "&Save As...";
-			this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
-			//
-			// AppendMenuItem
-			//
-			this.AppendMenuItem.Text = "&Append File...";
-			this.AppendMenuItem.Click += new System.EventHandler(this.AppendMenuItem_Click);
-			//
-			// RecentSubMenu
-			//
-			this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
+            // 
+            // NewMenuItem
+            // 
+            resources.ApplyResources(this.NewMenuItem, "NewMenuItem");
+            this.NewMenuItem.Click += new System.EventHandler(this.NewMenuItem_Click);
+            // 
+            // OpenMenuItem
+            // 
+            resources.ApplyResources(this.OpenMenuItem, "OpenMenuItem");
+            this.OpenMenuItem.Click += new System.EventHandler(this.OpenMenuItem_Click);
+            // 
+            // SaveMenuItem
+            // 
+            resources.ApplyResources(this.SaveMenuItem, "SaveMenuItem");
+            this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
+            // 
+            // SaveAsMenuItem
+            // 
+            resources.ApplyResources(this.SaveAsMenuItem, "SaveAsMenuItem");
+            this.SaveAsMenuItem.Click += new System.EventHandler(this.SaveAsMenuItem_Click);
+            // 
+            // AppendMenuItem
+            // 
+            resources.ApplyResources(this.AppendMenuItem, "AppendMenuItem");
+            this.AppendMenuItem.Click += new System.EventHandler(this.AppendMenuItem_Click);
+            // 
+            // RecentSubMenu
+            // 
+            resources.ApplyResources(this.RecentSubMenu, "RecentSubMenu");
+            this.RecentSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem});
-			this.RecentSubMenu.Text = "Recent";
-			this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
-			//
-			// noneToolStripMenuItem
-			//
-			this.noneToolStripMenuItem.Text = "None";
-			//
-			// miAutoStart
-			//
-			this.miAutoStart.Text = "Auto-Start";
-			this.miAutoStart.Click += new System.EventHandler(this.MiAutoStart_Click);
-			//
-			// miAutoSave
-			//
-			this.miAutoSave.Text = "Auto-Save";
-			this.miAutoSave.Click += new System.EventHandler(this.MiAutoSave_Click);
-			//
-			// miAutoResume
-			//
-			this.miAutoResume.Text = "Auto-Resume";
-			this.miAutoResume.Click += new System.EventHandler(this.MiAutoResume_Click);
-			//
-			// ClearMenuItem
-			//
-			this.ClearMenuItem.Text = "&Clear";
-			this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
-			//
-			// DisassembleMenuItem
-			//
-			this.DisassembleMenuItem.Text = "&Disassemble...";
-			this.DisassembleMenuItem.Click += new System.EventHandler(this.DisassembleMenuItem_Click);
-			//
-			// toolStrip1
-			//
-			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RecentSubMenu.DropDownOpened += new System.EventHandler(this.RecentSubMenu_DropDownOpened);
+            // 
+            // noneToolStripMenuItem
+            // 
+            resources.ApplyResources(this.noneToolStripMenuItem, "noneToolStripMenuItem");
+            // 
+            // miAutoStart
+            // 
+            resources.ApplyResources(this.miAutoStart, "miAutoStart");
+            this.miAutoStart.Click += new System.EventHandler(this.MiAutoStart_Click);
+            // 
+            // miAutoSave
+            // 
+            resources.ApplyResources(this.miAutoSave, "miAutoSave");
+            this.miAutoSave.Click += new System.EventHandler(this.MiAutoSave_Click);
+            // 
+            // miAutoResume
+            // 
+            resources.ApplyResources(this.miAutoResume, "miAutoResume");
+            this.miAutoResume.Click += new System.EventHandler(this.MiAutoResume_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            // 
+            // ClearMenuItem
+            // 
+            resources.ApplyResources(this.ClearMenuItem, "ClearMenuItem");
+            this.ClearMenuItem.Click += new System.EventHandler(this.ClearMenuItem_Click);
+            // 
+            // DisassembleMenuItem
+            // 
+            resources.ApplyResources(this.DisassembleMenuItem, "DisassembleMenuItem");
+            this.DisassembleMenuItem.Click += new System.EventHandler(this.DisassembleMenuItem_Click);
+            // 
+            // toolStrip1
+            // 
+            resources.ApplyResources(this.toolStrip1, "toolStrip1");
+            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbLoggingActive,
             this.toolStripSeparator3,
             this.tsbViewUpdate,
             this.tsbViewStyle,
             this.toolStripSeparator4,
             this.tsbExportText});
-			this.toolStrip1.Location = new System.Drawing.Point(0, 24);
-			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.TabIndex = 8;
-			//
-			// tsbLoggingActive
-			//
-			this.tsbLoggingActive.CheckOnClick = true;
-			this.tsbLoggingActive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbLoggingActive.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbLoggingActive.Name = "tsbLoggingActive";
-			this.tsbLoggingActive.Size = new System.Drawing.Size(44, 22);
-			this.tsbLoggingActive.Text = "Active";
-			this.tsbLoggingActive.CheckedChanged += new System.EventHandler(this.TsbLoggingActive_CheckedChanged);
-			//
-			// tsbViewUpdate
-			//
-			this.tsbViewUpdate.Checked = true;
-			this.tsbViewUpdate.CheckOnClick = true;
-			this.tsbViewUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.tsbViewUpdate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.tsbViewUpdate.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbViewUpdate.Name = "tsbViewUpdate";
-			this.tsbViewUpdate.Size = new System.Drawing.Size(49, 22);
-			this.tsbViewUpdate.Text = "Update";
-			//
-			// tsbViewStyle
-			//
-			this.tsbViewStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.tsbViewStyle.Items.AddRange(new object[] {
-            "Show %",
-            "Show Bytes",
-            "Show KBytes"});
-			this.tsbViewStyle.Name = "tsbViewStyle";
-			this.tsbViewStyle.Size = new System.Drawing.Size(121, 25);
-			this.tsbViewStyle.SelectedIndexChanged += new System.EventHandler(this.TsbViewStyle_SelectedIndexChanged);
-			//
-			// tsbExportText
-			//
-			this.tsbExportText.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.tsbExportText.Name = "tsbExportText";
-			this.tsbExportText.Size = new System.Drawing.Size(78, 22);
-			this.tsbExportText.Text = "To Clipboard";
-			this.tsbExportText.Click += new System.EventHandler(this.TsbExportText_Click);
-			//
-			// lvCDL
-			//
-			this.lvCDL.AllowColumnReorder = false;
-			this.lvCDL.AllowColumnResize = true;
-			this.lvCDL.AllowMassNavigationShortcuts = true;
-			this.lvCDL.AllowRightClickSelection = true;
-			this.lvCDL.AlwaysScroll = false;
-			this.lvCDL.CellHeightPadding = 0;
-			this.lvCDL.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.lvCDL.FullRowSelect = true;
-			this.lvCDL.HorizontalOrientation = false;
-			this.lvCDL.LetKeysModifySelection = false;
-			this.lvCDL.Location = new System.Drawing.Point(0, 49);
-			this.lvCDL.Name = "lvCDL";
-			this.lvCDL.RowCount = 0;
-			this.lvCDL.ScrollSpeed = 0;
-			this.lvCDL.Size = new System.Drawing.Size(992, 323);
-			this.lvCDL.TabIndex = 9;
-			this.lvCDL.QueryItemText += new BizHawk.Client.EmuHawk.InputRoll.QueryItemTextHandler(this.LvCDL_QueryItemText);
-			//
-			// CDL
-			//
-			this.AllowDrop = true;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(992, 372);
-			this.Controls.Add(this.lvCDL);
-			this.Controls.Add(this.toolStrip1);
-			this.Controls.Add(this.menuStrip1);
-			this.MainMenuStrip = this.menuStrip1;
-			this.MinimumSize = new System.Drawing.Size(150, 130);
-			this.Name = "CDL";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Load += new System.EventHandler(this.CDL_Load);
-			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CDL_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.CDL_DragEnter);
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
-			this.toolStrip1.ResumeLayout(false);
-			this.toolStrip1.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.toolStrip1.Name = "toolStrip1";
+            // 
+            // tsbLoggingActive
+            // 
+            resources.ApplyResources(this.tsbLoggingActive, "tsbLoggingActive");
+            this.tsbLoggingActive.CheckOnClick = true;
+            this.tsbLoggingActive.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbLoggingActive.Name = "tsbLoggingActive";
+            this.tsbLoggingActive.CheckedChanged += new System.EventHandler(this.TsbLoggingActive_CheckedChanged);
+            // 
+            // toolStripSeparator3
+            // 
+            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
+            // 
+            // tsbViewUpdate
+            // 
+            resources.ApplyResources(this.tsbViewUpdate, "tsbViewUpdate");
+            this.tsbViewUpdate.Checked = true;
+            this.tsbViewUpdate.CheckOnClick = true;
+            this.tsbViewUpdate.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsbViewUpdate.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.tsbViewUpdate.Name = "tsbViewUpdate";
+            // 
+            // tsbViewStyle
+            // 
+            resources.ApplyResources(this.tsbViewStyle, "tsbViewStyle");
+            this.tsbViewStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.tsbViewStyle.Items.AddRange(new object[] {
+            resources.GetString("tsbViewStyle.Items"),
+            resources.GetString("tsbViewStyle.Items1"),
+            resources.GetString("tsbViewStyle.Items2")});
+            this.tsbViewStyle.Name = "tsbViewStyle";
+            this.tsbViewStyle.SelectedIndexChanged += new System.EventHandler(this.TsbViewStyle_SelectedIndexChanged);
+            // 
+            // toolStripSeparator4
+            // 
+            resources.ApplyResources(this.toolStripSeparator4, "toolStripSeparator4");
+            // 
+            // tsbExportText
+            // 
+            resources.ApplyResources(this.tsbExportText, "tsbExportText");
+            this.tsbExportText.Name = "tsbExportText";
+            this.tsbExportText.Click += new System.EventHandler(this.TsbExportText_Click);
+            // 
+            // lvCDL
+            // 
+            resources.ApplyResources(this.lvCDL, "lvCDL");
+            this.lvCDL.AllowColumnReorder = false;
+            this.lvCDL.AllowColumnResize = true;
+            this.lvCDL.AlwaysScroll = false;
+            this.lvCDL.CellHeightPadding = 0;
+            this.lvCDL.FullRowSelect = true;
+            this.lvCDL.HorizontalOrientation = false;
+            this.lvCDL.LetKeysModifySelection = false;
+            this.lvCDL.Name = "lvCDL";
+            this.lvCDL.RowCount = 0;
+            this.lvCDL.ScrollSpeed = 3;
+            this.lvCDL.QueryItemText += new BizHawk.Client.EmuHawk.InputRoll.QueryItemTextHandler(this.LvCDL_QueryItemText);
+            // 
+            // CDL
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AllowDrop = true;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lvCDL);
+            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
+            this.Name = "CDL";
+            this.Load += new System.EventHandler(this.CDL_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CDL_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.CDL_DragEnter);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

@@ -121,7 +121,7 @@
     <value>关闭</value>
   </data>
   <data name="btnClear.Text" xml:space="preserve">
-    <value>清空（&amp;C）</value>
+    <value>清空(&amp;C)</value>
   </data>
   <data name="buttonCopy.Text" xml:space="preserve">
     <value>复制所选</value>

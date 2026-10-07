@@ -117,7 +117,271 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AddBreakpointButton.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="columnHeader1.Width" type="System.Int32, mscorlib">
+    <value>85</value>
+  </data>
+  <data name="columnHeader2.Text" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnHeader4.Name" xml:space="preserve">
+    <value>columnHeader4</value>
+  </data>
+  <data name="columnHeader4.Width" type="System.Int32, mscorlib">
+    <value>91</value>
+  </data>
+  <data name="&gt;&gt;columnHeader3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DuplicateBreakpointButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="RemoveBreakpointButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 23</value>
+  </data>
+  <data name="RemoveBreakpointButton.ToolTip" xml:space="preserve">
+    <value>Remove selected breakpoints</value>
+  </data>
+  <data name="&gt;&gt;BreakpointStatsLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="EditBreakpointButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;columnHeader1.Name" xml:space="preserve">
+    <value>columnHeader1</value>
+  </data>
+  <data name="&gt;&gt;AddBreakpointButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EditBreakpointButton.ToolTip" xml:space="preserve">
+    <value>Edit the selected breakpoint</value>
+  </data>
+  <data name="&gt;&gt;BreakpointView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;columnHeader4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnHeader3.Name" xml:space="preserve">
+    <value>columnHeader3</value>
+  </data>
+  <data name="RemoveBreakpointButton.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="DuplicateBreakpointButton.ToolTip" xml:space="preserve">
+    <value>Duplicate the selected breakpoint</value>
+  </data>
+  <data name="&gt;&gt;EditBreakpointButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;RemoveBreakpointButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ToggleButton.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="BreakpointView.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Courier New, 8.25pt</value>
+  </data>
+  <data name="AddBreakpointButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 387</value>
+  </data>
+  <data name="BreakpointView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 19</value>
+  </data>
+  <data name="&gt;&gt;ToggleButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;DuplicateBreakpointButton.Name" xml:space="preserve">
+    <value>DuplicateBreakpointButton</value>
+  </data>
+  <data name="&gt;&gt;AddBreakpointButton.Name" xml:space="preserve">
+    <value>AddBreakpointButton</value>
+  </data>
+  <data name="&gt;&gt;EditBreakpointButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnHeader2.Name" xml:space="preserve">
+    <value>columnHeader2</value>
+  </data>
+  <data name="&gt;&gt;RemoveBreakpointButton.Name" xml:space="preserve">
+    <value>RemoveBreakpointButton</value>
+  </data>
+  <data name="&gt;&gt;EditBreakpointButton.Name" xml:space="preserve">
+    <value>EditBreakpointButton</value>
+  </data>
+  <data name="BreakpointStatsLabel.Text" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="AddBreakpointButton.ToolTip" xml:space="preserve">
+    <value>Add a new breakpoint</value>
+  </data>
+  <data name="&gt;&gt;BreakpointView.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;RemoveBreakpointButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;columnHeader2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EditBreakpointButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 23</value>
+  </data>
+  <data name="&gt;&gt;EditBreakpointButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="columnHeader1.Text" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="BreakpointView.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="RemoveBreakpointButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="ToggleButton.ToolTip" xml:space="preserve">
+    <value>Toggle the selected breakpoints</value>
+  </data>
+  <data name="columnHeader3.Width" type="System.Int32, mscorlib">
+    <value>80</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;DuplicateBreakpointButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="BreakpointView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>366, 365</value>
+  </data>
+  <data name="ToggleButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 23</value>
+  </data>
+  <data name="EditBreakpointButton.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
+    <value>None</value>
+  </data>
+  <data name="&gt;&gt;columnHeader1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DuplicateBreakpointButton.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="AddBreakpointButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 23</value>
+  </data>
+  <data name="&gt;&gt;ToggleButton.Name" xml:space="preserve">
+    <value>ToggleButton</value>
+  </data>
+  <data name="RemoveBreakpointButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>340, 387</value>
+  </data>
+  <data name="&gt;&gt;ToggleButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ToggleButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>311, 387</value>
+  </data>
+  <data name="DuplicateBreakpointButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 23</value>
+  </data>
+  <data name="ToggleButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;BreakpointView.Name" xml:space="preserve">
+    <value>BreakpointView</value>
+  </data>
+  <data name="EditBreakpointButton.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;BreakpointView.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BreakpointStatsLabel.Name" xml:space="preserve">
+    <value>BreakpointStatsLabel</value>
+  </data>
+  <data name="&gt;&gt;ToggleButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>BreakpointControl</value>
+  </data>
+  <data name="columnHeader4.Text" xml:space="preserve">
+    <value>Mask</value>
+  </data>
+  <data name="&gt;&gt;BreakpointStatsLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;AddBreakpointButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="columnHeader2.Width" type="System.Int32, mscorlib">
+    <value>103</value>
+  </data>
+  <data name="DuplicateBreakpointButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>282, 387</value>
+  </data>
+  <data name="&gt;&gt;DuplicateBreakpointButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BreakpointStatsLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="&gt;&gt;DuplicateBreakpointButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="EditBreakpointButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>253, 387</value>
+  </data>
+  <data name="columnHeader3.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="BreakpointView.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;RemoveBreakpointButton.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="BreakpointView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>366, 413</value>
+  </data>
+  <data name="&gt;&gt;AddBreakpointButton.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="AddBreakpointButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;BreakpointStatsLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="BreakpointStatsLabel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
 </root>

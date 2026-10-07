@@ -28,36 +28,33 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.FileExtensionLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.PlatformDropdown = new System.Windows.Forms.ComboBox();
-			this.SuspendLayout();
-			// 
-			// FileExtensionLabel
-			// 
-			this.FileExtensionLabel.Location = new System.Drawing.Point(3, 5);
-			this.FileExtensionLabel.Name = "FileExtensionLabel";
-			this.FileExtensionLabel.Text = ".bin";
-			// 
-			// PlatformDropdown
-			// 
-			this.PlatformDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.PlatformDropdown.FormattingEnabled = true;
-			this.PlatformDropdown.Location = new System.Drawing.Point(37, 2);
-			this.PlatformDropdown.Name = "PlatformDropdown";
-			this.PlatformDropdown.Size = new System.Drawing.Size(142, 21);
-			this.PlatformDropdown.TabIndex = 1;
-			// 
-			// FileExtensionPreferencesPicker
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.PlatformDropdown);
-			this.Controls.Add(this.FileExtensionLabel);
-			this.Name = "FileExtensionPreferencesPicker";
-			this.Size = new System.Drawing.Size(182, 29);
-			this.Load += new System.EventHandler(this.FileExtensionPreferencesPicker_Load);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FileExtensionPreferencesPicker));
+            this.FileExtensionLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.PlatformDropdown = new System.Windows.Forms.ComboBox();
+            this.SuspendLayout();
+            // 
+            // FileExtensionLabel
+            // 
+            resources.ApplyResources(this.FileExtensionLabel, "FileExtensionLabel");
+            this.FileExtensionLabel.Name = "FileExtensionLabel";
+            // 
+            // PlatformDropdown
+            // 
+            resources.ApplyResources(this.PlatformDropdown, "PlatformDropdown");
+            this.PlatformDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.PlatformDropdown.FormattingEnabled = true;
+            this.PlatformDropdown.Name = "PlatformDropdown";
+            // 
+            // FileExtensionPreferencesPicker
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.PlatformDropdown);
+            this.Controls.Add(this.FileExtensionLabel);
+            this.Name = "FileExtensionPreferencesPicker";
+            this.Load += new System.EventHandler(this.FileExtensionPreferencesPicker_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

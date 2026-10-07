@@ -82,5 +82,18 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			});
 			ResumeLayout();
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FirmwareAutopatchDebugToolForm));
+            this.SuspendLayout();
+            // 
+            // FirmwareAutopatchDebugToolForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "FirmwareAutopatchDebugToolForm";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

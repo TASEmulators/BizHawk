@@ -28,14 +28,16 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.SuspendLayout();
-			// 
-			// RegisterBoxControl
-			// 
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
-			this.Name = "RegisterBoxControl";
-			this.Size = new System.Drawing.Size(240, 217);
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RegisterBoxControl));
+            this.SuspendLayout();
+            // 
+            // RegisterBoxControl
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+            this.Name = "RegisterBoxControl";
+            this.ResumeLayout(false);
+
 		}
 
 		#endregion

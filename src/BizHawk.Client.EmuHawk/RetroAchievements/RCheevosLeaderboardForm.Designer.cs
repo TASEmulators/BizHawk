@@ -28,100 +28,74 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.titleLabel = new System.Windows.Forms.Label();
-			this.descriptionLabel = new System.Windows.Forms.Label();
-			this.titleBox = new System.Windows.Forms.TextBox();
-			this.descriptionBox = new System.Windows.Forms.TextBox();
-			this.scoreLabel = new System.Windows.Forms.Label();
-			this.scoreBox = new System.Windows.Forms.TextBox();
-			this.lowerIsBetterBox = new System.Windows.Forms.CheckBox();
-			this.SuspendLayout();
-			// 
-			// titleLabel
-			// 
-			this.titleLabel.AutoSize = true;
-			this.titleLabel.Location = new System.Drawing.Point(45, 14);
-			this.titleLabel.Name = "titleLabel";
-			this.titleLabel.Size = new System.Drawing.Size(30, 13);
-			this.titleLabel.TabIndex = 1;
-			this.titleLabel.Text = "Title:";
-			// 
-			// descriptionLabel
-			// 
-			this.descriptionLabel.AutoSize = true;
-			this.descriptionLabel.Location = new System.Drawing.Point(12, 40);
-			this.descriptionLabel.Name = "descriptionLabel";
-			this.descriptionLabel.Size = new System.Drawing.Size(63, 13);
-			this.descriptionLabel.TabIndex = 2;
-			this.descriptionLabel.Text = "Description:";
-			// 
-			// titleBox
-			// 
-			this.titleBox.Location = new System.Drawing.Point(81, 11);
-			this.titleBox.Name = "titleBox";
-			this.titleBox.ReadOnly = true;
-			this.titleBox.Size = new System.Drawing.Size(411, 20);
-			this.titleBox.TabIndex = 3;
-			// 
-			// descriptionBox
-			// 
-			this.descriptionBox.Location = new System.Drawing.Point(81, 37);
-			this.descriptionBox.Name = "descriptionBox";
-			this.descriptionBox.ReadOnly = true;
-			this.descriptionBox.Size = new System.Drawing.Size(411, 20);
-			this.descriptionBox.TabIndex = 4;
-			// 
-			// scoreLabel
-			// 
-			this.scoreLabel.AutoSize = true;
-			this.scoreLabel.Location = new System.Drawing.Point(37, 63);
-			this.scoreLabel.Name = "scoreLabel";
-			this.scoreLabel.Size = new System.Drawing.Size(38, 13);
-			this.scoreLabel.TabIndex = 5;
-			this.scoreLabel.Text = "Score:";
-			// 
-			// scoreBox
-			// 
-			this.scoreBox.Location = new System.Drawing.Point(81, 60);
-			this.scoreBox.Name = "scoreBox";
-			this.scoreBox.ReadOnly = true;
-			this.scoreBox.Size = new System.Drawing.Size(411, 20);
-			this.scoreBox.TabIndex = 6;
-			// 
-			// lowerIsBetterBox
-			// 
-			this.lowerIsBetterBox.AutoCheck = false;
-			this.lowerIsBetterBox.AutoSize = true;
-			this.lowerIsBetterBox.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.lowerIsBetterBox.Location = new System.Drawing.Point(392, 86);
-			this.lowerIsBetterBox.Name = "lowerIsBetterBox";
-			this.lowerIsBetterBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.lowerIsBetterBox.Size = new System.Drawing.Size(100, 17);
-			this.lowerIsBetterBox.TabIndex = 9;
-			this.lowerIsBetterBox.Text = "Lower Is Better:";
-			this.lowerIsBetterBox.UseVisualStyleBackColor = true;
-			// 
-			// RCheevosLeaderboardForm
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(504, 94);
-			this.ControlBox = false;
-			this.Controls.Add(this.lowerIsBetterBox);
-			this.Controls.Add(this.scoreBox);
-			this.Controls.Add(this.scoreLabel);
-			this.Controls.Add(this.descriptionBox);
-			this.Controls.Add(this.titleBox);
-			this.Controls.Add(this.descriptionLabel);
-			this.Controls.Add(this.titleLabel);
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(300, 110);
-			this.Name = "RCheevosLeaderboardForm";
-			this.ShowIcon = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RCheevosLeaderboardForm));
+            this.titleLabel = new System.Windows.Forms.Label();
+            this.descriptionLabel = new System.Windows.Forms.Label();
+            this.titleBox = new System.Windows.Forms.TextBox();
+            this.descriptionBox = new System.Windows.Forms.TextBox();
+            this.scoreLabel = new System.Windows.Forms.Label();
+            this.scoreBox = new System.Windows.Forms.TextBox();
+            this.lowerIsBetterBox = new System.Windows.Forms.CheckBox();
+            this.SuspendLayout();
+            // 
+            // titleLabel
+            // 
+            resources.ApplyResources(this.titleLabel, "titleLabel");
+            this.titleLabel.Name = "titleLabel";
+            // 
+            // descriptionLabel
+            // 
+            resources.ApplyResources(this.descriptionLabel, "descriptionLabel");
+            this.descriptionLabel.Name = "descriptionLabel";
+            // 
+            // titleBox
+            // 
+            resources.ApplyResources(this.titleBox, "titleBox");
+            this.titleBox.Name = "titleBox";
+            this.titleBox.ReadOnly = true;
+            // 
+            // descriptionBox
+            // 
+            resources.ApplyResources(this.descriptionBox, "descriptionBox");
+            this.descriptionBox.Name = "descriptionBox";
+            this.descriptionBox.ReadOnly = true;
+            // 
+            // scoreLabel
+            // 
+            resources.ApplyResources(this.scoreLabel, "scoreLabel");
+            this.scoreLabel.Name = "scoreLabel";
+            // 
+            // scoreBox
+            // 
+            resources.ApplyResources(this.scoreBox, "scoreBox");
+            this.scoreBox.Name = "scoreBox";
+            this.scoreBox.ReadOnly = true;
+            // 
+            // lowerIsBetterBox
+            // 
+            resources.ApplyResources(this.lowerIsBetterBox, "lowerIsBetterBox");
+            this.lowerIsBetterBox.AutoCheck = false;
+            this.lowerIsBetterBox.Name = "lowerIsBetterBox";
+            this.lowerIsBetterBox.UseVisualStyleBackColor = true;
+            // 
+            // RCheevosLeaderboardForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ControlBox = false;
+            this.Controls.Add(this.lowerIsBetterBox);
+            this.Controls.Add(this.scoreBox);
+            this.Controls.Add(this.scoreLabel);
+            this.Controls.Add(this.descriptionBox);
+            this.Controls.Add(this.titleBox);
+            this.Controls.Add(this.descriptionLabel);
+            this.Controls.Add(this.titleLabel);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "RCheevosLeaderboardForm";
+            this.ShowIcon = false;
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

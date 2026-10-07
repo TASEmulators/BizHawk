@@ -28,96 +28,72 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.mnuGameShark = new System.Windows.Forms.MenuStrip();
-			this.btnClear = new System.Windows.Forms.Button();
-			this.lblCheat = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.txtCheat = new System.Windows.Forms.TextBox();
-			this.btnGo = new System.Windows.Forms.Button();
-			this.lblDescription = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.txtDescription = new System.Windows.Forms.TextBox();
-			this.SuspendLayout();
-			// 
-			// mnuGameShark
-			// 
-			this.mnuGameShark.Location = new System.Drawing.Point(0, 0);
-			this.mnuGameShark.Name = "mnuGameShark";
-			this.mnuGameShark.Size = new System.Drawing.Size(259, 24);
-			this.mnuGameShark.TabIndex = 0;
-			// 
-			// btnClear
-			// 
-			this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.btnClear.Location = new System.Drawing.Point(78, 218);
-			this.btnClear.Name = "btnClear";
-			this.btnClear.Size = new System.Drawing.Size(75, 23);
-			this.btnClear.TabIndex = 4;
-			this.btnClear.Text = "Clear";
-			this.btnClear.UseVisualStyleBackColor = true;
-			this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
-			// 
-			// lblCheat
-			// 
-			this.lblCheat.Location = new System.Drawing.Point(12, 63);
-			this.lblCheat.Name = "lblCheat";
-			this.lblCheat.Text = "Cheat Code";
-			// 
-			// txtCheat
-			// 
-			this.txtCheat.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtCheat.Location = new System.Drawing.Point(78, 60);
-			this.txtCheat.Multiline = true;
-			this.txtCheat.Name = "txtCheat";
-			this.txtCheat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.txtCheat.Size = new System.Drawing.Size(169, 152);
-			this.txtCheat.TabIndex = 2;
-			// 
-			// btnGo
-			// 
-			this.btnGo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnGo.Location = new System.Drawing.Point(172, 217);
-			this.btnGo.Name = "btnGo";
-			this.btnGo.Size = new System.Drawing.Size(75, 24);
-			this.btnGo.TabIndex = 5;
-			this.btnGo.Text = "Convert";
-			this.btnGo.UseVisualStyleBackColor = true;
-			this.btnGo.Click += new System.EventHandler(this.Go_Click);
-			// 
-			// lblDescription
-			// 
-			this.lblDescription.Location = new System.Drawing.Point(12, 38);
-			this.lblDescription.Name = "lblDescription";
-			this.lblDescription.Text = "Description";
-			// 
-			// txtDescription
-			// 
-			this.txtDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.txtDescription.Location = new System.Drawing.Point(78, 34);
-			this.txtDescription.Name = "txtDescription";
-			this.txtDescription.Size = new System.Drawing.Size(169, 20);
-			this.txtDescription.TabIndex = 1;
-			// 
-			// GameShark
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(259, 249);
-			this.Controls.Add(this.txtDescription);
-			this.Controls.Add(this.lblDescription);
-			this.Controls.Add(this.btnClear);
-			this.Controls.Add(this.lblCheat);
-			this.Controls.Add(this.txtCheat);
-			this.Controls.Add(this.btnGo);
-			this.Controls.Add(this.mnuGameShark);
-			this.MainMenuStrip = this.mnuGameShark;
-			this.MaximizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(230, 155);
-			this.Name = "GameShark";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameShark));
+            this.mnuGameShark = new System.Windows.Forms.MenuStrip();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.lblCheat = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.txtCheat = new System.Windows.Forms.TextBox();
+            this.btnGo = new System.Windows.Forms.Button();
+            this.lblDescription = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.SuspendLayout();
+            // 
+            // mnuGameShark
+            // 
+            resources.ApplyResources(this.mnuGameShark, "mnuGameShark");
+            this.mnuGameShark.Name = "mnuGameShark";
+            // 
+            // btnClear
+            // 
+            resources.ApplyResources(this.btnClear, "btnClear");
+            this.btnClear.Name = "btnClear";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.BtnClear_Click);
+            // 
+            // lblCheat
+            // 
+            resources.ApplyResources(this.lblCheat, "lblCheat");
+            this.lblCheat.Name = "lblCheat";
+            // 
+            // txtCheat
+            // 
+            resources.ApplyResources(this.txtCheat, "txtCheat");
+            this.txtCheat.Name = "txtCheat";
+            // 
+            // btnGo
+            // 
+            resources.ApplyResources(this.btnGo, "btnGo");
+            this.btnGo.Name = "btnGo";
+            this.btnGo.UseVisualStyleBackColor = true;
+            this.btnGo.Click += new System.EventHandler(this.Go_Click);
+            // 
+            // lblDescription
+            // 
+            resources.ApplyResources(this.lblDescription, "lblDescription");
+            this.lblDescription.Name = "lblDescription";
+            // 
+            // txtDescription
+            // 
+            resources.ApplyResources(this.txtDescription, "txtDescription");
+            this.txtDescription.Name = "txtDescription";
+            // 
+            // GameShark
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.txtDescription);
+            this.Controls.Add(this.lblDescription);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.lblCheat);
+            this.Controls.Add(this.txtCheat);
+            this.Controls.Add(this.btnGo);
+            this.Controls.Add(this.mnuGameShark);
+            this.MainMenuStrip = this.mnuGameShark;
+            this.MaximizeBox = false;
+            this.Name = "GameShark";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
 		}
 
 		#endregion

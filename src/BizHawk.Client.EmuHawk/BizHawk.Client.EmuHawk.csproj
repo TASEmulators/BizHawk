@@ -286,6 +286,11 @@
 		<Compile Update="MainForm.FileLoader.cs" DependentUpon="MainForm.cs" SubType="Form" />
 		<Compile Update="MainForm.Hotkey.cs" DependentUpon="MainForm.cs" />
 		<Compile Update="MainForm.Movie.cs" DependentUpon="MainForm.cs" />
+		<!-- 原项目忘记包含 MainForm.Debug.cs 与 MainForm.VSystem.cs 两个文件，导致本地化时这两个文件被误读为窗口文件，造成 bug 。 -->
+		<!-- The original project forgot to include two files, MainForm.Debug.cs and MainForm.VSystem.cs, which led to the misunderstanding of these two files as window files during localization, resulting in bugs. -->
+		<Compile Update="MainForm.Debug.cs" DependentUpon="MainForm.cs" />
+		<Compile Update="MainForm.VSystem.cs" DependentUpon="MainForm.cs" />
+		<!-- 包含： Imclude:  MainForm.Debug.cs & MainForm.VSystem.cs -->
 		<EmbeddedResource Update="MainForm.resx" DependentUpon="MainForm.cs" SubType="Designer" />
 		<Compile Update="movie/EditCommentsForm.cs" SubType="Form" />
 		<Compile Update="movie/EditCommentsForm.Designer.cs" DependentUpon="EditCommentsForm.cs" />

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PathInfo));
             this.Ok = new System.Windows.Forms.Button();
             this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -45,100 +46,82 @@
             // 
             // Ok
             // 
-            this.Ok.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Ok, "Ok");
             this.Ok.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Ok.Location = new System.Drawing.Point(388, 152);
-						this.Ok.Name = "OK";
-            this.Ok.Size = new System.Drawing.Size(75, 23);
-            this.Ok.TabIndex = 0;
-            this.Ok.Text = "&OK";
+            this.Ok.Name = "Ok";
             this.Ok.UseVisualStyleBackColor = true;
             this.Ok.Click += new System.EventHandler(this.Ok_Click);
             // 
             // label1
             // 
+            resources.ApplyResources(this.label1, "label1");
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Text = "%recent%";
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(72, 13);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Text = "Sets the path to the Windows Recent Path";
             // 
             // label3
             // 
+            resources.ApplyResources(this.label3, "label3");
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label3.Location = new System.Drawing.Point(13, 33);
             this.label3.Name = "label3";
-            this.label3.Text = "%exe%";
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(72, 33);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Text = "Sets the path of the executable (EmuHawk.exe)";
             // 
             // label5
             // 
+            resources.ApplyResources(this.label5, "label5");
             this.label5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label5.Location = new System.Drawing.Point(13, 68);
             this.label5.Name = "label5";
-            this.label5.Text = ".\\";
             // 
             // label6
             // 
+            resources.ApplyResources(this.label6, "label6");
             this.label6.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.label6.Location = new System.Drawing.Point(13, 88);
             this.label6.Name = "label6";
-            this.label6.Text = "..\\";
             // 
             // label7
             // 
-            this.label7.Location = new System.Drawing.Point(72, 68);
+            resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
-            this.label7.Text = "Sets the path to the base path";
             // 
             // label8
             // 
-            this.label8.Location = new System.Drawing.Point(94, 106);
+            resources.ApplyResources(this.label8, "label8");
             this.label8.Name = "label8";
-            this.label8.Text = "- Setting the global base path to one of these will set it to the path of the .ex" +
-    "e";
             // 
             // label9
             // 
-            this.label9.Location = new System.Drawing.Point(94, 121);
+            resources.ApplyResources(this.label9, "label9");
             this.label9.Name = "label9";
-            this.label9.Text = "- Setting a platform base will set it to the global base";
             // 
             // label10
             // 
-            this.label10.Location = new System.Drawing.Point(94, 136);
+            resources.ApplyResources(this.label10, "label10");
             this.label10.Name = "label10";
-            this.label10.Text = "- Setting a platform folder will set it to the platform base";
             // 
             // label11
             // 
-            this.label11.Location = new System.Drawing.Point(94, 151);
+            resources.ApplyResources(this.label11, "label11");
             this.label11.Name = "label11";
-            this.label11.Text = "- Setting a tools folder will set it to the global base";
             // 
             // label12
             // 
-            this.label12.Location = new System.Drawing.Point(72, 88);
+            resources.ApplyResources(this.label12, "label12");
             this.label12.Name = "label12";
-            this.label12.Text = "Sets the path to the folder above the base path";
             // 
             // PathInfo
             // 
             this.AcceptButton = this.Ok;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Ok;
-            this.ClientSize = new System.Drawing.Size(466, 177);
             this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label10);
@@ -157,8 +140,6 @@
             this.MinimizeBox = false;
             this.Name = "PathInfo";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Special Commands";
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -318,5 +318,18 @@ namespace BizHawk.Client.EmuHawk
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			RecordBox.Text = filePaths[0];
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RecordMovie));
+            this.SuspendLayout();
+            // 
+            // RecordMovie
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "RecordMovie";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

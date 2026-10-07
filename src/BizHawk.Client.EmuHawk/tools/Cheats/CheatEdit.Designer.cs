@@ -33,7 +33,6 @@
             this.NameLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.AddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.AddressHexIndLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-            this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
             this.ValueHexIndLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.ValueLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.CompareHexIndLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -47,10 +46,11 @@
             this.BigEndianCheckBox = new System.Windows.Forms.CheckBox();
             this.AddButton = new System.Windows.Forms.Button();
             this.EditButton = new System.Windows.Forms.Button();
-            this.CompareBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-            this.ValueBox = new BizHawk.Client.EmuHawk.WatchValueBox();
             this.CompareTypeDropDown = new System.Windows.Forms.ComboBox();
             this.CompareTypeLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.AddressBox = new BizHawk.Client.EmuHawk.HexTextBox();
+            this.CompareBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+            this.ValueBox = new BizHawk.Client.EmuHawk.WatchValueBox();
             this.SuspendLayout();
             // 
             // NameBox
@@ -72,13 +72,6 @@
             // 
             resources.ApplyResources(this.AddressHexIndLabel, "AddressHexIndLabel");
             this.AddressHexIndLabel.Name = "AddressHexIndLabel";
-            // 
-            // AddressBox
-            // 
-            resources.ApplyResources(this.AddressBox, "AddressBox");
-            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-            this.AddressBox.Name = "AddressBox";
-            this.AddressBox.Nullable = true;
             // 
             // ValueHexIndLabel
             // 
@@ -167,6 +160,27 @@
             this.EditButton.UseVisualStyleBackColor = true;
             this.EditButton.Click += new System.EventHandler(this.EditButton_Click);
             // 
+            // CompareTypeDropDown
+            // 
+            resources.ApplyResources(this.CompareTypeDropDown, "CompareTypeDropDown");
+            this.CompareTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.CompareTypeDropDown.FormattingEnabled = true;
+            this.CompareTypeDropDown.Items.AddRange(new object[] {
+            resources.GetString("CompareTypeDropDown.Items")});
+            this.CompareTypeDropDown.Name = "CompareTypeDropDown";
+            // 
+            // CompareTypeLabel
+            // 
+            resources.ApplyResources(this.CompareTypeLabel, "CompareTypeLabel");
+            this.CompareTypeLabel.Name = "CompareTypeLabel";
+            // 
+            // AddressBox
+            // 
+            resources.ApplyResources(this.AddressBox, "AddressBox");
+            this.AddressBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.AddressBox.Name = "AddressBox";
+            this.AddressBox.Nullable = true;
+            // 
             // CompareBox
             // 
             resources.ApplyResources(this.CompareBox, "CompareBox");
@@ -185,20 +199,6 @@
             this.ValueBox.Name = "ValueBox";
             this.ValueBox.Nullable = true;
             this.ValueBox.Type = BizHawk.Client.Common.WatchDisplayType.Hex;
-            // 
-            // CompareTypeDropDown
-            // 
-            resources.ApplyResources(this.CompareTypeDropDown, "CompareTypeDropDown");
-            this.CompareTypeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.CompareTypeDropDown.FormattingEnabled = true;
-            this.CompareTypeDropDown.Items.AddRange(new object[] {
-            resources.GetString("CompareTypeDropDown.Items")});
-            this.CompareTypeDropDown.Name = "CompareTypeDropDown";
-            // 
-            // CompareTypeLabel
-            // 
-            resources.ApplyResources(this.CompareTypeLabel, "CompareTypeLabel");
-            this.CompareTypeLabel.Name = "CompareTypeLabel";
             // 
             // CheatEdit
             // 

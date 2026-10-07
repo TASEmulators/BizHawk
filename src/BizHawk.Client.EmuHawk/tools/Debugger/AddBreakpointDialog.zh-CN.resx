@@ -125,7 +125,10 @@
     <value>69, 21</value>
   </data>
   <data name="AddBtn.Text" xml:space="preserve">
-    <value>添加（&amp;A）</value>
+    <value>添加(&amp;A)</value>
+  </data>
+  <data name="AddBtn.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="ExecuteRadio.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 16</value>
@@ -133,11 +136,17 @@
   <data name="ExecuteRadio.Text" xml:space="preserve">
     <value>执行</value>
   </data>
+  <data name="ExecuteRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="WriteRadio.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 16</value>
   </data>
   <data name="WriteRadio.Text" xml:space="preserve">
     <value>写</value>
+  </data>
+  <data name="WriteRadio.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="ReadRadio.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 16</value>
@@ -145,8 +154,17 @@
   <data name="ReadRadio.Text" xml:space="preserve">
     <value>读</value>
   </data>
+  <data name="ReadRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BreakpointTypeGroupbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>地址 0x</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="CancelBtn.Location" type="System.Drawing.Point, System.Drawing">
     <value>60, 106</value>
@@ -155,24 +173,15 @@
     <value>69, 21</value>
   </data>
   <data name="CancelBtn.Text" xml:space="preserve">
-    <value>取消（&amp;C）</value>
-  </data>
-  <data name="CancelBtn.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="AddressBox.ToolTip" xml:space="preserve">
-    <value />
+    <value>取消(&amp;C)</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>掩码 0x</value>
   </data>
-  <data name="label2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="AddressMaskBox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>添加断点</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
 </root>

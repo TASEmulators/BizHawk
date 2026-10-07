@@ -117,9 +117,1111 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="lblStaticWindowTitles.Text" xml:space="preserve">
+    <value>Some tools put filenames, status, etc. in their window titles.
+Checking this disables those features, but may fix problems with window capture (i.e. in OBS).</value>
+  </data>
+  <data name="txtCustomARY.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cbStatusBarFullscreen.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="&gt;&gt;rbD3D11.Name" xml:space="preserve">
+    <value>rbD3D11</value>
+  </data>
+  <data name="&gt;&gt;checkLetterbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label15.Name" xml:space="preserve">
+    <value>label15</value>
+  </data>
+  <data name="rbUseCustomRatio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="txtCustomARY.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="&gt;&gt;rbHq2x.Name" xml:space="preserve">
+    <value>rbHq2x</value>
+  </data>
+  <data name="&gt;&gt;txtCropRight.Name" xml:space="preserve">
+    <value>txtCropRight</value>
+  </data>
+  <data name="&gt;&gt;tpAR.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnDefaults.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;grpARSelection.Name" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtCropTop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbCaptionWindowed.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>371, 89</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="rbNone.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="cbMenuWindowed.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label13.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbGDIPlus.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;txtCustomARWidth.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="lblUserFilterName.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbAllowDoubleclickFullscreen.Name" xml:space="preserve">
+    <value>cbAllowDoubleclickFullscreen</value>
+  </data>
+  <data name="cbMainFormStayOnTop.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCropLeft.Location" type="System.Drawing.Point, System.Drawing">
+    <value>34, 20</value>
+  </data>
+  <data name="&gt;&gt;grpFinalFilter.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;txtCropLeft.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;lblScanlines.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label14.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>x</value>
+  </data>
+  <data name="rbFinalFilterBicubic.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbMainFormStayOnTop.Text" xml:space="preserve">
+    <value>Stay on Top</value>
+  </data>
+  <data name="cbFSAutohideMouse.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 18</value>
+  </data>
+  <data name="&gt;&gt;cbFullscreenHacks.Name" xml:space="preserve">
+    <value>cbFullscreenHacks</value>
+  </data>
+  <data name="txtCropLeft.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;txtCropRight.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustom.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value> • Best compatibility
+ • May have decreased performance for OpenGL-based cores (NDS, 3DS)
+</value>
+  </data>
+  <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>226, 6</value>
+  </data>
+  <data name="checkPadInteger.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="cbFSAutohideMouse.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="checkPadInteger.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="groupBox6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbAllowTearing.Location" type="System.Drawing.Point, System.Drawing">
+    <value>28, 55</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayAbsoluteZero.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label7.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="cbMainFormMouseCaptureForcesTopmost.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="rbGDIPlus.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 158</value>
+  </data>
+  <data name="rbFinalFilterBicubic.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 59</value>
+  </data>
+  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>528, 280</value>
+  </data>
+  <data name="rbUseCustomRatio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label14.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 23</value>
+  </data>
+  <data name="btnSelectUserFilter.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;btnSelectUserFilter.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="checkLetterbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>209, 11</value>
+  </data>
+  <data name="&gt;&gt;checkPadInteger.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="label17.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbScaleOSD.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="cbFSAutohideMouse.Text" xml:space="preserve">
+    <value>Auto-Hide Mouse Cursor</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormStayOnTop.Name" xml:space="preserve">
+    <value>cbMainFormStayOnTop</value>
+  </data>
+  <data name="&gt;&gt;lblScanlines.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="cbFullscreenHacks.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="nudPrescale.Location" type="System.Drawing.Point, System.Drawing">
+    <value>93, 6</value>
+  </data>
+  <data name="tpDispMethod.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbAutoPrescale.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="txtCustomARX.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;txtCropTop.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="trackbarFrameSizeWindowed.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbFinalFilterBilinear.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 38</value>
+  </data>
+  <data name="txtCropTop.Text" xml:space="preserve">
+    <value>8000</value>
+  </data>
+  <data name="tpAR.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARHeight.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="rbUseCustomRatio.Text" xml:space="preserve">
+    <value>Use custom AR:</value>
+  </data>
+  <data name="txtCropRight.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbUseCustom.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 74</value>
+  </data>
+  <data name="rbScanlines.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 38</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 138</value>
+  </data>
+  <data name="&gt;&gt;lblFrameTypeWindowed.Name" xml:space="preserve">
+    <value>lblFrameTypeWindowed</value>
+  </data>
+  <data name="btnSelectUserFilter.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbMenuFullscreen.Name" xml:space="preserve">
+    <value>cbMenuFullscreen</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayMinimal.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbUseSystem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>185, 16</value>
+  </data>
+  <data name="groupBox6.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;cbMenuFullscreen.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="grpFinalFilter.Text" xml:space="preserve">
+    <value>Final Filter</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbUseCustomRatio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 16</value>
+  </data>
+  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="rbFinalFilterNone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="cbCaptionWindowed.Text" xml:space="preserve">
+    <value>Caption</value>
+  </data>
+  <data name="rbGDIPlus.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="txtCropTop.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;label11.Name" xml:space="preserve">
+    <value>label11</value>
+  </data>
+  <data name="&gt;&gt;label16.Name" xml:space="preserve">
+    <value>label16</value>
+  </data>
+  <data name="groupBox2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbFinalFilterBilinear.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="cbScaleOSD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>218, 242</value>
+  </data>
+  <data name="&gt;&gt;checkPadInteger.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;tpMisc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="rbGDIPlus.Text" xml:space="preserve">
+    <value>GDI+</value>
+  </data>
+  <data name="&gt;&gt;rbUser.Name" xml:space="preserve">
+    <value>rbUser</value>
+  </data>
+  <data name="cbScaleOSD.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="rbFinalFilterNone.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;tpMisc.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterNone.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBilinear.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>User Prescale:</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBicubic.Name" xml:space="preserve">
+    <value>rbFinalFilterBicubic</value>
+  </data>
+  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>415, 222</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;rbGDIPlus.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="groupBox5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;txtCustomARY.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblStaticWindowTitles.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbOpenGL.Text" xml:space="preserve">
+    <value>OpenGL</value>
+  </data>
+  <data name="label12.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="cbScaleOSD.Text" xml:space="preserve">
+    <value>Scale OSD text with system scale</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.Text" xml:space="preserve">
+    <value>Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case using zapper, etc.)</value>
+  </data>
+  <data name="rbFinalFilterNone.Text" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbMenuWindowed.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="rbUseCustom.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="rbFinalFilterBicubic.Text" xml:space="preserve">
+    <value>Bicubic (shader. buggy?)</value>
+  </data>
+  <data name="&gt;&gt;cbScaleOSD.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;tpAR.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbAllowTearing.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbFullscreenHacks.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="rbUseSystem.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;rbOpenGL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>DisplayConfig</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Name" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="rbHq2x.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 39</value>
+  </data>
+  <data name="rbUseCustom.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;rbUser.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cbAllowTearing.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtCropLeft.Name" xml:space="preserve">
+    <value>txtCropLeft</value>
+  </data>
+  <data name="txtCropBottom.Location" type="System.Drawing.Point, System.Drawing">
+    <value>261, 20</value>
+  </data>
+  <data name="txtCropBottom.Size" type="System.Drawing.Size, System.Drawing">
+    <value>34, 21</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayFull.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label12.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="rbDisplayMinimal.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 40</value>
+  </data>
+  <data name="flpStaticWindowTitles.Size" type="System.Drawing.Size, System.Drawing">
+    <value>490, 48</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARY.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblStaticWindowTitles.Name" xml:space="preserve">
+    <value>lblStaticWindowTitles</value>
+  </data>
+  <data name="cbMainFormStayOnTop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 161</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 176</value>
+  </data>
+  <data name="&gt;&gt;cbScaleOSD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtCropTop.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="rbUseCustom.Text" xml:space="preserve">
+    <value>Use custom size:</value>
+  </data>
+  <data name="tpMisc.Size" type="System.Drawing.Size, System.Drawing">
+    <value>528, 280</value>
+  </data>
+  <data name="&gt;&gt;nudPrescale.Name" xml:space="preserve">
+    <value>nudPrescale</value>
+  </data>
+  <data name="label7.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label17.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;txtCustomARHeight.Name" xml:space="preserve">
+    <value>txtCustomARHeight</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
+    <value>btnCancel</value>
+  </data>
+  <data name="btnDefaults.ToolTip" xml:space="preserve">
+    <value>Unless I forgot to update the button's code when I changed a default</value>
+  </data>
+  <data name="&gt;&gt;txtCropRight.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbOpenGL.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 10</value>
+  </data>
+  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
+    <value>tpDispMethod</value>
+  </data>
+  <data name="&gt;&gt;rbOpenGL.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustomRatio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbUser.Text" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>218, 180</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tpAR.Text" xml:space="preserve">
+    <value>Scaling &amp; Filtering</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarFullscreen.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;txtCropLeft.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtCropBottom.Text" xml:space="preserve">
+    <value>8000</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Changes require restart of program to take effect.
+</value>
+  </data>
+  <data name="label16.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label10.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="txtCropRight.Size" type="System.Drawing.Size, System.Drawing">
+    <value>34, 21</value>
+  </data>
+  <data name="linkLabel1.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="cbStatusBarWindowed.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 75</value>
+  </data>
+  <data name="&gt;&gt;label12.Name" xml:space="preserve">
+    <value>label12</value>
+  </data>
+  <data name="trackbarFrameSizeWindowed.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 30</value>
+  </data>
+  <data name="tbScanlineIntensity.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="grpARSelection.Text" xml:space="preserve">
+    <value>Aspect Ratio Selection</value>
+  </data>
+  <data name="&gt;&gt;cbFSAutohideMouse.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormMouseCaptureForcesTopmost.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.Size" type="System.Drawing.Size, System.Drawing">
+    <value>209, 16</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayMinimal.Parent" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>202, 78</value>
+  </data>
+  <data name="label14.Text" xml:space="preserve">
+    <value>Left:</value>
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;tbScanlineIntensity.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormMouseCaptureForcesTopmost.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbGDIPlus.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;tpDispMethod.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="cbFullscreenHacks.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayFull.Name" xml:space="preserve">
+    <value>rbDisplayFull</value>
+  </data>
+  <data name="&gt;&gt;tpMisc.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="rbUseCustomRatio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 95</value>
+  </data>
+  <data name="cbMainFormStayOnTop.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 16</value>
+  </data>
+  <data name="txtCustomARHeight.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="cbMenuFullscreen.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label13.Location" type="System.Drawing.Point, System.Drawing">
+    <value>45, 55</value>
+  </data>
+  <data name="&gt;&gt;grpFinalFilter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="linkLabel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 373</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormSaveWindowPosition.Name" xml:space="preserve">
+    <value>cbMainFormSaveWindowPosition</value>
+  </data>
+  <data name="&gt;&gt;rbD3D11.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="rbUseCustomRatio.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="cbFSAutohideMouse.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="cbMenuWindowed.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 16</value>
+  </data>
+  <data name="rbD3D11.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbMainFormStayOnTop.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbD3D11.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustom.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="cbMenuFullscreen.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label17.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;grpARSelection.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="txtCustomARX.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="txtCropTop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>34, 21</value>
+  </data>
+  <data name="rbFinalFilterBilinear.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 16</value>
+  </data>
+  <data name="&gt;&gt;cbAllowTearing.Name" xml:space="preserve">
+    <value>cbAllowTearing</value>
+  </data>
+  <data name="cbCaptionWindowed.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 16</value>
+  </data>
+  <data name="lblFrameTypeWindowed.Location" type="System.Drawing.Point, System.Drawing">
+    <value>51, 16</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayAbsoluteZero.Parent" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="&gt;&gt;rbUser.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblStaticWindowTitles.Parent" xml:space="preserve">
+    <value>flpStaticWindowTitles</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="tbScanlineIntensity.Location" type="System.Drawing.Point, System.Drawing">
+    <value>83, 51</value>
+  </data>
+  <data name="&gt;&gt;rbNone.Name" xml:space="preserve">
+    <value>rbNone</value>
+  </data>
+  <data name="cbCaptionWindowed.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 61</value>
+  </data>
+  <data name="tpAR.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;tpDispMethod.Name" xml:space="preserve">
+    <value>tpDispMethod</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;rbNone.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;tpDispMethod.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;checkLetterbox.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="rbUseSystem.Text" xml:space="preserve">
+    <value>Use system's recommendation</value>
+  </data>
+  <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;lblUserFilterName.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbUseSystem.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;grpFinalFilter.Name" xml:space="preserve">
+    <value>grpFinalFilter</value>
+  </data>
+  <data name="&gt;&gt;grpARSelection.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="cbStatusBarFullscreen.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="groupBox4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbMainFormStayOnTop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbAutoPrescale.Text" xml:space="preserve">
+    <value>Auto Prescale</value>
+  </data>
+  <data name="txtCustomARX.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="&gt;&gt;rbScanlines.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblUserFilterName.Name" xml:space="preserve">
+    <value>lblUserFilterName</value>
+  </data>
+  <data name="rbUseCustom.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 16</value>
+  </data>
+  <data name="&gt;&gt;rbOpenGL.Name" xml:space="preserve">
+    <value>rbOpenGL</value>
+  </data>
+  <data name="&gt;&gt;label14.Name" xml:space="preserve">
+    <value>label14</value>
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbNone.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="txtCropBottom.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDisplayMinimal.Text" xml:space="preserve">
+    <value>Minimal - Display HUD Only (TBD)</value>
+  </data>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>Cropping</value>
+  </data>
+  <data name="rbUseSystem.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbAllowDoubleclickFullscreen.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarWindowed.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustom.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="checkLetterbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>222, 16</value>
+  </data>
+  <data name="btnSelectUserFilter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>83, 81</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tpAR.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="linkLabel1.Text" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
+  <data name="rbD3D11.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 16</value>
+  </data>
+  <data name="cbMenuWindowed.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 117</value>
+  </data>
+  <data name="cbStatusBarFullscreen.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="rbUseSystem.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 54</value>
+  </data>
+  <data name="txtCustomARY.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="grpFinalFilter.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDisplayFull.Size" type="System.Drawing.Size, System.Drawing">
+    <value>173, 16</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Name" xml:space="preserve">
+    <value>linkLabel1</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 16</value>
+  </data>
+  <data name="rbGDIPlus.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="btnCancel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;groupBox6.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 5</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
+    <value>tpMisc</value>
+  </data>
+  <data name="groupBox6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>302, 56</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustomRatio.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="cbCaptionWindowed.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 96</value>
+  </data>
+  <data name="lblScanlines.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt</value>
+  </data>
+  <data name="cbAllowTearing.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="&gt;&gt;label13.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Name" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="grpARSelection.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;rbUseRaw.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnOk.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 218</value>
+  </data>
+  <data name="rbDisplayFull.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 18</value>
+  </data>
+  <data name="cbMenuFullscreen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 39</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayFull.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterNone.Parent" xml:space="preserve">
+    <value>grpFinalFilter</value>
+  </data>
+  <data name="cbFullscreenHacks.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 16</value>
+  </data>
+  <data name="&gt;&gt;checkPadInteger.Name" xml:space="preserve">
+    <value>checkPadInteger</value>
+  </data>
+  <data name="&gt;&gt;label8.Name" xml:space="preserve">
+    <value>label8</value>
+  </data>
+  <data name="rbD3D11.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 9</value>
+  </data>
+  <data name="&gt;&gt;cbAllowTearing.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="rbUser.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>:</value>
+  </data>
+  <data name="cbStatusBarWindowed.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBicubic.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbFSAutohideMouse.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarFullscreen.Name" xml:space="preserve">
+    <value>cbStatusBarFullscreen</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBicubic.Parent" xml:space="preserve">
+    <value>grpFinalFilter</value>
+  </data>
+  <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;cbCaptionWindowed.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbAutoPrescale.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 158</value>
+  </data>
+  <data name="checkPadInteger.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="linkLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 12</value>
+  </data>
+  <data name="&gt;&gt;label10.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="rbUser.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayAbsoluteZero.Name" xml:space="preserve">
+    <value>rbDisplayAbsoluteZero</value>
+  </data>
+  <data name="cbStaticWindowTitles.Text" xml:space="preserve">
+    <value>Keep window titles static</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayAbsoluteZero.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
+    <value>392, 313</value>
+  </data>
+  <data name="&gt;&gt;rbUseRaw.Name" xml:space="preserve">
+    <value>rbUseRaw</value>
+  </data>
+  <data name="rbDisplayMinimal.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbUser.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tpAR.Size" type="System.Drawing.Size, System.Drawing">
+    <value>528, 280</value>
+  </data>
+  <data name="lblStaticWindowTitles.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 22</value>
+  </data>
+  <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;btnSelectUserFilter.Name" xml:space="preserve">
+    <value>btnSelectUserFilter</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbAutoPrescale.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label15.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="cbStatusBarWindowed.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbStatusBarFullscreen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;flpStaticWindowTitles.Name" xml:space="preserve">
+    <value>flpStaticWindowTitles</value>
+  </data>
+  <data name="grpFinalFilter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>187, 83</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Windowed</value>
+  </data>
+  <data name="&gt;&gt;cbFSAutohideMouse.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;btnDefaults.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="nudPrescale.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>For Windows operating systems &gt;= Vista, with
 some video cards, the monitors may flicker when
@@ -130,4 +1232,1176 @@ latency (since in Microsoft's new and disimproved
 operating systems, windowed mode things may
 have higher latency)</value>
   </data>
+  <data name="cbStatusBarWindowed.Text" xml:space="preserve">
+    <value>Status Bar</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterNone.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbMenuFullscreen.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 4</value>
+  </data>
+  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>536, 306</value>
+  </data>
+  <data name="&gt;&gt;checkLetterbox.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="cbMenuFullscreen.Text" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="lblScanlines.Location" type="System.Drawing.Point, System.Drawing">
+    <value>104, 36</value>
+  </data>
+  <data name="cbFullscreenHacks.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 60</value>
+  </data>
+  <data name="trackbarFrameSizeWindowed.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 45</value>
+  </data>
+  <data name="&gt;&gt;rbScanlines.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="rbNone.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblStaticWindowTitles.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="txtCropLeft.Text" xml:space="preserve">
+    <value>8000</value>
+  </data>
+  <data name="&gt;&gt;cbAllowDoubleclickFullscreen.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormSaveWindowPosition.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="cbMainFormMouseCaptureForcesTopmost.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 183</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBilinear.Parent" xml:space="preserve">
+    <value>grpFinalFilter</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
+    <value>btnOk</value>
+  </data>
+  <data name="cbMenuWindowed.Text" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormSaveWindowPosition.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbD3D11.Text" xml:space="preserve">
+    <value>Direct3D11</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormMouseCaptureForcesTopmost.Name" xml:space="preserve">
+    <value>cbMainFormMouseCaptureForcesTopmost</value>
+  </data>
+  <data name="flpStaticWindowTitles.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 101</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="checkLetterbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;label6.Name" xml:space="preserve">
+    <value>label6</value>
+  </data>
+  <data name="&gt;&gt;cbAutoPrescale.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>266, 207</value>
+  </data>
+  <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
+    <value>217, 23</value>
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.Size" type="System.Drawing.Size, System.Drawing">
+    <value>618, 16</value>
+  </data>
+  <data name="btnOk.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label9.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbFinalFilterBilinear.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="rbUseRaw.Size" type="System.Drawing.Size, System.Drawing">
+    <value>305, 16</value>
+  </data>
+  <data name="&gt;&gt;txtCropLeft.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="txtCropBottom.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Frame:</value>
+  </data>
+  <data name="txtCropTop.Location" type="System.Drawing.Point, System.Drawing">
+    <value>104, 20</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rbUseRaw.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;lblFrameTypeWindowed.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="txtCropRight.Text" xml:space="preserve">
+    <value>8000</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustomRatio.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="checkPadInteger.Location" type="System.Drawing.Point, System.Drawing">
+    <value>218, 158</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBilinear.Name" xml:space="preserve">
+    <value>rbFinalFilterBilinear</value>
+  </data>
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 114</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label16.Text" xml:space="preserve">
+    <value>Bottom:</value>
+  </data>
+  <data name="&gt;&gt;rbHq2x.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="cbFSAutohideMouse.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="&gt;&gt;rbNone.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label17.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;btnDefaults.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;label13.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Scaling Filter</value>
+  </data>
+  <data name="lblUserFilterName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 105</value>
+  </data>
+  <data name="&gt;&gt;label12.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;cbAutoPrescale.Name" xml:space="preserve">
+    <value>cbAutoPrescale</value>
+  </data>
+  <data name="txtCustomARWidth.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="txtCustomARHeight.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbAllowTearing.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="&gt;&gt;cbAllowDoubleclickFullscreen.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustom.Name" xml:space="preserve">
+    <value>rbUseCustom</value>
+  </data>
+  <data name="cbStatusBarWindowed.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="&gt;&gt;rbGDIPlus.Name" xml:space="preserve">
+    <value>rbGDIPlus</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 6</value>
+  </data>
+  <data name="rbScanlines.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbMainFormMouseCaptureForcesTopmost.Text" xml:space="preserve">
+    <value>Mouse Capture Forces Stay on Top</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.Text" xml:space="preserve">
+    <value>Absolute Zero - Display Nothing</value>
+  </data>
+  <data name="groupBox5.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="tpAR.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="checkLetterbox.Text" xml:space="preserve">
+    <value>Maintain aspect ratio (letterbox)</value>
+  </data>
+  <data name="rbOpenGL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="&gt;&gt;rbGDIPlus.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label11.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;rbD3D11.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbGDIPlus.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="rbDisplayMinimal.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="rbOpenGL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 95</value>
+  </data>
+  <data name="&gt;&gt;lblFrameTypeWindowed.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;label15.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="btnDefaults.Location" type="System.Drawing.Point, System.Drawing">
+    <value>447, 242</value>
+  </data>
+  <data name="&gt;&gt;tpMisc.Name" xml:space="preserve">
+    <value>tpMisc</value>
+  </data>
+  <data name="&gt;&gt;tbScanlineIntensity.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 81</value>
+  </data>
+  <data name="&gt;&gt;rbNone.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cbStaticWindowTitles.Parent" xml:space="preserve">
+    <value>flpStaticWindowTitles</value>
+  </data>
+  <data name="&gt;&gt;rbUseSystem.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="tpMisc.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="label11.Text" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarWindowed.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblStaticWindowTitles.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rbUseRaw.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="btnSelectUserFilter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;cbFSAutohideMouse.Name" xml:space="preserve">
+    <value>cbFSAutohideMouse</value>
+  </data>
+  <data name="txtCropRight.Location" type="System.Drawing.Point, System.Drawing">
+    <value>180, 20</value>
+  </data>
+  <data name="&gt;&gt;trackbarFrameSizeWindowed.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;rbUseSystem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="grpARSelection.Location" type="System.Drawing.Point, System.Drawing">
+    <value>218, 32</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value> • May malfunction on some systems.
+ • May have increased performance for OpenGL-based emulation cores.
+ • May have reduced performance on some systems.
+</value>
+  </data>
+  <data name="cbCaptionWindowed.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;tpAR.Name" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;txtCropTop.Name" xml:space="preserve">
+    <value>txtCropTop</value>
+  </data>
+  <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;lblScanlines.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;checkPadInteger.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label14.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;txtCropRight.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="label17.Location" type="System.Drawing.Point, System.Drawing">
+    <value>144, 23</value>
+  </data>
+  <data name="&gt;&gt;tbScanlineIntensity.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.TransparentTrackBar, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="cbStaticWindowTitles.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbMainFormMouseCaptureForcesTopmost.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="checkLetterbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;trackbarFrameSizeWindowed.Name" xml:space="preserve">
+    <value>trackbarFrameSizeWindowed</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 207</value>
+  </data>
+  <data name="&gt;&gt;label9.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;tbScanlineIntensity.Name" xml:space="preserve">
+    <value>tbScanlineIntensity</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARHeight.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tabControl1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARWidth.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbUser.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayMinimal.Name" xml:space="preserve">
+    <value>rbDisplayMinimal</value>
+  </data>
+  <data name="rbHq2x.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARHeight.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbHq2x.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarFullscreen.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;label8.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="txtCustomARHeight.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="rbDisplayFull.Text" xml:space="preserve">
+    <value>Full - Display Everything</value>
+  </data>
+  <data name="&gt;&gt;cbCaptionWindowed.Name" xml:space="preserve">
+    <value>cbCaptionWindowed</value>
+  </data>
+  <data name="rbUseRaw.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="cbMenuWindowed.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="rbFinalFilterNone.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;rbFinalFilterNone.Name" xml:space="preserve">
+    <value>rbFinalFilterNone</value>
+  </data>
+  <data name="&gt;&gt;label9.Name" xml:space="preserve">
+    <value>label9</value>
+  </data>
+  <data name="grpARSelection.Size" type="System.Drawing.Size, System.Drawing">
+    <value>302, 120</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+    <value>tpDispMethod</value>
+  </data>
+  <data name="&gt;&gt;lblFrameTypeWindowed.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="grpFinalFilter.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 179</value>
+  </data>
+  <data name="rbHq2x.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARX.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="tbScanlineIntensity.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 45</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARY.Name" xml:space="preserve">
+    <value>txtCustomARY</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 30</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARX.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="tpDispMethod.Size" type="System.Drawing.Size, System.Drawing">
+    <value>528, 280</value>
+  </data>
+  <data name="tabControl1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lblFrameTypeWindowed.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbHq2x.Text" xml:space="preserve">
+    <value>Hq2x</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBicubic.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cbMenuFullscreen.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;label7.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="rbOpenGL.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="checkLetterbox.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="rbFinalFilterBilinear.Text" xml:space="preserve">
+    <value>Bilinear</value>
+  </data>
+  <data name="txtCropLeft.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="cbAllowTearing.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="nudPrescale.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;rbScanlines.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;label15.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="lblScanlines.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbCaptionWindowed.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="label13.Text" xml:space="preserve">
+    <value>Allow Tearing: Allows fullscreen to tear when VSync is disabled.
+This is required for variable frame rate (VFR) monitors to properly work.
+Fast forward performance might decrease with tearing allowed.</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormSaveWindowPosition.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbUseRaw.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="cbMainFormMouseCaptureForcesTopmost.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label11.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="tpMisc.Text" xml:space="preserve">
+    <value>Misc</value>
+  </data>
+  <data name="label15.Location" type="System.Drawing.Point, System.Drawing">
+    <value>74, 23</value>
+  </data>
+  <data name="&gt;&gt;rbUseRaw.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarWindowed.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarFullscreen.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="nudPrescale.Size" type="System.Drawing.Size, System.Drawing">
+    <value>45, 21</value>
+  </data>
+  <data name="&gt;&gt;txtCropBottom.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbMainFormStayOnTop.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cbAutoPrescale.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="txtCropRight.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="cbMenuFullscreen.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 16</value>
+  </data>
+  <data name="rbUseSystem.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="txtCustomARY.Location" type="System.Drawing.Point, System.Drawing">
+    <value>220, 94</value>
+  </data>
+  <data name="label15.Text" xml:space="preserve">
+    <value>Top:</value>
+  </data>
+  <data name="&gt;&gt;cbStatusBarWindowed.Name" xml:space="preserve">
+    <value>cbStatusBarWindowed</value>
+  </data>
+  <data name="rbD3D11.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCropLeft.Size" type="System.Drawing.Size, System.Drawing">
+    <value>34, 21</value>
+  </data>
+  <data name="&gt;&gt;label16.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="rbDisplayFull.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbFullscreenHacks.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbUseSystem.Name" xml:space="preserve">
+    <value>rbUseSystem</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>564, 345</value>
+  </data>
+  <data name="&gt;&gt;cbStaticWindowTitles.Name" xml:space="preserve">
+    <value>cbStaticWindowTitles</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rbUseRaw.Text" xml:space="preserve">
+    <value>Use 1:1 pixel size (for crispness or debugging)</value>
+  </data>
+  <data name="label10.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbMenuWindowed.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="cbCaptionWindowed.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDisplayFull.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;cbScaleOSD.Name" xml:space="preserve">
+    <value>cbScaleOSD</value>
+  </data>
+  <data name="lblUserFilterName.Text" xml:space="preserve">
+    <value>Will contain user filter name</value>
+  </data>
+  <data name="rbUser.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 81</value>
+  </data>
+  <data name="&gt;&gt;flpStaticWindowTitles.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocSzSingleColumnFLP, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;cbAllowTearing.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="cbStatusBarWindowed.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbMainFormStayOnTop.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 16</value>
+  </data>
+  <data name="rbScanlines.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;txtCropBottom.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;label10.Name" xml:space="preserve">
+    <value>label10</value>
+  </data>
+  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;rbFinalFilterBilinear.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="rbFinalFilterBicubic.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 16</value>
+  </data>
+  <data name="&gt;&gt;rbD3D11.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 28</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.Text" xml:space="preserve">
+    <value>Save Window Position</value>
+  </data>
+  <data name="&gt;&gt;cbFullscreenHacks.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="cbFSAutohideMouse.Size" type="System.Drawing.Size, System.Drawing">
+    <value>156, 16</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Display Configuration</value>
+  </data>
+  <data name="&gt;&gt;rbOpenGL.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="txtCustomARWidth.Location" type="System.Drawing.Point, System.Drawing">
+    <value>124, 73</value>
+  </data>
+  <data name="groupBox5.Text" xml:space="preserve">
+    <value>Display Features (for speeding up replays)</value>
+  </data>
+  <data name="&gt;&gt;nudPrescale.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayMinimal.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARWidth.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="rbDisplayMinimal.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;rbScanlines.Name" xml:space="preserve">
+    <value>rbScanlines</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARX.Name" xml:space="preserve">
+    <value>txtCustomARX</value>
+  </data>
+  <data name="rbHq2x.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbScaleOSD.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 238</value>
+  </data>
+  <data name="cbScaleOSD.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="txtCustomARWidth.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="&gt;&gt;cbMenuWindowed.Name" xml:space="preserve">
+    <value>cbMenuWindowed</value>
+  </data>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label15.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;lblUserFilterName.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
+    <value>202, 99</value>
+  </data>
+  <data name="tpMisc.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="rbFinalFilterBicubic.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbUseCustom.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label16.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="cbMenuWindowed.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="rbDisplayMinimal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>215, 16</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="btnDefaults.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="lblStaticWindowTitles.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>19, 0, 3, 0</value>
+  </data>
+  <data name="rbUseRaw.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label9.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;rbUseCustomRatio.Name" xml:space="preserve">
+    <value>rbUseCustomRatio</value>
+  </data>
+  <data name="&gt;&gt;cbFullscreenHacks.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;flpStaticWindowTitles.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="checkPadInteger.Size" type="System.Drawing.Size, System.Drawing">
+    <value>312, 16</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARX.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;rbDisplayFull.Parent" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="tpMisc.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label14.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbMainFormStayOnTop.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;btnSelectUserFilter.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="cbStatusBarFullscreen.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;flpStaticWindowTitles.Parent" xml:space="preserve">
+    <value>tpMisc</value>
+  </data>
+  <data name="tpDispMethod.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="rbScanlines.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 16</value>
+  </data>
+  <data name="txtCustomARHeight.Location" type="System.Drawing.Point, System.Drawing">
+    <value>220, 73</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="flpStaticWindowTitles.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbFinalFilterNone.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="groupBox5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 6</value>
+  </data>
+  <data name="&gt;&gt;rbHq2x.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>Fullscreen</value>
+  </data>
+  <data name="btnSelectUserFilter.Text" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="&gt;&gt;label7.Name" xml:space="preserve">
+    <value>label7</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="rbDisplayMinimal.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDisplayFull.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="txtCustomARWidth.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="&gt;&gt;label13.Name" xml:space="preserve">
+    <value>label13</value>
+  </data>
+  <data name="&gt;&gt;label6.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;btnDefaults.Name" xml:space="preserve">
+    <value>btnDefaults</value>
+  </data>
+  <data name="&gt;&gt;nudPrescale.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="cbMainFormMouseCaptureForcesTopmost.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbFinalFilterBicubic.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="rbFinalFilterNone.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 17</value>
+  </data>
+  <data name="grpARSelection.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;grpARSelection.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblScanlines.Name" xml:space="preserve">
+    <value>lblScanlines</value>
+  </data>
+  <data name="cbAutoPrescale.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="rbOpenGL.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="btnDefaults.Text" xml:space="preserve">
+    <value>Defaults</value>
+  </data>
+  <data name="txtCropTop.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;tpAR.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="rbScanlines.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 60</value>
+  </data>
+  <data name="&gt;&gt;cbStaticWindowTitles.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbNone.Text" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="txtCustomARX.Location" type="System.Drawing.Point, System.Drawing">
+    <value>124, 94</value>
+  </data>
+  <data name="cbFullscreenHacks.Text" xml:space="preserve">
+    <value>Enable Windows Fullscreen Hacks</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARWidth.Name" xml:space="preserve">
+    <value>txtCustomARWidth</value>
+  </data>
+  <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
+    <value>140, 10</value>
+  </data>
+  <data name="&gt;&gt;txtCropBottom.Name" xml:space="preserve">
+    <value>txtCropBottom</value>
+  </data>
+  <data name="&gt;&gt;label14.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="checkPadInteger.Text" xml:space="preserve">
+    <value>Expand pixels by integers only (e.g. no 1.3333x)</value>
+  </data>
+  <data name="&gt;&gt;grpFinalFilter.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="lblScanlines.Text" xml:space="preserve">
+    <value>%</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Name" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;trackbarFrameSizeWindowed.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;tpDispMethod.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cbMenuFullscreen.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;cbAutoPrescale.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>193, 122</value>
+  </data>
+  <data name="lblFrameTypeWindowed.Text" xml:space="preserve">
+    <value>(frame type)</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>Window</value>
+  </data>
+  <data name="&gt;&gt;nudPrescale.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label11.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;rbHq2x.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbNone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="cbScaleOSD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>216, 16</value>
+  </data>
+  <data name="&gt;&gt;lblUserFilterName.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cbStatusBarFullscreen.Text" xml:space="preserve">
+    <value>Status Bar</value>
+  </data>
+  <data name="rbScanlines.Text" xml:space="preserve">
+    <value>Scanlines</value>
+  </data>
+  <data name="rbNone.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tbScanlineIntensity.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cbMenuWindowed.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtCustomARY.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="&gt;&gt;btnSelectUserFilter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label17.Name" xml:space="preserve">
+    <value>label17</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;trackbarFrameSizeWindowed.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.TransparentTrackBar, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;txtCropBottom.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="linkLabel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox4.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="tpDispMethod.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="linkLabel1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbMainFormMouseCaptureForcesTopmost.Size" type="System.Drawing.Size, System.Drawing">
+    <value>216, 16</value>
+  </data>
+  <data name="&gt;&gt;checkLetterbox.Name" xml:space="preserve">
+    <value>checkLetterbox</value>
+  </data>
+  <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>473, 313</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value> • Slow; Mainly for compatibility purposes
+ • Missing many features
+ • Works better over Remote Desktop, etc.
+</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>tpAR</value>
+  </data>
+  <data name="&gt;&gt;btnDefaults.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cbStaticWindowTitles.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.CheckBoxEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbAutoPrescale.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 16</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>grpARSelection</value>
+  </data>
+  <data name="trackbarFrameSizeWindowed.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="rbUser.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="tpDispMethod.Text" xml:space="preserve">
+    <value>Display Method</value>
+  </data>
+  <data name="label13.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDisplayAbsoluteZero.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbFinalFilterBilinear.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="grpFinalFilter.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="label17.Text" xml:space="preserve">
+    <value>Right:</value>
+  </data>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

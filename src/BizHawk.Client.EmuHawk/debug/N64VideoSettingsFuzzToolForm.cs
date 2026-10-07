@@ -69,5 +69,18 @@ namespace BizHawk.Client.EmuHawk.ForDebugging
 			});
 			ResumeLayout();
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(N64VideoSettingsFuzzToolForm));
+            this.SuspendLayout();
+            // 
+            // N64VideoSettingsFuzzToolForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "N64VideoSettingsFuzzToolForm";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

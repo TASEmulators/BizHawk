@@ -28,5 +28,19 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override Stream GetExtractionStream(HawkFile downloaded)
 			=> downloaded.GetStream();
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RAIntegrationDownloaderForm));
+            this.SuspendLayout();
+            // 
+            // RAIntegrationDownloaderForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "RAIntegrationDownloaderForm";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+		}
 	}
 }

@@ -203,17 +203,17 @@
   </data>
   <data name="label4.Text" xml:space="preserve">
     <value>- 尚不支持音频解码
-  （虽然 Mednafen proper 可以支持）
+   (虽然 Mednafen proper 可以支持)
 - 可加载ISO、CUE和CCD</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>281, 30</value>
   </data>
   <data name="ExitButton.Text" xml:space="preserve">
-    <value>退出（&amp;X）</value>
+    <value>退出(&amp;X)</value>
   </data>
   <data name="btnAbout.Text" xml:space="preserve">
-    <value>关于（&amp;A）</value>
+    <value>关于(&amp;A)</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">

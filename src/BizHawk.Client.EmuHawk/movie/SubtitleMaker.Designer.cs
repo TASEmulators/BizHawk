@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SubtitleMaker));
             this.OK = new System.Windows.Forms.Button();
             this.Cancel = new System.Windows.Forms.Button();
             this.Message = new System.Windows.Forms.TextBox();
@@ -51,126 +52,97 @@
             // 
             // OK
             // 
-            this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK.Location = new System.Drawing.Point(267, 164);
+            resources.ApplyResources(this.OK, "OK");
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(75, 23);
-            this.OK.TabIndex = 0;
-            this.OK.Text = "&Save";
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.Ok_Click);
             // 
             // Cancel
             // 
-            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Cancel, "Cancel");
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(348, 164);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Cancel.TabIndex = 1;
-            this.Cancel.Text = "&Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
             this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
             // 
             // Message
             // 
-            this.Message.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Message.Location = new System.Drawing.Point(12, 69);
-            this.Message.MaxLength = 512;
+            resources.ApplyResources(this.Message, "Message");
             this.Message.Name = "Message";
-            this.Message.Size = new System.Drawing.Size(416, 20);
-            this.Message.TabIndex = 15;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 50);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Text = "Message";
             // 
             // YNumeric
             // 
-            this.YNumeric.Location = new System.Drawing.Point(15, 130);
+            resources.ApplyResources(this.YNumeric, "YNumeric");
             this.YNumeric.Maximum = new decimal(new int[] {
             240,
             0,
             0,
             0});
             this.YNumeric.Name = "YNumeric";
-            this.YNumeric.Size = new System.Drawing.Size(56, 20);
-            this.YNumeric.TabIndex = 25;
             // 
             // XNumeric
             // 
-            this.XNumeric.Location = new System.Drawing.Point(15, 106);
+            resources.ApplyResources(this.XNumeric, "XNumeric");
             this.XNumeric.Maximum = new decimal(new int[] {
             320,
             0,
             0,
             0});
             this.XNumeric.Name = "XNumeric";
-            this.XNumeric.Size = new System.Drawing.Size(56, 20);
-            this.XNumeric.TabIndex = 20;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(77, 108);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Text = "X position";
             // 
             // label3
             // 
-            this.label3.Location = new System.Drawing.Point(75, 133);
+            resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
-            this.label3.Text = "Y position";
             // 
             // DurationNumeric
             // 
-            this.DurationNumeric.Location = new System.Drawing.Point(153, 108);
+            resources.ApplyResources(this.DurationNumeric, "DurationNumeric");
             this.DurationNumeric.Maximum = new decimal(new int[] {
             9999,
             0,
             0,
             0});
             this.DurationNumeric.Name = "DurationNumeric";
-            this.DurationNumeric.Size = new System.Drawing.Size(56, 20);
-            this.DurationNumeric.TabIndex = 30;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(215, 108);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Text = "Duration";
             // 
             // ColorPanel
             // 
+            resources.ApplyResources(this.ColorPanel, "ColorPanel");
             this.ColorPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.ColorPanel.Location = new System.Drawing.Point(153, 131);
             this.ColorPanel.Name = "ColorPanel";
-            this.ColorPanel.Size = new System.Drawing.Size(56, 19);
-            this.ColorPanel.TabIndex = 35;
             this.ColorPanel.TabStop = true;
             this.ColorPanel.Click += new System.EventHandler(this.ColorPanel_DoubleClick);
             this.ColorPanel.DoubleClick += new System.EventHandler(this.ColorPanel_DoubleClick);
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(215, 133);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Text = "Color";
             // 
             // FrameNumeric
             // 
-            this.FrameNumeric.Location = new System.Drawing.Point(78, 19);
+            resources.ApplyResources(this.FrameNumeric, "FrameNumeric");
             this.FrameNumeric.Maximum = new decimal(new int[] {
             2147483647,
             0,
             0,
             0});
             this.FrameNumeric.Name = "FrameNumeric";
-            this.FrameNumeric.Size = new System.Drawing.Size(70, 20);
-            this.FrameNumeric.TabIndex = 10;
-            this.FrameNumeric.ThousandsSeparator = true;
             this.FrameNumeric.Value = new decimal(new int[] {
             1,
             0,
@@ -179,17 +151,15 @@
             // 
             // label6
             // 
-            this.label6.Location = new System.Drawing.Point(12, 21);
+            resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
-            this.label6.Text = "Frame";
             // 
             // SubtitleMaker
             // 
             this.AcceptButton = this.OK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(435, 199);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.FrameNumeric);
             this.Controls.Add(this.label5);
@@ -204,10 +174,7 @@
             this.Controls.Add(this.Message);
             this.Controls.Add(this.Cancel);
             this.Controls.Add(this.OK);
-            this.MinimumSize = new System.Drawing.Size(272, 225);
             this.Name = "SubtitleMaker";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Subtitle Maker";
             this.Load += new System.EventHandler(this.SubtitleMaker_Load);
             ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();

@@ -162,8 +162,8 @@
   <data name="&gt;&gt;CoreInfoPanel.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;VersionLabel.ZOrder" xml:space="preserve">
-    <value>6</value>
+  <data name="&gt;&gt;OK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;btnCopyHash.Parent" xml:space="preserve">
     <value>$this</value>
@@ -186,8 +186,8 @@
   <data name="linkLabel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>101, 12</value>
   </data>
-  <data name="&gt;&gt;OK.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;VersionLabel.ZOrder" xml:space="preserve">
+    <value>6</value>
   </data>
   <data name="&gt;&gt;CoreInfoPanel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -197,6 +197,9 @@
   </data>
   <data name="OK.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 21</value>
+  </data>
+  <data name="btnCopyHash.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="linkLabel1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -333,8 +336,8 @@
   <data name="linkLabel2.Size" type="System.Drawing.Size, System.Drawing">
     <value>95, 12</value>
   </data>
-  <data name="btnCopyHash.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
-    <value>GrowAndShrink</value>
+  <data name="linkLabel3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 12</value>
   </data>
   <data name="&gt;&gt;btnCopyHash.ZOrder" xml:space="preserve">
     <value>4</value>
@@ -373,17 +376,14 @@ for productive people."</value>
   <data name="linkLabel1.Text" xml:space="preserve">
     <value>BizHawk Homepage</value>
   </data>
-  <data name="linkLabel1.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="&gt;&gt;DateLabel.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="CoreInfoPanel.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
   </data>
-  <data name="linkLabel3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 12</value>
+  <data name="linkLabel1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;DeveloperBuildLabel.Name" xml:space="preserve">
     <value>DeveloperBuildLabel</value>
@@ -394,8 +394,8 @@ for productive people."</value>
   <data name="DateLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>198, 84</value>
   </data>
-  <data name="btnCopyHash.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="btnCopyHash.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
+    <value>GrowAndShrink</value>
   </data>
   <data name="&gt;&gt;linkLabel2.Type" xml:space="preserve">
     <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>

@@ -240,8 +240,8 @@
   <data name="AddToGameDbBtn.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleLeft</value>
   </data>
-  <data name="buttonCopy.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 22</value>
+  <data name="btnClear.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;btnClear.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -288,14 +288,14 @@
   <data name="virtualListView1.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
   </data>
+  <data name="&gt;&gt;buttonCopy.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="AddToGameDbBtn.Text" xml:space="preserve">
     <value>Add to database</value>
   </data>
-  <data name="btnClear.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="buttonCopy.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 22</value>
-  </data>
-  <data name="btnClear.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
   </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -324,8 +324,8 @@
   <data name="&gt;&gt;AddToGameDbBtn.Name" xml:space="preserve">
     <value>AddToGameDbBtn</value>
   </data>
-  <data name="&gt;&gt;buttonCopy.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="btnClear.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 22</value>
   </data>
   <data name="btnClose.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 22</value>

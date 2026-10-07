@@ -117,6 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="NameLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="NameLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>35, 15</value>
@@ -124,11 +128,23 @@
   <data name="NameLabel.Text" xml:space="preserve">
     <value>名称</value>
   </data>
+  <data name="AddressLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="AddressLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>35, 43</value>
   </data>
   <data name="AddressLabel.Text" xml:space="preserve">
     <value>地址</value>
+  </data>
+  <data name="AddressHexIndLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="ValueHexIndLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="ValueLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="ValueLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>45, 68</value>
@@ -136,11 +152,20 @@
   <data name="ValueLabel.Text" xml:space="preserve">
     <value>值</value>
   </data>
+  <data name="CompareHexIndLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="CompareLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="CompareLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>21, 94</value>
   </data>
   <data name="CompareLabel.Text" xml:space="preserve">
     <value>参照值</value>
+  </data>
+  <data name="DomainLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="DomainLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 157</value>
@@ -148,14 +173,23 @@
   <data name="DomainLabel.Text" xml:space="preserve">
     <value>内存区域</value>
   </data>
+  <data name="SizeLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="SizeLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>33, 187</value>
   </data>
   <data name="SizeLabel.Text" xml:space="preserve">
     <value>大小</value>
   </data>
+  <data name="DisplayTypeLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="DisplayTypeLabel.Text" xml:space="preserve">
     <value>显示格式</value>
+  </data>
+  <data name="BigEndianCheckBox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="BigEndianCheckBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>60, 16</value>
@@ -163,11 +197,23 @@
   <data name="BigEndianCheckBox.Text" xml:space="preserve">
     <value>大端序</value>
   </data>
+  <data name="AddButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left</value>
+  </data>
+  <data name="AddButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="AddButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>67, 23</value>
   </data>
   <data name="AddButton.Text" xml:space="preserve">
     <value>添加（&amp;A）</value>
+  </data>
+  <data name="EditButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="EditButton.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="EditButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>111, 264</value>
@@ -177,6 +223,9 @@
   </data>
   <data name="EditButton.Text" xml:space="preserve">
     <value>覆写（&amp;E）</value>
+  </data>
+  <data name="CompareTypeLabel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="CompareTypeLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 125</value>
