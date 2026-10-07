@@ -11,7 +11,7 @@ namespace BizHawk.Tests.Client.Common.Movie
 		private BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 
-		private static readonly ControllerDefinition _cd = new ControllerDefinition("fake controller")
+		public static readonly ControllerDefinition Definition = new ControllerDefinition("fake controller")
 		{
 			BoolButtons = { "A", "B" },
 		}
@@ -20,10 +20,10 @@ namespace BizHawk.Tests.Client.Common.Movie
 
 		static FakeEmulator()
 		{
-			_cd.BuildMnemonicsCache("fake");
+			Definition.BuildMnemonicsCache("fake");
 		}
 
-		public ControllerDefinition ControllerDefinition => _cd;
+		public ControllerDefinition ControllerDefinition => Definition;
 
 		public int Frame { get; set; }
 
