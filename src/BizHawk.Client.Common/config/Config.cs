@@ -190,12 +190,14 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Whether to make AutoSave files at periodic intervals
 		/// </summary>
-		public bool AutosaveSaveRAM { get; set; }
+		public bool AutosaveSaveRAM { get; set; } = true;
 
 		/// <summary>
 		/// Intervals at which to make AutoSave files
 		/// </summary>
-		public int FlushSaveRamFrames { get; set; }
+		public int FlushSaveRamFrames { get; set; } = 5 * 60 * 60; // 5 minutes (it assumes 60 fps)
+
+		public bool WarnLoadSramReboots { get; set; } = true;
 
 		public bool TurboSeek { get; set; }
 
