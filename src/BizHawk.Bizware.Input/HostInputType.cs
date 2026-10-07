@@ -10,5 +10,6 @@ namespace BizHawk.Bizware.Input
 		Keyboard = 2,
 		Pad = 4,
 		Ignored = 8,
+		IPC = 16,
 	}
 }
