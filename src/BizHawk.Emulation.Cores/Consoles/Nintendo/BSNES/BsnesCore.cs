@@ -178,9 +178,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 					// core asked for saveram, but the interface isn't designed to be able to handle this.
 					// so, we'll just return nothing and the frontend will set the saveram itself later
 					return null;
-				case "cx4":
-					// core has the cx4 data rom baked in, so no need for the firmware file
-					return null;
 			}
 
 			string firmwareId;
@@ -188,6 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 
 			switch (hint)
 			{
+				case "cx4": firmwareId = "CX4"; break;
 				case "dsp1": firmwareId = "DSP1"; break;
 				case "dsp1b": firmwareId = "DSP1b"; break;
 				case "dsp2": firmwareId = "DSP2"; break;
@@ -206,9 +204,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			string ret = "";
 			FirmwareID fwid = new(firmwareSystem, firmwareId);
 			const string MISSING_FIRMWARE_MSG = "Game may function incorrectly without the requested firmware.";
+			// core falls back on built-in cx4 data rom if not provided, so no need to warn here
+			string msg = hint == "cx4" ? null : MISSING_FIRMWARE_MSG;
 			byte[] data = required
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(fwid, MISSING_FIRMWARE_MSG)
-				: CoreComm.CoreFileProvider.GetFirmware(fwid, MISSING_FIRMWARE_MSG);
+				: CoreComm.CoreFileProvider.GetFirmware(fwid, msg);
 			if (data != null)
 			{
 				ret = hint;
