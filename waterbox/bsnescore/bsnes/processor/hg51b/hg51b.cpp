@@ -19,7 +19,7 @@ auto HG51B::halt() -> void {
 auto HG51B::wait(uint24 address) -> uint {
   if(isROM(address)) return 1 + io.wait.rom;
   if(isRAM(address)) return 1 + io.wait.ram;
-  return 1;
+  return 0;
 }
 
 auto HG51B::main() -> void {
