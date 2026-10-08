@@ -117,69 +117,72 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>背景</value>
+  <data name="labelSpriteBackColor.Text" xml:space="preserve">
+    <value>标签10</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>窗口</value>
-  </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>存储体 1</value>
+  <data name="groupBox8.Text" xml:space="preserve">
+    <value>精灵背景颜色</value>
   </data>
   <data name="label4.Text" xml:space="preserve">
-    <value>存储体 2 (CGB)</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>背景和窗口</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>精灵</value>
-  </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>瓦片图</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>瓦片</value>
-  </data>
-  <data name="groupBox3.Text" xml:space="preserve">
-    <value>调色板</value>
+    <value>Bank 2 (CGB)</value>
   </data>
   <data name="label8.Text" xml:space="preserve">
     <value>精灵</value>
   </data>
+  <data name="buttonChangeColor.Text" xml:space="preserve">
+    <value>换色</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>背景</value>
+  </data>
   <data name="label9.Text" xml:space="preserve">
     <value>精灵预览</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="radioButtonRefreshFrame.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 16</value>
   </data>
   <data name="buttonRefresh.Text" xml:space="preserve">
     <value>刷新</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="radioButtonRefreshManual.Size" type="System.Drawing.Size, System.Drawing">
-    <value>47, 16</value>
-  </data>
-  <data name="radioButtonRefreshManual.Text" xml:space="preserve">
-    <value>手动</value>
-  </data>
-  <data name="radioButtonRefreshScanline.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 16</value>
-  </data>
-  <data name="radioButtonRefreshScanline.Text" xml:space="preserve">
-    <value>扫描线</value>
-  </data>
-  <data name="radioButtonRefreshFrame.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 16</value>
-  </data>
-  <data name="radioButtonRefreshFrame.Text" xml:space="preserve">
-    <value>帧</value>
-  </data>
-  <data name="groupBox5.Text" xml:space="preserve">
-    <value>刷新控制</value>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>复制到剪贴板</value>
   </data>
   <data name="labelDetails.Text" xml:space="preserve">
     <value>鼠标移动到项目上可查看其详细信息。</value>
   </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Bank 1</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>精灵</value>
+  </data>
+  <data name="radioButtonRefreshManual.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>块映射表</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>左键单击调色板用它来绘制图块显示。</value>
+  </data>
+  <data name="radioButtonRefreshScanline.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>块</value>
+  </data>
+  <data name="labelClipboard.Text" xml:space="preserve">
+    <value>CTRL + C 复制鼠标下方的面板</value>
+  </data>
   <data name="groupBoxDetails.Text" xml:space="preserve">
     <value>详细信息</value>
+  </data>
+  <data name="radioButtonRefreshManual.Text" xml:space="preserve">
+    <value>手动</value>
+  </data>
+  <data name="groupBox3.Text" xml:space="preserve">
+    <value>调色板</value>
   </data>
   <data name="labelMemory.Text" xml:space="preserve">
     <value>右击一个项目显示其详细信息到这里。</value>
@@ -187,19 +190,19 @@
   <data name="groupBoxMemory.Text" xml:space="preserve">
     <value>详细信息</value>
   </data>
-  <data name="labelClipboard.Text" xml:space="preserve">
-    <value>CTRL + C 复制鼠标下方的面板</value>
+  <data name="label2.Text" xml:space="preserve">
+    <value>窗口</value>
   </data>
-  <data name="groupBox6.Text" xml:space="preserve">
-    <value>复制到剪贴板</value>
+  <data name="groupBox5.Text" xml:space="preserve">
+    <value>刷新控制</value>
   </data>
-  <data name="labelSpriteBackColor.Text" xml:space="preserve">
-    <value>标签10</value>
+  <data name="label5.Text" xml:space="preserve">
+    <value>背景和窗口</value>
   </data>
-  <data name="buttonChangeColor.Text" xml:space="preserve">
-    <value>换色</value>
+  <data name="radioButtonRefreshFrame.Text" xml:space="preserve">
+    <value>帧</value>
   </data>
-  <data name="groupBox8.Text" xml:space="preserve">
-    <value>精灵背景颜色</value>
+  <data name="radioButtonRefreshScanline.Text" xml:space="preserve">
+    <value>扫描线</value>
   </data>
 </root>

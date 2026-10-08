@@ -92,6 +92,7 @@
             // 
             resources.ApplyResources(this.OK, "OK");
             this.OK.Name = "OK";
+            this.toolTip1.SetToolTip(this.OK, resources.GetString("OK.ToolTip"));
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.Ok_Click);
             // 
@@ -100,6 +101,7 @@
             resources.ApplyResources(this.Cancel, "Cancel");
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.Cancel.Name = "Cancel";
+            this.toolTip1.SetToolTip(this.Cancel, resources.GetString("Cancel.ToolTip"));
             this.Cancel.UseVisualStyleBackColor = true;
             this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
             // 
@@ -107,12 +109,14 @@
             // 
             resources.ApplyResources(this.RewindEnabledBox, "RewindEnabledBox");
             this.RewindEnabledBox.Name = "RewindEnabledBox";
+            this.toolTip1.SetToolTip(this.RewindEnabledBox, resources.GetString("RewindEnabledBox.ToolTip"));
             this.RewindEnabledBox.UseVisualStyleBackColor = true;
             // 
             // UseCompression
             // 
             resources.ApplyResources(this.UseCompression, "UseCompression");
             this.UseCompression.Name = "UseCompression";
+            this.toolTip1.SetToolTip(this.UseCompression, resources.GetString("UseCompression.ToolTip"));
             this.UseCompression.UseVisualStyleBackColor = true;
             this.UseCompression.CheckedChanged += new System.EventHandler(this.UseCompression_CheckedChanged);
             // 
@@ -120,6 +124,7 @@
             // 
             resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
+            this.toolTip1.SetToolTip(this.label4, resources.GetString("label4.ToolTip"));
             // 
             // BufferSizeUpDown
             // 
@@ -135,6 +140,7 @@
             0,
             0});
             this.BufferSizeUpDown.Name = "BufferSizeUpDown";
+            this.toolTip1.SetToolTip(this.BufferSizeUpDown, resources.GetString("BufferSizeUpDown.ToolTip"));
             this.BufferSizeUpDown.Value = new decimal(new int[] {
             9,
             0,
@@ -146,26 +152,31 @@
             // 
             resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
+            this.toolTip1.SetToolTip(this.label3, resources.GetString("label3.ToolTip"));
             // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            this.toolTip1.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
             // 
             // StateSizeLabel
             // 
             resources.ApplyResources(this.StateSizeLabel, "StateSizeLabel");
             this.StateSizeLabel.Name = "StateSizeLabel";
+            this.toolTip1.SetToolTip(this.StateSizeLabel, resources.GetString("StateSizeLabel.ToolTip"));
             // 
             // label6
             // 
             resources.ApplyResources(this.label6, "label6");
             this.label6.Name = "label6";
+            this.toolTip1.SetToolTip(this.label6, resources.GetString("label6.ToolTip"));
             // 
             // FullnessLabel
             // 
             resources.ApplyResources(this.FullnessLabel, "FullnessLabel");
             this.FullnessLabel.Name = "FullnessLabel";
+            this.toolTip1.SetToolTip(this.FullnessLabel, resources.GetString("FullnessLabel.ToolTip"));
             // 
             // groupBox4
             // 
@@ -191,12 +202,14 @@
             this.groupBox4.Controls.Add(this.StateSizeLabel);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox4, resources.GetString("groupBox4.ToolTip"));
             // 
             // TargetRewindIntervalRadioButton
             // 
             resources.ApplyResources(this.TargetRewindIntervalRadioButton, "TargetRewindIntervalRadioButton");
             this.TargetRewindIntervalRadioButton.Name = "TargetRewindIntervalRadioButton";
             this.TargetRewindIntervalRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.TargetRewindIntervalRadioButton, resources.GetString("TargetRewindIntervalRadioButton.ToolTip"));
             this.TargetRewindIntervalRadioButton.UseVisualStyleBackColor = true;
             this.TargetRewindIntervalRadioButton.CheckedChanged += new System.EventHandler(this.RewindInterval_CheckedChanged);
             // 
@@ -205,6 +218,7 @@
             resources.ApplyResources(this.TargetFrameLengthRadioButton, "TargetFrameLengthRadioButton");
             this.TargetFrameLengthRadioButton.Name = "TargetFrameLengthRadioButton";
             this.TargetFrameLengthRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.TargetFrameLengthRadioButton, resources.GetString("TargetFrameLengthRadioButton.ToolTip"));
             this.TargetFrameLengthRadioButton.UseVisualStyleBackColor = true;
             // 
             // locSingleRowFLP1
@@ -216,26 +230,31 @@
             this.locSingleRowFLP1.Controls.Add(this.labelEx1);
             this.locSingleRowFLP1.Controls.Add(this.label4);
             this.locSingleRowFLP1.Name = "locSingleRowFLP1";
+            this.toolTip1.SetToolTip(this.locSingleRowFLP1, resources.GetString("locSingleRowFLP1.ToolTip"));
             // 
             // labelEx3
             // 
             resources.ApplyResources(this.labelEx3, "labelEx3");
             this.labelEx3.Name = "labelEx3";
+            this.toolTip1.SetToolTip(this.labelEx3, resources.GetString("labelEx3.ToolTip"));
             // 
             // labelEx2
             // 
             resources.ApplyResources(this.labelEx2, "labelEx2");
             this.labelEx2.Name = "labelEx2";
+            this.toolTip1.SetToolTip(this.labelEx2, resources.GetString("labelEx2.ToolTip"));
             // 
             // labelEx1
             // 
             resources.ApplyResources(this.labelEx1, "labelEx1");
             this.labelEx1.Name = "labelEx1";
+            this.toolTip1.SetToolTip(this.labelEx1, resources.GetString("labelEx1.ToolTip"));
             // 
             // cbDeltaCompression
             // 
             resources.ApplyResources(this.cbDeltaCompression, "cbDeltaCompression");
             this.cbDeltaCompression.Name = "cbDeltaCompression";
+            this.toolTip1.SetToolTip(this.cbDeltaCompression, resources.GetString("cbDeltaCompression.ToolTip"));
             this.cbDeltaCompression.UseVisualStyleBackColor = true;
             // 
             // TargetFrameLengthNumeric
@@ -252,6 +271,7 @@
             0,
             0});
             this.TargetFrameLengthNumeric.Name = "TargetFrameLengthNumeric";
+            this.toolTip1.SetToolTip(this.TargetFrameLengthNumeric, resources.GetString("TargetFrameLengthNumeric.ToolTip"));
             this.TargetFrameLengthNumeric.Value = new decimal(new int[] {
             600,
             0,
@@ -273,6 +293,7 @@
             0,
             0});
             this.TargetRewindIntervalNumeric.Name = "TargetRewindIntervalNumeric";
+            this.toolTip1.SetToolTip(this.TargetRewindIntervalNumeric, resources.GetString("TargetRewindIntervalNumeric.ToolTip"));
             this.TargetRewindIntervalNumeric.Value = new decimal(new int[] {
             5,
             0,
@@ -284,31 +305,37 @@
             // 
             resources.ApplyResources(this.EstTimeLabel, "EstTimeLabel");
             this.EstTimeLabel.Name = "EstTimeLabel";
+            this.toolTip1.SetToolTip(this.EstTimeLabel, resources.GetString("EstTimeLabel.ToolTip"));
             // 
             // label11
             // 
             resources.ApplyResources(this.label11, "label11");
             this.label11.Name = "label11";
+            this.toolTip1.SetToolTip(this.label11, resources.GetString("label11.ToolTip"));
             // 
             // ApproxFramesLabel
             // 
             resources.ApplyResources(this.ApproxFramesLabel, "ApproxFramesLabel");
             this.ApproxFramesLabel.Name = "ApproxFramesLabel";
+            this.toolTip1.SetToolTip(this.ApproxFramesLabel, resources.GetString("ApproxFramesLabel.ToolTip"));
             // 
             // label8
             // 
             resources.ApplyResources(this.label8, "label8");
             this.label8.Name = "label8";
+            this.toolTip1.SetToolTip(this.label8, resources.GetString("label8.ToolTip"));
             // 
             // RewindFramesUsedLabel
             // 
             resources.ApplyResources(this.RewindFramesUsedLabel, "RewindFramesUsedLabel");
             this.RewindFramesUsedLabel.Name = "RewindFramesUsedLabel";
+            this.toolTip1.SetToolTip(this.RewindFramesUsedLabel, resources.GetString("RewindFramesUsedLabel.ToolTip"));
             // 
             // label7
             // 
             resources.ApplyResources(this.label7, "label7");
             this.label7.Name = "label7";
+            this.toolTip1.SetToolTip(this.label7, resources.GetString("label7.ToolTip"));
             // 
             // groupBox6
             // 
@@ -317,12 +344,14 @@
             this.groupBox6.Controls.Add(this.rbStatesBinary);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox6, resources.GetString("groupBox6.ToolTip"));
             // 
             // rbStatesText
             // 
             resources.ApplyResources(this.rbStatesText, "rbStatesText");
             this.rbStatesText.Name = "rbStatesText";
             this.rbStatesText.TabStop = true;
+            this.toolTip1.SetToolTip(this.rbStatesText, resources.GetString("rbStatesText.ToolTip"));
             this.rbStatesText.UseVisualStyleBackColor = true;
             // 
             // rbStatesBinary
@@ -330,6 +359,7 @@
             resources.ApplyResources(this.rbStatesBinary, "rbStatesBinary");
             this.rbStatesBinary.Name = "rbStatesBinary";
             this.rbStatesBinary.TabStop = true;
+            this.toolTip1.SetToolTip(this.rbStatesBinary, resources.GetString("rbStatesBinary.ToolTip"));
             this.rbStatesBinary.UseVisualStyleBackColor = true;
             // 
             // btnResetCompression
@@ -488,6 +518,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "RewindConfig";
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Load += new System.EventHandler(this.RewindConfig_Load);
             ((System.ComponentModel.ISupportInitialize)(this.BufferSizeUpDown)).EndInit();
             this.groupBox4.ResumeLayout(false);

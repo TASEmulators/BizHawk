@@ -117,7 +117,103 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="NumberOfScripts.Text" xml:space="preserve">
+    <value>0 个脚本</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>输出</value>
+  </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
-    <value>文件（&amp;F）</value>
+    <value>文件(&amp;F)</value>
+  </data>
+  <data name="NewScriptMenuItem.Text" xml:space="preserve">
+    <value>新建脚本</value>
+  </data>
+  <data name="OpenScriptMenuItem.Text" xml:space="preserve">
+    <value>打开脚本(&amp;O)</value>
+  </data>
+  <data name="RefreshScriptMenuItem.Text" xml:space="preserve">
+    <value>刷新脚本(&amp;F)</value>
+  </data>
+  <data name="ToggleScriptMenuItem.Text" xml:space="preserve">
+    <value>切换(&amp;T)</value>
+  </data>
+  <data name="PauseScriptMenuItem.Text" xml:space="preserve">
+    <value>暂停或继续</value>
+  </data>
+  <data name="EditScriptMenuItem.Text" xml:space="preserve">
+    <value>编辑脚本(&amp;E)</value>
+  </data>
+  <data name="RemoveScriptMenuItem.Text" xml:space="preserve">
+    <value>移除脚本(&amp;R)</value>
+  </data>
+  <data name="DuplicateScriptMenuItem.Text" xml:space="preserve">
+    <value>克隆脚本(&amp;D)</value>
+  </data>
+  <data name="ClearConsoleMenuItem.Text" xml:space="preserve">
+    <value>清空输出(&amp;C)</value>
+  </data>
+  <data name="InsertSeparatorMenuItem.Text" xml:space="preserve">
+    <value>插入分隔符</value>
+  </data>
+  <data name="MoveUpMenuItem.Text" xml:space="preserve">
+    <value>上移(&amp;U)</value>
+  </data>
+  <data name="MoveDownMenuItem.Text" xml:space="preserve">
+    <value>下移(&amp;D)</value>
+  </data>
+  <data name="SelectAllMenuItem.Text" xml:space="preserve">
+    <value>全选(&amp;A)</value>
+  </data>
+  <data name="StopAllScriptsMenuItem.Text" xml:space="preserve">
+    <value>停止所有脚本</value>
+  </data>
+  <data name="RegisteredFunctionsMenuItem.Text" xml:space="preserve">
+    <value>注册的函数(&amp;R)</value>
+  </data>
+  <data name="ScriptSubMenu.Text" xml:space="preserve">
+    <value>脚本(&amp;S)</value>
+  </data>
+  <data name="SettingsSubMenu.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
+  </data>
+  <data name="HelpSubMenu.Text" xml:space="preserve">
+    <value>帮助(&amp;H)</value>
+  </data>
+  <data name="NewSessionMenuItem.Text" xml:space="preserve">
+    <value>新建会话(&amp;N)</value>
+  </data>
+  <data name="OpenSessionMenuItem.Text" xml:space="preserve">
+    <value>打开会话(&amp;O)</value>
+  </data>
+  <data name="SaveSessionMenuItem.Text" xml:space="preserve">
+    <value>保存会话(&amp;S)</value>
+  </data>
+  <data name="SaveSessionAsMenuItem.Text" xml:space="preserve">
+    <value>将会话另存为(&amp;A)</value>
+  </data>
+  <data name="RecentSessionsSubMenu.Text" xml:space="preserve">
+    <value>历史会话</value>
+  </data>
+  <data name="RecentScriptsSubMenu.Text" xml:space="preserve">
+    <value>历史脚本</value>
+  </data>
+  <data name="DisableScriptsOnLoadMenuItem.Text" xml:space="preserve">
+    <value>载入时不启用脚本</value>
+  </data>
+  <data name="ReturnAllIfNoneSelectedMenuItem.Text" xml:space="preserve">
+    <value>未选择时切换所有</value>
+  </data>
+  <data name="ReloadWhenScriptFileChangesMenuItem.Text" xml:space="preserve">
+    <value>脚本文件更改时重新载入</value>
+  </data>
+  <data name="RegisterToTextEditorsSubMenu.Text" xml:space="preserve">
+    <value>注册到文本编辑器</value>
+  </data>
+  <data name="FunctionsListMenuItem.Text" xml:space="preserve">
+    <value>Lua 函数列表(&amp;L)</value>
+  </data>
+  <data name="OnlineDocsMenuItem.Text" xml:space="preserve">
+    <value>在线文档</value>
   </data>
 </root>

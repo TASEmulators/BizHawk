@@ -152,8 +152,8 @@
   <data name="groupBoxMemory.Location" type="System.Drawing.Point, System.Drawing">
     <value>350, 449</value>
   </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 15</value>
+  <data name="radioButtonRefreshScanline.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 41</value>
   </data>
   <data name="&gt;&gt;bmpViewDetails.Parent" xml:space="preserve">
     <value>groupBoxDetails</value>
@@ -176,9 +176,6 @@
   <data name="&gt;&gt;label4.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="groupBox3.Text" xml:space="preserve">
-    <value>Palettes</value>
-  </data>
   <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
@@ -194,35 +191,32 @@
   <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
     <value>System.Windows.Forms.MenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;radioButtonRefreshFrame.Name" xml:space="preserve">
-    <value>radioButtonRefreshFrame</value>
-  </data>
   <data name="buttonRefresh.Size" type="System.Drawing.Size, System.Drawing">
     <value>80, 21</value>
   </data>
   <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
     <value>137, 15</value>
   </data>
-  <data name="bmpViewTiles2.Text" xml:space="preserve">
-    <value>Tiles 2</value>
-  </data>
-  <data name="&gt;&gt;labelScanline.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="bmpViewBGPal.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 29</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Bank 2 (CGB)</value>
   </data>
   <data name="bmpViewSPPal.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
-  <data name="&gt;&gt;label6.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;buttonRefresh.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="&gt;&gt;bmpViewTiles1.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;label6.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="bmpViewDetails.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -293,9 +287,6 @@
   <data name="bmpViewBG.Size" type="System.Drawing.Size, System.Drawing">
     <value>256, 256</value>
   </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 25</value>
-  </data>
   <data name="&gt;&gt;labelClipboard.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -305,8 +296,8 @@
   <data name="&gt;&gt;groupBox6.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="radioButtonRefreshManual.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
   <data name="&gt;&gt;bmpViewSPPal.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -368,9 +359,6 @@
   <data name="groupBox6.Text" xml:space="preserve">
     <value>Copy to Clipboard</value>
   </data>
-  <data name="groupBoxDetails.Size" type="System.Drawing.Size, System.Drawing">
-    <value>192, 141</value>
-  </data>
   <data name="&gt;&gt;bmpViewBG.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -426,6 +414,12 @@
   <data name="&gt;&gt;bmpViewDetails.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="bmpViewWin.Text" xml:space="preserve">
+    <value>Window</value>
+  </data>
+  <data name="bmpViewBG.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
   <data name="radioButtonRefreshManual.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 16</value>
   </data>
@@ -467,6 +461,9 @@
   </data>
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
     <value>9</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 15</value>
   </data>
   <data name="groupBox8.Location" type="System.Drawing.Point, System.Drawing">
     <value>548, 492</value>
@@ -513,8 +510,8 @@
   <data name="radioButtonRefreshScanline.Size" type="System.Drawing.Size, System.Drawing">
     <value>71, 16</value>
   </data>
-  <data name="&gt;&gt;labelMemory.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="bmpViewWin.Location" type="System.Drawing.Point, System.Drawing">
+    <value>268, 29</value>
   </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>Tiles</value>
@@ -533,9 +530,6 @@
   </data>
   <data name="labelMemory.MaximumSize" type="System.Drawing.Size, System.Drawing">
     <value>115, 0</value>
-  </data>
-  <data name="&gt;&gt;buttonRefresh.Name" xml:space="preserve">
-    <value>buttonRefresh</value>
   </data>
   <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -576,11 +570,11 @@
   <data name="groupBoxMemory.Size" type="System.Drawing.Size, System.Drawing">
     <value>192, 141</value>
   </data>
-  <data name="bmpViewWin.Location" type="System.Drawing.Point, System.Drawing">
-    <value>268, 29</value>
+  <data name="&gt;&gt;buttonRefresh.Name" xml:space="preserve">
+    <value>buttonRefresh</value>
   </data>
-  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 25</value>
   </data>
   <data name="&gt;&gt;bmpViewBG.Parent" xml:space="preserve">
     <value>groupBox1</value>
@@ -600,8 +594,8 @@
   <data name="&gt;&gt;groupBoxMemory.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>Bank 2 (CGB)</value>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
     <value>$this</value>
@@ -624,8 +618,8 @@
   <data name="bmpViewTiles1.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 29</value>
   </data>
-  <data name="&gt;&gt;label5.Name" xml:space="preserve">
-    <value>label5</value>
+  <data name="bmpViewOBJ.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 61</value>
   </data>
   <data name="groupBoxDetails.Location" type="System.Drawing.Point, System.Drawing">
     <value>350, 302</value>
@@ -648,8 +642,8 @@
   <data name="&gt;&gt;groupBoxMemory.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="radioButtonRefreshScanline.Location" type="System.Drawing.Point, System.Drawing">
-    <value>7, 41</value>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>530, 271</value>
   </data>
   <data name="bmpViewTiles2.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -675,8 +669,8 @@
   <data name="&gt;&gt;label6.Parent" xml:space="preserve">
     <value>groupBox3</value>
   </data>
-  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+  <data name="groupBox3.Text" xml:space="preserve">
+    <value>Palettes</value>
   </data>
   <data name="&gt;&gt;bmpViewOBJ.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -741,8 +735,8 @@
   <data name="groupBox4.Text" xml:space="preserve">
     <value>OAM</value>
   </data>
-  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>530, 271</value>
+  <data name="bmpViewTiles2.Text" xml:space="preserve">
+    <value>Tiles 2</value>
   </data>
   <data name="&gt;&gt;groupBoxDetails.Name" xml:space="preserve">
     <value>groupBoxDetails</value>
@@ -816,8 +810,8 @@
   <data name="&gt;&gt;bmpViewBGPal.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="radioButtonRefreshManual.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Window</value>
@@ -840,8 +834,8 @@
   <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
     <value>548, 447</value>
   </data>
-  <data name="bmpViewOBJ.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 61</value>
+  <data name="&gt;&gt;labelMemory.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;radioButtonRefreshManual.Parent" xml:space="preserve">
     <value>groupBox5</value>
@@ -858,14 +852,14 @@
   <data name="groupBox6.Size" type="System.Drawing.Size, System.Drawing">
     <value>274, 40</value>
   </data>
-  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>834, 24</value>
+  <data name="groupBoxDetails.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 141</value>
   </data>
   <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="bmpViewWin.Text" xml:space="preserve">
-    <value>Window</value>
+  <data name="&gt;&gt;radioButtonRefreshFrame.Name" xml:space="preserve">
+    <value>radioButtonRefreshFrame</value>
   </data>
   <data name="radioButtonRefreshScanline.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -902,6 +896,9 @@
   </data>
   <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
     <value>332, 306</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBG.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="bmpViewMemory.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -942,8 +939,8 @@
   <data name="groupBox5.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
-  <data name="&gt;&gt;bmpViewBG.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="menuStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
   </data>
   <data name="radioButtonRefreshFrame.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -957,8 +954,8 @@
   <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="bmpViewBG.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+  <data name="&gt;&gt;labelScanline.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Background &amp;&amp; Window</value>
@@ -993,6 +990,9 @@
   <data name="&gt;&gt;bmpViewBGPal.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="bmpViewMemory.Size" type="System.Drawing.Size, System.Drawing">
+    <value>64, 128</value>
+  </data>
   <data name="radioButtonRefreshScanline.Text" xml:space="preserve">
     <value>Scanline</value>
   </data>
@@ -1008,8 +1008,8 @@
   <data name="radioButtonRefreshManual.Location" type="System.Drawing.Point, System.Drawing">
     <value>7, 63</value>
   </data>
-  <data name="bmpViewMemory.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 128</value>
+  <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>834, 24</value>
   </data>
   <data name="bmpViewMemory.Text" xml:space="preserve">
     <value>Details (memory)</value>

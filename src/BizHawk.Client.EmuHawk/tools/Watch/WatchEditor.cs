@@ -411,5 +411,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_changedDisplayType = true;
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WatchEditor));
+            this.SuspendLayout();
+            // 
+            // WatchEditor
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "WatchEditor";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

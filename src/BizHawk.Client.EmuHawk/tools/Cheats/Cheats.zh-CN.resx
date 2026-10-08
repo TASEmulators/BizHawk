@@ -121,21 +121,6 @@
   <data name="CheatListView.Size" type="System.Drawing.Size, System.Drawing">
     <value>414, 311</value>
   </data>
-  <data name="NewMenuItem.Text" xml:space="preserve">
-    <value>新建(&amp;N)</value>
-  </data>
-  <data name="OpenMenuItem.Text" xml:space="preserve">
-    <value>打开(&amp;O)</value>
-  </data>
-  <data name="SaveMenuItem.Text" xml:space="preserve">
-    <value>保存(&amp;S)</value>
-  </data>
-  <data name="SaveAsMenuItem.Text" xml:space="preserve">
-    <value>另存为(&amp;A)</value>
-  </data>
-  <data name="RecentSubMenu.Text" xml:space="preserve">
-    <value>历史</value>
-  </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
     <value>文件(&amp;F)</value>
   </data>
@@ -155,7 +140,7 @@
     <value>全选(&amp;A)</value>
   </data>
   <data name="ToggleMenuItem.Text" xml:space="preserve">
-    <value>启用或禁用(&amp;T)</value>
+    <value>切换(&amp;T)</value>
   </data>
   <data name="DisableAllCheatsMenuItem.Text" xml:space="preserve">
     <value>全部禁用</value>
@@ -166,6 +151,27 @@
   <data name="CheatsSubMenu.Text" xml:space="preserve">
     <value>作弊码(&amp;C)</value>
   </data>
+  <data name="OptionsSubMenu.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
+  </data>
+  <data name="NewMenuItem.Text" xml:space="preserve">
+    <value>新建(&amp;N)</value>
+  </data>
+  <data name="OpenMenuItem.Text" xml:space="preserve">
+    <value>打开(&amp;O)</value>
+  </data>
+  <data name="SaveMenuItem.Text" xml:space="preserve">
+    <value>保存(&amp;S)</value>
+  </data>
+  <data name="SaveAsMenuItem.Text" xml:space="preserve">
+    <value>另存为(&amp;A)</value>
+  </data>
+  <data name="AppendMenuItem.Text" xml:space="preserve">
+    <value>附加文件</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>历史</value>
+  </data>
   <data name="AlwaysLoadCheatsMenuItem.Text" xml:space="preserve">
     <value>总是启用作弊码</value>
   </data>
@@ -174,9 +180,6 @@
   </data>
   <data name="DisableCheatsOnLoadMenuItem.Text" xml:space="preserve">
     <value>读档时不启用作弊码</value>
-  </data>
-  <data name="OptionsSubMenu.Text" xml:space="preserve">
-    <value>设置(&amp;S)</value>
   </data>
   <data name="LoadGameGenieToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 22</value>

@@ -117,7 +117,103 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="WatchCountLabel.Text" xml:space="preserve">
+    <value>0 监视</value>
+  </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
-    <value>文件（&amp;F）</value>
+    <value>文件(&amp;F)</value>
+  </data>
+  <data name="MemoryDomainsSubMenu.Text" xml:space="preserve">
+    <value>默认内存域</value>
+  </data>
+  <data name="NewWatchMenuItem.Text" xml:space="preserve">
+    <value>新建监视(&amp;N)</value>
+  </data>
+  <data name="EditWatchMenuItem.Text" xml:space="preserve">
+    <value>编辑监视(&amp;E)</value>
+  </data>
+  <data name="RemoveWatchMenuItem.Text" xml:space="preserve">
+    <value>移除监视(&amp;R)</value>
+  </data>
+  <data name="DuplicateWatchMenuItem.Text" xml:space="preserve">
+    <value>克隆监视(&amp;D)</value>
+  </data>
+  <data name="SplitWatchMenuItem.Text" xml:space="preserve">
+    <value>拆分监视(&amp;L)</value>
+  </data>
+  <data name="PokeAddressMenuItem.Text" xml:space="preserve">
+    <value>刺探地址</value>
+  </data>
+  <data name="FreezeAddressMenuItem.Text" xml:space="preserve">
+    <value>冻结地址</value>
+  </data>
+  <data name="InsertSeparatorMenuItem.Text" xml:space="preserve">
+    <value>插入分隔符</value>
+  </data>
+  <data name="ClearChangeCountsMenuItem.Text" xml:space="preserve">
+    <value>清空变更计数(&amp;C)</value>
+  </data>
+  <data name="MoveUpMenuItem.Text" xml:space="preserve">
+    <value>上移(&amp;U)</value>
+  </data>
+  <data name="MoveDownMenuItem.Text" xml:space="preserve">
+    <value>下移(&amp;D)</value>
+  </data>
+  <data name="MoveTopMenuItem.Text" xml:space="preserve">
+    <value>移到顶部(&amp;T)</value>
+  </data>
+  <data name="MoveBottomMenuItem.Text" xml:space="preserve">
+    <value>移到底部(&amp;B)</value>
+  </data>
+  <data name="SelectAllMenuItem.Text" xml:space="preserve">
+    <value>全选(&amp;A)</value>
+  </data>
+  <data name="WatchesSubMenu.Text" xml:space="preserve">
+    <value>监视(&amp;W)</value>
+  </data>
+  <data name="OptionsSubMenu.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
+  </data>
+  <data name="NewListMenuItem.Text" xml:space="preserve">
+    <value>新建列表(&amp;N)</value>
+  </data>
+  <data name="OpenMenuItem.Text" xml:space="preserve">
+    <value>打开(&amp;O)</value>
+  </data>
+  <data name="SaveMenuItem.Text" xml:space="preserve">
+    <value>保存(&amp;S)</value>
+  </data>
+  <data name="SaveAsMenuItem.Text" xml:space="preserve">
+    <value>另存为(&amp;A)</value>
+  </data>
+  <data name="AppendMenuItem.Text" xml:space="preserve">
+    <value>附加文件(&amp;P)</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>历史</value>
+  </data>
+  <data name="DefinePreviousValueSubMenu.Text" xml:space="preserve">
+    <value>定义前值</value>
+  </data>
+  <data name="PreviousFrameMenuItem.Text" xml:space="preserve">
+    <value>前一帧</value>
+  </data>
+  <data name="LastChangeMenuItem.Text" xml:space="preserve">
+    <value>最后变更</value>
+  </data>
+  <data name="OriginalMenuItem.Text" xml:space="preserve">
+    <value>原始值(&amp;O)</value>
+  </data>
+  <data name="WatchesOnScreenMenuItem.Text" xml:space="preserve">
+    <value>在屏幕上显示监视</value>
+  </data>
+  <data name="DoubleClickActionSubMenu.Text" xml:space="preserve">
+    <value>双击监视时</value>
+  </data>
+  <data name="DoubleClickToEditMenuItem.Text" xml:space="preserve">
+    <value>编辑监视</value>
+  </data>
+  <data name="DoubleClickToPokeMenuItem.Text" xml:space="preserve">
+    <value>刺探地址</value>
   </data>
 </root>

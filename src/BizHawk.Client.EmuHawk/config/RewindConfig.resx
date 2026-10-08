@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label16.ToolTip" xml:space="preserve">
     <value />
   </data>
@@ -129,6 +132,9 @@
   <data name="BackupSavestatesCheckbox.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="&gt;&gt;TargetFrameLengthNumeric.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
   <data name="&gt;&gt;TargetFrameLengthNumeric.Type" xml:space="preserve">
     <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -136,15 +142,21 @@
   <data name="Cancel.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
+  <data name="&gt;&gt;labelEx1.Parent" xml:space="preserve">
+    <value>locSingleRowFLP1</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="trackBarCompression.Size" type="System.Drawing.Size, System.Drawing">
     <value>157, 45</value>
   </data>
+  <data name="rbStatesBinary.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;label16.ZOrder" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="&gt;&gt;groupBox4.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="label20.Text" xml:space="preserve">
     <value>Use a low resolution screenshot for better save/load performance</value>
@@ -170,6 +182,12 @@
   <data name="&gt;&gt;EstTimeLabel.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="BufferSizeUpDown.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UseCompression.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;ApproxFramesLabel.Name" xml:space="preserve">
     <value>ApproxFramesLabel</value>
   </data>
@@ -185,11 +203,11 @@
   <data name="&gt;&gt;StateSizeLabel.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="TargetRewindIntervalRadioButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="rbStatesText.Location" type="System.Drawing.Point, System.Drawing">
     <value>88, 17</value>
-  </data>
-  <data name="label14.Text" xml:space="preserve">
-    <value>Saves a screenshot and loads it on loadstate so there isn't a</value>
   </data>
   <data name="ScreenshotInStatesCheckbox.ToolTip" xml:space="preserve">
     <value />
@@ -200,6 +218,9 @@
   <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
     <value>22, 72</value>
   </data>
+  <data name="label8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="OK.Text" xml:space="preserve">
     <value>&amp;OK</value>
   </data>
@@ -209,17 +230,17 @@
   <data name="cbDeltaCompression.Location" type="System.Drawing.Point, System.Drawing">
     <value>15, 200</value>
   </data>
-  <data name="TargetRewindIntervalNumeric.Size" type="System.Drawing.Size, System.Drawing">
-    <value>52, 21</value>
+  <data name="&gt;&gt;KbLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="&gt;&gt;OK.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="TargetRewindIntervalNumeric.Location" type="System.Drawing.Point, System.Drawing">
     <value>231, 150</value>
   </data>
-  <data name="BackupSavestatesCheckbox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>21, 127</value>
+  <data name="&gt;&gt;UseCompression.Parent" xml:space="preserve">
+    <value>groupBox4</value>
   </data>
   <data name="&gt;&gt;RewindFramesUsedLabel.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -233,9 +254,6 @@
   <data name="&gt;&gt;groupBox6.Name" xml:space="preserve">
     <value>groupBox6</value>
   </data>
-  <data name="&gt;&gt;KbLabel.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="btnResetCompression.ToolTip" xml:space="preserve">
     <value>Reset to default</value>
   </data>
@@ -245,8 +263,8 @@
   <data name="&gt;&gt;OK.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;label20.Parent" xml:space="preserve">
-    <value>groupBox7</value>
+  <data name="label11.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;label14.Parent" xml:space="preserve">
     <value>groupBox7</value>
@@ -262,6 +280,9 @@
   </data>
   <data name="label20.Location" type="System.Drawing.Point, System.Drawing">
     <value>21, 269</value>
+  </data>
+  <data name="RewindEnabledBox.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;label7.Parent" xml:space="preserve">
     <value>groupBox4</value>
@@ -283,6 +304,9 @@
   </data>
   <data name="&gt;&gt;label7.Name" xml:space="preserve">
     <value>label7</value>
+  </data>
+  <data name="label13.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="rbStatesText.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 16</value>
@@ -318,6 +342,9 @@
   <data name="KbLabel.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="TargetFrameLengthRadioButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnResetCompression.Location" type="System.Drawing.Point, System.Drawing">
     <value>243, 31</value>
   </data>
@@ -351,11 +378,11 @@
   <data name="nudCompression.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="&gt;&gt;rbStatesText.Name" xml:space="preserve">
-    <value>rbStatesText</value>
-  </data>
-  <data name="label13.ToolTip" xml:space="preserve">
+  <data name="OK.ToolTip" xml:space="preserve">
     <value />
+  </data>
+  <data name="label14.Text" xml:space="preserve">
+    <value>Saves a screenshot and loads it on loadstate so there isn't a</value>
   </data>
   <data name="&gt;&gt;nudCompression.Name" xml:space="preserve">
     <value>nudCompression</value>
@@ -368,6 +395,9 @@
   </data>
   <data name="Cancel.Location" type="System.Drawing.Point, System.Drawing">
     <value>656, 434</value>
+  </data>
+  <data name="EstTimeLabel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="rbStatesBinary.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -417,17 +447,23 @@
   <data name="LowResLargeScreenshotsCheckbox.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="groupBox4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetRewindIntervalNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
     <value>12</value>
   </data>
-  <data name="UseCompression.Location" type="System.Drawing.Point, System.Drawing">
-    <value>15, 179</value>
+  <data name="locSingleRowFLP1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;OK.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="&gt;&gt;TargetFrameLengthNumeric.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;label20.Parent" xml:space="preserve">
+    <value>groupBox7</value>
   </data>
   <data name="&gt;&gt;label6.Parent" xml:space="preserve">
     <value>groupBox4</value>
@@ -438,11 +474,17 @@
   <data name="labelEx2.Text" xml:space="preserve">
     <value>MB  =</value>
   </data>
+  <data name="UseCompression.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 179</value>
+  </data>
   <data name="TargetRewindIntervalRadioButton.TabIndex" type="System.Int32, mscorlib">
     <value>49</value>
   </data>
   <data name="groupBox7.Size" type="System.Drawing.Size, System.Drawing">
     <value>342, 377</value>
+  </data>
+  <data name="Cancel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="label15.Location" type="System.Drawing.Point, System.Drawing">
     <value>39, 158</value>
@@ -464,9 +506,6 @@
   </data>
   <data name="TargetFrameLengthNumeric.Location" type="System.Drawing.Point, System.Drawing">
     <value>236, 127</value>
-  </data>
-  <data name="&gt;&gt;groupBox6.ZOrder" xml:space="preserve">
-    <value>11</value>
   </data>
   <data name="&gt;&gt;TargetFrameLengthRadioButton.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -582,6 +621,9 @@
   <data name="&gt;&gt;label13.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 103</value>
   </data>
@@ -621,8 +663,14 @@
   <data name="&gt;&gt;groupBox6.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;rbStatesText.Name" xml:space="preserve">
+    <value>rbStatesText</value>
+  </data>
   <data name="labelEx3.Text" xml:space="preserve">
     <value>2 ^</value>
+  </data>
+  <data name="groupBox6.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="TargetFrameLengthNumeric.TabIndex" type="System.Int32, mscorlib">
     <value>21</value>
@@ -663,8 +711,14 @@
   <data name="&gt;&gt;label16.Parent" xml:space="preserve">
     <value>groupBox7</value>
   </data>
+  <data name="labelEx2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;TargetRewindIntervalNumeric.Parent" xml:space="preserve">
     <value>groupBox4</value>
+  </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="TargetRewindIntervalRadioButton.Text" xml:space="preserve">
     <value>Rewinds every fixed number of frames: </value>
@@ -702,17 +756,17 @@
   <data name="&gt;&gt;ScreenshotInStatesCheckbox.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="&gt;&gt;label13.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="labelEx1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;Cancel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="TargetRewindIntervalRadioButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>15, 150</value>
-  </data>
-  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>groupBox4</value>
@@ -738,6 +792,9 @@
   <data name="&gt;&gt;label3.Name" xml:space="preserve">
     <value>label3</value>
   </data>
+  <data name="&gt;&gt;groupBox4.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
   <data name="&gt;&gt;Cancel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -750,8 +807,8 @@
   <data name="&gt;&gt;label20.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="UseCompression.Size" type="System.Drawing.Size, System.Drawing">
-    <value>390, 16</value>
+  <data name="FullnessLabel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;btnResetCompression.ZOrder" xml:space="preserve">
     <value>12</value>
@@ -780,9 +837,6 @@
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>RewindConfig</value>
   </data>
-  <data name="&gt;&gt;OK.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="&gt;&gt;label4.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -806,6 +860,12 @@
   </data>
   <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
     <value>10</value>
+  </data>
+  <data name="rbStatesText.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetRewindIntervalNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 21</value>
   </data>
   <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
     <value>14</value>
@@ -858,11 +918,14 @@
   <data name="&gt;&gt;label15.Parent" xml:space="preserve">
     <value>groupBox7</value>
   </data>
-  <data name="&gt;&gt;UseCompression.Parent" xml:space="preserve">
-    <value>groupBox4</value>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;labelEx1.ZOrder" xml:space="preserve">
     <value>3</value>
+  </data>
+  <data name="StateSizeLabel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="nudCompression.Size" type="System.Drawing.Size, System.Drawing">
     <value>52, 21</value>
@@ -891,8 +954,11 @@
   <data name="cbDeltaCompression.Size" type="System.Drawing.Size, System.Drawing">
     <value>396, 16</value>
   </data>
-  <data name="&gt;&gt;label11.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="BackupSavestatesCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 127</value>
+  </data>
+  <data name="cbDeltaCompression.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="BigScreenshotNumeric.ToolTip" xml:space="preserve">
     <value />
@@ -902,6 +968,9 @@
   </data>
   <data name="LowResLargeScreenshotsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>222, 16</value>
+  </data>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;locSingleRowFLP1.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -927,11 +996,14 @@
   <data name="&gt;&gt;TargetRewindIntervalRadioButton.Name" xml:space="preserve">
     <value>TargetRewindIntervalRadioButton</value>
   </data>
-  <data name="EstTimeLabel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>273, 30</value>
+  <data name="&gt;&gt;label13.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="cbDeltaCompression.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
+  </data>
+  <data name="ApproxFramesLabel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;groupBox7.Name" xml:space="preserve">
     <value>groupBox7</value>
@@ -941,6 +1013,9 @@
   </data>
   <data name="ApproxFramesLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>273, 16</value>
+  </data>
+  <data name="TargetFrameLengthNumeric.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="BackupSavestatesCheckbox.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -981,8 +1056,8 @@
   <data name="&gt;&gt;nudCompression.ZOrder" xml:space="preserve">
     <value>13</value>
   </data>
-  <data name="label12.Text" xml:space="preserve">
-    <value>Compression Level</value>
+  <data name="EstTimeLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>273, 30</value>
   </data>
   <data name="&gt;&gt;label16.Name" xml:space="preserve">
     <value>label16</value>
@@ -1035,6 +1110,9 @@
   <data name="&gt;&gt;BufferSizeUpDown.Type" xml:space="preserve">
     <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;label11.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="&gt;&gt;FullnessLabel.Name" xml:space="preserve">
     <value>FullnessLabel</value>
   </data>
@@ -1047,11 +1125,17 @@
   <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 11</value>
   </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>Compression Level</value>
+  </data>
   <data name="&gt;&gt;KbLabel.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
   <data name="&gt;&gt;rbStatesBinary.Name" xml:space="preserve">
     <value>rbStatesBinary</value>
+  </data>
+  <data name="label7.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;nudCompression.Parent" xml:space="preserve">
     <value>groupBox7</value>
@@ -1073,6 +1157,9 @@
   </data>
   <data name="&gt;&gt;label12.Parent" xml:space="preserve">
     <value>groupBox7</value>
+  </data>
+  <data name="labelEx3.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;label15.ZOrder" xml:space="preserve">
     <value>7</value>
@@ -1098,8 +1185,11 @@
   <data name="&gt;&gt;label8.Name" xml:space="preserve">
     <value>label8</value>
   </data>
-  <data name="&gt;&gt;labelEx1.Parent" xml:space="preserve">
-    <value>locSingleRowFLP1</value>
+  <data name="&gt;&gt;groupBox6.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;TargetRewindIntervalNumeric.Type" xml:space="preserve">
     <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1109,6 +1199,9 @@
   </data>
   <data name="&gt;&gt;RewindFramesUsedLabel.Name" xml:space="preserve">
     <value>RewindFramesUsedLabel</value>
+  </data>
+  <data name="RewindFramesUsedLabel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="UseCompression.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -1134,8 +1227,8 @@
   <data name="trackBarCompression.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="UseCompression.Size" type="System.Drawing.Size, System.Drawing">
+    <value>390, 16</value>
   </data>
   <data name="&gt;&gt;ApproxFramesLabel.ZOrder" xml:space="preserve">
     <value>11</value>

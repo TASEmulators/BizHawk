@@ -232,9 +232,9 @@
 		<Compile Update="config/RewindConfig.cs" SubType="Form" />
 		<Compile Update="config/RewindConfig.Designer.cs" DependentUpon="RewindConfig.cs" />
 		<EmbeddedResource Update="config/RewindConfig.resx" DependentUpon="RewindConfig.cs" />
-		<Compile Update="config/SNES/SNESControllerConfig.cs" SubType="Form" />
-		<Compile Update="config/SNES/SNESControllerConfig.Designer.cs" DependentUpon="SNESControllerConfig.cs" />
-		<EmbeddedResource Update="config/SNES/SNESControllerConfig.resx" DependentUpon="SNESControllerConfig.cs" />
+		<Compile Update="config\SNES\SNESControllerSettings.cs" SubType="Form" />
+		<Compile Update="config\SNES\SNESControllerSettings.Designer.cs" DependentUpon="SNESControllerSettings.cs" />
+		<EmbeddedResource Update="config\SNES\SNESControllerSettings.resx" DependentUpon="SNESControllerSettings.cs" />
 		<Compile Update="config/SNES/SNESOptions.cs" SubType="Form" />
 		<Compile Update="config/SNES/SNESOptions.Designer.cs" DependentUpon="SNESOptions.cs" />
 		<EmbeddedResource Update="config/SNES/SNESOptions.resx" DependentUpon="SNESOptions.cs" />
@@ -375,12 +375,15 @@
 		<Compile Update="tools/GB/GBPrinterView.cs" SubType="Form" />
 		<Compile Update="tools/GB/GBPrinterView.Designer.cs" DependentUpon="GBPrinterView.cs" />
 		<EmbeddedResource Update="tools/GB/GBPrinterView.resx" DependentUpon="GBPrinterView.cs" />
-		<Compile Update="tools/Genesis/VDPViewer.cs" SubType="Form" />
-		<Compile Update="tools/Genesis/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
-		<EmbeddedResource Update="tools/Genesis/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
-		<Compile Update="tools/HexEditor/HexColor.cs" SubType="Form" />
-		<Compile Update="tools/HexEditor/HexColor.Designer.cs" DependentUpon="HexColor.cs" />
-		<EmbeddedResource Update="tools/HexEditor/HexColor.resx" DependentUpon="HexColor.cs" />
+		<Compile Update="tools\Genesis\GenVdpViewer.cs" SubType="Form" />
+		<Compile Update="tools\Genesis\GenVdpViewer.Designer.cs" DependentUpon="GenVdpViewer.cs" />
+		<EmbeddedResource Update="tools\Genesis\GenVdpViewer.resx" DependentUpon="GenVdpViewer.cs" />
+		<Compile Update="tools\HexEditor\HexColorsForm.cs" SubType="Form" />
+		<Compile Update="tools\HexEditor\HexColorsForm.Designer.cs" DependentUpon="HexColorsForm.cs" />
+		<EmbeddedResource Update="tools\HexEditor\HexColorsForm.zh-CN.resx">
+		  <DependentUpon>HexColorsForm.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\HexEditor\HexColorsForm.resx" DependentUpon="HexColorsForm.cs" />
 		<Compile Update="tools/HexEditor/HexEditor.cs" SubType="Form" />
 		<Compile Update="tools/HexEditor/HexEditor.Designer.cs" DependentUpon="HexEditor.cs" />
 		<EmbeddedResource Update="tools/HexEditor/HexEditor.resx" DependentUpon="HexEditor.cs" />
@@ -409,10 +412,16 @@
 		<Compile Update="tools/Lua/LuaWinform.cs" SubType="Form" />
 		<Compile Update="tools/Lua/LuaWinform.Designer.cs" DependentUpon="LuaWinform.cs" />
 		<EmbeddedResource Update="tools/Lua/LuaWinform.resx" DependentUpon="LuaWinform.cs" />
-		<Compile Update="tools/Macros/MacroInput.ButtonSelect.cs" SubType="Form" />
-		<Compile Update="tools/Macros/MacroInput.cs" SubType="Form" />
-		<Compile Update="tools/Macros/MacroInput.Designer.cs" DependentUpon="MacroInput.cs" />
-		<EmbeddedResource Update="tools/Macros/MacroInput.resx" DependentUpon="MacroInput.cs" />
+		<Compile Update="tools\Macros\MacroInputTool.ButtonSelect.cs" SubType="Form" />
+		<Compile Update="tools\Macros\MacroInputTool.cs" SubType="Form" />
+		<Compile Update="tools\Macros\MacroInputTool.Designer.cs" DependentUpon="MacroInputTool.cs" />
+		<!-- 这里又有一个忘挂载被误读成窗口的 -->
+		<Compile Update="tools\Macros\MacroInputTool.ButtonSelect.cs" DependentUpon="MacroInputTool.cs" />
+		<EmbeddedResource Update="tools\Macros\MacroInputTool.zh-CN.resx">
+		  <DependentUpon>MacroInputTool.cs</DependentUpon>
+		</EmbeddedResource>
+		<!-- The original project forgot to include this files, which led to the misunderstanding of the file as window file during localization, resulting in bugs. -->
+		<EmbeddedResource Update="tools\Macros\MacroInputTool.resx" DependentUpon="MacroInputTool.cs" />
 		<Compile Update="tools/MultiDiskBundler/MultiDiskBundler.cs" SubType="Form" />
 		<Compile Update="tools/MultiDiskBundler/MultiDiskBundler.Designer.cs" DependentUpon="MultiDiskBundler.cs" />
 		<EmbeddedResource Update="tools/MultiDiskBundler/MultiDiskBundler.resx" DependentUpon="MultiDiskBundler.cs" />
@@ -429,26 +438,38 @@
 		<Compile Update="tools/NES/NESNameTableViewer.cs" SubType="Form" />
 		<Compile Update="tools/NES/NESNameTableViewer.Designer.cs" DependentUpon="NESNameTableViewer.cs" />
 		<EmbeddedResource Update="tools/NES/NESNameTableViewer.resx" DependentUpon="NESNameTableViewer.cs" />
-		<Compile Update="tools/NES/NESPPU.cs" SubType="Form" />
-		<Compile Update="tools/NES/NESPPU.Designer.cs" DependentUpon="NESPPU.cs" />
-		<EmbeddedResource Update="tools/NES/NESPPU.resx" DependentUpon="NESPPU.cs" SubType="Designer" />
+		<Compile Update="tools\NES\NesPPU.cs" SubType="Form" />
+		<Compile Update="tools/NES/NESPPU.Designer.cs" DependentUpon="NesPPU.cs" />
+		<EmbeddedResource Update="tools/NES/NESPPU.resx" DependentUpon="NesPPU.cs" SubType="Designer" />
 		<Compile Update="tools/NES/PaletteViewer.cs" SubType="Component" />
 		<Compile Update="tools/NES/PatternViewer.cs" SubType="Component" />
 		<EmbeddedResource Update="tools/NES/PatternViewer.resx" DependentUpon="PatternViewer.cs" />
 		<Compile Update="tools/NES/SpriteViewer.cs" SubType="Component" />
 		<Compile Update="tools/PCE/PCEBGCanvas.cs" SubType="Component" />
-		<Compile Update="tools/PCE/PCEBGViewer.cs" SubType="Form" />
-		<Compile Update="tools/PCE/PCEBGViewer.Designer.cs" DependentUpon="PCEBGViewer.cs" />
-		<EmbeddedResource Update="tools/PCE/PCEBGViewer.resx" DependentUpon="PCEBGViewer.cs" />
+		<Compile Update="tools\PCE\PceBGViewer.cs" SubType="Form" />
+		<Compile Update="tools/PCE/PCEBGViewer.Designer.cs" DependentUpon="PceBGViewer.cs" />
+		<EmbeddedResource Update="tools/PCE/PCEBGViewer.resx" DependentUpon="PceBGViewer.cs" />
 		<Compile Update="tools/PCE/PCESoundDebugger.cs" SubType="Form" />
 		<Compile Update="tools/PCE/PCESoundDebugger.Designer.cs" DependentUpon="PCESoundDebugger.cs" />
 		<EmbeddedResource Update="tools/PCE/PCESoundDebugger.resx" DependentUpon="PCESoundDebugger.cs" />
-		<Compile Update="tools/PCE/PCETileViewer.cs" SubType="Form" />
-		<Compile Update="tools/PCE/PCETileViewer.Designer.cs" DependentUpon="PCETileViewer.cs" />
-		<EmbeddedResource Update="tools/PCE/PCETileViewer.resx" DependentUpon="PCETileViewer.cs" />
-		<Compile Update="tools/SMS/VDPViewer.cs" SubType="Form" />
-		<Compile Update="tools/SMS/VDPViewer.Designer.cs" DependentUpon="VDPViewer.cs" />
-		<EmbeddedResource Update="tools/SMS/VDPViewer.resx" DependentUpon="VDPViewer.cs" />
+		<Compile Update="tools\PCE\PceTileViewer.cs" SubType="Form" />
+		<Compile Update="tools/PCE/PCETileViewer.Designer.cs" DependentUpon="PceTileViewer.cs" />
+		<EmbeddedResource Update="tools/PCE/PCETileViewer.resx" DependentUpon="PceTileViewer.cs" />
+		<Compile Update="tools\SMS\SmsVdpViewer.cs" SubType="Form" />
+		<Compile Update="tools\SMS\SmsVdpViewer.Designer.cs" DependentUpon="SmsVdpViewer.cs" />
+		<EmbeddedResource Update="tools\Genesis\GenVdpViewer.zh-CN.resx">
+		  <DependentUpon>GenVdpViewer.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\NES\NESPPU.zh-CN.resx">
+		  <DependentUpon>NesPPU.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\PCE\PCEBGViewer.zh-CN.resx">
+		  <DependentUpon>PceBGViewer.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\PCE\PCETileViewer.zh-CN.resx">
+		  <DependentUpon>PceTileViewer.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\SMS\SmsVdpViewer.resx" DependentUpon="SmsVdpViewer.cs" />
 		<Compile Update="tools/SNES/SNESGraphicsDebugger.cs" SubType="Form" />
 		<Compile Update="tools/SNES/SNESGraphicsDebugger.Designer.cs" DependentUpon="SNESGraphicsDebugger.cs" />
 		<EmbeddedResource Update="tools/SNES/SNESGraphicsDebugger.resx" DependentUpon="SNESGraphicsDebugger.cs" />
@@ -462,9 +483,12 @@
 		<Compile Update="tools/TAStudio/FramesPrompt.cs" SubType="Form" />
 		<Compile Update="tools/TAStudio/FramesPrompt.Designer.cs" DependentUpon="FramesPrompt.cs" />
 		<EmbeddedResource Update="tools/TAStudio/FramesPrompt.resx" DependentUpon="FramesPrompt.cs" />
-		<Compile Update="tools/TAStudio/HeaderEditor.cs" SubType="Form" />
-		<Compile Update="tools/TAStudio/HeaderEditor.Designer.cs" DependentUpon="HeaderEditor.cs" />
-		<EmbeddedResource Update="tools/TAStudio/HeaderEditor.resx" DependentUpon="HeaderEditor.cs" />
+		<Compile Update="tools\TAStudio\MovieHeaderEditor.cs" SubType="Form" />
+		<Compile Update="tools\TAStudio\MovieHeaderEditor.Designer.cs" DependentUpon="MovieHeaderEditor.cs" />
+		<EmbeddedResource Update="tools\TAStudio\MovieHeaderEditor.zh-CN.resx">
+		  <DependentUpon>MovieHeaderEditor.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\TAStudio\MovieHeaderEditor.resx" DependentUpon="MovieHeaderEditor.cs" />
 		<Compile Update="tools/TAStudio/MarkerControl.cs" SubType="UserControl" />
 		<Compile Update="tools/TAStudio/MarkerControl.Designer.cs" DependentUpon="MarkerControl.cs" />
 		<EmbeddedResource Update="tools/TAStudio/MarkerControl.resx" DependentUpon="MarkerControl.cs" />
@@ -513,9 +537,12 @@
 		<Compile Update="tools/VirtualPads/VirtualPad.cs" SubType="UserControl" />
 		<Compile Update="tools/VirtualPads/VirtualPad.Designer.cs" DependentUpon="VirtualPad.cs" />
 		<EmbeddedResource Update="tools/VirtualPads/VirtualPad.resx" DependentUpon="VirtualPad.cs" />
-		<Compile Update="tools/VirtualPads/VirtualpadsTool.cs" SubType="Form" />
-		<Compile Update="tools/VirtualPads/VirtualpadsTool.Designer.cs" DependentUpon="VirtualpadsTool.cs" />
-		<EmbeddedResource Update="tools/VirtualPads/VirtualpadsTool.resx" DependentUpon="VirtualpadsTool.cs" />
+		<Compile Update="tools\VirtualPads\VirtualpadTool.cs" SubType="Form" />
+		<Compile Update="tools\VirtualPads\VirtualpadTool.Designer.cs" DependentUpon="VirtualpadTool.cs" />
+		<EmbeddedResource Update="tools\VirtualPads\VirtualpadTool.zh-CN.resx">
+		  <DependentUpon>VirtualpadTool.cs</DependentUpon>
+		</EmbeddedResource>
+		<EmbeddedResource Update="tools\VirtualPads\VirtualpadTool.resx" DependentUpon="VirtualpadTool.cs" />
 		<Compile Update="tools/Watch/RamPoke.cs" SubType="Form" />
 		<Compile Update="tools/Watch/RamPoke.Designer.cs" DependentUpon="RamPoke.cs" />
 		<EmbeddedResource Update="tools/Watch/RamPoke.resx" DependentUpon="RamPoke.cs" />
@@ -525,6 +552,9 @@
 		<Compile Update="tools/Watch/RamWatch.cs" SubType="Form" />
 		<Compile Update="tools/Watch/RamWatch.Designer.cs" DependentUpon="RamWatch.cs" />
 		<EmbeddedResource Update="tools/Watch/RamWatch.resx" DependentUpon="RamWatch.cs" />
+		<EmbeddedResource Update="tools\SMS\SmsVdpViewer.zh-CN.resx">
+		  <DependentUpon>SmsVdpViewer.cs</DependentUpon>
+		</EmbeddedResource>
 		<Compile Update="tools/Watch/WatchEditor.cs" SubType="Form" />
 		<Compile Update="tools/Watch/WatchValueBox.cs" SubType="Component" />
 		<Compile Update="UpdateChecker.cs" SubType="Code" />

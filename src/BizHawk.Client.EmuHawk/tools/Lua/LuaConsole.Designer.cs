@@ -32,6 +32,9 @@ namespace BizHawk.Client.EmuHawk
 		{
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaConsole));
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.NumberOfScripts = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.LuaListView = new BizHawk.Client.EmuHawk.InputRoll();
             this.ScriptListContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToggleScriptContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.PauseScriptContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -41,6 +44,16 @@ namespace BizHawk.Client.EmuHawk
             this.ScriptContextSeparator = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.StopAllScriptsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.ClearRegisteredFunctionsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.InputBox = new System.Windows.Forms.TextBox();
+            this.OutputBox = new System.Windows.Forms.RichTextBox();
+            this.ConsoleContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CopyContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SelectAllContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ClearConsoleContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.RegisteredFunctionsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ClearRegisteredFunctionsLogContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.menuStrip1 = new BizHawk.WinForms.Controls.MenuStripEx();
             this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.NewSessionMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -81,17 +94,6 @@ namespace BizHawk.Client.EmuHawk
             this.HelpSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.FunctionsListMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.OnlineDocsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.OutputBox = new System.Windows.Forms.RichTextBox();
-            this.ConsoleContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.CopyContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.SelectAllContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.ClearConsoleContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.toolStripSeparator5 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-            this.RegisteredFunctionsContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.ClearRegisteredFunctionsLogContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.InputBox = new System.Windows.Forms.TextBox();
-            this.NumberOfScripts = new BizHawk.WinForms.Controls.LocLabelEx();
             this.OutputMessages = new BizHawk.WinForms.Controls.LocLabelEx();
             this.toolStrip1 = new BizHawk.WinForms.Controls.ToolStripEx();
             this.NewScriptToolbarItem = new System.Windows.Forms.ToolStripButton();
@@ -109,18 +111,57 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator10 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
             this.ClearConsoleToolbarButton = new System.Windows.Forms.ToolStripButton();
             this.EraseToolbarItem = new System.Windows.Forms.ToolStripButton();
-            this.LuaListView = new BizHawk.Client.EmuHawk.InputRoll();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.ScriptListContextMenu.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
-            this.ConsoleContextMenu.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.ScriptListContextMenu.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.ConsoleContextMenu.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
+            this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // splitContainer1
+            // 
+            resources.ApplyResources(this.splitContainer1, "splitContainer1");
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            resources.ApplyResources(this.splitContainer1.Panel1, "splitContainer1.Panel1");
+            this.splitContainer1.Panel1.Controls.Add(this.NumberOfScripts);
+            this.splitContainer1.Panel1.Controls.Add(this.LuaListView);
+            // 
+            // splitContainer1.Panel2
+            // 
+            resources.ApplyResources(this.splitContainer1.Panel2, "splitContainer1.Panel2");
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
+            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
+            // 
+            // NumberOfScripts
+            // 
+            resources.ApplyResources(this.NumberOfScripts, "NumberOfScripts");
+            this.NumberOfScripts.Name = "NumberOfScripts";
+            // 
+            // LuaListView
+            // 
+            resources.ApplyResources(this.LuaListView, "LuaListView");
+            this.LuaListView.AllowColumnReorder = false;
+            this.LuaListView.AllowColumnResize = true;
+            this.LuaListView.AlwaysScroll = false;
+            this.LuaListView.CellHeightPadding = 0;
+            this.LuaListView.CellWidthPadding = 0;
+            this.LuaListView.ContextMenuStrip = this.ScriptListContextMenu;
+            this.LuaListView.FullRowSelect = true;
+            this.LuaListView.HorizontalOrientation = false;
+            this.LuaListView.LetKeysModifySelection = false;
+            this.LuaListView.Name = "LuaListView";
+            this.LuaListView.RowCount = 0;
+            this.LuaListView.ScrollSpeed = 1;
+            this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
+            this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
+            this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
             // 
             // ScriptListContextMenu
             // 
@@ -175,6 +216,73 @@ namespace BizHawk.Client.EmuHawk
             // 
             resources.ApplyResources(this.ClearRegisteredFunctionsContextItem, "ClearRegisteredFunctionsContextItem");
             this.ClearRegisteredFunctionsContextItem.Click += new System.EventHandler(this.ClearRegisteredFunctionsContextMenuItem_Click);
+            // 
+            // groupBox1
+            // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.InputBox);
+            this.groupBox1.Controls.Add(this.OutputBox);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.TabStop = false;
+            // 
+            // InputBox
+            // 
+            resources.ApplyResources(this.InputBox, "InputBox");
+            this.InputBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.InputBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.InputBox.Name = "InputBox";
+            this.InputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InputBox_KeyDown);
+            // 
+            // OutputBox
+            // 
+            resources.ApplyResources(this.OutputBox, "OutputBox");
+            this.OutputBox.ContextMenuStrip = this.ConsoleContextMenu;
+            this.OutputBox.HideSelection = false;
+            this.OutputBox.Name = "OutputBox";
+            this.OutputBox.ReadOnly = true;
+            this.OutputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OutputBox_KeyDown);
+            // 
+            // ConsoleContextMenu
+            // 
+            resources.ApplyResources(this.ConsoleContextMenu, "ConsoleContextMenu");
+            this.ConsoleContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.CopyContextItem,
+            this.SelectAllContextItem,
+            this.ClearConsoleContextItem,
+            this.toolStripSeparator5,
+            this.RegisteredFunctionsContextItem,
+            this.ClearRegisteredFunctionsLogContextItem});
+            this.ConsoleContextMenu.Name = "contextMenuStrip2";
+            this.ConsoleContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ConsoleContextMenu_Opening);
+            // 
+            // CopyContextItem
+            // 
+            resources.ApplyResources(this.CopyContextItem, "CopyContextItem");
+            this.CopyContextItem.Click += new System.EventHandler(this.CopyContextItem_Click);
+            // 
+            // SelectAllContextItem
+            // 
+            resources.ApplyResources(this.SelectAllContextItem, "SelectAllContextItem");
+            this.SelectAllContextItem.Click += new System.EventHandler(this.SelectAllContextItem_Click);
+            // 
+            // ClearConsoleContextItem
+            // 
+            resources.ApplyResources(this.ClearConsoleContextItem, "ClearConsoleContextItem");
+            this.ClearConsoleContextItem.Click += new System.EventHandler(this.ClearConsoleContextItem_Click);
+            // 
+            // toolStripSeparator5
+            // 
+            resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
+            // 
+            // RegisteredFunctionsContextItem
+            // 
+            resources.ApplyResources(this.RegisteredFunctionsContextItem, "RegisteredFunctionsContextItem");
+            this.RegisteredFunctionsContextItem.Click += new System.EventHandler(this.RegisteredFunctionsMenuItem_Click);
+            // 
+            // ClearRegisteredFunctionsLogContextItem
+            // 
+            resources.ApplyResources(this.ClearRegisteredFunctionsLogContextItem, "ClearRegisteredFunctionsLogContextItem");
+            this.ClearRegisteredFunctionsLogContextItem.Click += new System.EventHandler(this.ClearRegisteredFunctionsContextMenuItem_Click);
             // 
             // menuStrip1
             // 
@@ -415,78 +523,6 @@ namespace BizHawk.Client.EmuHawk
             resources.ApplyResources(this.OnlineDocsMenuItem, "OnlineDocsMenuItem");
             this.OnlineDocsMenuItem.Click += new System.EventHandler(this.OnlineDocsMenuItem_Click);
             // 
-            // OutputBox
-            // 
-            resources.ApplyResources(this.OutputBox, "OutputBox");
-            this.OutputBox.ContextMenuStrip = this.ConsoleContextMenu;
-            this.OutputBox.HideSelection = false;
-            this.OutputBox.Name = "OutputBox";
-            this.OutputBox.ReadOnly = true;
-            this.OutputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OutputBox_KeyDown);
-            // 
-            // ConsoleContextMenu
-            // 
-            resources.ApplyResources(this.ConsoleContextMenu, "ConsoleContextMenu");
-            this.ConsoleContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.CopyContextItem,
-            this.SelectAllContextItem,
-            this.ClearConsoleContextItem,
-            this.toolStripSeparator5,
-            this.RegisteredFunctionsContextItem,
-            this.ClearRegisteredFunctionsLogContextItem});
-            this.ConsoleContextMenu.Name = "contextMenuStrip2";
-            this.ConsoleContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ConsoleContextMenu_Opening);
-            // 
-            // CopyContextItem
-            // 
-            resources.ApplyResources(this.CopyContextItem, "CopyContextItem");
-            this.CopyContextItem.Click += new System.EventHandler(this.CopyContextItem_Click);
-            // 
-            // SelectAllContextItem
-            // 
-            resources.ApplyResources(this.SelectAllContextItem, "SelectAllContextItem");
-            this.SelectAllContextItem.Click += new System.EventHandler(this.SelectAllContextItem_Click);
-            // 
-            // ClearConsoleContextItem
-            // 
-            resources.ApplyResources(this.ClearConsoleContextItem, "ClearConsoleContextItem");
-            this.ClearConsoleContextItem.Click += new System.EventHandler(this.ClearConsoleContextItem_Click);
-            // 
-            // toolStripSeparator5
-            // 
-            resources.ApplyResources(this.toolStripSeparator5, "toolStripSeparator5");
-            // 
-            // RegisteredFunctionsContextItem
-            // 
-            resources.ApplyResources(this.RegisteredFunctionsContextItem, "RegisteredFunctionsContextItem");
-            this.RegisteredFunctionsContextItem.Click += new System.EventHandler(this.RegisteredFunctionsMenuItem_Click);
-            // 
-            // ClearRegisteredFunctionsLogContextItem
-            // 
-            resources.ApplyResources(this.ClearRegisteredFunctionsLogContextItem, "ClearRegisteredFunctionsLogContextItem");
-            this.ClearRegisteredFunctionsLogContextItem.Click += new System.EventHandler(this.ClearRegisteredFunctionsContextMenuItem_Click);
-            // 
-            // groupBox1
-            // 
-            resources.ApplyResources(this.groupBox1, "groupBox1");
-            this.groupBox1.Controls.Add(this.InputBox);
-            this.groupBox1.Controls.Add(this.OutputBox);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.TabStop = false;
-            // 
-            // InputBox
-            // 
-            resources.ApplyResources(this.InputBox, "InputBox");
-            this.InputBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.InputBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.InputBox.Name = "InputBox";
-            this.InputBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.InputBox_KeyDown);
-            // 
-            // NumberOfScripts
-            // 
-            resources.ApplyResources(this.NumberOfScripts, "NumberOfScripts");
-            this.NumberOfScripts.Name = "NumberOfScripts";
-            // 
             // OutputMessages
             // 
             resources.ApplyResources(this.OutputMessages, "OutputMessages");
@@ -612,42 +648,6 @@ namespace BizHawk.Client.EmuHawk
             this.EraseToolbarItem.Name = "EraseToolbarItem";
             this.EraseToolbarItem.Click += new System.EventHandler(this.EraseToolbarItem_Click);
             // 
-            // LuaListView
-            // 
-            resources.ApplyResources(this.LuaListView, "LuaListView");
-            this.LuaListView.AllowColumnReorder = false;
-            this.LuaListView.AllowColumnResize = true;
-            this.LuaListView.AlwaysScroll = false;
-            this.LuaListView.CellHeightPadding = 0;
-            this.LuaListView.CellWidthPadding = 0;
-            this.LuaListView.ContextMenuStrip = this.ScriptListContextMenu;
-            this.LuaListView.FullRowSelect = true;
-            this.LuaListView.HorizontalOrientation = false;
-            this.LuaListView.LetKeysModifySelection = false;
-            this.LuaListView.Name = "LuaListView";
-            this.LuaListView.RowCount = 0;
-            this.LuaListView.ScrollSpeed = 1;
-            this.LuaListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.LuaListView_ColumnClick);
-            this.LuaListView.DoubleClick += new System.EventHandler(this.LuaListView_DoubleClick);
-            this.LuaListView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LuaListView_KeyDown);
-            // 
-            // splitContainer1
-            // 
-            resources.ApplyResources(this.splitContainer1, "splitContainer1");
-            this.splitContainer1.Name = "splitContainer1";
-            // 
-            // splitContainer1.Panel1
-            // 
-            resources.ApplyResources(this.splitContainer1.Panel1, "splitContainer1.Panel1");
-            this.splitContainer1.Panel1.Controls.Add(this.NumberOfScripts);
-            this.splitContainer1.Panel1.Controls.Add(this.LuaListView);
-            // 
-            // splitContainer1.Panel2
-            // 
-            resources.ApplyResources(this.splitContainer1.Panel2, "splitContainer1.Panel2");
-            this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
-            this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.BranchesMarkersSplit_SplitterMoved);
-            // 
             // LuaConsole
             // 
             resources.ApplyResources(this, "$this");
@@ -662,19 +662,19 @@ namespace BizHawk.Client.EmuHawk
             this.Load += new System.EventHandler(this.LuaConsole_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.LuaConsole_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.DragEnterWrapper);
-            this.ScriptListContextMenu.ResumeLayout(false);
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            this.ConsoleContextMenu.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.ScriptListContextMenu.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.ConsoleContextMenu.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.toolStrip1.ResumeLayout(false);
+            this.toolStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

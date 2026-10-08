@@ -28,77 +28,65 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.TargetPanel = new System.Windows.Forms.Panel();
-			this.XNumeric = new System.Windows.Forms.NumericUpDown();
-			this.XLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.YLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.YNumeric = new System.Windows.Forms.NumericUpDown();
-			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// TargetPanel
-			// 
-			this.TargetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.TargetPanel.Location = new System.Drawing.Point(0, 0);
-			this.TargetPanel.Name = "TargetPanel";
-			this.TargetPanel.Size = new System.Drawing.Size(256, 224);
-			this.TargetPanel.TabIndex = 0;
-			this.TargetPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TargetPanel_Paint);
-			this.TargetPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseDown);
-			this.TargetPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseMove);
-			this.TargetPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseUp);
-			// 
-			// XNumeric
-			// 
-			this.XNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.XNumeric.Location = new System.Drawing.Point(23, 229);
-			this.XNumeric.Name = "XNumeric";
-			this.XNumeric.Size = new System.Drawing.Size(50, 20);
-			this.XNumeric.TabIndex = 1;
-			this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
-			this.XNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.XNumeric_KeyUp);
-			// 
-			// XLabel
-			// 
-			this.XLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.XLabel.Location = new System.Drawing.Point(3, 233);
-			this.XLabel.Name = "XLabel";
-			this.XLabel.Text = "X";
-			// 
-			// YLabel
-			// 
-			this.YLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.YLabel.Location = new System.Drawing.Point(91, 233);
-			this.YLabel.Name = "YLabel";
-			this.YLabel.Text = "Y";
-			// 
-			// YNumeric
-			// 
-			this.YNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.YNumeric.Location = new System.Drawing.Point(111, 229);
-			this.YNumeric.Name = "YNumeric";
-			this.YNumeric.Size = new System.Drawing.Size(50, 20);
-			this.YNumeric.TabIndex = 3;
-			this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
-			this.YNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.YNumeric_KeyUp);
-			// 
-			// VirtualPadTargetScreen
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.YLabel);
-			this.Controls.Add(this.YNumeric);
-			this.Controls.Add(this.XLabel);
-			this.Controls.Add(this.XNumeric);
-			this.Controls.Add(this.TargetPanel);
-			this.Name = "VirtualPadTargetScreen";
-			this.Size = new System.Drawing.Size(256, 254);
-			this.Load += new System.EventHandler(this.VirtualPadTargetScreen_Load);
-			((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualPadTargetScreen));
+            this.TargetPanel = new System.Windows.Forms.Panel();
+            this.XNumeric = new System.Windows.Forms.NumericUpDown();
+            this.XLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.YLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.YNumeric = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // TargetPanel
+            // 
+            resources.ApplyResources(this.TargetPanel, "TargetPanel");
+            this.TargetPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TargetPanel.Name = "TargetPanel";
+            this.TargetPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.TargetPanel_Paint);
+            this.TargetPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseDown);
+            this.TargetPanel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseMove);
+            this.TargetPanel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TargetPanel_MouseUp);
+            // 
+            // XNumeric
+            // 
+            resources.ApplyResources(this.XNumeric, "XNumeric");
+            this.XNumeric.Name = "XNumeric";
+            this.XNumeric.ValueChanged += new System.EventHandler(this.XNumeric_ValueChanged);
+            this.XNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.XNumeric_KeyUp);
+            // 
+            // XLabel
+            // 
+            resources.ApplyResources(this.XLabel, "XLabel");
+            this.XLabel.Name = "XLabel";
+            // 
+            // YLabel
+            // 
+            resources.ApplyResources(this.YLabel, "YLabel");
+            this.YLabel.Name = "YLabel";
+            // 
+            // YNumeric
+            // 
+            resources.ApplyResources(this.YNumeric, "YNumeric");
+            this.YNumeric.Name = "YNumeric";
+            this.YNumeric.ValueChanged += new System.EventHandler(this.YNumeric_ValueChanged);
+            this.YNumeric.KeyUp += new System.Windows.Forms.KeyEventHandler(this.YNumeric_KeyUp);
+            // 
+            // VirtualPadTargetScreen
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.YLabel);
+            this.Controls.Add(this.YNumeric);
+            this.Controls.Add(this.XLabel);
+            this.Controls.Add(this.XNumeric);
+            this.Controls.Add(this.TargetPanel);
+            this.Name = "VirtualPadTargetScreen";
+            this.Load += new System.EventHandler(this.VirtualPadTargetScreen_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.XNumeric)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.YNumeric)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

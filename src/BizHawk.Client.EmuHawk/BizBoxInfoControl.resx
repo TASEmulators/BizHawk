@@ -124,14 +124,12 @@
   <data name="&gt;&gt;CoreAuthorLabel.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="CoreNameLabel.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>100, 21</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CoreUrlLink.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="CoreAuthorLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>100, 0</value>
-  </data>
-  <data name="&gt;&gt;CoreUrlLink.Parent" xml:space="preserve">
-    <value>$this</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="CoreUrlLink.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
@@ -149,18 +147,11 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="CoreUrlLink.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
   <data name="CoreAuthorLabel.Text" xml:space="preserve">
     <value>label2</value>
   </data>
   <data name="&gt;&gt;CoreNameLabel.Name" xml:space="preserve">
     <value>CoreNameLabel</value>
-  </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
   </data>
   <data name="CoreUrlLink.Location" type="System.Drawing.Point, System.Drawing">
     <value>151, 0</value>
@@ -183,6 +174,9 @@
   <data name="&gt;&gt;CoreUrlLink.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="&gt;&gt;CorePortedLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="&gt;&gt;CorePortedLabel.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
@@ -201,8 +195,8 @@
   <data name="CoreUrlLink.Text" xml:space="preserve">
     <value>linkLabel1</value>
   </data>
-  <data name="&gt;&gt;CoreNameLabel.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
   </data>
   <data name="CoreNameLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -210,14 +204,17 @@
   <data name="CoreAuthorLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
-  <data name="&gt;&gt;CoreUrlLink.Type" xml:space="preserve">
-    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="CoreNameLabel.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>100, 21</value>
+  </data>
+  <data name="&gt;&gt;CoreNameLabel.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="CoreNameLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
-  <data name="&gt;&gt;CoreAuthorLabel.Name" xml:space="preserve">
-    <value>CoreAuthorLabel</value>
+  <data name="&gt;&gt;CoreUrlLink.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;CoreUrlLink.Name" xml:space="preserve">
     <value>CoreUrlLink</value>
@@ -234,17 +231,20 @@
   <data name="&gt;&gt;CorePortedLabel.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="&gt;&gt;CoreNameLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
   <data name="CorePortedLabel.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
   </data>
   <data name="&gt;&gt;CoreAuthorLabel.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;CoreNameLabel.Parent" xml:space="preserve">
+  <data name="&gt;&gt;CoreUrlLink.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;CorePortedLabel.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;CoreAuthorLabel.Name" xml:space="preserve">
+    <value>CoreAuthorLabel</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

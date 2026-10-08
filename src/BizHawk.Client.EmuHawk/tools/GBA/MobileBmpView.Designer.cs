@@ -28,29 +28,25 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MobileBmpView));
             this.bmpView1 = new BizHawk.Client.EmuHawk.BmpView();
             this.SuspendLayout();
             // 
             // bmpView1
             // 
-            this.bmpView1.Location = new System.Drawing.Point(0, 0);
+            resources.ApplyResources(this.bmpView1, "bmpView1");
+            this.bmpView1.BackColor = System.Drawing.Color.Transparent;
             this.bmpView1.Name = "bmpView1";
-            this.bmpView1.Size = new System.Drawing.Size(64, 64);
-            this.bmpView1.TabIndex = 0;
-            this.bmpView1.Text = "bmpView1";
             // 
             // MobileBmpView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 273);
             this.Controls.Add(this.bmpView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "MobileBmpView";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "MobileBmpView";
             this.ResumeLayout(false);
 
 		}

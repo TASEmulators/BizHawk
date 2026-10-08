@@ -515,7 +515,7 @@
     <value>作弊码转换器</value>
   </data>
   <data name="MultiDiskBundlerFileMenuItem.Text" xml:space="preserve">
-    <value>多碟绑定</value>
+    <value>多碟打包器</value>
   </data>
   <data name="BatchRunnerMenuItem.Text" xml:space="preserve">
     <value>批处理工具</value>

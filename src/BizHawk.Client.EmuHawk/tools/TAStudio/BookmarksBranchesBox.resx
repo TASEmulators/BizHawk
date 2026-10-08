@@ -117,13 +117,376 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="UndoBranchToolStripMenuItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;AddBranchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AddWithTextBranchButton.Name" xml:space="preserve">
+    <value>AddWithTextBranchButton</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="JumpToBranchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>126, 247</value>
+  </data>
+  <data name="LoadBranchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="BranchesContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>175, 208</value>
+  </data>
+  <data name="AddWithTextBranchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="LoadBranchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;RemoveBranchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="LoadBranchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>66, 247</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="BranchView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;AddWithTextBranchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BranchView.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt, style=Bold</value>
+  </data>
+  <data name="JumpToBranchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="&gt;&gt;JumpToBranchButton.Name" xml:space="preserve">
+    <value>JumpToBranchButton</value>
+  </data>
+  <data name="AddBranchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;BranchView.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="LoadBranchButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="JumpToBranchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="JumpToBranchContextMenuItem.Text" xml:space="preserve">
+    <value>Jump To</value>
+  </data>
+  <data name="BranchesContextMenu.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AddWithTextBranchButton.ToolTip" xml:space="preserve">
+    <value>Add Branch with Text</value>
+  </data>
+  <data name="BookmarksBranchesGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 278</value>
+  </data>
+  <data name="&gt;&gt;UpdateWithTextToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AddBranchContextMenu.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="&gt;&gt;BookmarksBranchesGroupBox.Name" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;UpdateBranchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="UndoBranchButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;UpdateBranchButton.Name" xml:space="preserve">
+    <value>UpdateBranchButton</value>
+  </data>
+  <data name="JumpToBranchButton.ToolTip" xml:space="preserve">
+    <value>Jump To Branch Frame</value>
+  </data>
+  <data name="UndoBranchButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;AddBranchWithTextContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="AddBranchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="BookmarksBranchesGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;AddWithTextBranchButton.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;UpdateBranchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="AddBranchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="UndoBranchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;AddBranchContextMenu.Name" xml:space="preserve">
+    <value>AddBranchContextMenu</value>
+  </data>
+  <data name="&gt;&gt;UndoBranchButton.Name" xml:space="preserve">
+    <value>UndoBranchButton</value>
+  </data>
+  <data name="UndoBranchToolStripMenuItem.Text" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="&gt;&gt;JumpToBranchButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
+    <value>toolStripSeparator2</value>
+  </data>
+  <data name="&gt;&gt;BranchView.Name" xml:space="preserve">
+    <value>BranchView</value>
+  </data>
+  <data name="UpdateBranchContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Update</value>
+  </data>
+  <data name="AddBranchWithTextContextMenuItem.Text" xml:space="preserve">
+    <value>Add with Text</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AddBranchWithTextContextMenuItem.Name" xml:space="preserve">
+    <value>AddBranchWithTextContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;EditBranchTextContextMenuItem.Name" xml:space="preserve">
+    <value>EditBranchTextContextMenuItem</value>
+  </data>
+  <data name="EditBranchTextContextMenuItem.Text" xml:space="preserve">
+    <value>Edit Text</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LoadBranchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;AddBranchButton.Name" xml:space="preserve">
+    <value>AddBranchButton</value>
+  </data>
+  <data name="&gt;&gt;JumpToBranchButton.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="BranchView.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="LoadBranchButton.ToolTip" xml:space="preserve">
+    <value>Load Branch</value>
+  </data>
+  <data name="UpdateBranchButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BookmarksBranchesGroupBox.Text" xml:space="preserve">
+    <value>Branches</value>
+  </data>
+  <data name="LoadBranchContextMenuItem.Text" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="&gt;&gt;UndoBranchToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;BookmarksBranchesGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;LoadBranchButton.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;JumpToBranchContextMenuItem.Name" xml:space="preserve">
+    <value>JumpToBranchContextMenuItem</value>
+  </data>
+  <data name="UpdateBranchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="UpdateWithTextToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>174, 22</value>
+  </data>
+  <data name="UndoBranchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>156, 247</value>
+  </data>
+  <data name="UpdateBranchButton.ToolTip" xml:space="preserve">
+    <value>Update Branch</value>
+  </data>
+  <data name="UndoBranchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="AddWithTextBranchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="&gt;&gt;BranchesContextMenu.Name" xml:space="preserve">
+    <value>BranchesContextMenu</value>
+  </data>
+  <data name="UpdateBranchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>96, 247</value>
+  </data>
+  <data name="BookmarksBranchesGroupBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BranchView.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;EditBranchTextContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;UndoBranchToolStripMenuItem.Name" xml:space="preserve">
+    <value>UndoBranchToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="BookmarksBranchesGroupBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="BranchView.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;BookmarksBranchesGroupBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;BranchesContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="JumpToBranchButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;BranchView.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;JumpToBranchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LoadBranchButton.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;LoadBranchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;AddBranchButton.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;UpdateBranchButton.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;BookmarksBranchesGroupBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;LoadBranchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>BookmarksBranchesBox</value>
+  </data>
+  <data name="AddBranchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 247</value>
+  </data>
+  <data name="UpdateBranchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
+  <data name="&gt;&gt;UndoBranchButton.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;LoadBranchContextMenuItem.Name" xml:space="preserve">
+    <value>LoadBranchContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;UpdateWithTextToolStripMenuItem.Name" xml:space="preserve">
+    <value>UpdateWithTextToolStripMenuItem</value>
+  </data>
+  <data name="JumpToBranchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;AddBranchContextMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="BranchView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 224</value>
+  </data>
+  <data name="&gt;&gt;AddWithTextBranchButton.Parent" xml:space="preserve">
+    <value>BookmarksBranchesGroupBox</value>
+  </data>
+  <data name="&gt;&gt;AddBranchButton.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;JumpToBranchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RemoveBranchContextMenuItem.Text" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="AddWithTextBranchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;UpdateBranchContextMenuItem.Name" xml:space="preserve">
+    <value>UpdateBranchContextMenuItem</value>
+  </data>
+  <data name="BranchView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
+  </data>
+  <data name="&gt;&gt;UndoBranchButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;UpdateBranchButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="BookmarksBranchesGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="AddWithTextBranchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>36, 247</value>
+  </data>
+  <data name="UpdateWithTextToolStripMenuItem.Text" xml:space="preserve">
+    <value>Update with Text</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 278</value>
+  </data>
+  <data name="AddBranchButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;LoadBranchButton.Name" xml:space="preserve">
+    <value>LoadBranchButton</value>
+  </data>
+  <data name="UpdateBranchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;UndoBranchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RemoveBranchContextMenuItem.Name" xml:space="preserve">
+    <value>RemoveBranchContextMenuItem</value>
+  </data>
+  <data name="UndoBranchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>185, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
   <metadata name="BranchesContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>23, 17</value>
-  </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>185, 17</value>
   </metadata>
 </root>

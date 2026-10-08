@@ -117,6 +117,257 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;bmpViewBG.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSPPal.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>CTRL + C copies the pane under the mouse to the clipboard.</value>
+  </data>
+  <data name="&gt;&gt;checkBoxVDC2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBG.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSP.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSP.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBG.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="bmpViewSP.Text" xml:space="preserve">
+    <value>bmpView3</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>786, 259</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBGPal.Name" xml:space="preserve">
+    <value>bmpViewBGPal</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="bmpViewBGPal.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="bmpViewSP.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 288</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBGPal.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSP.Name" xml:space="preserve">
+    <value>bmpViewSP</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBG.Name" xml:space="preserve">
+    <value>bmpViewBG</value>
+  </data>
+  <data name="bmpViewBGPal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>256, 256</value>
+  </data>
+  <data name="bmpViewSPPal.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSPPal.Name" xml:space="preserve">
+    <value>bmpViewSPPal</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSPPal.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="checkBoxVDC2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 16</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="bmpViewSP.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 17</value>
+  </data>
+  <data name="bmpViewBG.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="saveBackgroundScreenshotToolStripMenuItem.Text" xml:space="preserve">
+    <value>Save BG Screenshot...</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="checkBoxVDC2.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;checkBoxVDC2.Name" xml:space="preserve">
+    <value>checkBoxVDC2</value>
+  </data>
+  <data name="&gt;&gt;checkBoxVDC2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="bmpViewSPPal.Location" type="System.Drawing.Point, System.Drawing">
+    <value>524, 17</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 23</value>
+  </data>
+  <data name="&gt;&gt;checkBoxVDC2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="bmpViewSP.Size" type="System.Drawing.Size, System.Drawing">
+    <value>512, 256</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>810, 576</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSP.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>PceTileViewer</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBGPal.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;saveSpriteScreenshotToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>504, 553</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Sprite</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="bmpViewBGPal.Text" xml:space="preserve">
+    <value>bmpView2</value>
+  </data>
+  <data name="bmpViewBG.Text" xml:space="preserve">
+    <value>bmpView1</value>
+  </data>
+  <data name="bmpViewBGPal.Location" type="System.Drawing.Point, System.Drawing">
+    <value>524, 17</value>
+  </data>
+  <data name="checkBoxVDC2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 553</value>
+  </data>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="saveSpriteScreenshotToolStripMenuItem.Text" xml:space="preserve">
+    <value>Save Sprite Screenshot...</value>
+  </data>
+  <data name="&gt;&gt;saveBackgroundScreenshotToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="bmpViewBG.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 17</value>
+  </data>
+  <data name="checkBoxVDC2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;bmpViewBGPal.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="bmpViewBG.Size" type="System.Drawing.Size, System.Drawing">
+    <value>512, 256</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="&gt;&gt;bmpViewSPPal.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="bmpViewSPPal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>256, 256</value>
+  </data>
+  <data name="&gt;&gt;saveSpriteScreenshotToolStripMenuItem.Name" xml:space="preserve">
+    <value>saveSpriteScreenshotToolStripMenuItem</value>
+  </data>
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
+    <value>FileSubMenu</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>786, 259</value>
+  </data>
+  <data name="&gt;&gt;saveBackgroundScreenshotToolStripMenuItem.Name" xml:space="preserve">
+    <value>saveBackgroundScreenshotToolStripMenuItem</value>
+  </data>
+  <data name="bmpViewSPPal.Text" xml:space="preserve">
+    <value>bmpView4</value>
+  </data>
+  <data name="checkBoxVDC2.Text" xml:space="preserve">
+    <value>VDC 2</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
   <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>

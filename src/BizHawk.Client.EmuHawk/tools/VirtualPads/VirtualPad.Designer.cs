@@ -28,28 +28,24 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.PadBox = new System.Windows.Forms.GroupBox();
-			this.SuspendLayout();
-			// 
-			// PadBox
-			// 
-			this.PadBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PadBox.Location = new System.Drawing.Point(0, 0);
-			this.PadBox.Name = "PadBox";
-			this.PadBox.Size = new System.Drawing.Size(150, 150);
-			this.PadBox.TabIndex = 0;
-			this.PadBox.TabStop = false;
-			// 
-			// VirtualPad
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.PadBox);
-			this.Name = "VirtualPad";
-			this.Load += new System.EventHandler(this.VirtualPadControl_Load);
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualPad));
+            this.PadBox = new System.Windows.Forms.GroupBox();
+            this.SuspendLayout();
+            // 
+            // PadBox
+            // 
+            resources.ApplyResources(this.PadBox, "PadBox");
+            this.PadBox.Name = "PadBox";
+            this.PadBox.TabStop = false;
+            // 
+            // VirtualPad
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.PadBox);
+            this.Name = "VirtualPad";
+            this.Load += new System.EventHandler(this.VirtualPadControl_Load);
+            this.ResumeLayout(false);
 
 		}
 

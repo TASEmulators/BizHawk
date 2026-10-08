@@ -117,4 +117,301 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;ManualY.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AnalogStick.Name" xml:space="preserve">
+    <value>AnalogStick</value>
+  </data>
+  <data name="rLabel.Text" xml:space="preserve">
+    <value>Ray</value>
+  </data>
+  <data name="&gt;&gt;ManualX.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ManualY.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 21</value>
+  </data>
+  <data name="&gt;&gt;manualTheta.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ManualY.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;AnalogStick.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;YLabel.Name" xml:space="preserve">
+    <value>YLabel</value>
+  </data>
+  <data name="&gt;&gt;XLabel.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;MaxLabel.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;ManualX.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="MaxYNumeric.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="XLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="manualR.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;MaxXNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="YLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;rLabel.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="XLabel.Text" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="&gt;&gt;MaxYNumeric.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;rLabel.Name" xml:space="preserve">
+    <value>rLabel</value>
+  </data>
+  <data name="&gt;&gt;ManualY.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="MaxYNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>205, 136</value>
+  </data>
+  <data name="&gt;&gt;rLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ManualX.Name" xml:space="preserve">
+    <value>ManualX</value>
+  </data>
+  <data name="MaxXNumeric.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="MaxXNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>205, 114</value>
+  </data>
+  <data name="&gt;&gt;MaxLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ManualY.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
+    <value>No</value>
+  </data>
+  <data name="&gt;&gt;XLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;thetaLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="manualR.TabIndex" type="System.Int32, mscorlib">
+    <value>31</value>
+  </data>
+  <data name="MaxYNumeric.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="manualR.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 21</value>
+  </data>
+  <data name="&gt;&gt;YLabel.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;MaxYNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;thetaLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;YLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;MaxLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ManualX.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 21</value>
+  </data>
+  <data name="MaxYNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 21</value>
+  </data>
+  <data name="rLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="manualR.Location" type="System.Drawing.Point, System.Drawing">
+    <value>193, 54</value>
+  </data>
+  <data name="MaxLabel.Text" xml:space="preserve">
+    <value>Range%</value>
+  </data>
+  <data name="manualTheta.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;ManualY.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;manualR.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ManualY.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="&gt;&gt;manualTheta.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;MaxXNumeric.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;YLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;manualR.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;XLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="manualTheta.Size" type="System.Drawing.Size, System.Drawing">
+    <value>56, 21</value>
+  </data>
+  <data name="&gt;&gt;MaxXNumeric.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="MaxLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>205, 99</value>
+  </data>
+  <data name="ManualX.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;manualR.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;manualR.Name" xml:space="preserve">
+    <value>manualR</value>
+  </data>
+  <data name="XLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>187, 6</value>
+  </data>
+  <data name="YLabel.Text" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="AnalogStick.Size" type="System.Drawing.Size, System.Drawing">
+    <value>164, 152</value>
+  </data>
+  <data name="&gt;&gt;MaxYNumeric.Name" xml:space="preserve">
+    <value>MaxYNumeric</value>
+  </data>
+  <data name="&gt;&gt;ManualY.Name" xml:space="preserve">
+    <value>ManualY</value>
+  </data>
+  <data name="thetaLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>VirtualPadAnalogStick</value>
+  </data>
+  <data name="AnalogStick.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;thetaLabel.Name" xml:space="preserve">
+    <value>thetaLabel</value>
+  </data>
+  <data name="&gt;&gt;manualTheta.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="thetaLabel.Text" xml:space="preserve">
+    <value>θ (°)</value>
+  </data>
+  <data name="manualTheta.TabIndex" type="System.Int32, mscorlib">
+    <value>33</value>
+  </data>
+  <data name="&gt;&gt;XLabel.Name" xml:space="preserve">
+    <value>XLabel</value>
+  </data>
+  <data name="&gt;&gt;MaxXNumeric.Name" xml:space="preserve">
+    <value>MaxXNumeric</value>
+  </data>
+  <data name="ManualY.Location" type="System.Drawing.Point, System.Drawing">
+    <value>205, 27</value>
+  </data>
+  <data name="MaxXNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="ManualX.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;AnalogStick.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="thetaLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>167, 79</value>
+  </data>
+  <data name="&gt;&gt;manualTheta.Name" xml:space="preserve">
+    <value>manualTheta</value>
+  </data>
+  <data name="rLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>167, 55</value>
+  </data>
+  <data name="MaxXNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 21</value>
+  </data>
+  <data name="&gt;&gt;MaxYNumeric.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ManualX.Location" type="System.Drawing.Point, System.Drawing">
+    <value>205, 3</value>
+  </data>
+  <data name="&gt;&gt;thetaLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;AnalogStick.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.AnalogStickPanel, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MaxYNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>253, 159</value>
+  </data>
+  <data name="AnalogStick.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;ManualX.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="manualTheta.Location" type="System.Drawing.Point, System.Drawing">
+    <value>193, 78</value>
+  </data>
+  <data name="MaxLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;MaxLabel.Name" xml:space="preserve">
+    <value>MaxLabel</value>
+  </data>
+  <data name="YLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>187, 30</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

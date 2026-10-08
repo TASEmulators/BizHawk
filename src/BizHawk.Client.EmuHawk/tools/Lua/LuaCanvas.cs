@@ -491,5 +491,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			luaPictureBox.Image.Save(path.MakeAbsolute(_pathEntrys.ScreenshotAbsolutePathFor(_emuLib.GetSystemId())));
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LuaCanvas));
+            this.SuspendLayout();
+            // 
+            // LuaCanvas
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "LuaCanvas";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

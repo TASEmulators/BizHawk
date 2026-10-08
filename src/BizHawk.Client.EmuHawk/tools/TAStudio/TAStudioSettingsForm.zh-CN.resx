@@ -1,0 +1,500 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 12</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>隐藏的延迟帧数：</value>
+  </data>
+  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 25</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>影片设置</value>
+  </data>
+  <data name="ColorsButton.Text" xml:space="preserve">
+    <value>设置颜色</value>
+  </data>
+  <data name="MarkerColorCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 16</value>
+  </data>
+  <data name="MarkerColorCheckbox.Text" xml:space="preserve">
+    <value>在帧列用颜色标示标记</value>
+  </data>
+  <data name="MarkerIconsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 16</value>
+  </data>
+  <data name="MarkerIconsCheckbox.Text" xml:space="preserve">
+    <value>用图标标示标记</value>
+  </data>
+  <data name="StateColorCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="StateColorCheckbox.Text" xml:space="preserve">
+    <value>用背景颜色标示状态</value>
+  </data>
+  <data name="StateIconsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 16</value>
+  </data>
+  <data name="StateIconsCheckbox.Text" xml:space="preserve">
+    <value>用图标标示状态</value>
+  </data>
+  <data name="HideWasLagCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="HideWasLagCheckbox.Text" xml:space="preserve">
+    <value>隐藏延迟帧</value>
+  </data>
+  <data name="RotateCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 16</value>
+  </data>
+  <data name="RotateCheckbox.Text" xml:space="preserve">
+    <value>旋转输入卷帘</value>
+  </data>
+  <data name="FontButton.Text" xml:space="preserve">
+    <value>设置字体</value>
+  </data>
+  <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 374</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>外观</value>
+  </data>
+  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
+    <value>131, 12</value>
+  </data>
+  <data name="label11.Text" xml:space="preserve">
+    <value>设为 0 禁用自动保存。</value>
+  </data>
+  <data name="BackupOnSaveCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>192, 16</value>
+  </data>
+  <data name="BackupOnSaveCheckbox.Text" xml:space="preserve">
+    <value>手动保存时，同时保存 .backup</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 16</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.Text" xml:space="preserve">
+    <value>保存为 .backup (无 greenzone)</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 16</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.Text" xml:space="preserve">
+    <value>保存为 .bk2</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>17, 12</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 12</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>自动保存频率：每</value>
+  </data>
+  <data name="tabPage5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 374</value>
+  </data>
+  <data name="tabPage5.Text" xml:space="preserve">
+    <value>自动保存</value>
+  </data>
+  <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 327</value>
+  </data>
+  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
+    <value>161, 12</value>
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>每个影片拥有独立的存档设置</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DefaultManagerSettingsAppliedLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>148, 354</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 12</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Text" xml:space="preserve">
+    <value>已应用！</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>201, 350</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.Text" xml:space="preserve">
+    <value>将这些设置用作默认设置</value>
+  </data>
+  <data name="DefaultStateSettingsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 350</value>
+  </data>
+  <data name="DefaultStateSettingsButton.Text" xml:space="preserve">
+    <value>使用默认设置</value>
+  </data>
+  <data name="ManagerSettingsPropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>347, 294</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>53, 9</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 12</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>管理策略：</value>
+  </data>
+  <data name="tabPage4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 374</value>
+  </data>
+  <data name="tabPage4.Text" xml:space="preserve">
+    <value>进度</value>
+  </data>
+  <data name="OnOffBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>26, 172</value>
+  </data>
+  <data name="locLabelEx1.Text" xml:space="preserve">
+    <value>计数：</value>
+  </data>
+  <data name="locLabelEx2.Text" xml:space="preserve">
+    <value>值</value>
+  </data>
+  <data name="LagBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="LagBox.Text" xml:space="preserve">
+    <value>考虑延迟帧</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="InsertButton.Text" xml:space="preserve">
+    <value>插入</value>
+  </data>
+  <data name="PatternList.Items" xml:space="preserve">
+    <value>0: 开	(x1)</value>
+  </data>
+  <data name="PatternList.Items1" xml:space="preserve">
+    <value>1: 关	(x1)</value>
+  </data>
+  <data name="PatternList.Items2" xml:space="preserve">
+    <value>循环到 0</value>
+  </data>
+  <data name="CustomPatternsGroupBox.Text" xml:space="preserve">
+    <value>设置自定义模版 (为每个影片)</value>
+  </data>
+  <data name="PatternCustomRadioButton.Text" xml:space="preserve">
+    <value>自定义</value>
+  </data>
+  <data name="PatternHoldRadioButton.Text" xml:space="preserve">
+    <value>按住</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.Text" xml:space="preserve">
+    <value>连发</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>选择模板</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.Text" xml:space="preserve">
+    <value>总是</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 16</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.Text" xml:space="preserve">
+    <value>仅连发列</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.Text" xml:space="preserve">
+    <value>从不</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>何时使用模版</value>
+  </data>
+  <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 374</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>输入模版</value>
+  </data>
+  <data name="ScrollSyncCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 16</value>
+  </data>
+  <data name="ScrollSyncCheckbox.Text" xml:space="preserve">
+    <value>所有输入卷帘同步滚动</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>288, 16</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.Text" xml:space="preserve">
+    <value>允许编辑隐藏列（支持清除、录制、粘贴等操作）</value>
+  </data>
+  <data name="ScrollToCenterRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 16</value>
+  </data>
+  <data name="ScrollToCenterRadio.Text" xml:space="preserve">
+    <value>滚动到中间</value>
+  </data>
+  <data name="ScrollToBottomRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 16</value>
+  </data>
+  <data name="ScrollToBottomRadio.Text" xml:space="preserve">
+    <value>滚动到底部</value>
+  </data>
+  <data name="ScrollToTopRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 16</value>
+  </data>
+  <data name="ScrollToTopRadio.Text" xml:space="preserve">
+    <value>滚动到顶部</value>
+  </data>
+  <data name="ScrollToViewRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 16</value>
+  </data>
+  <data name="ScrollToViewRadio.Text" xml:space="preserve">
+    <value>滚动到视图</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>光标定位滚动方式</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 16</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.Text" xml:space="preserve">
+    <value>跟随光标时，逐帧滚动</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>17, 12</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>帧</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 12</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>滚动速度：每周期</value>
+  </data>
+  <data name="tabPage6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 374</value>
+  </data>
+  <data name="tabPage6.Text" xml:space="preserve">
+    <value>输入卷帘</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.Text" xml:space="preserve">
+    <value>标记默认保留状态</value>
+  </data>
+  <data name="OldBranchesCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 16</value>
+  </data>
+  <data name="OldBranchesCheckbox.Text" xml:space="preserve">
+    <value>旧的分支控制方案</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 16</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.Text" xml:space="preserve">
+    <value>双击载入分支</value>
+  </data>
+  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 12</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>快速倒带步数：</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 12</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>倒带步数：</value>
+  </data>
+  <data name="BindMarkersCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 16</value>
+  </data>
+  <data name="BindMarkersCheckbox.Text" xml:space="preserve">
+    <value>绑定标记到输入</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.Text" xml:space="preserve">
+    <value>复制输入时包括帧数</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 12</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>最大撤销数：</value>
+  </data>
+  <data name="AutopauseCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>132, 16</value>
+  </data>
+  <data name="AutopauseCheckbox.Text" xml:space="preserve">
+    <value>影片结束时自动暂停</value>
+  </data>
+  <data name="tabPage3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPage3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 374</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>杂项</value>
+  </data>
+  <data name="SettingsCancelButton.Text" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="ApplyButton.Text" xml:space="preserve">
+    <value>应用</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+</root>

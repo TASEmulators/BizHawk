@@ -120,9 +120,6 @@
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
     <value>文件(&amp;F)</value>
   </data>
-  <data name="DebugSubMenu.Text" xml:space="preserve">
-    <value>调试(&amp;D)</value>
-  </data>
   <data name="StepIntoMenuItem.Text" xml:space="preserve">
     <value>单步进入(&amp;I)</value>
   </data>
@@ -134,6 +131,9 @@
   </data>
   <data name="RefreshMenuItem.Text" xml:space="preserve">
     <value>刷新</value>
+  </data>
+  <data name="DebugSubMenu.Text" xml:space="preserve">
+    <value>调试(&amp;D)</value>
   </data>
   <data name="BreakpointsGroupBox.Text" xml:space="preserve">
     <value>断点</value>

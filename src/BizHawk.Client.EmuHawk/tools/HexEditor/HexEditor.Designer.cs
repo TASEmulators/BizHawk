@@ -30,84 +30,86 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.HexMenuStrip = new BizHawk.WinForms.Controls.MenuStripEx();
-			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveAsBinaryMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveAsTextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.importAsBinaryToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.LoadTableFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CloseTableFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RecentTablesSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.EditMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ExportMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.PasteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.FindMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FindNextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FindPrevMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.OptionsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.MemoryDomainsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.DataSizeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DataSizeByteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DataSizeWordMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DataSizeDWordMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.BigEndianMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.GoToAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AddToRamWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FreezeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.UnfreezeAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.PokeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.CustomColorsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SetColorsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.ResetColorsToDefaultMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.resetToDefaultToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ViewerContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.CopyContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ExportContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.PasteContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.FreezeContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.AddToRamWatchContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.UnfreezeAllContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.PokeContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ContextSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.IncrementContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.DecrementContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ContextSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.GoToContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.toolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
-			this.viewN64MatrixToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
-			this.HexScrollBar = new System.Windows.Forms.VScrollBar();
-			this.AddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.AddressesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.Header = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.HexMenuStrip.SuspendLayout();
-			this.ViewerContextMenuStrip.SuspendLayout();
-			this.MemoryViewerBox.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// HexMenuStrip
-			// 
-			this.HexMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HexEditor));
+            this.HexMenuStrip = new BizHawk.WinForms.Controls.MenuStripEx();
+            this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveAsBinaryMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveAsTextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.importAsBinaryToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator4 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.LoadTableFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CloseTableFileMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.RecentTablesSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.noneToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.EditMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CopyMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ExportMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.PasteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator6 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.FindMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.FindNextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.FindPrevMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.OptionsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.MemoryDomainsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator3 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.DataSizeSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DataSizeByteMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DataSizeWordMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DataSizeDWordMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.BigEndianMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.GoToAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.AddToRamWatchMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.FreezeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.UnfreezeAllMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.PokeAddressMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SettingsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.CustomColorsSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SetColorsMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator8 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.ResetColorsToDefaultMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripSeparator7 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.resetToDefaultToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ViewerContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.CopyContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ExportContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.PasteContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.FreezeContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.AddToRamWatchContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.UnfreezeAllContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.PokeContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ContextSeparator1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.IncrementContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.DecrementContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ContextSeparator2 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.GoToContextItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.toolStripMenuItem1 = new BizHawk.WinForms.Controls.ToolStripSeparatorEx();
+            this.viewN64MatrixToolStripMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.MemoryViewerBox = new System.Windows.Forms.GroupBox();
+            this.HexScrollBar = new System.Windows.Forms.VScrollBar();
+            this.AddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.AddressesLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.Header = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.HexMenuStrip.SuspendLayout();
+            this.ViewerContextMenuStrip.SuspendLayout();
+            this.MemoryViewerBox.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // HexMenuStrip
+            // 
+            resources.ApplyResources(this.HexMenuStrip, "HexMenuStrip");
+            this.HexMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu,
             this.EditMenuItem,
             this.OptionsSubMenu,
             this.SettingsSubMenu});
-			this.HexMenuStrip.TabIndex = 1;
-			// 
-			// FileSubMenu
-			// 
-			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // FileSubMenu
+            // 
+            resources.ApplyResources(this.FileSubMenu, "FileSubMenu");
+            this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SaveMenuItem,
             this.SaveAsBinaryMenuItem,
             this.SaveAsTextMenuItem,
@@ -116,57 +118,57 @@ namespace BizHawk.Client.EmuHawk
             this.LoadTableFileMenuItem,
             this.CloseTableFileMenuItem,
             this.RecentTablesSubMenu});
-			this.FileSubMenu.Text = "&File";
-			this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
-			// 
-			// SaveMenuItem
-			// 
-			this.SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.SaveMenuItem.Text = "Save";
-			this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
-			// 
-			// SaveAsBinaryMenuItem
-			// 
-			this.SaveAsBinaryMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.S)));
-			this.SaveAsBinaryMenuItem.Text = "Save as binary...";
-			this.SaveAsBinaryMenuItem.Click += new System.EventHandler(this.SaveAsBinaryMenuItem_Click);
-			// 
-			// SaveAsTextMenuItem
-			// 
-			this.SaveAsTextMenuItem.Text = "Save as text...";
-			this.SaveAsTextMenuItem.Click += new System.EventHandler(this.SaveAsTextMenuItem_Click);
-			// 
-			// importAsBinaryToolStripMenuItem
-			// 
-			this.importAsBinaryToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-			this.importAsBinaryToolStripMenuItem.Text = "Import as binary...";
-			this.importAsBinaryToolStripMenuItem.Click += new System.EventHandler(this.importAsBinaryToolStripMenuItem_Click);
-			// 
-			// LoadTableFileMenuItem
-			// 
-			this.LoadTableFileMenuItem.Text = "&Load .tbl file";
-			this.LoadTableFileMenuItem.Click += new System.EventHandler(this.LoadTableFileMenuItem_Click);
-			// 
-			// CloseTableFileMenuItem
-			// 
-			this.CloseTableFileMenuItem.Text = "Close .tbl file";
-			this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
-			// 
-			// RecentTablesSubMenu
-			// 
-			this.RecentTablesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileSubMenu.DropDownOpened += new System.EventHandler(this.FileSubMenu_DropDownOpened);
+            // 
+            // SaveMenuItem
+            // 
+            resources.ApplyResources(this.SaveMenuItem, "SaveMenuItem");
+            this.SaveMenuItem.Click += new System.EventHandler(this.SaveMenuItem_Click);
+            // 
+            // SaveAsBinaryMenuItem
+            // 
+            resources.ApplyResources(this.SaveAsBinaryMenuItem, "SaveAsBinaryMenuItem");
+            this.SaveAsBinaryMenuItem.Click += new System.EventHandler(this.SaveAsBinaryMenuItem_Click);
+            // 
+            // SaveAsTextMenuItem
+            // 
+            resources.ApplyResources(this.SaveAsTextMenuItem, "SaveAsTextMenuItem");
+            this.SaveAsTextMenuItem.Click += new System.EventHandler(this.SaveAsTextMenuItem_Click);
+            // 
+            // importAsBinaryToolStripMenuItem
+            // 
+            resources.ApplyResources(this.importAsBinaryToolStripMenuItem, "importAsBinaryToolStripMenuItem");
+            this.importAsBinaryToolStripMenuItem.Click += new System.EventHandler(this.importAsBinaryToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator4
+            // 
+            resources.ApplyResources(this.toolStripSeparator4, "toolStripSeparator4");
+            // 
+            // LoadTableFileMenuItem
+            // 
+            resources.ApplyResources(this.LoadTableFileMenuItem, "LoadTableFileMenuItem");
+            this.LoadTableFileMenuItem.Click += new System.EventHandler(this.LoadTableFileMenuItem_Click);
+            // 
+            // CloseTableFileMenuItem
+            // 
+            resources.ApplyResources(this.CloseTableFileMenuItem, "CloseTableFileMenuItem");
+            this.CloseTableFileMenuItem.Click += new System.EventHandler(this.CloseTableFileMenuItem_Click);
+            // 
+            // RecentTablesSubMenu
+            // 
+            resources.ApplyResources(this.RecentTablesSubMenu, "RecentTablesSubMenu");
+            this.RecentTablesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.noneToolStripMenuItem});
-			this.RecentTablesSubMenu.Text = "Recent";
-			this.RecentTablesSubMenu.DropDownOpened += new System.EventHandler(this.RecentTablesSubMenu_DropDownOpened);
-			// 
-			// noneToolStripMenuItem
-			// 
-			this.noneToolStripMenuItem.Text = "None";
-			// 
-			// EditMenuItem
-			// 
-			this.EditMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.RecentTablesSubMenu.DropDownOpened += new System.EventHandler(this.RecentTablesSubMenu_DropDownOpened);
+            // 
+            // noneToolStripMenuItem
+            // 
+            resources.ApplyResources(this.noneToolStripMenuItem, "noneToolStripMenuItem");
+            // 
+            // EditMenuItem
+            // 
+            resources.ApplyResources(this.EditMenuItem, "EditMenuItem");
+            this.EditMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CopyMenuItem,
             this.ExportMenuItem,
             this.PasteMenuItem,
@@ -174,48 +176,46 @@ namespace BizHawk.Client.EmuHawk
             this.FindMenuItem,
             this.FindNextMenuItem,
             this.FindPrevMenuItem});
-			this.EditMenuItem.Text = "&Edit";
-			this.EditMenuItem.DropDownOpened += new System.EventHandler(this.EditMenuItem_DropDownOpened);
-			// 
-			// CopyMenuItem
-			// 
-			this.CopyMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.CopyMenuItem.Text = "&Copy";
-			this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
-			// 
-			// ExportMenuItem
-			// 
-			this.ExportMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-			this.ExportMenuItem.Text = "&Export";
-			this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
-			// 
-			// PasteMenuItem
-			// 
-			this.PasteMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
-			this.PasteMenuItem.Text = "&Paste";
-			this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
-			// 
-			// FindMenuItem
-			// 
-			this.FindMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
-			this.FindMenuItem.Text = "&Find...";
-			this.FindMenuItem.Click += new System.EventHandler(this.FindMenuItem_Click);
-			// 
-			// FindNextMenuItem
-			// 
-			this.FindNextMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-			this.FindNextMenuItem.Text = "Find Next";
-			this.FindNextMenuItem.Click += new System.EventHandler(this.FindNextMenuItem_Click);
-			// 
-			// FindPrevMenuItem
-			// 
-			this.FindPrevMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F2;
-			this.FindPrevMenuItem.Text = "Find Prev";
-			this.FindPrevMenuItem.Click += new System.EventHandler(this.FindPrevMenuItem_Click);
-			// 
-			// OptionsSubMenu
-			// 
-			this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditMenuItem.DropDownOpened += new System.EventHandler(this.EditMenuItem_DropDownOpened);
+            // 
+            // CopyMenuItem
+            // 
+            resources.ApplyResources(this.CopyMenuItem, "CopyMenuItem");
+            this.CopyMenuItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
+            // 
+            // ExportMenuItem
+            // 
+            resources.ApplyResources(this.ExportMenuItem, "ExportMenuItem");
+            this.ExportMenuItem.Click += new System.EventHandler(this.ExportMenuItem_Click);
+            // 
+            // PasteMenuItem
+            // 
+            resources.ApplyResources(this.PasteMenuItem, "PasteMenuItem");
+            this.PasteMenuItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            resources.ApplyResources(this.toolStripSeparator6, "toolStripSeparator6");
+            // 
+            // FindMenuItem
+            // 
+            resources.ApplyResources(this.FindMenuItem, "FindMenuItem");
+            this.FindMenuItem.Click += new System.EventHandler(this.FindMenuItem_Click);
+            // 
+            // FindNextMenuItem
+            // 
+            resources.ApplyResources(this.FindNextMenuItem, "FindNextMenuItem");
+            this.FindNextMenuItem.Click += new System.EventHandler(this.FindNextMenuItem_Click);
+            // 
+            // FindPrevMenuItem
+            // 
+            resources.ApplyResources(this.FindPrevMenuItem, "FindPrevMenuItem");
+            this.FindPrevMenuItem.Click += new System.EventHandler(this.FindPrevMenuItem_Click);
+            // 
+            // OptionsSubMenu
+            // 
+            resources.ApplyResources(this.OptionsSubMenu, "OptionsSubMenu");
+            this.OptionsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.MemoryDomainsMenuItem,
             this.DataSizeSubMenu,
             this.BigEndianMenuItem,
@@ -225,105 +225,116 @@ namespace BizHawk.Client.EmuHawk
             this.FreezeAddressMenuItem,
             this.UnfreezeAllMenuItem,
             this.PokeAddressMenuItem});
-			this.OptionsSubMenu.Text = "&Options";
-			this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
-			// 
-			// MemoryDomainsMenuItem
-			// 
-			this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.OptionsSubMenu.DropDownOpened += new System.EventHandler(this.OptionsSubMenu_DropDownOpened);
+            // 
+            // MemoryDomainsMenuItem
+            // 
+            resources.ApplyResources(this.MemoryDomainsMenuItem, "MemoryDomainsMenuItem");
+            this.MemoryDomainsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator3});
-			this.MemoryDomainsMenuItem.Text = "&Memory Domains";
-			this.MemoryDomainsMenuItem.DropDownOpened += new System.EventHandler(this.MemoryDomainsMenuItem_DropDownOpened);
-			// 
-			// DataSizeSubMenu
-			// 
-			this.DataSizeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MemoryDomainsMenuItem.DropDownOpened += new System.EventHandler(this.MemoryDomainsMenuItem_DropDownOpened);
+            // 
+            // toolStripSeparator3
+            // 
+            resources.ApplyResources(this.toolStripSeparator3, "toolStripSeparator3");
+            // 
+            // DataSizeSubMenu
+            // 
+            resources.ApplyResources(this.DataSizeSubMenu, "DataSizeSubMenu");
+            this.DataSizeSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.DataSizeByteMenuItem,
             this.DataSizeWordMenuItem,
             this.DataSizeDWordMenuItem});
-			this.DataSizeSubMenu.Text = "Data Size";
-			// 
-			// DataSizeByteMenuItem
-			// 
-			this.DataSizeByteMenuItem.Text = "1 Byte";
-			this.DataSizeByteMenuItem.Click += new System.EventHandler(this.DataSizeByteMenuItem_Click);
-			// 
-			// DataSizeWordMenuItem
-			// 
-			this.DataSizeWordMenuItem.Text = "2 Byte";
-			this.DataSizeWordMenuItem.Click += new System.EventHandler(this.DataSizeWordMenuItem_Click);
-			// 
-			// DataSizeDWordMenuItem
-			// 
-			this.DataSizeDWordMenuItem.Text = "4 Byte";
-			this.DataSizeDWordMenuItem.Click += new System.EventHandler(this.DataSizeDWordMenuItem_Click);
-			// 
-			// BigEndianMenuItem
-			// 
-			this.BigEndianMenuItem.Text = "Big Endian";
-			this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
-			// 
-			// GoToAddressMenuItem
-			// 
-			this.GoToAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-			this.GoToAddressMenuItem.Text = "&Go to Address...";
-			this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
-			// 
-			// AddToRamWatchMenuItem
-			// 
-			this.AddToRamWatchMenuItem.ShortcutKeyDisplayString = "Ctrl+W";
-			this.AddToRamWatchMenuItem.Text = "Add to RAM Watch";
-			this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
-			// 
-			// FreezeAddressMenuItem
-			// 
-			this.FreezeAddressMenuItem.ShortcutKeyDisplayString = "Space";
-			this.FreezeAddressMenuItem.Text = "&Freeze Address";
-			this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
-			// 
-			// UnfreezeAllMenuItem
-			// 
-			this.UnfreezeAllMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.Delete)));
-			this.UnfreezeAllMenuItem.Text = "Unfreeze All";
-			this.UnfreezeAllMenuItem.Click += new System.EventHandler(this.UnfreezeAllMenuItem_Click);
-			// 
-			// PokeAddressMenuItem
-			// 
-			this.PokeAddressMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-			this.PokeAddressMenuItem.Text = "&Poke Address";
-			this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
-			// 
-			// SettingsSubMenu
-			// 
-			this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // DataSizeByteMenuItem
+            // 
+            resources.ApplyResources(this.DataSizeByteMenuItem, "DataSizeByteMenuItem");
+            this.DataSizeByteMenuItem.Click += new System.EventHandler(this.DataSizeByteMenuItem_Click);
+            // 
+            // DataSizeWordMenuItem
+            // 
+            resources.ApplyResources(this.DataSizeWordMenuItem, "DataSizeWordMenuItem");
+            this.DataSizeWordMenuItem.Click += new System.EventHandler(this.DataSizeWordMenuItem_Click);
+            // 
+            // DataSizeDWordMenuItem
+            // 
+            resources.ApplyResources(this.DataSizeDWordMenuItem, "DataSizeDWordMenuItem");
+            this.DataSizeDWordMenuItem.Click += new System.EventHandler(this.DataSizeDWordMenuItem_Click);
+            // 
+            // BigEndianMenuItem
+            // 
+            resources.ApplyResources(this.BigEndianMenuItem, "BigEndianMenuItem");
+            this.BigEndianMenuItem.Click += new System.EventHandler(this.BigEndianMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            resources.ApplyResources(this.toolStripSeparator2, "toolStripSeparator2");
+            // 
+            // GoToAddressMenuItem
+            // 
+            resources.ApplyResources(this.GoToAddressMenuItem, "GoToAddressMenuItem");
+            this.GoToAddressMenuItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
+            // 
+            // AddToRamWatchMenuItem
+            // 
+            resources.ApplyResources(this.AddToRamWatchMenuItem, "AddToRamWatchMenuItem");
+            this.AddToRamWatchMenuItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
+            // 
+            // FreezeAddressMenuItem
+            // 
+            resources.ApplyResources(this.FreezeAddressMenuItem, "FreezeAddressMenuItem");
+            this.FreezeAddressMenuItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+            // 
+            // UnfreezeAllMenuItem
+            // 
+            resources.ApplyResources(this.UnfreezeAllMenuItem, "UnfreezeAllMenuItem");
+            this.UnfreezeAllMenuItem.Click += new System.EventHandler(this.UnfreezeAllMenuItem_Click);
+            // 
+            // PokeAddressMenuItem
+            // 
+            resources.ApplyResources(this.PokeAddressMenuItem, "PokeAddressMenuItem");
+            this.PokeAddressMenuItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
+            // 
+            // SettingsSubMenu
+            // 
+            resources.ApplyResources(this.SettingsSubMenu, "SettingsSubMenu");
+            this.SettingsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CustomColorsSubMenu});
-			this.SettingsSubMenu.Text = "&Settings";
-			// 
-			// CustomColorsSubMenu
-			// 
-			this.CustomColorsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // CustomColorsSubMenu
+            // 
+            resources.ApplyResources(this.CustomColorsSubMenu, "CustomColorsSubMenu");
+            this.CustomColorsSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SetColorsMenuItem,
             this.toolStripSeparator8,
             this.ResetColorsToDefaultMenuItem});
-			this.CustomColorsSubMenu.Text = "Custom Colors";
-			// 
-			// SetColorsMenuItem
-			// 
-			this.SetColorsMenuItem.Text = "Set Colors";
-			this.SetColorsMenuItem.Click += new System.EventHandler(this.SetColorsMenuItem_Click);
-			// 
-			// ResetColorsToDefaultMenuItem
-			// 
-			this.ResetColorsToDefaultMenuItem.Text = "Reset to Default";
-			this.ResetColorsToDefaultMenuItem.Click += new System.EventHandler(this.ResetColorsToDefaultMenuItem_Click);
-			// 
-			// resetToDefaultToolStripMenuItem
-			// 
-			this.resetToDefaultToolStripMenuItem.Text = "Reset to Default";
-			// 
-			// ViewerContextMenuStrip
-			// 
-			this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // SetColorsMenuItem
+            // 
+            resources.ApplyResources(this.SetColorsMenuItem, "SetColorsMenuItem");
+            this.SetColorsMenuItem.Click += new System.EventHandler(this.SetColorsMenuItem_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            resources.ApplyResources(this.toolStripSeparator8, "toolStripSeparator8");
+            // 
+            // ResetColorsToDefaultMenuItem
+            // 
+            resources.ApplyResources(this.ResetColorsToDefaultMenuItem, "ResetColorsToDefaultMenuItem");
+            this.ResetColorsToDefaultMenuItem.Click += new System.EventHandler(this.ResetColorsToDefaultMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            resources.ApplyResources(this.toolStripSeparator7, "toolStripSeparator7");
+            // 
+            // resetToDefaultToolStripMenuItem
+            // 
+            resources.ApplyResources(this.resetToDefaultToolStripMenuItem, "resetToDefaultToolStripMenuItem");
+            // 
+            // ViewerContextMenuStrip
+            // 
+            resources.ApplyResources(this.ViewerContextMenuStrip, "ViewerContextMenuStrip");
+            this.ViewerContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.CopyContextItem,
             this.ExportContextItem,
             this.PasteContextItem,
@@ -338,153 +349,135 @@ namespace BizHawk.Client.EmuHawk
             this.GoToContextItem,
             this.toolStripMenuItem1,
             this.viewN64MatrixToolStripMenuItem});
-			this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
-			this.ViewerContextMenuStrip.Size = new System.Drawing.Size(222, 264);
-			this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
-			// 
-			// CopyContextItem
-			// 
-			this.CopyContextItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.CopyContextItem.Text = "&Copy";
-			this.CopyContextItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
-			// 
-			// ExportContextItem
-			// 
-			this.ExportContextItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-			this.ExportContextItem.Text = "&Export";
-			// 
-			// PasteContextItem
-			// 
-			this.PasteContextItem.ShortcutKeyDisplayString = "Ctrl+V";
-			this.PasteContextItem.Text = "&Paste";
-			this.PasteContextItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
-			// 
-			// FreezeContextItem
-			// 
-			this.FreezeContextItem.ShortcutKeyDisplayString = "Space";
-			this.FreezeContextItem.Text = "&Freeze";
-			this.FreezeContextItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
-			// 
-			// AddToRamWatchContextItem
-			// 
-			this.AddToRamWatchContextItem.ShortcutKeyDisplayString = "Ctrl+W";
-			this.AddToRamWatchContextItem.Text = "&Add to RAM Watch";
-			this.AddToRamWatchContextItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
-			// 
-			// UnfreezeAllContextItem
-			// 
-			this.UnfreezeAllContextItem.ShortcutKeyDisplayString = "Shift+Del";
-			this.UnfreezeAllContextItem.Text = "&Unfreeze All";
-			this.UnfreezeAllContextItem.Click += new System.EventHandler(this.UnfreezeAllMenuItem_Click);
-			// 
-			// PokeContextItem
-			// 
-			this.PokeContextItem.ShortcutKeyDisplayString = "Ctrl+P";
-			this.PokeContextItem.Text = "&Poke Address";
-			this.PokeContextItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
-			// 
-			// IncrementContextItem
-			// 
-			this.IncrementContextItem.ShortcutKeyDisplayString = "+";
-			this.IncrementContextItem.Text = "&Increment";
-			this.IncrementContextItem.Click += new System.EventHandler(this.IncrementContextItem_Click);
-			// 
-			// DecrementContextItem
-			// 
-			this.DecrementContextItem.ShortcutKeyDisplayString = "-";
-			this.DecrementContextItem.Text = "&Decrement";
-			this.DecrementContextItem.Click += new System.EventHandler(this.DecrementContextItem_Click);
-			// 
-			// GoToContextItem
-			// 
-			this.GoToContextItem.ShortcutKeyDisplayString = "Ctrl+G";
-			this.GoToContextItem.Text = "&Go to Address...";
-			this.GoToContextItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
-			// 
-			// viewN64MatrixToolStripMenuItem
-			// 
-			this.viewN64MatrixToolStripMenuItem.Text = "View N64 Matrix";
-			this.viewN64MatrixToolStripMenuItem.Click += new System.EventHandler(this.viewN64MatrixToolStripMenuItem_Click);
-			// 
-			// MemoryViewerBox
-			// 
-			this.MemoryViewerBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.MemoryViewerBox.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.MemoryViewerBox.Controls.Add(this.HexScrollBar);
-			this.MemoryViewerBox.Controls.Add(this.AddressLabel);
-			this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
-			this.MemoryViewerBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.MemoryViewerBox.Location = new System.Drawing.Point(12, 27);
-			this.MemoryViewerBox.MaximumSize = new System.Drawing.Size(600, 1024);
-			this.MemoryViewerBox.MinimumSize = new System.Drawing.Size(260, 180);
-			this.MemoryViewerBox.Name = "MemoryViewerBox";
-			this.MemoryViewerBox.Size = new System.Drawing.Size(560, 262);
-			this.MemoryViewerBox.TabIndex = 2;
-			this.MemoryViewerBox.TabStop = false;
-			this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
-			// 
-			// HexScrollBar
-			// 
-			this.HexScrollBar.Dock = System.Windows.Forms.DockStyle.Right;
-			this.HexScrollBar.LargeChange = 16;
-			this.HexScrollBar.Location = new System.Drawing.Point(541, 16);
-			this.HexScrollBar.Name = "HexScrollBar";
-			this.HexScrollBar.Size = new System.Drawing.Size(16, 243);
-			this.HexScrollBar.TabIndex = 1;
-			this.HexScrollBar.ValueChanged += new System.EventHandler(this.HexScrollBar_ValueChanged);
-			// 
-			// AddressLabel
-			// 
-			this.AddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AddressLabel.Location = new System.Drawing.Point(3, 30);
-			this.AddressLabel.Name = "AddressLabel";
-			this.AddressLabel.Text = "Addresses";
-			// 
-			// AddressesLabel
-			// 
-			this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
-			this.AddressesLabel.Location = new System.Drawing.Point(79, 30);
-			this.AddressesLabel.Name = "AddressesLabel";
-			this.AddressesLabel.Text = "Values";
-			this.AddressesLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseDown);
-			this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
-			this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
-			this.AddressesLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseUp);
-			// 
-			// Header
-			// 
-			this.Header.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.Header.Location = new System.Drawing.Point(91, 44);
-			this.Header.Name = "Header";
-			this.Header.Text = "Header";
-			// 
-			// HexEditor
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(584, 301);
-			this.Controls.Add(this.Header);
-			this.Controls.Add(this.MemoryViewerBox);
-			this.Controls.Add(this.HexMenuStrip);
-			this.MainMenuStrip = this.HexMenuStrip;
-			this.MinimumSize = new System.Drawing.Size(360, 180);
-			this.Name = "HexEditor";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Load += new System.EventHandler(this.HexEditor_Load);
-			this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
-			this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HexEditor_KeyPress);
-			this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
-			this.Resize += new System.EventHandler(this.HexEditor_Resize);
-			this.HexMenuStrip.ResumeLayout(false);
-			this.HexMenuStrip.PerformLayout();
-			this.ViewerContextMenuStrip.ResumeLayout(false);
-			this.MemoryViewerBox.ResumeLayout(false);
-			this.MemoryViewerBox.PerformLayout();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            this.ViewerContextMenuStrip.Name = "ViewerContextMenuStrip";
+            this.ViewerContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.ViewerContextMenuStrip_Opening);
+            // 
+            // CopyContextItem
+            // 
+            resources.ApplyResources(this.CopyContextItem, "CopyContextItem");
+            this.CopyContextItem.Click += new System.EventHandler(this.CopyMenuItem_Click);
+            // 
+            // ExportContextItem
+            // 
+            resources.ApplyResources(this.ExportContextItem, "ExportContextItem");
+            // 
+            // PasteContextItem
+            // 
+            resources.ApplyResources(this.PasteContextItem, "PasteContextItem");
+            this.PasteContextItem.Click += new System.EventHandler(this.PasteMenuItem_Click);
+            // 
+            // FreezeContextItem
+            // 
+            resources.ApplyResources(this.FreezeContextItem, "FreezeContextItem");
+            this.FreezeContextItem.Click += new System.EventHandler(this.FreezeAddressMenuItem_Click);
+            // 
+            // AddToRamWatchContextItem
+            // 
+            resources.ApplyResources(this.AddToRamWatchContextItem, "AddToRamWatchContextItem");
+            this.AddToRamWatchContextItem.Click += new System.EventHandler(this.AddToRamWatchMenuItem_Click);
+            // 
+            // UnfreezeAllContextItem
+            // 
+            resources.ApplyResources(this.UnfreezeAllContextItem, "UnfreezeAllContextItem");
+            this.UnfreezeAllContextItem.Click += new System.EventHandler(this.UnfreezeAllMenuItem_Click);
+            // 
+            // PokeContextItem
+            // 
+            resources.ApplyResources(this.PokeContextItem, "PokeContextItem");
+            this.PokeContextItem.Click += new System.EventHandler(this.PokeAddressMenuItem_Click);
+            // 
+            // ContextSeparator1
+            // 
+            resources.ApplyResources(this.ContextSeparator1, "ContextSeparator1");
+            // 
+            // IncrementContextItem
+            // 
+            resources.ApplyResources(this.IncrementContextItem, "IncrementContextItem");
+            this.IncrementContextItem.Click += new System.EventHandler(this.IncrementContextItem_Click);
+            // 
+            // DecrementContextItem
+            // 
+            resources.ApplyResources(this.DecrementContextItem, "DecrementContextItem");
+            this.DecrementContextItem.Click += new System.EventHandler(this.DecrementContextItem_Click);
+            // 
+            // ContextSeparator2
+            // 
+            resources.ApplyResources(this.ContextSeparator2, "ContextSeparator2");
+            // 
+            // GoToContextItem
+            // 
+            resources.ApplyResources(this.GoToContextItem, "GoToContextItem");
+            this.GoToContextItem.Click += new System.EventHandler(this.GoToAddressMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
+            // 
+            // viewN64MatrixToolStripMenuItem
+            // 
+            resources.ApplyResources(this.viewN64MatrixToolStripMenuItem, "viewN64MatrixToolStripMenuItem");
+            this.viewN64MatrixToolStripMenuItem.Click += new System.EventHandler(this.viewN64MatrixToolStripMenuItem_Click);
+            // 
+            // MemoryViewerBox
+            // 
+            resources.ApplyResources(this.MemoryViewerBox, "MemoryViewerBox");
+            this.MemoryViewerBox.ContextMenuStrip = this.ViewerContextMenuStrip;
+            this.MemoryViewerBox.Controls.Add(this.HexScrollBar);
+            this.MemoryViewerBox.Controls.Add(this.AddressLabel);
+            this.MemoryViewerBox.Controls.Add(this.AddressesLabel);
+            this.MemoryViewerBox.Name = "MemoryViewerBox";
+            this.MemoryViewerBox.TabStop = false;
+            this.MemoryViewerBox.Paint += new System.Windows.Forms.PaintEventHandler(this.MemoryViewerBox_Paint);
+            // 
+            // HexScrollBar
+            // 
+            resources.ApplyResources(this.HexScrollBar, "HexScrollBar");
+            this.HexScrollBar.LargeChange = 16;
+            this.HexScrollBar.Name = "HexScrollBar";
+            this.HexScrollBar.ValueChanged += new System.EventHandler(this.HexScrollBar_ValueChanged);
+            // 
+            // AddressLabel
+            // 
+            resources.ApplyResources(this.AddressLabel, "AddressLabel");
+            this.AddressLabel.Name = "AddressLabel";
+            // 
+            // AddressesLabel
+            // 
+            resources.ApplyResources(this.AddressesLabel, "AddressesLabel");
+            this.AddressesLabel.ContextMenuStrip = this.ViewerContextMenuStrip;
+            this.AddressesLabel.Name = "AddressesLabel";
+            this.AddressesLabel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseDown);
+            this.AddressesLabel.MouseLeave += new System.EventHandler(this.AddressesLabel_MouseLeave);
+            this.AddressesLabel.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseMove);
+            this.AddressesLabel.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AddressesLabel_MouseUp);
+            // 
+            // Header
+            // 
+            resources.ApplyResources(this.Header, "Header");
+            this.Header.Name = "Header";
+            // 
+            // HexEditor
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.Header);
+            this.Controls.Add(this.MemoryViewerBox);
+            this.Controls.Add(this.HexMenuStrip);
+            this.MainMenuStrip = this.HexMenuStrip;
+            this.Name = "HexEditor";
+            this.Load += new System.EventHandler(this.HexEditor_Load);
+            this.ResizeEnd += new System.EventHandler(this.HexEditor_ResizeEnd);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.HexEditor_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.HexEditor_KeyPress);
+            this.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.HexEditor_MouseWheel);
+            this.Resize += new System.EventHandler(this.HexEditor_Resize);
+            this.HexMenuStrip.ResumeLayout(false);
+            this.HexMenuStrip.PerformLayout();
+            this.ViewerContextMenuStrip.ResumeLayout(false);
+            this.MemoryViewerBox.ResumeLayout(false);
+            this.MemoryViewerBox.PerformLayout();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

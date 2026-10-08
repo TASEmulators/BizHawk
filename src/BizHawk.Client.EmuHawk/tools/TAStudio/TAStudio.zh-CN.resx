@@ -118,21 +118,163 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FileSubMenu.Text" xml:space="preserve">
-    <value>文件（&amp;F）</value>
+    <value>文件(&amp;F)</value>
   </data>
-  <data name="BranchesMarkersSplit.Panel1.ToolTip" xml:space="preserve">
-    <value />
+  <data name="EditSubMenu.Text" xml:space="preserve">
+    <value>编辑(&amp;E)</value>
   </data>
-  <data name="BranchesMarkersSplit.Panel2.ToolTip" xml:space="preserve">
-    <value />
+  <data name="HeaderMenuItem.Text" xml:space="preserve">
+    <value>头部信息(&amp;H)</value>
   </data>
-  <data name="MainVertialSplit.Panel1.ToolTip" xml:space="preserve">
-    <value />
+  <data name="CommentsMenuItem.Text" xml:space="preserve">
+    <value>注释(&amp;C)</value>
   </data>
-  <data name="MainVertialSplit.Panel2.ToolTip" xml:space="preserve">
-    <value />
+  <data name="SubtitlesMenuItem.Text" xml:space="preserve">
+    <value>字幕(&amp;S)</value>
   </data>
-  <data name="ColumnRightClickMenu.ToolTip" xml:space="preserve">
-    <value />
+  <data name="MetaSubMenu.Text" xml:space="preserve">
+    <value>元数据(&amp;M)</value>
+  </data>
+  <data name="SettingsSubMenu.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
+  </data>
+  <data name="ColumnsSubMenu.Text" xml:space="preserve">
+    <value>列(&amp;C)</value>
+  </data>
+  <data name="HelpSubMenu.Text" xml:space="preserve">
+    <value>帮助(&amp;H)</value>
+  </data>
+  <data name="NewTASMenuItem.Text" xml:space="preserve">
+    <value>新建(&amp;N)</value>
+  </data>
+  <data name="NewFromSubMenu.Text" xml:space="preserve">
+    <value>从...新建</value>
+  </data>
+  <data name="NewFromNowMenuItem.Text" xml:space="preserve">
+    <value>现在(&amp;N)</value>
+  </data>
+  <data name="NewFromCurrentSaveRamMenuItem.Text" xml:space="preserve">
+    <value>当前保存的 RAM(&amp;C)</value>
+  </data>
+  <data name="OpenTASMenuItem.Text" xml:space="preserve">
+    <value>打开(&amp;O)</value>
+  </data>
+  <data name="SaveTASMenuItem.Text" xml:space="preserve">
+    <value>保存(&amp;S)</value>
+  </data>
+  <data name="SaveAsTASMenuItem.Text" xml:space="preserve">
+    <value>另存为</value>
+  </data>
+  <data name="SaveBackupMenuItem.Text" xml:space="preserve">
+    <value>保存备份</value>
+  </data>
+  <data name="SaveBk2BackupMenuItem.Text" xml:space="preserve">
+    <value>保存 Bk2 备份</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>历史</value>
+  </data>
+  <data name="saveSelectionToMacroToolStripMenuItem.Text" xml:space="preserve">
+    <value>保存所选到宏</value>
+  </data>
+  <data name="placeMacroAtSelectionToolStripMenuItem.Text" xml:space="preserve">
+    <value>放置宏到所选</value>
+  </data>
+  <data name="recentMacrosToolStripMenuItem.Text" xml:space="preserve">
+    <value>最近的宏</value>
+  </data>
+  <data name="ToBk2MenuItem.Text" xml:space="preserve">
+    <value>导出到 Bk2 (&amp;E)</value>
+  </data>
+  <data name="UndoMenuItem.Text" xml:space="preserve">
+    <value>撤销(&amp;U)</value>
+  </data>
+  <data name="RedoMenuItem.Text" xml:space="preserve">
+    <value>重做(&amp;R)</value>
+  </data>
+  <data name="showUndoHistoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>显示撤销历史</value>
+  </data>
+  <data name="SelectionUndoMenuItem.Text" xml:space="preserve">
+    <value>撤销所选</value>
+  </data>
+  <data name="SelectionRedoMenuItem.Text" xml:space="preserve">
+    <value>重做所选</value>
+  </data>
+  <data name="DeselectMenuItem.Text" xml:space="preserve">
+    <value>取消选择</value>
+  </data>
+  <data name="SelectBetweenMarkersMenuItem.Text" xml:space="preserve">
+    <value>选择标记中间</value>
+  </data>
+  <data name="SelectAllMenuItem.Text" xml:space="preserve">
+    <value>全选(&amp;A)</value>
+  </data>
+  <data name="ReselectClipboardMenuItem.Text" xml:space="preserve">
+    <value>重选剪贴板</value>
+  </data>
+  <data name="GoToFrameMenuItem.Text" xml:space="preserve">
+    <value>转到帧</value>
+  </data>
+  <data name="CopyMenuItem.Text" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="PasteMenuItem.Text" xml:space="preserve">
+    <value>粘贴(&amp;P)</value>
+  </data>
+  <data name="PasteInsertMenuItem.Text" xml:space="preserve">
+    <value>贴入(&amp;P)</value>
+  </data>
+  <data name="CutMenuItem.Text" xml:space="preserve">
+    <value>剪切(&amp;C)</value>
+  </data>
+  <data name="ClearFramesMenuItem.Text" xml:space="preserve">
+    <value>清空</value>
+  </data>
+  <data name="DeleteFramesMenuItem.Text" xml:space="preserve">
+    <value>删除(&amp;D)</value>
+  </data>
+  <data name="InsertFrameMenuItem.Text" xml:space="preserve">
+    <value>插入(&amp;I)</value>
+  </data>
+  <data name="InsertNumFramesMenuItem.Text" xml:space="preserve">
+    <value>插入指定帧数</value>
+  </data>
+  <data name="CloneFramesMenuItem.Text" xml:space="preserve">
+    <value>克隆(&amp;C)</value>
+  </data>
+  <data name="CloneFramesXTimesMenuItem.Text" xml:space="preserve">
+    <value>克隆指定次数</value>
+  </data>
+  <data name="TruncateMenuItem.Text" xml:space="preserve">
+    <value>截断影片(&amp;T)</value>
+  </data>
+  <data name="ClearGreenzoneMenuItem.Text" xml:space="preserve">
+    <value>清空进度历史(&amp;C)</value>
+  </data>
+  <data name="StateHistoryIntegrityCheckMenuItem.Text" xml:space="preserve">
+    <value>进度历史完整性检查</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="TAStudioSettingsToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>180, 22</value>
+  </data>
+  <data name="TAStudioSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>打开设置</value>
+  </data>
+  <data name="TASEditorManualOnlineMenuItem.Text" xml:space="preserve">
+    <value>TAS 编辑器在线手册</value>
+  </data>
+  <data name="ForumThreadMenuItem.Text" xml:space="preserve">
+    <value>论坛帖子</value>
+  </data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
+    <value>关于(&amp;A)</value>
+  </data>
+  <data name="MessageStatusLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>112, 17</value>
+  </data>
+  <data name="MessageStatusLabel.Text" xml:space="preserve">
+    <value>TAStudio 已启动！</value>
   </data>
 </root>

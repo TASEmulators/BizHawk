@@ -30,360 +30,330 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.NameTableView = new BizHawk.Client.EmuHawk.NameTableViewer();
-			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.ScreenshotAsContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.SaveImageClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.RefreshImageContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.menuStrip1 = new MenuStripEx();
-			this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.ScreenshotToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
-			this.txtScanline = new System.Windows.Forms.TextBox();
-			this.rbNametableNW = new System.Windows.Forms.RadioButton();
-			this.rbNametableNE = new System.Windows.Forms.RadioButton();
-			this.rbNametableSW = new System.Windows.Forms.RadioButton();
-			this.rbNametableSE = new System.Windows.Forms.RadioButton();
-			this.rbNametableAll = new System.Windows.Forms.RadioButton();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.TableLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.PPUAddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.XYLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.TileIDLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.groupBox5 = new System.Windows.Forms.GroupBox();
-			this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.RefreshRate = new System.Windows.Forms.TrackBar();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox1.SuspendLayout();
-			this.contextMenuStrip1.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
-			this.groupBox2.SuspendLayout();
-			this.groupBox3.SuspendLayout();
-			this.groupBox4.SuspendLayout();
-			this.groupBox5.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.NameTableView);
-			this.groupBox1.Location = new System.Drawing.Point(12, 36);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(545, 513);
-			this.groupBox1.TabIndex = 0;
-			this.groupBox1.TabStop = false;
-			// 
-			// NameTableView
-			// 
-			this.NameTableView.BackColor = System.Drawing.Color.Transparent;
-			this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
-			this.NameTableView.Location = new System.Drawing.Point(17, 19);
-			this.NameTableView.Name = "NameTableView";
-			this.NameTableView.Size = new System.Drawing.Size(512, 480);
-			this.NameTableView.TabIndex = 0;
-			this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);
-			this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
-			this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
-			// 
-			// contextMenuStrip1
-			// 
-			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESNameTableViewer));
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.NameTableView = new BizHawk.Client.EmuHawk.NameTableViewer();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ScreenshotAsContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.SaveImageClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.RefreshImageContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.menuStrip1 = new BizHawk.WinForms.Controls.MenuStripEx();
+            this.FileSubMenu = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ScreenshotMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.ScreenshotToClipboardMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
+            this.txtScanline = new System.Windows.Forms.TextBox();
+            this.rbNametableNW = new System.Windows.Forms.RadioButton();
+            this.rbNametableNE = new System.Windows.Forms.RadioButton();
+            this.rbNametableSW = new System.Windows.Forms.RadioButton();
+            this.rbNametableSE = new System.Windows.Forms.RadioButton();
+            this.rbNametableAll = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.PaletteLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.TableLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.PPUAddressLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.XYLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.TileIDLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label7 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label6 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.RefreshRate = new System.Windows.Forms.TrackBar();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.groupBox1.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            this.groupBox5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // groupBox1
+            // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.NameTableView);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox1, resources.GetString("groupBox1.ToolTip"));
+            // 
+            // NameTableView
+            // 
+            resources.ApplyResources(this.NameTableView, "NameTableView");
+            this.NameTableView.BackColor = System.Drawing.Color.Transparent;
+            this.NameTableView.ContextMenuStrip = this.contextMenuStrip1;
+            this.NameTableView.Name = "NameTableView";
+            this.toolTip1.SetToolTip(this.NameTableView, resources.GetString("NameTableView.ToolTip"));
+            this.NameTableView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);
+            this.NameTableView.MouseLeave += new System.EventHandler(this.NameTableView_MouseLeave);
+            this.NameTableView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.NameTableView_MouseMove);
+            // 
+            // contextMenuStrip1
+            // 
+            resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ScreenshotAsContextMenuItem,
             this.SaveImageClipboardMenuItem,
             this.RefreshImageContextMenuItem});
-			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(248, 70);
-			// 
-			// ScreenshotAsContextMenuItem
-			// 
-			this.ScreenshotAsContextMenuItem.Text = "&Save Image...";
-			this.ScreenshotAsContextMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
-			// 
-			// SaveImageClipboardMenuItem
-			// 
-			this.SaveImageClipboardMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.SaveImageClipboardMenuItem.Text = "&Copy Image to clipboard";
-			this.SaveImageClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
-			// 
-			// RefreshImageContextMenuItem
-			// 
-			this.RefreshImageContextMenuItem.Text = "&Refresh Image";
-			this.RefreshImageContextMenuItem.Click += new System.EventHandler(this.RefreshImageContextMenuItem_Click);
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.toolTip1.SetToolTip(this.contextMenuStrip1, resources.GetString("contextMenuStrip1.ToolTip"));
+            // 
+            // ScreenshotAsContextMenuItem
+            // 
+            resources.ApplyResources(this.ScreenshotAsContextMenuItem, "ScreenshotAsContextMenuItem");
+            this.ScreenshotAsContextMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
+            // 
+            // SaveImageClipboardMenuItem
+            // 
+            resources.ApplyResources(this.SaveImageClipboardMenuItem, "SaveImageClipboardMenuItem");
+            this.SaveImageClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
+            // 
+            // RefreshImageContextMenuItem
+            // 
+            resources.ApplyResources(this.RefreshImageContextMenuItem, "RefreshImageContextMenuItem");
+            this.RefreshImageContextMenuItem.Click += new System.EventHandler(this.RefreshImageContextMenuItem_Click);
+            // 
+            // menuStrip1
+            // 
+            resources.ApplyResources(this.menuStrip1, "menuStrip1");
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.FileSubMenu});
-			this.menuStrip1.TabIndex = 1;
-			// 
-			// FileSubMenu
-			// 
-			this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolTip1.SetToolTip(this.menuStrip1, resources.GetString("menuStrip1.ToolTip"));
+            // 
+            // FileSubMenu
+            // 
+            resources.ApplyResources(this.FileSubMenu, "FileSubMenu");
+            this.FileSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ScreenshotMenuItem,
             this.ScreenshotToClipboardMenuItem});
-			this.FileSubMenu.Text = "&File";
-			// 
-			// ScreenshotMenuItem
-			// 
-			this.ScreenshotMenuItem.Text = "Save Screenshot &As...";
-			this.ScreenshotMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
-			// 
-			// ScreenshotToClipboardMenuItem
-			// 
-			this.ScreenshotToClipboardMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
-			this.ScreenshotToClipboardMenuItem.Text = "Screenshot to &Clipboard";
-			this.ScreenshotToClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
-			// 
-			// txtScanline
-			// 
-			this.txtScanline.Location = new System.Drawing.Point(4, 19);
-			this.txtScanline.Name = "txtScanline";
-			this.txtScanline.Size = new System.Drawing.Size(60, 20);
-			this.txtScanline.TabIndex = 2;
-			this.txtScanline.Text = "0";
-			this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextBox_TextChanged);
-			// 
-			// rbNametableNW
-			// 
-			this.rbNametableNW.AutoSize = true;
-			this.rbNametableNW.Location = new System.Drawing.Point(6, 19);
-			this.rbNametableNW.Name = "rbNametableNW";
-			this.rbNametableNW.Size = new System.Drawing.Size(14, 13);
-			this.rbNametableNW.TabIndex = 4;
-			this.toolTip1.SetToolTip(this.rbNametableNW, "0x2000");
-			this.rbNametableNW.UseVisualStyleBackColor = true;
-			this.rbNametableNW.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
-			// 
-			// rbNametableNE
-			// 
-			this.rbNametableNE.AutoSize = true;
-			this.rbNametableNE.Location = new System.Drawing.Point(56, 19);
-			this.rbNametableNE.Name = "rbNametableNE";
-			this.rbNametableNE.Size = new System.Drawing.Size(14, 13);
-			this.rbNametableNE.TabIndex = 5;
-			this.toolTip1.SetToolTip(this.rbNametableNE, "0x2400");
-			this.rbNametableNE.UseVisualStyleBackColor = true;
-			this.rbNametableNE.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
-			// 
-			// rbNametableSW
-			// 
-			this.rbNametableSW.AutoSize = true;
-			this.rbNametableSW.Location = new System.Drawing.Point(6, 57);
-			this.rbNametableSW.Name = "rbNametableSW";
-			this.rbNametableSW.Size = new System.Drawing.Size(14, 13);
-			this.rbNametableSW.TabIndex = 6;
-			this.toolTip1.SetToolTip(this.rbNametableSW, "0x2800");
-			this.rbNametableSW.UseVisualStyleBackColor = true;
-			this.rbNametableSW.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
-			// 
-			// rbNametableSE
-			// 
-			this.rbNametableSE.AutoSize = true;
-			this.rbNametableSE.Location = new System.Drawing.Point(56, 57);
-			this.rbNametableSE.Name = "rbNametableSE";
-			this.rbNametableSE.Size = new System.Drawing.Size(14, 13);
-			this.rbNametableSE.TabIndex = 7;
-			this.toolTip1.SetToolTip(this.rbNametableSE, "0x2C00");
-			this.rbNametableSE.UseVisualStyleBackColor = true;
-			this.rbNametableSE.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
-			// 
-			// rbNametableAll
-			// 
-			this.rbNametableAll.AutoSize = true;
-			this.rbNametableAll.Checked = true;
-			this.rbNametableAll.Location = new System.Drawing.Point(31, 38);
-			this.rbNametableAll.Name = "rbNametableAll";
-			this.rbNametableAll.Size = new System.Drawing.Size(14, 13);
-			this.rbNametableAll.TabIndex = 9;
-			this.rbNametableAll.TabStop = true;
-			this.toolTip1.SetToolTip(this.rbNametableAll, "All");
-			this.rbNametableAll.UseVisualStyleBackColor = true;
-			this.rbNametableAll.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.rbNametableNW);
-			this.groupBox2.Controls.Add(this.rbNametableNE);
-			this.groupBox2.Controls.Add(this.rbNametableAll);
-			this.groupBox2.Controls.Add(this.rbNametableSW);
-			this.groupBox2.Controls.Add(this.rbNametableSE);
-			this.groupBox2.Location = new System.Drawing.Point(563, 94);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(76, 79);
-			this.groupBox2.TabIndex = 11;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Nametable";
-			// 
-			// groupBox3
-			// 
-			this.groupBox3.Controls.Add(this.txtScanline);
-			this.groupBox3.Location = new System.Drawing.Point(563, 36);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(76, 52);
-			this.groupBox3.TabIndex = 12;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = "Scanline";
-			// 
-			// groupBox4
-			// 
-			this.groupBox4.Controls.Add(this.PaletteLabel);
-			this.groupBox4.Controls.Add(this.label5);
-			this.groupBox4.Controls.Add(this.TableLabel);
-			this.groupBox4.Controls.Add(this.label4);
-			this.groupBox4.Controls.Add(this.PPUAddressLabel);
-			this.groupBox4.Controls.Add(this.XYLabel);
-			this.groupBox4.Controls.Add(this.TileIDLabel);
-			this.groupBox4.Controls.Add(this.label3);
-			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Location = new System.Drawing.Point(563, 179);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(108, 128);
-			this.groupBox4.TabIndex = 13;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Properties";
-			// 
-			// PaletteLabel
-			// 
-			this.PaletteLabel.Location = new System.Drawing.Point(64, 96);
-			this.PaletteLabel.Name = "PaletteLabel";
-			this.PaletteLabel.Text = "     ";
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(6, 96);
-			this.label5.Name = "label5";
-			this.label5.Text = "Palette:";
-			// 
-			// TableLabel
-			// 
-			this.TableLabel.Location = new System.Drawing.Point(64, 78);
-			this.TableLabel.Name = "TableLabel";
-			this.TableLabel.Text = "     ";
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(6, 78);
-			this.label4.Name = "label4";
-			this.label4.Text = "Table:";
-			// 
-			// PPUAddressLabel
-			// 
-			this.PPUAddressLabel.Location = new System.Drawing.Point(64, 60);
-			this.PPUAddressLabel.Name = "PPUAddressLabel";
-			this.PPUAddressLabel.Text = "     ";
-			// 
-			// XYLabel
-			// 
-			this.XYLabel.Location = new System.Drawing.Point(64, 43);
-			this.XYLabel.Name = "XYLabel";
-			this.XYLabel.Text = "     ";
-			// 
-			// TileIDLabel
-			// 
-			this.TileIDLabel.Location = new System.Drawing.Point(64, 26);
-			this.TileIDLabel.Name = "TileIDLabel";
-			this.TileIDLabel.Text = "     ";
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(6, 60);
-			this.label3.Name = "label3";
-			this.label3.Text = "PPU Addr:";
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(6, 43);
-			this.label2.Name = "label2";
-			this.label2.Text = "X / Y:";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(6, 26);
-			this.label1.Name = "label1";
-			this.label1.Text = "Tile ID:";
-			// 
-			// groupBox5
-			// 
-			this.groupBox5.Controls.Add(this.label7);
-			this.groupBox5.Controls.Add(this.label6);
-			this.groupBox5.Controls.Add(this.RefreshRate);
-			this.groupBox5.Location = new System.Drawing.Point(563, 313);
-			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(108, 236);
-			this.groupBox5.TabIndex = 14;
-			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = "Refresh";
-			// 
-			// label7
-			// 
-			this.label7.Location = new System.Drawing.Point(7, 186);
-			this.label7.Name = "label7";
-			this.label7.Text = "More";
-			// 
-			// label6
-			// 
-			this.label6.Location = new System.Drawing.Point(7, 32);
-			this.label6.Name = "label6";
-			this.label6.Text = "Less";
-			// 
-			// RefreshRate
-			// 
-			this.RefreshRate.LargeChange = 2;
-			this.RefreshRate.Location = new System.Drawing.Point(9, 47);
-			this.RefreshRate.Maximum = 8;
-			this.RefreshRate.Minimum = 1;
-			this.RefreshRate.Name = "RefreshRate";
-			this.RefreshRate.Orientation = System.Windows.Forms.Orientation.Vertical;
-			this.RefreshRate.Size = new System.Drawing.Size(45, 136);
-			this.RefreshRate.TabIndex = 0;
-			this.RefreshRate.TickFrequency = 4;
-			this.RefreshRate.Value = 1;
-			// 
-			// NESNameTableViewer
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(679, 561);
-			this.Controls.Add(this.groupBox5);
-			this.Controls.Add(this.groupBox4);
-			this.Controls.Add(this.groupBox3);
-			this.Controls.Add(this.groupBox2);
-			this.Controls.Add(this.groupBox1);
-			this.Controls.Add(this.menuStrip1);
-			this.MainMenuStrip = this.menuStrip1;
-			this.MinimumSize = new System.Drawing.Size(687, 588);
-			this.Name = "NESNameTableViewer";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
-			this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
-			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);
-			this.groupBox1.ResumeLayout(false);
-			this.contextMenuStrip1.ResumeLayout(false);
-			this.menuStrip1.ResumeLayout(false);
-			this.menuStrip1.PerformLayout();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
-			this.groupBox3.PerformLayout();
-			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
-			this.groupBox5.ResumeLayout(false);
-			this.groupBox5.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            // 
+            // ScreenshotMenuItem
+            // 
+            resources.ApplyResources(this.ScreenshotMenuItem, "ScreenshotMenuItem");
+            this.ScreenshotMenuItem.Click += new System.EventHandler(this.ScreenshotMenuItem_Click);
+            // 
+            // ScreenshotToClipboardMenuItem
+            // 
+            resources.ApplyResources(this.ScreenshotToClipboardMenuItem, "ScreenshotToClipboardMenuItem");
+            this.ScreenshotToClipboardMenuItem.Click += new System.EventHandler(this.ScreenshotToClipboardMenuItem_Click);
+            // 
+            // txtScanline
+            // 
+            resources.ApplyResources(this.txtScanline, "txtScanline");
+            this.txtScanline.Name = "txtScanline";
+            this.toolTip1.SetToolTip(this.txtScanline, resources.GetString("txtScanline.ToolTip"));
+            this.txtScanline.TextChanged += new System.EventHandler(this.ScanlineTextBox_TextChanged);
+            // 
+            // rbNametableNW
+            // 
+            resources.ApplyResources(this.rbNametableNW, "rbNametableNW");
+            this.rbNametableNW.Name = "rbNametableNW";
+            this.toolTip1.SetToolTip(this.rbNametableNW, resources.GetString("rbNametableNW.ToolTip"));
+            this.rbNametableNW.UseVisualStyleBackColor = true;
+            this.rbNametableNW.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
+            // 
+            // rbNametableNE
+            // 
+            resources.ApplyResources(this.rbNametableNE, "rbNametableNE");
+            this.rbNametableNE.Name = "rbNametableNE";
+            this.toolTip1.SetToolTip(this.rbNametableNE, resources.GetString("rbNametableNE.ToolTip"));
+            this.rbNametableNE.UseVisualStyleBackColor = true;
+            this.rbNametableNE.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
+            // 
+            // rbNametableSW
+            // 
+            resources.ApplyResources(this.rbNametableSW, "rbNametableSW");
+            this.rbNametableSW.Name = "rbNametableSW";
+            this.toolTip1.SetToolTip(this.rbNametableSW, resources.GetString("rbNametableSW.ToolTip"));
+            this.rbNametableSW.UseVisualStyleBackColor = true;
+            this.rbNametableSW.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
+            // 
+            // rbNametableSE
+            // 
+            resources.ApplyResources(this.rbNametableSE, "rbNametableSE");
+            this.rbNametableSE.Name = "rbNametableSE";
+            this.toolTip1.SetToolTip(this.rbNametableSE, resources.GetString("rbNametableSE.ToolTip"));
+            this.rbNametableSE.UseVisualStyleBackColor = true;
+            this.rbNametableSE.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
+            // 
+            // rbNametableAll
+            // 
+            resources.ApplyResources(this.rbNametableAll, "rbNametableAll");
+            this.rbNametableAll.Checked = true;
+            this.rbNametableAll.Name = "rbNametableAll";
+            this.rbNametableAll.TabStop = true;
+            this.toolTip1.SetToolTip(this.rbNametableAll, resources.GetString("rbNametableAll.ToolTip"));
+            this.rbNametableAll.UseVisualStyleBackColor = true;
+            this.rbNametableAll.CheckedChanged += new System.EventHandler(this.NametableRadio_CheckedChanged);
+            // 
+            // groupBox2
+            // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
+            this.groupBox2.Controls.Add(this.rbNametableNW);
+            this.groupBox2.Controls.Add(this.rbNametableNE);
+            this.groupBox2.Controls.Add(this.rbNametableAll);
+            this.groupBox2.Controls.Add(this.rbNametableSW);
+            this.groupBox2.Controls.Add(this.rbNametableSE);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox2, resources.GetString("groupBox2.ToolTip"));
+            // 
+            // groupBox3
+            // 
+            resources.ApplyResources(this.groupBox3, "groupBox3");
+            this.groupBox3.Controls.Add(this.txtScanline);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox3, resources.GetString("groupBox3.ToolTip"));
+            // 
+            // groupBox4
+            // 
+            resources.ApplyResources(this.groupBox4, "groupBox4");
+            this.groupBox4.Controls.Add(this.PaletteLabel);
+            this.groupBox4.Controls.Add(this.label5);
+            this.groupBox4.Controls.Add(this.TableLabel);
+            this.groupBox4.Controls.Add(this.label4);
+            this.groupBox4.Controls.Add(this.PPUAddressLabel);
+            this.groupBox4.Controls.Add(this.XYLabel);
+            this.groupBox4.Controls.Add(this.TileIDLabel);
+            this.groupBox4.Controls.Add(this.label3);
+            this.groupBox4.Controls.Add(this.label2);
+            this.groupBox4.Controls.Add(this.label1);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox4, resources.GetString("groupBox4.ToolTip"));
+            // 
+            // PaletteLabel
+            // 
+            resources.ApplyResources(this.PaletteLabel, "PaletteLabel");
+            this.PaletteLabel.Name = "PaletteLabel";
+            this.toolTip1.SetToolTip(this.PaletteLabel, resources.GetString("PaletteLabel.ToolTip"));
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
+            this.toolTip1.SetToolTip(this.label5, resources.GetString("label5.ToolTip"));
+            // 
+            // TableLabel
+            // 
+            resources.ApplyResources(this.TableLabel, "TableLabel");
+            this.TableLabel.Name = "TableLabel";
+            this.toolTip1.SetToolTip(this.TableLabel, resources.GetString("TableLabel.ToolTip"));
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            this.toolTip1.SetToolTip(this.label4, resources.GetString("label4.ToolTip"));
+            // 
+            // PPUAddressLabel
+            // 
+            resources.ApplyResources(this.PPUAddressLabel, "PPUAddressLabel");
+            this.PPUAddressLabel.Name = "PPUAddressLabel";
+            this.toolTip1.SetToolTip(this.PPUAddressLabel, resources.GetString("PPUAddressLabel.ToolTip"));
+            // 
+            // XYLabel
+            // 
+            resources.ApplyResources(this.XYLabel, "XYLabel");
+            this.XYLabel.Name = "XYLabel";
+            this.toolTip1.SetToolTip(this.XYLabel, resources.GetString("XYLabel.ToolTip"));
+            // 
+            // TileIDLabel
+            // 
+            resources.ApplyResources(this.TileIDLabel, "TileIDLabel");
+            this.TileIDLabel.Name = "TileIDLabel";
+            this.toolTip1.SetToolTip(this.TileIDLabel, resources.GetString("TileIDLabel.ToolTip"));
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            this.toolTip1.SetToolTip(this.label3, resources.GetString("label3.ToolTip"));
+            // 
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
+            this.toolTip1.SetToolTip(this.label2, resources.GetString("label2.ToolTip"));
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            this.toolTip1.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
+            // 
+            // groupBox5
+            // 
+            resources.ApplyResources(this.groupBox5, "groupBox5");
+            this.groupBox5.Controls.Add(this.label7);
+            this.groupBox5.Controls.Add(this.label6);
+            this.groupBox5.Controls.Add(this.RefreshRate);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox5, resources.GetString("groupBox5.ToolTip"));
+            // 
+            // label7
+            // 
+            resources.ApplyResources(this.label7, "label7");
+            this.label7.Name = "label7";
+            this.toolTip1.SetToolTip(this.label7, resources.GetString("label7.ToolTip"));
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            this.toolTip1.SetToolTip(this.label6, resources.GetString("label6.ToolTip"));
+            // 
+            // RefreshRate
+            // 
+            resources.ApplyResources(this.RefreshRate, "RefreshRate");
+            this.RefreshRate.LargeChange = 2;
+            this.RefreshRate.Maximum = 8;
+            this.RefreshRate.Minimum = 1;
+            this.RefreshRate.Name = "RefreshRate";
+            this.RefreshRate.TickFrequency = 4;
+            this.toolTip1.SetToolTip(this.RefreshRate, resources.GetString("RefreshRate.ToolTip"));
+            this.RefreshRate.Value = 1;
+            // 
+            // NESNameTableViewer
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.groupBox5);
+            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
+            this.Name = "NESNameTableViewer";
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.NESNameTableViewer_FormClosed);
+            this.Load += new System.EventHandler(this.NESNameTableViewer_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.NesNameTableViewer_KeyDown);
+            this.groupBox1.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RefreshRate)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

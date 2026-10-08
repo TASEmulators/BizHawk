@@ -117,13 +117,587 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="OldBranchesCheckbox.ToolTip" xml:space="preserve">
-    <value>When enabled, branches cannot be loaded when "Recording mode" is off; instead TAStudio will seek to the branch frame.
-And when "Recording mode" is on, the movie will be truncated at the branch frame after loading a branch.</value>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="IncludeFrameNumberCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>515</value>
   </data>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="MarkerColorCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>270, 16</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AutosaveBk2Checkbox.ToolTip" xml:space="preserve">
+    <value>Autosave will export the movie to a .bk2 file instead of saving a .tasproj file.</value>
+  </data>
+  <data name="&gt;&gt;label11.Name" xml:space="preserve">
+    <value>label11</value>
+  </data>
+  <data name="&gt;&gt;ScrollToTopRadio.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="InsertButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 198</value>
+  </data>
+  <data name="ApplyButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>229, 414</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 42</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;StatesForMarkersCheckbox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="FastRewindNum.ToolTip" xml:space="preserve">
+    <value>How many frames backward to go when you press the rewind button or hotkey,
+while also holding the turbo hotkey or fast forward hotkey.</value>
+  </data>
+  <data name="&gt;&gt;PatternHoldRadioButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="ManagerSettingsPropertyGrid.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternList.ItemHeight" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="BindMarkersCheckbox.ToolTip" xml:space="preserve">
+    <value>When enabled, inserting or deleting frames will move any markers that are on future frames by the same amount.
+Deleting a frame that has a marker will delete the marker.</value>
+  </data>
+  <data name="&gt;&gt;AlwaysScrollCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="ValueNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>51, 21</value>
+  </data>
+  <data name="&gt;&gt;OldBranchesCheckbox.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="label8.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;ScrollToTopRadio.Name" xml:space="preserve">
+    <value>ScrollToTopRadio</value>
+  </data>
+  <data name="&gt;&gt;RotateCheckbox.Name" xml:space="preserve">
+    <value>RotateCheckbox</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="locLabelEx2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 174</value>
+  </data>
+  <data name="&gt;&gt;StatesForMarkersCheckbox.Name" xml:space="preserve">
+    <value>StatesForMarkersCheckbox</value>
+  </data>
+  <data name="InsertButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 21</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage3.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;ButtonBox.Name" xml:space="preserve">
+    <value>ButtonBox</value>
+  </data>
+  <data name="&gt;&gt;ColorsButton.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;BindMarkersCheckbox.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;DeleteButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage6.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>frames per tick</value>
+  </data>
+  <data name="ScrollToCenterRadio.ToolTip" xml:space="preserve">
+    <value>scroll so that the cursor is in the middle of the visible frames.</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.ToolTip" xml:space="preserve">
+    <value>Painting in all button columns will be painted as auto-fire, or
+with their custom pattern, if "Auto-Fire" or "Custom" is selected.
+</value>
+  </data>
+  <data name="&gt;&gt;UndoCountNum.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PatternAutoFireRadioButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AutopauseCheckbox.Name" xml:space="preserve">
+    <value>AutopauseCheckbox</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>Fast rewind step:</value>
+  </data>
+  <data name="&gt;&gt;StrategyBox.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 29</value>
+  </data>
+  <data name="tabPage4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 40</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="PatternList.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.Text" xml:space="preserve">
+    <value>When following cursor, scroll at every frame</value>
+  </data>
+  <data name="ColorsButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;OldBranchesCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ScrollToViewRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.TabIndex" type="System.Int32, mscorlib">
+    <value>304</value>
+  </data>
+  <data name="SettingsCancelButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>310, 414</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>196, 349</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="MarkerIconsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>174, 16</value>
+  </data>
+  <data name="&gt;&gt;label7.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;StateColorCheckbox.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 356</value>
+  </data>
+  <data name="&gt;&gt;ScrollToCenterRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;OldBranchesCheckbox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;SetDefaultStateSettingsButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 12</value>
+  </data>
+  <data name="UndoCountNum.ToolTip" xml:space="preserve">
+    <value>The maximum number of edit actions TAStudio should keep in the undo history.</value>
+  </data>
+  <data name="StateColorCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintAutoColumnsOnlyRadioButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BackupOnSaveCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;OnOffBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label10.Name" xml:space="preserve">
+    <value>label10</value>
+  </data>
+  <data name="HideWasLagCheckbox.Text" xml:space="preserve">
+    <value>Hide "was lag" frames</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="label5.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="RewindNum.ToolTip" xml:space="preserve">
+    <value>How many frames backward to go when you press the rewind button or hotkey.</value>
+  </data>
+  <data name="RotateCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 151</value>
+  </data>
+  <data name="&gt;&gt;RotateCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 7</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 12</value>
+  </data>
+  <data name="DefaultStateSettingsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 349</value>
+  </data>
+  <data name="&gt;&gt;MarkerColorCheckbox.Name" xml:space="preserve">
+    <value>MarkerColorCheckbox</value>
+  </data>
+  <data name="&gt;&gt;MarkerIconsCheckbox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CountNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>143, 172</value>
+  </data>
+  <data name="OnOffBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>396, 16</value>
+  </data>
+  <data name="AutosaveIntervalNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>85, 21</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintAutoColumnsOnlyRadioButton.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;ScrollToBottomRadio.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;ScrollSyncCheckbox.Name" xml:space="preserve">
+    <value>ScrollSyncCheckbox</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.ToolTip" xml:space="preserve">
+    <value>Autosave will save a movie to the backups folder, with a timestamp in the name, so no file is overwritten.
+Backup movies will not contain any "greenzone" savestates, which makes them smaller than normal .tasproj files.</value>
+  </data>
+  <data name="&gt;&gt;OnOffBox.Name" xml:space="preserve">
+    <value>OnOffBox</value>
+  </data>
+  <data name="&gt;&gt;FastRewindNum.Name" xml:space="preserve">
+    <value>FastRewindNum</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;RotateCheckbox.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;tabPage5.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>270, 16</value>
+  </data>
+  <data name="&gt;&gt;label8.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="ScrollToViewRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>501</value>
+  </data>
+  <data name="ButtonBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintAlwaysRadioButton.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="CountNum.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;PatternPaintAutoColumnsOnlyRadioButton.Name" xml:space="preserve">
+    <value>PatternPaintAutoColumnsOnlyRadioButton</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>Lag frames to hide:</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Autosave frequency:</value>
+  </data>
+  <data name="tabPage3.Text" xml:space="preserve">
+    <value>Misc</value>
+  </data>
+  <data name="groupBox2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ApplyButton.Text" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="&gt;&gt;IncludeFrameNumberCheckbox.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Text" xml:space="preserve">
+    <value>applied</value>
+  </data>
+  <data name="ColorsButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 6</value>
+  </data>
+  <data name="DeleteButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label5.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;MarkerIconsCheckbox.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="LagBox.Text" xml:space="preserve">
+    <value>Account for lag frames</value>
+  </data>
+  <data name="label12.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;locLabelEx1.Name" xml:space="preserve">
+    <value>locLabelEx1</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="ScrollToTopRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>502</value>
+  </data>
+  <data name="&gt;&gt;RotateCheckbox.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;AutopauseCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 12</value>
+  </data>
+  <data name="&gt;&gt;SettingsCancelButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;OldBranchesCheckbox.Name" xml:space="preserve">
+    <value>OldBranchesCheckbox</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="BackupOnSaveCheckbox.ToolTip" xml:space="preserve">
+    <value>Save a backup .tasproj after each manual file save.</value>
+  </data>
+  <data name="InsertButton.Text" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="label10.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 12</value>
+  </data>
+  <data name="ColorsButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;AutosaveBk2Checkbox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="AutopauseCheckbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;FontButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="locLabelEx2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;InsertButton.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;ScrollToViewRadio.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>TAStudioSettingsForm</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>518</value>
+  </data>
+  <data name="&gt;&gt;HideLagNum.Name" xml:space="preserve">
+    <value>HideLagNum</value>
+  </data>
+  <data name="label8.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 12</value>
+  </data>
+  <data name="&gt;&gt;PatternHoldRadioButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label12.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="OldBranchesCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>210, 16</value>
+  </data>
+  <data name="ScrollToCenterRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 12</value>
+  </data>
+  <data name="DefaultStateSettingsButton.TabIndex" type="System.Int32, mscorlib">
+    <value>303</value>
+  </data>
+  <data name="ValueNum.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BackupOnSaveCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>204</value>
+  </data>
+  <data name="&gt;&gt;RewindNum.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="CustomPatternsGroupBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;ScrollSpeedNum.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.Text" xml:space="preserve">
+    <value>Always</value>
+  </data>
+  <data name="StrategyBox.TabIndex" type="System.Int32, mscorlib">
+    <value>300</value>
+  </data>
+  <data name="&gt;&gt;label12.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 7</value>
+  </data>
+  <data name="&gt;&gt;AutosaveIntervalNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ScrollToBottomRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>503</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 52</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>288, 16</value>
+  </data>
+  <data name="&gt;&gt;PatternAutoFireRadioButton.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="label7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 8</value>
+  </data>
+  <data name="ScrollToViewRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.Text" xml:space="preserve">
+    <value>Auto-Fire columns only</value>
+  </data>
+  <data name="&gt;&gt;AutosaveIntervalNum.Name" xml:space="preserve">
+    <value>AutosaveIntervalNum</value>
+  </data>
+  <data name="ManagerSettingsPropertyGrid.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="ScrollToCenterRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 16</value>
+  </data>
+  <data name="label7.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BackupOnSaveCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>258, 16</value>
+  </data>
+  <data name="ScrollSyncCheckbox.ToolTip" xml:space="preserve">
+    <value>When enabled, scrolling one input roll will scroll all input rolls.</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CustomPatternsGroupBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 95</value>
+  </data>
+  <data name="label10.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 174</value>
+  </data>
+  <data name="&gt;&gt;label6.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="PatternCustomRadioButton.ToolTip" xml:space="preserve">
+    <value>Auto-fire buttons will use a custom pattern on newly emulated frames past the end of the movie.</value>
+  </data>
+  <data name="&gt;&gt;RewindNum.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;FontButton.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="PatternList.Items2" xml:space="preserve">
+    <value>Loop to 0</value>
+  </data>
+  <data name="&gt;&gt;label5.Name" xml:space="preserve">
+    <value>label5</value>
+  </data>
+  <data name="groupBox1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.TabIndex" type="System.Int32, mscorlib">
+    <value>402</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BranchDoubleClickCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>Management strategy:</value>
+  </data>
+  <data name="&gt;&gt;FastRewindNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ApplyButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>202</value>
+  </data>
+  <data name="RotateCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>100</value>
+  </data>
+  <data name="&gt;&gt;label10.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx1.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
   <data name="StatesForMarkersCheckbox.ToolTip" xml:space="preserve">
     <value>TAStudio can automatically keep savestates for each marker.
 If this is enabled, new markers will have savestates enabled by default.
@@ -131,6 +705,1568 @@ Note: The savestate needs to be on the frame before the marker. Thus, making
 a marker on the current frame will not automatically create a state.
 (The reason for the state being on the frame before is so that TAStudio
 does not need to store a screenshot with the savestate.)</value>
+  </data>
+  <data name="&gt;&gt;EditInvisibleColumnsCheckbox.Name" xml:space="preserve">
+    <value>EditInvisibleColumnsCheckbox</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.Text" xml:space="preserve">
+    <value>Save as .backup (no greenzone)</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Max Undo Count:</value>
+  </data>
+  <data name="tabPage4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 356</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>192, 143</value>
+  </data>
+  <data name="ManagerSettingsPropertyGrid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 30</value>
+  </data>
+  <data name="&gt;&gt;tabPage6.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="BindMarkersCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>514</value>
+  </data>
+  <data name="PatternList.TabIndex" type="System.Int32, mscorlib">
+    <value>421</value>
+  </data>
+  <data name="&gt;&gt;UndoCountNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="LagBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>156, 16</value>
+  </data>
+  <data name="&gt;&gt;ScrollToBottomRadio.Name" xml:space="preserve">
+    <value>ScrollToBottomRadio</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>142, 84</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBackupCheckbox.Name" xml:space="preserve">
+    <value>AutosaveBackupCheckbox</value>
+  </data>
+  <data name="locLabelEx1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="locLabelEx2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 120</value>
+  </data>
+  <data name="SettingsCancelButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="StateIconsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 16</value>
+  </data>
+  <data name="RotateCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintAlwaysRadioButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="MarkerIconsCheckbox.ToolTip" xml:space="preserve">
+    <value>If enabled, the frame column will contain an icon on each frame that TAStudio has a marker for.
+</value>
+  </data>
+  <data name="UndoCountNum.TabIndex" type="System.Int32, mscorlib">
+    <value>513</value>
+  </data>
+  <data name="ButtonBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>225, 20</value>
+  </data>
+  <data name="MarkerIconsCheckbox.Text" xml:space="preserve">
+    <value>Denote markers with icons</value>
+  </data>
+  <data name="CountNum.TabIndex" type="System.Int32, mscorlib">
+    <value>423</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;EditInvisibleColumnsCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label7.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label12.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;tabPage6.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RotateCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>126, 16</value>
+  </data>
+  <data name="CustomPatternsGroupBox.Text" xml:space="preserve">
+    <value>Set custom patterns (per movie)</value>
+  </data>
+  <data name="MarkerColorCheckbox.ToolTip" xml:space="preserve">
+    <value>If enabled, the frame column will have a different background color on each frame that TAStudio has a marker for.
+</value>
+  </data>
+  <data name="label6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ScrollToTopRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 16</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="StateIconsCheckbox.Text" xml:space="preserve">
+    <value>Denote states with icons</value>
+  </data>
+  <data name="&gt;&gt;HideWasLagCheckbox.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="tabPage2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternCustomRadioButton.Text" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="MarkerIconsCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 75</value>
+  </data>
+  <data name="&gt;&gt;HideLagNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AutosaveIntervalNum.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 16</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.ToolTip" xml:space="preserve">
+    <value>Auto-fire buttons will alternate on/off on newly emulated frames past the end of the movie.</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintNeverRadioButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="StrategyBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>159, 20</value>
+  </data>
+  <data name="label1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;ValueNum.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="&gt;&gt;SettingsCancelButton.Name" xml:space="preserve">
+    <value>SettingsCancelButton</value>
+  </data>
+  <data name="tabPage6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 40</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.Text" xml:space="preserve">
+    <value>Auto-Fire</value>
+  </data>
+  <data name="ScrollToTopRadio.Text" xml:space="preserve">
+    <value>scroll to top</value>
+  </data>
+  <data name="&gt;&gt;BackupOnSaveCheckbox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label9.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 15.75pt</value>
+  </data>
+  <data name="ButtonBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;LagBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 186</value>
+  </data>
+  <data name="&gt;&gt;StrategyBox.Name" xml:space="preserve">
+    <value>StrategyBox</value>
+  </data>
+  <data name="&gt;&gt;label10.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 185</value>
+  </data>
+  <data name="MarkerColorCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBackupCheckbox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ScrollSyncCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>228, 16</value>
+  </data>
+  <data name="label6.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="PatternCustomRadioButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="ScrollToTopRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="FontButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="groupBox4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;FastRewindNum.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.TabIndex" type="System.Int32, mscorlib">
+    <value>400</value>
+  </data>
+  <data name="&gt;&gt;EditInvisibleColumnsCheckbox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="BackupOnSaveCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label9.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="ValueNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>42, 172</value>
+  </data>
+  <data name="CustomPatternsGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>239, 248</value>
+  </data>
+  <data name="&gt;&gt;ScrollToCenterRadio.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ColorsButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ValueNum.Name" xml:space="preserve">
+    <value>ValueNum</value>
+  </data>
+  <data name="ScrollToViewRadio.Text" xml:space="preserve">
+    <value>scroll to view</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 56</value>
+  </data>
+  <data name="FontButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 6</value>
+  </data>
+  <data name="OnOffBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="PatternList.Size" type="System.Drawing.Size, System.Drawing">
+    <value>225, 124</value>
+  </data>
+  <data name="AutopauseCheckbox.Text" xml:space="preserve">
+    <value>Automatically pause at end of movie.</value>
+  </data>
+  <data name="StateIconsCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 40</value>
+  </data>
+  <data name="&gt;&gt;FontButton.Name" xml:space="preserve">
+    <value>FontButton</value>
+  </data>
+  <data name="&gt;&gt;ValueNum.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ScrollToViewRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="PatternCustomRadioButton.TabIndex" type="System.Int32, mscorlib">
+    <value>412</value>
+  </data>
+  <data name="ScrollToCenterRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>504</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="StateIconsCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;ApplyButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;DefaultStateSettingsButton.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;StrategyBox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="OldBranchesCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>518</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Name" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;CountNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ButtonBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ScrollToViewRadio.Name" xml:space="preserve">
+    <value>ScrollToViewRadio</value>
+  </data>
+  <data name="tabPage5.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>519</value>
+  </data>
+  <data name="LagBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 16</value>
+  </data>
+  <data name="DefaultStateSettingsButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>208, 7</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.TabIndex" type="System.Int32, mscorlib">
+    <value>401</value>
+  </data>
+  <data name="&gt;&gt;AutopauseCheckbox.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="InsertButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label11.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternHoldRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="DefaultStateSettingsButton.Text" xml:space="preserve">
+    <value>Use default settings</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
+    <value>281, 12</value>
+  </data>
+  <data name="&gt;&gt;label12.Name" xml:space="preserve">
+    <value>label12</value>
+  </data>
+  <data name="AutosaveIntervalNum.ToolTip" xml:space="preserve">
+    <value>How many seconds between each time TAStudio automatically saves.
+If neither "Save as ..." boxes are checked, autosave will overwrite whatever file is open.
+In no file is open, autosave will never do anything.</value>
+  </data>
+  <data name="BindMarkersCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPage6.Text" xml:space="preserve">
+    <value>Input Roll</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Name" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="BindMarkersCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>150, 16</value>
+  </data>
+  <data name="SettingsCancelButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="tabPage5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 40</value>
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>Scroll to cursor method</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Wheel scroll speed:</value>
+  </data>
+  <data name="&gt;&gt;tabPage3.Name" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;PatternList.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="tabPage3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 40</value>
+  </data>
+  <data name="HideLagNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>106, 172</value>
+  </data>
+  <data name="&gt;&gt;AutosaveIntervalNum.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="&gt;&gt;label8.Name" xml:space="preserve">
+    <value>label8</value>
+  </data>
+  <data name="label7.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="HideWasLagCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>103</value>
+  </data>
+  <data name="ScrollToBottomRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;ButtonBox.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.TabIndex" type="System.Int32, mscorlib">
+    <value>411</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>397, 447</value>
+  </data>
+  <data name="label12.Text" xml:space="preserve">
+    <value>Each movie contains its own savestate settings</value>
+  </data>
+  <data name="HideLagNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>50, 21</value>
+  </data>
+  <data name="ScrollToBottomRadio.Text" xml:space="preserve">
+    <value>scroll to bottom</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.ToolTip" xml:space="preserve">
+    <value>Painting in auto-fire columns will be painted as auto-fire, or
+with their custom pattern, if "Auto-Fire" or "Custom" is selected.</value>
+  </data>
+  <data name="CustomPatternsGroupBox.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="MarkerColorCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 96</value>
+  </data>
+  <data name="SettingsCancelButton.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;PatternAutoFireRadioButton.Name" xml:space="preserve">
+    <value>PatternAutoFireRadioButton</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx2.Name" xml:space="preserve">
+    <value>locLabelEx2</value>
+  </data>
+  <data name="OnOffBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="&gt;&gt;DefaultStateSettingsButton.Name" xml:space="preserve">
+    <value>DefaultStateSettingsButton</value>
+  </data>
+  <data name="&gt;&gt;label10.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;ColorsButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="ScrollSpeedNum.TabIndex" type="System.Int32, mscorlib">
+    <value>515</value>
+  </data>
+  <data name="ScrollSyncCheckbox.Text" xml:space="preserve">
+    <value>Sync scroll across all input rolls</value>
+  </data>
+  <data name="AutopauseCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 121</value>
+  </data>
+  <data name="&gt;&gt;DefaultManagerSettingsAppliedLabel.Name" xml:space="preserve">
+    <value>DefaultManagerSettingsAppliedLabel</value>
+  </data>
+  <data name="&gt;&gt;IncludeFrameNumberCheckbox.Name" xml:space="preserve">
+    <value>IncludeFrameNumberCheckbox</value>
+  </data>
+  <data name="&gt;&gt;label7.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;ScrollSpeedNum.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="PatternHoldRadioButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 20</value>
+  </data>
+  <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 40</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;SetDefaultStateSettingsButton.Name" xml:space="preserve">
+    <value>SetDefaultStateSettingsButton</value>
+  </data>
+  <data name="CountNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>38, 21</value>
+  </data>
+  <data name="LagBox.TabIndex" type="System.Int32, mscorlib">
+    <value>426</value>
+  </data>
+  <data name="OnOffBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;PatternPaintAlwaysRadioButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBk2Checkbox.Name" xml:space="preserve">
+    <value>AutosaveBk2Checkbox</value>
+  </data>
+  <data name="DefaultStateSettingsButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Choose pattern</value>
+  </data>
+  <data name="&gt;&gt;ManagerSettingsPropertyGrid.Name" xml:space="preserve">
+    <value>ManagerSettingsPropertyGrid</value>
+  </data>
+  <data name="ColorsButton.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;SetDefaultStateSettingsButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="HideWasLagCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 194</value>
+  </data>
+  <data name="&gt;&gt;BindMarkersCheckbox.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 12</value>
+  </data>
+  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 11</value>
+  </data>
+  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>377, 400</value>
+  </data>
+  <data name="PatternAutoFireRadioButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="locLabelEx2.Text" xml:space="preserve">
+    <value>Value:</value>
+  </data>
+  <data name="ManagerSettingsPropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>347, 301</value>
+  </data>
+  <data name="StateIconsCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 32</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 60</value>
+  </data>
+  <data name="&gt;&gt;PatternHoldRadioButton.Name" xml:space="preserve">
+    <value>PatternHoldRadioButton</value>
+  </data>
+  <data name="&gt;&gt;ScrollToCenterRadio.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="SetDefaultStateSettingsButton.Text" xml:space="preserve">
+    <value>Use these settings as default</value>
+  </data>
+  <data name="BackupOnSaveCheckbox.Text" xml:space="preserve">
+    <value>When manually saving, also save .backup</value>
+  </data>
+  <data name="ScrollToBottomRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 60</value>
+  </data>
+  <data name="tabPage3.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPage4.Text" xml:space="preserve">
+    <value>Savestates</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>517</value>
+  </data>
+  <data name="HideWasLagCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;PatternCustomRadioButton.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PatternHoldRadioButton.Text" xml:space="preserve">
+    <value>Hold</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="&gt;&gt;UndoCountNum.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;RewindNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HideWasLagCheckbox.Name" xml:space="preserve">
+    <value>HideWasLagCheckbox</value>
+  </data>
+  <data name="&gt;&gt;label8.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;InsertButton.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="ButtonBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;label6.Name" xml:space="preserve">
+    <value>label6</value>
+  </data>
+  <data name="ScrollSyncCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>520</value>
+  </data>
+  <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>168, 107</value>
+  </data>
+  <data name="MarkerColorCheckbox.Text" xml:space="preserve">
+    <value>Denote markers with color on frame column</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 100</value>
+  </data>
+  <data name="RotateCheckbox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;tabPage4.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="AlwaysScrollCheckbox.ToolTip" xml:space="preserve">
+    <value>When disabled, "Follow cursor" will not scroll when the cursor is already visible.</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="label5.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;StatesForMarkersCheckbox.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="label9.Text" xml:space="preserve">
+    <value>Movie settings</value>
+  </data>
+  <data name="&gt;&gt;PatternHoldRadioButton.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="StrategyBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>124, 6</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="tabControl1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;PatternCustomRadioButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CustomPatternsGroupBox.Name" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="&gt;&gt;SettingsCancelButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;PatternAutoFireRadioButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;tabPage4.Name" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="ManagerSettingsPropertyGrid.TabIndex" type="System.Int32, mscorlib">
+    <value>301</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx2.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="DefaultStateSettingsButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 21</value>
+  </data>
+  <data name="RewindNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="&gt;&gt;BackupOnSaveCheckbox.Name" xml:space="preserve">
+    <value>BackupOnSaveCheckbox</value>
+  </data>
+  <data name="ScrollToCenterRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 81</value>
+  </data>
+  <data name="&gt;&gt;label12.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="FontButton.Text" xml:space="preserve">
+    <value>Set Font</value>
+  </data>
+  <data name="PatternHoldRadioButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPage4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage5.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="tabPage6.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
+    <value>151, 25</value>
+  </data>
+  <data name="&gt;&gt;MarkerIconsCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ApplyButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="label4.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 142</value>
+  </data>
+  <data name="tabPage5.Text" xml:space="preserve">
+    <value>Autosave</value>
+  </data>
+  <data name="ColorsButton.Text" xml:space="preserve">
+    <value>Set Colors</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintAlwaysRadioButton.Name" xml:space="preserve">
+    <value>PatternPaintAlwaysRadioButton</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label12.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 334</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>149, 354</value>
+  </data>
+  <data name="MarkerIconsCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;AutopauseCheckbox.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;MarkerIconsCheckbox.Name" xml:space="preserve">
+    <value>MarkerIconsCheckbox</value>
+  </data>
+  <data name="ValueNum.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ScrollSyncCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;OnOffBox.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="StateColorCheckbox.Text" xml:space="preserve">
+    <value>Denote states with background color</value>
+  </data>
+  <data name="&gt;&gt;DeleteButton.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;HideWasLagCheckbox.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;DefaultStateSettingsButton.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="UndoCountNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>116, 54</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>Appearance</value>
+  </data>
+  <data name="&gt;&gt;RewindNum.Name" xml:space="preserve">
+    <value>RewindNum</value>
+  </data>
+  <data name="&gt;&gt;CountNum.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label11.Text" xml:space="preserve">
+    <value>Set to 0 to disable autosave</value>
+  </data>
+  <data name="&gt;&gt;FastRewindNum.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="label9.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 6, 3, 6</value>
+  </data>
+  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ManagerSettingsPropertyGrid.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>512</value>
+  </data>
+  <data name="CustomPatternsGroupBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="StateColorCheckbox.ToolTip" xml:space="preserve">
+    <value>If enabled, the background color of a row will be slightly different when TAStudio has a savestate for that frame.</value>
+  </data>
+  <data name="DeleteButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 21</value>
+  </data>
+  <data name="label9.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CountNum.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="InsertButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="&gt;&gt;InsertButton.Name" xml:space="preserve">
+    <value>InsertButton</value>
+  </data>
+  <data name="&gt;&gt;DefaultManagerSettingsAppliedLabel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="LagBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternHoldRadioButton.ToolTip" xml:space="preserve">
+    <value>Auto-fire buttons will be held on newly emulated frames past the end of the movie.</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>143, 87</value>
+  </data>
+  <data name="&gt;&gt;label9.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;StrategyBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label11.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;StateIconsCheckbox.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="&gt;&gt;StateIconsCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;DeleteButton.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="ScrollSpeedNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="label12.TabIndex" type="System.Int32, mscorlib">
+    <value>306</value>
+  </data>
+  <data name="&gt;&gt;label8.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintNeverRadioButton.Name" xml:space="preserve">
+    <value>PatternPaintNeverRadioButton</value>
+  </data>
+  <data name="StrategyBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AlwaysScrollCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>514</value>
+  </data>
+  <data name="&gt;&gt;tabPage3.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="PatternList.Items" xml:space="preserve">
+    <value>0: On	(x1)</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="&gt;&gt;ScrollSpeedNum.Name" xml:space="preserve">
+    <value>ScrollSpeedNum</value>
+  </data>
+  <data name="&gt;&gt;label9.Name" xml:space="preserve">
+    <value>label9</value>
+  </data>
+  <data name="label11.Size" type="System.Drawing.Size, System.Drawing">
+    <value>173, 12</value>
+  </data>
+  <data name="tabPage6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 356</value>
+  </data>
+  <data name="&gt;&gt;tabPage5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;IncludeFrameNumberCheckbox.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;AlwaysScrollCheckbox.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 6</value>
+  </data>
+  <data name="&gt;&gt;label11.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AutosaveIntervalNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>117, 6</value>
+  </data>
+  <data name="tabControl1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BindMarkersCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 78</value>
+  </data>
+  <data name="&gt;&gt;PatternList.Name" xml:space="preserve">
+    <value>PatternList</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 16</value>
+  </data>
+  <data name="label4.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="StateIconsCheckbox.ToolTip" xml:space="preserve">
+    <value>If enabled, the frame column will contain an icon on each frame that TAStudio has a savestate for.</value>
+  </data>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;BranchDoubleClickCheckbox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 12</value>
+  </data>
+  <data name="&gt;&gt;StateColorCheckbox.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="LagBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="BindMarkersCheckbox.Text" xml:space="preserve">
+    <value>Bind markers to input</value>
+  </data>
+  <data name="label12.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;ScrollToBottomRadio.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 73</value>
+  </data>
+  <data name="&gt;&gt;PatternCustomRadioButton.Name" xml:space="preserve">
+    <value>PatternCustomRadioButton</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 16</value>
+  </data>
+  <data name="LagBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 224</value>
+  </data>
+  <data name="&gt;&gt;DeleteButton.Name" xml:space="preserve">
+    <value>DeleteButton</value>
+  </data>
+  <data name="label11.TabIndex" type="System.Int32, mscorlib">
+    <value>205</value>
+  </data>
+  <data name="&gt;&gt;SetDefaultStateSettingsButton.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="tabPage6.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="RewindNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>116, 6</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="EditInvisibleColumnsCheckbox.Text" xml:space="preserve">
+    <value>Allow editing hidden columns (with clear, record, paste, etc.)</value>
+  </data>
+  <data name="ScrollSpeedNum.ToolTip" xml:space="preserve">
+    <value>How many frames to scroll per tick of the mouse wheel.
+Set to 0 to use the system default.</value>
+  </data>
+  <data name="PatternPaintAlwaysRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="PatternList.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 356</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.Text" xml:space="preserve">
+    <value>Load branch by double clicking</value>
+  </data>
+  <data name="&gt;&gt;ApplyButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 16</value>
+  </data>
+  <data name="PatternList.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 42</value>
+  </data>
+  <data name="RewindNum.TabIndex" type="System.Int32, mscorlib">
+    <value>511</value>
+  </data>
+  <data name="&gt;&gt;BindMarkersCheckbox.Name" xml:space="preserve">
+    <value>BindMarkersCheckbox</value>
+  </data>
+  <data name="label9.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 12</value>
+  </data>
+  <data name="&gt;&gt;MarkerColorCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;PatternCustomRadioButton.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;ScrollSyncCheckbox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="MarkerIconsCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;LagBox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tabPage5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 356</value>
+  </data>
+  <data name="DeleteButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;ValueNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ScrollToBottomRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>119, 16</value>
+  </data>
+  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="FastRewindNum.TabIndex" type="System.Int32, mscorlib">
+    <value>512</value>
+  </data>
+  <data name="&gt;&gt;SettingsCancelButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tabPage3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>369, 356</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;ColorsButton.Name" xml:space="preserve">
+    <value>ColorsButton</value>
+  </data>
+  <data name="label10.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FastRewindNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>116, 29</value>
+  </data>
+  <data name="PatternHoldRadioButton.TabIndex" type="System.Int32, mscorlib">
+    <value>410</value>
+  </data>
+  <data name="OldBranchesCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 163</value>
+  </data>
+  <data name="HideWasLagCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>150, 16</value>
+  </data>
+  <data name="ScrollSyncCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 165</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBk2Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;StateColorCheckbox.Name" xml:space="preserve">
+    <value>StateColorCheckbox</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintAutoColumnsOnlyRadioButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="tabPage4.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="ApplyButton.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;DefaultManagerSettingsAppliedLabel.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="label3.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;tabPage5.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;PatternList.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="label6.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.ToolTip" xml:space="preserve">
+    <value>Normal painting.</value>
+  </data>
+  <data name="label8.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 32</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.Text" xml:space="preserve">
+    <value>Markers keep states by default</value>
+  </data>
+  <data name="ScrollSpeedNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>119, 141</value>
+  </data>
+  <data name="&gt;&gt;CustomPatternsGroupBox.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>TAStudio Settings</value>
+  </data>
+  <data name="&gt;&gt;BranchDoubleClickCheckbox.Parent" xml:space="preserve">
+    <value>tabPage3</value>
+  </data>
+  <data name="&gt;&gt;DefaultStateSettingsButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="HideWasLagCheckbox.ToolTip" xml:space="preserve">
+    <value>If unchecked, "Lag frames to hide" will stop hiding lag frames that are past the "greenzone".
+Put another way, it will not hide frames that TAStudio does not know will still be lag frames when re-emulated.</value>
+  </data>
+  <data name="OldBranchesCheckbox.ToolTip" xml:space="preserve">
+    <value>When enabled, branches cannot be loaded when "Recording mode" is off; instead TAStudio will seek to the branch frame.
+And when "Recording mode" is on, the movie will be truncated at the branch frame after loading a branch.</value>
+  </data>
+  <data name="StrategyBox.Items1" xml:space="preserve">
+    <value>New manager</value>
+  </data>
+  <data name="&gt;&gt;ScrollToViewRadio.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;AlwaysScrollCheckbox.Name" xml:space="preserve">
+    <value>AlwaysScrollCheckbox</value>
+  </data>
+  <data name="&gt;&gt;ScrollToBottomRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 8</value>
+  </data>
+  <data name="&gt;&gt;MarkerColorCheckbox.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="ScrollToViewRadio.ToolTip" xml:space="preserve">
+    <value>scroll the minimum amount needed to make the cursor visible.</value>
+  </data>
+  <data name="&gt;&gt;label5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="OldBranchesCheckbox.Text" xml:space="preserve">
+    <value>Old control scheme for branches</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.Text" xml:space="preserve">
+    <value>Save as .bk2</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;StateIconsCheckbox.Name" xml:space="preserve">
+    <value>StateIconsCheckbox</value>
+  </data>
+  <data name="&gt;&gt;ScrollSpeedNum.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="locLabelEx1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ScrollToCenterRadio.Text" xml:space="preserve">
+    <value>scroll to center</value>
+  </data>
+  <data name="&gt;&gt;InsertButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label6.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="ValueNum.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;tabPage4.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="StrategyBox.Items" xml:space="preserve">
+    <value>Old manager</value>
+  </data>
+  <data name="SettingsCancelButton.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="AutopauseCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>240, 16</value>
+  </data>
+  <data name="locLabelEx1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>103, 174</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 16</value>
+  </data>
+  <data name="label10.TabIndex" type="System.Int32, mscorlib">
+    <value>104</value>
+  </data>
+  <data name="&gt;&gt;LagBox.Name" xml:space="preserve">
+    <value>LagBox</value>
+  </data>
+  <data name="&gt;&gt;HideLagNum.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="FastRewindNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="IncludeFrameNumberCheckbox.Text" xml:space="preserve">
+    <value>Include frame numbers when copying input.</value>
+  </data>
+  <data name="label2.TabIndex" type="System.Int32, mscorlib">
+    <value>511</value>
+  </data>
+  <data name="&gt;&gt;IncludeFrameNumberCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;DefaultManagerSettingsAppliedLabel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label9.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ScrollSyncCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="BackupOnSaveCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 94</value>
+  </data>
+  <data name="ScrollToViewRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 16</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBk2Checkbox.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="tabPage1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AutosaveBackupCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>203</value>
+  </data>
+  <data name="OnOffBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>42, 172</value>
+  </data>
+  <data name="AutosaveIntervalNum.TabIndex" type="System.Int32, mscorlib">
+    <value>201</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ScrollSyncCheckbox.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="&gt;&gt;ScrollToCenterRadio.Name" xml:space="preserve">
+    <value>ScrollToCenterRadio</value>
+  </data>
+  <data name="UndoCountNum.Size" type="System.Drawing.Size, System.Drawing">
+    <value>67, 21</value>
+  </data>
+  <data name="InsertButton.TabIndex" type="System.Int32, mscorlib">
+    <value>424</value>
+  </data>
+  <data name="&gt;&gt;ScrollToTopRadio.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;ApplyButton.Name" xml:space="preserve">
+    <value>ApplyButton</value>
+  </data>
+  <data name="&gt;&gt;tabPage5.Name" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="MarkerColorCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="FontButton.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 143</value>
+  </data>
+  <data name="AutosaveBackupCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="OnOffBox.TabIndex" type="System.Int32, mscorlib">
+    <value>422</value>
+  </data>
+  <data name="&gt;&gt;label7.Name" xml:space="preserve">
+    <value>label7</value>
+  </data>
+  <data name="label8.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="&gt;&gt;UndoCountNum.Name" xml:space="preserve">
+    <value>UndoCountNum</value>
+  </data>
+  <data name="label8.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label6.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label11.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;ApplyButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBackupCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="locLabelEx1.Text" xml:space="preserve">
+    <value>Count:</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 12</value>
+  </data>
+  <data name="&gt;&gt;ManagerSettingsPropertyGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PropertyGrid, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BackupOnSaveCheckbox.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="label7.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="ScrollToBottomRadio.ToolTip" xml:space="preserve">
+    <value>scroll so that the cursor is at the bottom of the visible frames.</value>
+  </data>
+  <data name="&gt;&gt;BranchDoubleClickCheckbox.Name" xml:space="preserve">
+    <value>BranchDoubleClickCheckbox</value>
+  </data>
+  <data name="&gt;&gt;PatternList.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="ScrollToTopRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 39</value>
+  </data>
+  <data name="label11.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 27</value>
+  </data>
+  <data name="&gt;&gt;HideLagNum.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="StateColorCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>234, 16</value>
+  </data>
+  <data name="AutopauseCheckbox.TabIndex" type="System.Int32, mscorlib">
+    <value>516</value>
+  </data>
+  <data name="AutosaveBk2Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label5.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintNeverRadioButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AutosaveBackupCheckbox.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="PatternPaintNeverRadioButton.Text" xml:space="preserve">
+    <value>Never</value>
+  </data>
+  <data name="&gt;&gt;LagBox.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="&gt;&gt;label9.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="StatesForMarkersCheckbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 16</value>
+  </data>
+  <data name="&gt;&gt;StateColorCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;BindMarkersCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DeleteButton.TabIndex" type="System.Int32, mscorlib">
+    <value>425</value>
+  </data>
+  <data name="label10.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;CountNum.Parent" xml:space="preserve">
+    <value>CustomPatternsGroupBox</value>
+  </data>
+  <data name="FontButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="BranchDoubleClickCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;PatternPaintNeverRadioButton.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SetDefaultStateSettingsButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 21</value>
+  </data>
+  <data name="&gt;&gt;StateIconsCheckbox.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="RotateCheckbox.Text" xml:space="preserve">
+    <value>Rotate input roll</value>
+  </data>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>Paint Patterns</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Use pattern for painting</value>
+  </data>
+  <data name="DefaultManagerSettingsAppliedLabel.TabIndex" type="System.Int32, mscorlib">
+    <value>305</value>
+  </data>
+  <data name="&gt;&gt;label11.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="tabPage4.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="&gt;&gt;HideWasLagCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DeleteButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>124, 198</value>
+  </data>
+  <data name="&gt;&gt;CountNum.Name" xml:space="preserve">
+    <value>CountNum</value>
+  </data>
+  <data name="&gt;&gt;CustomPatternsGroupBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tabPage6.Name" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="StateColorCheckbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 54</value>
   </data>
   <data name="EditInvisibleColumnsCheckbox.ToolTip" xml:space="preserve">
     <value>When disabled, inputs that are not visible on the active input roll cannot be edited.
@@ -141,20 +2277,130 @@ Because markers are not associated with any input column, it is recommended that
 off "Bind markers to input" if you uncheck this box. Otherwise markers may move unexpectedly.
 This feature is experimental but should be ready for use.</value>
   </data>
+  <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;tabPage4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="OldBranchesCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;ButtonBox.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;locLabelEx2.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>154, 3</value>
+  </data>
+  <data name="SettingsCancelButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternCustomRadioButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 63</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="PatternCustomRadioButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="&gt;&gt;ScrollToTopRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AlwaysScrollCheckbox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;MarkerColorCheckbox.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;StatesForMarkersCheckbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox4.TabIndex" type="System.Int32, mscorlib">
+    <value>513</value>
+  </data>
+  <data name="ApplyButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PatternPaintNeverRadioButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;FontButton.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="tabPage5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;ManagerSettingsPropertyGrid.Parent" xml:space="preserve">
+    <value>tabPage4</value>
+  </data>
+  <data name="&gt;&gt;CustomPatternsGroupBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="PatternList.Items1" xml:space="preserve">
+    <value>1: Off	(x1)</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>Rewind step:</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>tabPage1</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
+  </data>
+  <data name="HideLagNum.TabIndex" type="System.Int32, mscorlib">
+    <value>102</value>
+  </data>
+  <data name="StateColorCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;OnOffBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>tabPage5</value>
+  </data>
+  <data name="&gt;&gt;EditInvisibleColumnsCheckbox.Parent" xml:space="preserve">
+    <value>tabPage6</value>
+  </data>
+  <data name="PatternPaintAutoColumnsOnlyRadioButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 39</value>
+  </data>
+  <data name="AutopauseCheckbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="ScrollToTopRadio.ToolTip" xml:space="preserve">
+    <value>scroll so that the cursor is at the top of the visible frames.</value>
+  </data>
+  <data name="ValueNum.TabIndex" type="System.Int32, mscorlib">
+    <value>422</value>
+  </data>
+  <data name="ButtonBox.TabIndex" type="System.Int32, mscorlib">
+    <value>420</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="HideLagNum.ToolTip" xml:space="preserve">
+    <value>Hide up to this many lag frames per group of consecutive lag frames. Intended for use in 30FPS games running on 60FPS consoles.</value>
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="HideWasLagCheckbox.ToolTip" xml:space="preserve">
-    <value>If unchecked, "Lag frames to hide" will stop hiding lag frames that are past the "greenzone".
-Put another way, it will not hide frames that TAStudio does not know will still be lag frames when re-emulated.</value>
-  </data>
-  <data name="AutosaveBackupCheckbox.ToolTip" xml:space="preserve">
-    <value>Autosave will save a movie to the backups folder, with a timestamp in the name, so no file is overwritten.
-Backup movies will not contain any "greenzone" savestates, which makes them smaller than normal .tasproj files.</value>
-  </data>
-  <data name="AutosaveIntervalNum.ToolTip" xml:space="preserve">
-    <value>How many seconds between each time TAStudio automatically saves.
-If neither "Save as ..." boxes are checked, autosave will overwrite whatever file is open.
-In no file is open, autosave will never do anything.</value>
-  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

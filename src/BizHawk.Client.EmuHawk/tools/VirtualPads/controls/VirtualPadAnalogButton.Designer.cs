@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(VirtualPadAnalogButton));
             this.AnalogTrackBar = new System.Windows.Forms.TrackBar();
             this.DisplayNameLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.ValueLabel = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -36,37 +37,28 @@
             // 
             // AnalogTrackBar
             // 
-            this.AnalogTrackBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.AnalogTrackBar.Location = new System.Drawing.Point(3, 3);
+            resources.ApplyResources(this.AnalogTrackBar, "AnalogTrackBar");
             this.AnalogTrackBar.Name = "AnalogTrackBar";
-            this.AnalogTrackBar.Size = new System.Drawing.Size(291, 45);
-            this.AnalogTrackBar.TabIndex = 0;
             this.AnalogTrackBar.ValueChanged += new System.EventHandler(this.AnalogTrackBar_ValueChanged);
             // 
             // DisplayNameLabel
             // 
-            this.DisplayNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DisplayNameLabel.Location = new System.Drawing.Point(6, 51);
+            resources.ApplyResources(this.DisplayNameLabel, "DisplayNameLabel");
             this.DisplayNameLabel.Name = "DisplayNameLabel";
-            this.DisplayNameLabel.Text = "Slider";
             // 
             // ValueLabel
             // 
-            this.ValueLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ValueLabel.Location = new System.Drawing.Point(257, 51);
+            resources.ApplyResources(this.ValueLabel, "ValueLabel");
             this.ValueLabel.Name = "ValueLabel";
-            this.ValueLabel.Text = "99999";
             // 
             // VirtualPadAnalogButton
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ValueLabel);
             this.Controls.Add(this.DisplayNameLabel);
             this.Controls.Add(this.AnalogTrackBar);
             this.Name = "VirtualPadAnalogButton";
-            this.Size = new System.Drawing.Size(297, 74);
             ((System.ComponentModel.ISupportInitialize)(this.AnalogTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

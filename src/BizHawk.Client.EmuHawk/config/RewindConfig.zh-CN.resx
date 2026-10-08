@@ -148,6 +148,9 @@
   <data name="label6.Text" xml:space="preserve">
     <value>已占用：</value>
   </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>倒带选项</value>
+  </data>
   <data name="TargetRewindIntervalRadioButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>155, 16</value>
   </data>
@@ -193,9 +196,6 @@
   <data name="label7.Text" xml:space="preserve">
     <value>已存储帧数：</value>
   </data>
-  <data name="groupBox4.Text" xml:space="preserve">
-    <value>倒带选项</value>
-  </data>
   <data name="groupBox6.Text" xml:space="preserve">
     <value>类型</value>
   </data>
@@ -205,26 +205,8 @@
   <data name="rbStatesBinary.Text" xml:space="preserve">
     <value>二进制</value>
   </data>
-  <data name="btnResetCompression.ToolTip" xml:space="preserve">
-    <value>Reset to default</value>
-  </data>
-  <data name="trackBarCompression.ToolTip" xml:space="preserve">
-    <value>0 = None; 9 = Maximum</value>
-  </data>
-  <data name="nudCompression.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="groupBox7.Text" xml:space="preserve">
-    <value>存档选项</value>
-  </data>
-  <data name="groupBox7.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label20.Text" xml:space="preserve">
     <value>时使用低分辨率截图，提升保存/加载性能。</value>
-  </data>
-  <data name="label20.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="KbLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>171, 249</value>
@@ -232,14 +214,8 @@
   <data name="KbLabel.Text" xml:space="preserve">
     <value>KB 时，</value>
   </data>
-  <data name="KbLabel.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="BigScreenshotNumeric.Location" type="System.Drawing.Point, System.Drawing">
     <value>105, 245</value>
-  </data>
-  <data name="BigScreenshotNumeric.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="LowResLargeScreenshotsCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>78, 16</value>
@@ -247,20 +223,11 @@
   <data name="LowResLargeScreenshotsCheckbox.Text" xml:space="preserve">
     <value>当缓存 &gt;=</value>
   </data>
-  <data name="LowResLargeScreenshotsCheckbox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label13.Text" xml:space="preserve">
-    <value>防止读档瞬间黑屏。</value>
-  </data>
-  <data name="label13.ToolTip" xml:space="preserve">
-    <value />
+    <value>防止读取瞬间黑屏。</value>
   </data>
   <data name="label14.Text" xml:space="preserve">
     <value>保存进度时保存截图数据，在读取存档时加载，</value>
-  </data>
-  <data name="label14.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="ScreenshotInStatesCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>108, 16</value>
@@ -268,17 +235,11 @@
   <data name="ScreenshotInStatesCheckbox.Text" xml:space="preserve">
     <value>保存进度时截图</value>
   </data>
-  <data name="ScreenshotInStatesCheckbox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="label15.ToolTip" xml:space="preserve">
-    <value />
+  <data name="label15.Text" xml:space="preserve">
+    <value>    </value>
   </data>
   <data name="label16.Text" xml:space="preserve">
     <value>覆盖进度前自动创建备份。</value>
-  </data>
-  <data name="label16.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="BackupSavestatesCheckbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -286,14 +247,11 @@
   <data name="BackupSavestatesCheckbox.Text" xml:space="preserve">
     <value>备份进度</value>
   </data>
-  <data name="BackupSavestatesCheckbox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label12.Text" xml:space="preserve">
     <value>压缩级别</value>
   </data>
-  <data name="label12.ToolTip" xml:space="preserve">
-    <value />
+  <data name="groupBox7.Text" xml:space="preserve">
+    <value>存档选项</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>倒带与进度配置</value>

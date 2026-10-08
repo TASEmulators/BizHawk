@@ -28,1084 +28,830 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.components = new System.ComponentModel.Container();
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudioSettingsForm));
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
-			this.label10 = new System.Windows.Forms.Label();
-			this.label9 = new System.Windows.Forms.Label();
-			this.ColorsButton = new System.Windows.Forms.Button();
-			this.HideLagNum = new System.Windows.Forms.NumericUpDown();
-			this.MarkerColorCheckbox = new System.Windows.Forms.CheckBox();
-			this.MarkerIconsCheckbox = new System.Windows.Forms.CheckBox();
-			this.StateColorCheckbox = new System.Windows.Forms.CheckBox();
-			this.StateIconsCheckbox = new System.Windows.Forms.CheckBox();
-			this.HideWasLagCheckbox = new System.Windows.Forms.CheckBox();
-			this.RotateCheckbox = new System.Windows.Forms.CheckBox();
-			this.FontButton = new System.Windows.Forms.Button();
-			this.tabPage5 = new System.Windows.Forms.TabPage();
-			this.label11 = new System.Windows.Forms.Label();
-			this.BackupOnSaveCheckbox = new System.Windows.Forms.CheckBox();
-			this.AutosaveBackupCheckbox = new System.Windows.Forms.CheckBox();
-			this.AutosaveBk2Checkbox = new System.Windows.Forms.CheckBox();
-			this.label5 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.AutosaveIntervalNum = new System.Windows.Forms.NumericUpDown();
-			this.tabPage4 = new System.Windows.Forms.TabPage();
-			this.label12 = new System.Windows.Forms.Label();
-			this.DefaultManagerSettingsAppliedLabel = new System.Windows.Forms.Label();
-			this.SetDefaultStateSettingsButton = new System.Windows.Forms.Button();
-			this.DefaultStateSettingsButton = new System.Windows.Forms.Button();
-			this.ManagerSettingsPropertyGrid = new System.Windows.Forms.PropertyGrid();
-			this.StrategyBox = new System.Windows.Forms.ComboBox();
-			this.label6 = new System.Windows.Forms.Label();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.CustomPatternsGroupBox = new System.Windows.Forms.GroupBox();
-			this.OnOffBox = new System.Windows.Forms.CheckBox();
-			this.CountNum = new System.Windows.Forms.NumericUpDown();
-			this.ValueNum = new System.Windows.Forms.NumericUpDown();
-			this.locLabelEx1 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.locLabelEx2 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.LagBox = new System.Windows.Forms.CheckBox();
-			this.DeleteButton = new System.Windows.Forms.Button();
-			this.InsertButton = new System.Windows.Forms.Button();
-			this.PatternList = new System.Windows.Forms.ListBox();
-			this.ButtonBox = new System.Windows.Forms.ComboBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.PatternCustomRadioButton = new System.Windows.Forms.RadioButton();
-			this.PatternHoldRadioButton = new System.Windows.Forms.RadioButton();
-			this.PatternAutoFireRadioButton = new System.Windows.Forms.RadioButton();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.PatternPaintAlwaysRadioButton = new System.Windows.Forms.RadioButton();
-			this.PatternPaintAutoColumnsOnlyRadioButton = new System.Windows.Forms.RadioButton();
-			this.PatternPaintNeverRadioButton = new System.Windows.Forms.RadioButton();
-			this.tabPage3 = new System.Windows.Forms.TabPage();
-			this.OldBranchesCheckbox = new System.Windows.Forms.CheckBox();
-			this.BranchDoubleClickCheckbox = new System.Windows.Forms.CheckBox();
-			this.FastRewindNum = new System.Windows.Forms.NumericUpDown();
-			this.label8 = new System.Windows.Forms.Label();
-			this.RewindNum = new System.Windows.Forms.NumericUpDown();
-			this.label7 = new System.Windows.Forms.Label();
-			this.BindMarkersCheckbox = new System.Windows.Forms.CheckBox();
-			this.IncludeFrameNumberCheckbox = new System.Windows.Forms.CheckBox();
-			this.UndoCountNum = new System.Windows.Forms.NumericUpDown();
-			this.label1 = new System.Windows.Forms.Label();
-			this.AutopauseCheckbox = new System.Windows.Forms.CheckBox();
-			this.SettingsCancelButton = new System.Windows.Forms.Button();
-			this.ApplyButton = new System.Windows.Forms.Button();
-			this.tabPage6 = new System.Windows.Forms.TabPage();
-			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.ScrollToCenterRadio = new System.Windows.Forms.RadioButton();
-			this.ScrollToBottomRadio = new System.Windows.Forms.RadioButton();
-			this.ScrollToTopRadio = new System.Windows.Forms.RadioButton();
-			this.ScrollToViewRadio = new System.Windows.Forms.RadioButton();
-			this.AlwaysScrollCheckbox = new System.Windows.Forms.CheckBox();
-			this.label3 = new System.Windows.Forms.Label();
-			this.ScrollSpeedNum = new System.Windows.Forms.NumericUpDown();
-			this.label2 = new System.Windows.Forms.Label();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.EditInvisibleColumnsCheckbox = new System.Windows.Forms.CheckBox();
-			this.ScrollSyncCheckbox = new System.Windows.Forms.CheckBox();
-			this.StatesForMarkersCheckbox = new System.Windows.Forms.CheckBox();
-			this.tabControl1.SuspendLayout();
-			this.tabPage2.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
-			this.tabPage5.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.AutosaveIntervalNum)).BeginInit();
-			this.tabPage4.SuspendLayout();
-			this.tabPage1.SuspendLayout();
-			this.CustomPatternsGroupBox.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.CountNum)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.ValueNum)).BeginInit();
-			this.groupBox2.SuspendLayout();
-			this.groupBox1.SuspendLayout();
-			this.tabPage3.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.FastRewindNum)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.RewindNum)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.UndoCountNum)).BeginInit();
-			this.tabPage6.SuspendLayout();
-			this.groupBox4.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ScrollSpeedNum)).BeginInit();
-			this.SuspendLayout();
-			// 
-			// tabControl1
-			// 
-			this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Controls.Add(this.tabPage5);
-			this.tabControl1.Controls.Add(this.tabPage4);
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage6);
-			this.tabControl1.Controls.Add(this.tabPage3);
-			this.tabControl1.Location = new System.Drawing.Point(12, 12);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(377, 433);
-			this.tabControl1.TabIndex = 0;
-			this.tabControl1.Multiline = true;
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Controls.Add(this.label10);
-			this.tabPage2.Controls.Add(this.label9);
-			this.tabPage2.Controls.Add(this.ColorsButton);
-			this.tabPage2.Controls.Add(this.HideLagNum);
-			this.tabPage2.Controls.Add(this.MarkerColorCheckbox);
-			this.tabPage2.Controls.Add(this.MarkerIconsCheckbox);
-			this.tabPage2.Controls.Add(this.StateColorCheckbox);
-			this.tabPage2.Controls.Add(this.StateIconsCheckbox);
-			this.tabPage2.Controls.Add(this.HideWasLagCheckbox);
-			this.tabPage2.Controls.Add(this.RotateCheckbox);
-			this.tabPage2.Controls.Add(this.FontButton);
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(366, 407);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "Appearance";
-			this.tabPage2.UseVisualStyleBackColor = true;
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(3, 188);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(97, 13);
-			this.label10.TabIndex = 104;
-			this.label10.Text = "Lag frames to hide:";
-			// 
-			// label9
-			// 
-			this.label9.AutoSize = true;
-			this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label9.Location = new System.Drawing.Point(6, 130);
-			this.label9.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(151, 25);
-			this.label9.TabIndex = 4;
-			this.label9.Text = "Movie settings";
-			// 
-			// ColorsButton
-			// 
-			this.ColorsButton.Location = new System.Drawing.Point(87, 6);
-			this.ColorsButton.Name = "ColorsButton";
-			this.ColorsButton.Size = new System.Drawing.Size(75, 23);
-			this.ColorsButton.TabIndex = 2;
-			this.ColorsButton.Text = "Set Colors";
-			this.ColorsButton.UseVisualStyleBackColor = true;
-			this.ColorsButton.Click += new System.EventHandler(this.ColorsButton_Click);
-			// 
-			// HideLagNum
-			// 
-			this.HideLagNum.Location = new System.Drawing.Point(106, 186);
-			this.HideLagNum.Maximum = new decimal(new int[] {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TAStudioSettingsForm));
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.ColorsButton = new System.Windows.Forms.Button();
+            this.HideLagNum = new System.Windows.Forms.NumericUpDown();
+            this.MarkerColorCheckbox = new System.Windows.Forms.CheckBox();
+            this.MarkerIconsCheckbox = new System.Windows.Forms.CheckBox();
+            this.StateColorCheckbox = new System.Windows.Forms.CheckBox();
+            this.StateIconsCheckbox = new System.Windows.Forms.CheckBox();
+            this.HideWasLagCheckbox = new System.Windows.Forms.CheckBox();
+            this.RotateCheckbox = new System.Windows.Forms.CheckBox();
+            this.FontButton = new System.Windows.Forms.Button();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
+            this.BackupOnSaveCheckbox = new System.Windows.Forms.CheckBox();
+            this.AutosaveBackupCheckbox = new System.Windows.Forms.CheckBox();
+            this.AutosaveBk2Checkbox = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.AutosaveIntervalNum = new System.Windows.Forms.NumericUpDown();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.DefaultManagerSettingsAppliedLabel = new System.Windows.Forms.Label();
+            this.SetDefaultStateSettingsButton = new System.Windows.Forms.Button();
+            this.DefaultStateSettingsButton = new System.Windows.Forms.Button();
+            this.ManagerSettingsPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.StrategyBox = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.CustomPatternsGroupBox = new System.Windows.Forms.GroupBox();
+            this.OnOffBox = new System.Windows.Forms.CheckBox();
+            this.CountNum = new System.Windows.Forms.NumericUpDown();
+            this.ValueNum = new System.Windows.Forms.NumericUpDown();
+            this.locLabelEx1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.locLabelEx2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.LagBox = new System.Windows.Forms.CheckBox();
+            this.DeleteButton = new System.Windows.Forms.Button();
+            this.InsertButton = new System.Windows.Forms.Button();
+            this.PatternList = new System.Windows.Forms.ListBox();
+            this.ButtonBox = new System.Windows.Forms.ComboBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.PatternCustomRadioButton = new System.Windows.Forms.RadioButton();
+            this.PatternHoldRadioButton = new System.Windows.Forms.RadioButton();
+            this.PatternAutoFireRadioButton = new System.Windows.Forms.RadioButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.PatternPaintAlwaysRadioButton = new System.Windows.Forms.RadioButton();
+            this.PatternPaintAutoColumnsOnlyRadioButton = new System.Windows.Forms.RadioButton();
+            this.PatternPaintNeverRadioButton = new System.Windows.Forms.RadioButton();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.ScrollSyncCheckbox = new System.Windows.Forms.CheckBox();
+            this.EditInvisibleColumnsCheckbox = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ScrollToCenterRadio = new System.Windows.Forms.RadioButton();
+            this.ScrollToBottomRadio = new System.Windows.Forms.RadioButton();
+            this.ScrollToTopRadio = new System.Windows.Forms.RadioButton();
+            this.ScrollToViewRadio = new System.Windows.Forms.RadioButton();
+            this.AlwaysScrollCheckbox = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ScrollSpeedNum = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.StatesForMarkersCheckbox = new System.Windows.Forms.CheckBox();
+            this.OldBranchesCheckbox = new System.Windows.Forms.CheckBox();
+            this.BranchDoubleClickCheckbox = new System.Windows.Forms.CheckBox();
+            this.FastRewindNum = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
+            this.RewindNum = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
+            this.BindMarkersCheckbox = new System.Windows.Forms.CheckBox();
+            this.IncludeFrameNumberCheckbox = new System.Windows.Forms.CheckBox();
+            this.UndoCountNum = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.AutopauseCheckbox = new System.Windows.Forms.CheckBox();
+            this.SettingsCancelButton = new System.Windows.Forms.Button();
+            this.ApplyButton = new System.Windows.Forms.Button();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.tabControl1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).BeginInit();
+            this.tabPage5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AutosaveIntervalNum)).BeginInit();
+            this.tabPage4.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.CustomPatternsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CountNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValueNum)).BeginInit();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.tabPage6.SuspendLayout();
+            this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ScrollSpeedNum)).BeginInit();
+            this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.FastRewindNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RewindNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UndoCountNum)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // tabControl1
+            // 
+            resources.ApplyResources(this.tabControl1, "tabControl1");
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage5);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage6);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Multiline = true;
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.toolTip1.SetToolTip(this.tabControl1, resources.GetString("tabControl1.ToolTip"));
+            // 
+            // tabPage2
+            // 
+            resources.ApplyResources(this.tabPage2, "tabPage2");
+            this.tabPage2.Controls.Add(this.label10);
+            this.tabPage2.Controls.Add(this.label9);
+            this.tabPage2.Controls.Add(this.ColorsButton);
+            this.tabPage2.Controls.Add(this.HideLagNum);
+            this.tabPage2.Controls.Add(this.MarkerColorCheckbox);
+            this.tabPage2.Controls.Add(this.MarkerIconsCheckbox);
+            this.tabPage2.Controls.Add(this.StateColorCheckbox);
+            this.tabPage2.Controls.Add(this.StateIconsCheckbox);
+            this.tabPage2.Controls.Add(this.HideWasLagCheckbox);
+            this.tabPage2.Controls.Add(this.RotateCheckbox);
+            this.tabPage2.Controls.Add(this.FontButton);
+            this.tabPage2.Name = "tabPage2";
+            this.toolTip1.SetToolTip(this.tabPage2, resources.GetString("tabPage2.ToolTip"));
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            resources.ApplyResources(this.label10, "label10");
+            this.label10.Name = "label10";
+            this.toolTip1.SetToolTip(this.label10, resources.GetString("label10.ToolTip"));
+            // 
+            // label9
+            // 
+            resources.ApplyResources(this.label9, "label9");
+            this.label9.Name = "label9";
+            this.toolTip1.SetToolTip(this.label9, resources.GetString("label9.ToolTip"));
+            // 
+            // ColorsButton
+            // 
+            resources.ApplyResources(this.ColorsButton, "ColorsButton");
+            this.ColorsButton.Name = "ColorsButton";
+            this.toolTip1.SetToolTip(this.ColorsButton, resources.GetString("ColorsButton.ToolTip"));
+            this.ColorsButton.UseVisualStyleBackColor = true;
+            this.ColorsButton.Click += new System.EventHandler(this.ColorsButton_Click);
+            // 
+            // HideLagNum
+            // 
+            resources.ApplyResources(this.HideLagNum, "HideLagNum");
+            this.HideLagNum.Maximum = new decimal(new int[] {
             10,
             0,
             0,
             0});
-			this.HideLagNum.Name = "HideLagNum";
-			this.HideLagNum.Size = new System.Drawing.Size(50, 20);
-			this.HideLagNum.TabIndex = 102;
-			this.toolTip1.SetToolTip(this.HideLagNum, "Hide up to this many lag frames per group of consecutive lag frames. Intended for" +
-        " use in 30FPS games running on 60FPS consoles.");
-			// 
-			// MarkerColorCheckbox
-			// 
-			this.MarkerColorCheckbox.AutoSize = true;
-			this.MarkerColorCheckbox.Location = new System.Drawing.Point(6, 104);
-			this.MarkerColorCheckbox.Name = "MarkerColorCheckbox";
-			this.MarkerColorCheckbox.Size = new System.Drawing.Size(230, 17);
-			this.MarkerColorCheckbox.TabIndex = 6;
-			this.MarkerColorCheckbox.Text = "Denote markers with color on frame column";
-			this.toolTip1.SetToolTip(this.MarkerColorCheckbox, "If enabled, the frame column will have a different background color on each frame" +
-        " that TAStudio has a marker for.\r\n");
-			this.MarkerColorCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// MarkerIconsCheckbox
-			// 
-			this.MarkerIconsCheckbox.AutoSize = true;
-			this.MarkerIconsCheckbox.Location = new System.Drawing.Point(6, 81);
-			this.MarkerIconsCheckbox.Name = "MarkerIconsCheckbox";
-			this.MarkerIconsCheckbox.Size = new System.Drawing.Size(151, 17);
-			this.MarkerIconsCheckbox.TabIndex = 5;
-			this.MarkerIconsCheckbox.Text = "Denote markers with icons";
-			this.toolTip1.SetToolTip(this.MarkerIconsCheckbox, "If enabled, the frame column will contain an icon on each frame that TAStudio has" +
-        " a marker for.\r\n");
-			this.MarkerIconsCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// StateColorCheckbox
-			// 
-			this.StateColorCheckbox.AutoSize = true;
-			this.StateColorCheckbox.Location = new System.Drawing.Point(6, 58);
-			this.StateColorCheckbox.Name = "StateColorCheckbox";
-			this.StateColorCheckbox.Size = new System.Drawing.Size(200, 17);
-			this.StateColorCheckbox.TabIndex = 4;
-			this.StateColorCheckbox.Text = "Denote states with background color";
-			this.toolTip1.SetToolTip(this.StateColorCheckbox, "If enabled, the background color of a row will be slightly different when TAS" +
-        "tudio has a savestate for that frame.");
-			this.StateColorCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// StateIconsCheckbox
-			// 
-			this.StateIconsCheckbox.AutoSize = true;
-			this.StateIconsCheckbox.Location = new System.Drawing.Point(6, 35);
-			this.StateIconsCheckbox.Name = "StateIconsCheckbox";
-			this.StateIconsCheckbox.Size = new System.Drawing.Size(142, 17);
-			this.StateIconsCheckbox.TabIndex = 3;
-			this.StateIconsCheckbox.Text = "Denote states with icons";
-			this.toolTip1.SetToolTip(this.StateIconsCheckbox, "If enabled, the frame column will contain an icon on each frame that TAStudio has" +
-        " a savestate for.");
-			this.StateIconsCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// HideWasLagCheckbox
-			// 
-			this.HideWasLagCheckbox.AutoSize = true;
-			this.HideWasLagCheckbox.Location = new System.Drawing.Point(6, 210);
-			this.HideWasLagCheckbox.Name = "HideWasLagCheckbox";
-			this.HideWasLagCheckbox.Size = new System.Drawing.Size(131, 17);
-			this.HideWasLagCheckbox.TabIndex = 103;
-			this.HideWasLagCheckbox.Text = "Hide \"was lag\" frames";
-			this.toolTip1.SetToolTip(this.HideWasLagCheckbox, resources.GetString("HideWasLagCheckbox.ToolTip"));
-			this.HideWasLagCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// RotateCheckbox
-			// 
-			this.RotateCheckbox.AutoSize = true;
-			this.RotateCheckbox.Location = new System.Drawing.Point(6, 164);
-			this.RotateCheckbox.Name = "RotateCheckbox";
-			this.RotateCheckbox.Size = new System.Drawing.Size(100, 17);
-			this.RotateCheckbox.TabIndex = 100;
-			this.RotateCheckbox.Text = "Rotate input roll";
-			this.RotateCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// FontButton
-			// 
-			this.FontButton.Location = new System.Drawing.Point(6, 6);
-			this.FontButton.Name = "FontButton";
-			this.FontButton.Size = new System.Drawing.Size(75, 23);
-			this.FontButton.TabIndex = 1;
-			this.FontButton.Text = "Set Font";
-			this.FontButton.UseVisualStyleBackColor = true;
-			this.FontButton.Click += new System.EventHandler(this.FontButton_Click);
-			// 
-			// tabPage5
-			// 
-			this.tabPage5.Controls.Add(this.label11);
-			this.tabPage5.Controls.Add(this.BackupOnSaveCheckbox);
-			this.tabPage5.Controls.Add(this.AutosaveBackupCheckbox);
-			this.tabPage5.Controls.Add(this.AutosaveBk2Checkbox);
-			this.tabPage5.Controls.Add(this.label5);
-			this.tabPage5.Controls.Add(this.label4);
-			this.tabPage5.Controls.Add(this.AutosaveIntervalNum);
-			this.tabPage5.Location = new System.Drawing.Point(4, 22);
-			this.tabPage5.Name = "tabPage5";
-			this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage5.Size = new System.Drawing.Size(366, 407);
-			this.tabPage5.TabIndex = 4;
-			this.tabPage5.Text = "Autosave";
-			this.tabPage5.UseVisualStyleBackColor = true;
-			// 
-			// label11
-			// 
-			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(6, 29);
-			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(139, 13);
-			this.label11.TabIndex = 205;
-			this.label11.Text = "Set to 0 to disable autosave";
-			// 
-			// BackupOnSaveCheckbox
-			// 
-			this.BackupOnSaveCheckbox.AutoSize = true;
-			this.BackupOnSaveCheckbox.Location = new System.Drawing.Point(6, 102);
-			this.BackupOnSaveCheckbox.Name = "BackupOnSaveCheckbox";
-			this.BackupOnSaveCheckbox.Size = new System.Drawing.Size(226, 17);
-			this.BackupOnSaveCheckbox.TabIndex = 204;
-			this.BackupOnSaveCheckbox.Text = "When manually saving, also save .backup";
-			this.toolTip1.SetToolTip(this.BackupOnSaveCheckbox, "Save a backup .tasproj after each manual file save.");
-			this.BackupOnSaveCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// AutosaveBackupCheckbox
-			// 
-			this.AutosaveBackupCheckbox.AutoSize = true;
-			this.AutosaveBackupCheckbox.Location = new System.Drawing.Point(6, 79);
-			this.AutosaveBackupCheckbox.Name = "AutosaveBackupCheckbox";
-			this.AutosaveBackupCheckbox.Size = new System.Drawing.Size(181, 17);
-			this.AutosaveBackupCheckbox.TabIndex = 203;
-			this.AutosaveBackupCheckbox.Text = "Save as .backup (no greenzone)";
-			this.toolTip1.SetToolTip(this.AutosaveBackupCheckbox, resources.GetString("AutosaveBackupCheckbox.ToolTip"));
-			this.AutosaveBackupCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// AutosaveBk2Checkbox
-			// 
-			this.AutosaveBk2Checkbox.AutoSize = true;
-			this.AutosaveBk2Checkbox.Location = new System.Drawing.Point(6, 56);
-			this.AutosaveBk2Checkbox.Name = "AutosaveBk2Checkbox";
-			this.AutosaveBk2Checkbox.Size = new System.Drawing.Size(89, 17);
-			this.AutosaveBk2Checkbox.TabIndex = 202;
-			this.AutosaveBk2Checkbox.Text = "Save as .bk2";
-			this.toolTip1.SetToolTip(this.AutosaveBk2Checkbox, "Autosave will export the movie to a .bk2 file instead of saving a .tasproj file.");
-			this.AutosaveBk2Checkbox.UseVisualStyleBackColor = true;
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(208, 8);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(47, 13);
-			this.label5.TabIndex = 6;
-			this.label5.Text = "seconds";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(6, 8);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(105, 13);
-			this.label4.TabIndex = 5;
-			this.label4.Text = "Autosave frequency:";
-			// 
-			// AutosaveIntervalNum
-			// 
-			this.AutosaveIntervalNum.Location = new System.Drawing.Point(117, 6);
-			this.AutosaveIntervalNum.Maximum = new decimal(new int[] {
+            this.HideLagNum.Name = "HideLagNum";
+            this.toolTip1.SetToolTip(this.HideLagNum, resources.GetString("HideLagNum.ToolTip"));
+            // 
+            // MarkerColorCheckbox
+            // 
+            resources.ApplyResources(this.MarkerColorCheckbox, "MarkerColorCheckbox");
+            this.MarkerColorCheckbox.Name = "MarkerColorCheckbox";
+            this.toolTip1.SetToolTip(this.MarkerColorCheckbox, resources.GetString("MarkerColorCheckbox.ToolTip"));
+            this.MarkerColorCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // MarkerIconsCheckbox
+            // 
+            resources.ApplyResources(this.MarkerIconsCheckbox, "MarkerIconsCheckbox");
+            this.MarkerIconsCheckbox.Name = "MarkerIconsCheckbox";
+            this.toolTip1.SetToolTip(this.MarkerIconsCheckbox, resources.GetString("MarkerIconsCheckbox.ToolTip"));
+            this.MarkerIconsCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // StateColorCheckbox
+            // 
+            resources.ApplyResources(this.StateColorCheckbox, "StateColorCheckbox");
+            this.StateColorCheckbox.Name = "StateColorCheckbox";
+            this.toolTip1.SetToolTip(this.StateColorCheckbox, resources.GetString("StateColorCheckbox.ToolTip"));
+            this.StateColorCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // StateIconsCheckbox
+            // 
+            resources.ApplyResources(this.StateIconsCheckbox, "StateIconsCheckbox");
+            this.StateIconsCheckbox.Name = "StateIconsCheckbox";
+            this.toolTip1.SetToolTip(this.StateIconsCheckbox, resources.GetString("StateIconsCheckbox.ToolTip"));
+            this.StateIconsCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // HideWasLagCheckbox
+            // 
+            resources.ApplyResources(this.HideWasLagCheckbox, "HideWasLagCheckbox");
+            this.HideWasLagCheckbox.Name = "HideWasLagCheckbox";
+            this.toolTip1.SetToolTip(this.HideWasLagCheckbox, resources.GetString("HideWasLagCheckbox.ToolTip"));
+            this.HideWasLagCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // RotateCheckbox
+            // 
+            resources.ApplyResources(this.RotateCheckbox, "RotateCheckbox");
+            this.RotateCheckbox.Name = "RotateCheckbox";
+            this.toolTip1.SetToolTip(this.RotateCheckbox, resources.GetString("RotateCheckbox.ToolTip"));
+            this.RotateCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // FontButton
+            // 
+            resources.ApplyResources(this.FontButton, "FontButton");
+            this.FontButton.Name = "FontButton";
+            this.toolTip1.SetToolTip(this.FontButton, resources.GetString("FontButton.ToolTip"));
+            this.FontButton.UseVisualStyleBackColor = true;
+            this.FontButton.Click += new System.EventHandler(this.FontButton_Click);
+            // 
+            // tabPage5
+            // 
+            resources.ApplyResources(this.tabPage5, "tabPage5");
+            this.tabPage5.Controls.Add(this.label11);
+            this.tabPage5.Controls.Add(this.BackupOnSaveCheckbox);
+            this.tabPage5.Controls.Add(this.AutosaveBackupCheckbox);
+            this.tabPage5.Controls.Add(this.AutosaveBk2Checkbox);
+            this.tabPage5.Controls.Add(this.label5);
+            this.tabPage5.Controls.Add(this.label4);
+            this.tabPage5.Controls.Add(this.AutosaveIntervalNum);
+            this.tabPage5.Name = "tabPage5";
+            this.toolTip1.SetToolTip(this.tabPage5, resources.GetString("tabPage5.ToolTip"));
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // label11
+            // 
+            resources.ApplyResources(this.label11, "label11");
+            this.label11.Name = "label11";
+            this.toolTip1.SetToolTip(this.label11, resources.GetString("label11.ToolTip"));
+            // 
+            // BackupOnSaveCheckbox
+            // 
+            resources.ApplyResources(this.BackupOnSaveCheckbox, "BackupOnSaveCheckbox");
+            this.BackupOnSaveCheckbox.Name = "BackupOnSaveCheckbox";
+            this.toolTip1.SetToolTip(this.BackupOnSaveCheckbox, resources.GetString("BackupOnSaveCheckbox.ToolTip"));
+            this.BackupOnSaveCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // AutosaveBackupCheckbox
+            // 
+            resources.ApplyResources(this.AutosaveBackupCheckbox, "AutosaveBackupCheckbox");
+            this.AutosaveBackupCheckbox.Name = "AutosaveBackupCheckbox";
+            this.toolTip1.SetToolTip(this.AutosaveBackupCheckbox, resources.GetString("AutosaveBackupCheckbox.ToolTip"));
+            this.AutosaveBackupCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // AutosaveBk2Checkbox
+            // 
+            resources.ApplyResources(this.AutosaveBk2Checkbox, "AutosaveBk2Checkbox");
+            this.AutosaveBk2Checkbox.Name = "AutosaveBk2Checkbox";
+            this.toolTip1.SetToolTip(this.AutosaveBk2Checkbox, resources.GetString("AutosaveBk2Checkbox.ToolTip"));
+            this.AutosaveBk2Checkbox.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
+            this.toolTip1.SetToolTip(this.label5, resources.GetString("label5.ToolTip"));
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            this.toolTip1.SetToolTip(this.label4, resources.GetString("label4.ToolTip"));
+            // 
+            // AutosaveIntervalNum
+            // 
+            resources.ApplyResources(this.AutosaveIntervalNum, "AutosaveIntervalNum");
+            this.AutosaveIntervalNum.Maximum = new decimal(new int[] {
             10000000,
             0,
             0,
             0});
-			this.AutosaveIntervalNum.Name = "AutosaveIntervalNum";
-			this.AutosaveIntervalNum.Size = new System.Drawing.Size(85, 20);
-			this.AutosaveIntervalNum.TabIndex = 201;
-			this.toolTip1.SetToolTip(this.AutosaveIntervalNum, resources.GetString("AutosaveIntervalNum.ToolTip"));
-			// 
-			// tabPage4
-			// 
-			this.tabPage4.Controls.Add(this.StatesForMarkersCheckbox);
-			this.tabPage4.Controls.Add(this.label12);
-			this.tabPage4.Controls.Add(this.DefaultManagerSettingsAppliedLabel);
-			this.tabPage4.Controls.Add(this.SetDefaultStateSettingsButton);
-			this.tabPage4.Controls.Add(this.DefaultStateSettingsButton);
-			this.tabPage4.Controls.Add(this.ManagerSettingsPropertyGrid);
-			this.tabPage4.Controls.Add(this.StrategyBox);
-			this.tabPage4.Controls.Add(this.label6);
-			this.tabPage4.Location = new System.Drawing.Point(4, 22);
-			this.tabPage4.Name = "tabPage4";
-			this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage4.Size = new System.Drawing.Size(366, 407);
-			this.tabPage4.TabIndex = 3;
-			this.tabPage4.Text = "Savestates";
-			this.tabPage4.UseVisualStyleBackColor = true;
-			// 
-			// label12
-			// 
-			this.label12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(9, 362);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(230, 13);
-			this.label12.TabIndex = 306;
-			this.label12.Text = "Each movie contains its own savestate settings";
-			// 
-			// DefaultManagerSettingsAppliedLabel
-			// 
-			this.DefaultManagerSettingsAppliedLabel.AutoSize = true;
-			this.DefaultManagerSettingsAppliedLabel.Location = new System.Drawing.Point(149, 383);
-			this.DefaultManagerSettingsAppliedLabel.Name = "DefaultManagerSettingsAppliedLabel";
-			this.DefaultManagerSettingsAppliedLabel.Size = new System.Drawing.Size(41, 13);
-			this.DefaultManagerSettingsAppliedLabel.TabIndex = 305;
-			this.DefaultManagerSettingsAppliedLabel.Text = "applied";
-			this.DefaultManagerSettingsAppliedLabel.Visible = false;
-			// 
-			// SetDefaultStateSettingsButton
-			// 
-			this.SetDefaultStateSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.SetDefaultStateSettingsButton.Location = new System.Drawing.Point(196, 378);
-			this.SetDefaultStateSettingsButton.Name = "SetDefaultStateSettingsButton";
-			this.SetDefaultStateSettingsButton.Size = new System.Drawing.Size(155, 23);
-			this.SetDefaultStateSettingsButton.TabIndex = 304;
-			this.SetDefaultStateSettingsButton.Text = "Use these settings as default";
-			this.SetDefaultStateSettingsButton.UseVisualStyleBackColor = true;
-			this.SetDefaultStateSettingsButton.Click += new System.EventHandler(this.SetDefaultStateSettingsButton_Click);
-			// 
-			// DefaultStateSettingsButton
-			// 
-			this.DefaultStateSettingsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.DefaultStateSettingsButton.Location = new System.Drawing.Point(9, 378);
-			this.DefaultStateSettingsButton.Name = "DefaultStateSettingsButton";
-			this.DefaultStateSettingsButton.Size = new System.Drawing.Size(128, 23);
-			this.DefaultStateSettingsButton.TabIndex = 303;
-			this.DefaultStateSettingsButton.Text = "Use default settings";
-			this.DefaultStateSettingsButton.UseVisualStyleBackColor = true;
-			this.DefaultStateSettingsButton.Click += new System.EventHandler(this.DefaultStateSettingsButton_Click);
-			// 
-			// ManagerSettingsPropertyGrid
-			// 
-			this.ManagerSettingsPropertyGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ManagerSettingsPropertyGrid.Location = new System.Drawing.Point(9, 33);
-			this.ManagerSettingsPropertyGrid.Name = "ManagerSettingsPropertyGrid";
-			this.ManagerSettingsPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
-			this.ManagerSettingsPropertyGrid.Size = new System.Drawing.Size(347, 326);
-			this.ManagerSettingsPropertyGrid.TabIndex = 301;
-			this.ManagerSettingsPropertyGrid.ToolbarVisible = false;
-			// 
-			// StrategyBox
-			// 
-			this.StrategyBox.FormattingEnabled = true;
-			this.StrategyBox.Items.AddRange(new object[] {
-            "Old manager",
-            "New manager"});
-			this.StrategyBox.Location = new System.Drawing.Point(124, 6);
-			this.StrategyBox.Name = "StrategyBox";
-			this.StrategyBox.Size = new System.Drawing.Size(159, 21);
-			this.StrategyBox.TabIndex = 300;
-			this.StrategyBox.SelectedIndexChanged += new System.EventHandler(this.StrategyBox_SelectedIndexChanged);
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(6, 9);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(112, 13);
-			this.label6.TabIndex = 0;
-			this.label6.Text = "Management strategy:";
-			// 
-			// tabPage1
-			// 
-			this.tabPage1.Controls.Add(this.CustomPatternsGroupBox);
-			this.tabPage1.Controls.Add(this.groupBox2);
-			this.tabPage1.Controls.Add(this.groupBox1);
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(366, 407);
-			this.tabPage1.TabIndex = 5;
-			this.tabPage1.Text = "Paint Patterns";
-			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
-			// CustomPatternsGroupBox
-			// 
-			this.CustomPatternsGroupBox.Controls.Add(this.OnOffBox);
-			this.CustomPatternsGroupBox.Controls.Add(this.CountNum);
-			this.CustomPatternsGroupBox.Controls.Add(this.ValueNum);
-			this.CustomPatternsGroupBox.Controls.Add(this.locLabelEx1);
-			this.CustomPatternsGroupBox.Controls.Add(this.locLabelEx2);
-			this.CustomPatternsGroupBox.Controls.Add(this.LagBox);
-			this.CustomPatternsGroupBox.Controls.Add(this.DeleteButton);
-			this.CustomPatternsGroupBox.Controls.Add(this.InsertButton);
-			this.CustomPatternsGroupBox.Controls.Add(this.PatternList);
-			this.CustomPatternsGroupBox.Controls.Add(this.ButtonBox);
-			this.CustomPatternsGroupBox.Enabled = false;
-			this.CustomPatternsGroupBox.Location = new System.Drawing.Point(6, 103);
-			this.CustomPatternsGroupBox.Name = "CustomPatternsGroupBox";
-			this.CustomPatternsGroupBox.Size = new System.Drawing.Size(239, 269);
-			this.CustomPatternsGroupBox.TabIndex = 5;
-			this.CustomPatternsGroupBox.TabStop = false;
-			this.CustomPatternsGroupBox.Text = "Set custom patterns (per movie)";
-			// 
-			// OnOffBox
-			// 
-			this.OnOffBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.OnOffBox.AutoSize = true;
-			this.OnOffBox.Location = new System.Drawing.Point(42, 187);
-			this.OnOffBox.Name = "OnOffBox";
-			this.OnOffBox.Size = new System.Drawing.Size(15, 14);
-			this.OnOffBox.TabIndex = 422;
-			this.OnOffBox.UseVisualStyleBackColor = true;
-			this.OnOffBox.CheckedChanged += new System.EventHandler(this.OnOffBox_CheckedChanged);
-			// 
-			// CountNum
-			// 
-			this.CountNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.CountNum.Location = new System.Drawing.Point(143, 186);
-			this.CountNum.Minimum = new decimal(new int[] {
+            this.AutosaveIntervalNum.Name = "AutosaveIntervalNum";
+            this.toolTip1.SetToolTip(this.AutosaveIntervalNum, resources.GetString("AutosaveIntervalNum.ToolTip"));
+            // 
+            // tabPage4
+            // 
+            resources.ApplyResources(this.tabPage4, "tabPage4");
+            this.tabPage4.Controls.Add(this.label12);
+            this.tabPage4.Controls.Add(this.DefaultManagerSettingsAppliedLabel);
+            this.tabPage4.Controls.Add(this.SetDefaultStateSettingsButton);
+            this.tabPage4.Controls.Add(this.DefaultStateSettingsButton);
+            this.tabPage4.Controls.Add(this.ManagerSettingsPropertyGrid);
+            this.tabPage4.Controls.Add(this.StrategyBox);
+            this.tabPage4.Controls.Add(this.label6);
+            this.tabPage4.Name = "tabPage4";
+            this.toolTip1.SetToolTip(this.tabPage4, resources.GetString("tabPage4.ToolTip"));
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            resources.ApplyResources(this.label12, "label12");
+            this.label12.Name = "label12";
+            this.toolTip1.SetToolTip(this.label12, resources.GetString("label12.ToolTip"));
+            // 
+            // DefaultManagerSettingsAppliedLabel
+            // 
+            resources.ApplyResources(this.DefaultManagerSettingsAppliedLabel, "DefaultManagerSettingsAppliedLabel");
+            this.DefaultManagerSettingsAppliedLabel.Name = "DefaultManagerSettingsAppliedLabel";
+            this.toolTip1.SetToolTip(this.DefaultManagerSettingsAppliedLabel, resources.GetString("DefaultManagerSettingsAppliedLabel.ToolTip"));
+            // 
+            // SetDefaultStateSettingsButton
+            // 
+            resources.ApplyResources(this.SetDefaultStateSettingsButton, "SetDefaultStateSettingsButton");
+            this.SetDefaultStateSettingsButton.Name = "SetDefaultStateSettingsButton";
+            this.toolTip1.SetToolTip(this.SetDefaultStateSettingsButton, resources.GetString("SetDefaultStateSettingsButton.ToolTip"));
+            this.SetDefaultStateSettingsButton.UseVisualStyleBackColor = true;
+            this.SetDefaultStateSettingsButton.Click += new System.EventHandler(this.SetDefaultStateSettingsButton_Click);
+            // 
+            // DefaultStateSettingsButton
+            // 
+            resources.ApplyResources(this.DefaultStateSettingsButton, "DefaultStateSettingsButton");
+            this.DefaultStateSettingsButton.Name = "DefaultStateSettingsButton";
+            this.toolTip1.SetToolTip(this.DefaultStateSettingsButton, resources.GetString("DefaultStateSettingsButton.ToolTip"));
+            this.DefaultStateSettingsButton.UseVisualStyleBackColor = true;
+            this.DefaultStateSettingsButton.Click += new System.EventHandler(this.DefaultStateSettingsButton_Click);
+            // 
+            // ManagerSettingsPropertyGrid
+            // 
+            resources.ApplyResources(this.ManagerSettingsPropertyGrid, "ManagerSettingsPropertyGrid");
+            this.ManagerSettingsPropertyGrid.Name = "ManagerSettingsPropertyGrid";
+            this.ManagerSettingsPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.NoSort;
+            this.ManagerSettingsPropertyGrid.ToolbarVisible = false;
+            this.toolTip1.SetToolTip(this.ManagerSettingsPropertyGrid, resources.GetString("ManagerSettingsPropertyGrid.ToolTip"));
+            // 
+            // StrategyBox
+            // 
+            resources.ApplyResources(this.StrategyBox, "StrategyBox");
+            this.StrategyBox.FormattingEnabled = true;
+            this.StrategyBox.Items.AddRange(new object[] {
+            resources.GetString("StrategyBox.Items"),
+            resources.GetString("StrategyBox.Items1")});
+            this.StrategyBox.Name = "StrategyBox";
+            this.toolTip1.SetToolTip(this.StrategyBox, resources.GetString("StrategyBox.ToolTip"));
+            this.StrategyBox.SelectedIndexChanged += new System.EventHandler(this.StrategyBox_SelectedIndexChanged);
+            // 
+            // label6
+            // 
+            resources.ApplyResources(this.label6, "label6");
+            this.label6.Name = "label6";
+            this.toolTip1.SetToolTip(this.label6, resources.GetString("label6.ToolTip"));
+            // 
+            // tabPage1
+            // 
+            resources.ApplyResources(this.tabPage1, "tabPage1");
+            this.tabPage1.Controls.Add(this.CustomPatternsGroupBox);
+            this.tabPage1.Controls.Add(this.groupBox2);
+            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Name = "tabPage1";
+            this.toolTip1.SetToolTip(this.tabPage1, resources.GetString("tabPage1.ToolTip"));
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // CustomPatternsGroupBox
+            // 
+            resources.ApplyResources(this.CustomPatternsGroupBox, "CustomPatternsGroupBox");
+            this.CustomPatternsGroupBox.Controls.Add(this.OnOffBox);
+            this.CustomPatternsGroupBox.Controls.Add(this.CountNum);
+            this.CustomPatternsGroupBox.Controls.Add(this.ValueNum);
+            this.CustomPatternsGroupBox.Controls.Add(this.locLabelEx1);
+            this.CustomPatternsGroupBox.Controls.Add(this.locLabelEx2);
+            this.CustomPatternsGroupBox.Controls.Add(this.LagBox);
+            this.CustomPatternsGroupBox.Controls.Add(this.DeleteButton);
+            this.CustomPatternsGroupBox.Controls.Add(this.InsertButton);
+            this.CustomPatternsGroupBox.Controls.Add(this.PatternList);
+            this.CustomPatternsGroupBox.Controls.Add(this.ButtonBox);
+            this.CustomPatternsGroupBox.Name = "CustomPatternsGroupBox";
+            this.CustomPatternsGroupBox.TabStop = false;
+            this.toolTip1.SetToolTip(this.CustomPatternsGroupBox, resources.GetString("CustomPatternsGroupBox.ToolTip"));
+            // 
+            // OnOffBox
+            // 
+            resources.ApplyResources(this.OnOffBox, "OnOffBox");
+            this.OnOffBox.Name = "OnOffBox";
+            this.toolTip1.SetToolTip(this.OnOffBox, resources.GetString("OnOffBox.ToolTip"));
+            this.OnOffBox.UseVisualStyleBackColor = true;
+            this.OnOffBox.CheckedChanged += new System.EventHandler(this.OnOffBox_CheckedChanged);
+            // 
+            // CountNum
+            // 
+            resources.ApplyResources(this.CountNum, "CountNum");
+            this.CountNum.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.CountNum.Name = "CountNum";
-			this.CountNum.Size = new System.Drawing.Size(38, 20);
-			this.CountNum.TabIndex = 423;
-			this.CountNum.Value = new decimal(new int[] {
+            this.CountNum.Name = "CountNum";
+            this.toolTip1.SetToolTip(this.CountNum, resources.GetString("CountNum.ToolTip"));
+            this.CountNum.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.CountNum.ValueChanged += new System.EventHandler(this.CountNum_ValueChanged);
-			// 
-			// ValueNum
-			// 
-			this.ValueNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.ValueNum.Location = new System.Drawing.Point(42, 186);
-			this.ValueNum.Maximum = new decimal(new int[] {
+            this.CountNum.ValueChanged += new System.EventHandler(this.CountNum_ValueChanged);
+            // 
+            // ValueNum
+            // 
+            resources.ApplyResources(this.ValueNum, "ValueNum");
+            this.ValueNum.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-			this.ValueNum.Minimum = new decimal(new int[] {
+            this.ValueNum.Minimum = new decimal(new int[] {
             10000,
             0,
             0,
             -2147483648});
-			this.ValueNum.Name = "ValueNum";
-			this.ValueNum.Size = new System.Drawing.Size(51, 20);
-			this.ValueNum.TabIndex = 422;
-			this.ValueNum.Visible = false;
-			this.ValueNum.ValueChanged += new System.EventHandler(this.ValueNum_ValueChanged);
-			// 
-			// locLabelEx1
-			// 
-			this.locLabelEx1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.locLabelEx1.Location = new System.Drawing.Point(103, 188);
-			this.locLabelEx1.Name = "locLabelEx1";
-			this.locLabelEx1.Text = "Count:";
-			// 
-			// locLabelEx2
-			// 
-			this.locLabelEx2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.locLabelEx2.Location = new System.Drawing.Point(3, 188);
-			this.locLabelEx2.Name = "locLabelEx2";
-			this.locLabelEx2.Text = "Value:";
-			// 
-			// LagBox
-			// 
-			this.LagBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.LagBox.AutoSize = true;
-			this.LagBox.Checked = true;
-			this.LagBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.LagBox.Location = new System.Drawing.Point(6, 243);
-			this.LagBox.Name = "LagBox";
-			this.LagBox.Size = new System.Drawing.Size(132, 17);
-			this.LagBox.TabIndex = 426;
-			this.LagBox.Text = "Account for lag frames";
-			this.LagBox.UseVisualStyleBackColor = true;
-			this.LagBox.CheckedChanged += new System.EventHandler(this.LagBox_CheckedChanged);
-			// 
-			// DeleteButton
-			// 
-			this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.DeleteButton.Location = new System.Drawing.Point(124, 214);
-			this.DeleteButton.Name = "DeleteButton";
-			this.DeleteButton.Size = new System.Drawing.Size(57, 23);
-			this.DeleteButton.TabIndex = 425;
-			this.DeleteButton.Text = "Delete";
-			this.DeleteButton.UseVisualStyleBackColor = true;
-			this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
-			// 
-			// InsertButton
-			// 
-			this.InsertButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.InsertButton.Location = new System.Drawing.Point(6, 214);
-			this.InsertButton.Name = "InsertButton";
-			this.InsertButton.Size = new System.Drawing.Size(57, 23);
-			this.InsertButton.TabIndex = 424;
-			this.InsertButton.Text = "Insert";
-			this.InsertButton.UseVisualStyleBackColor = true;
-			this.InsertButton.Click += new System.EventHandler(this.InsertButton_Click);
-			// 
-			// PatternList
-			// 
-			this.PatternList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.PatternList.FormattingEnabled = true;
-			this.PatternList.Items.AddRange(new object[] {
-            "0: On\t(x1)",
-            "1: Off\t(x1)",
-            "Loop to 0"});
-			this.PatternList.Location = new System.Drawing.Point(6, 46);
-			this.PatternList.Name = "PatternList";
-			this.PatternList.Size = new System.Drawing.Size(225, 134);
-			this.PatternList.TabIndex = 421;
-			this.PatternList.SelectedIndexChanged += new System.EventHandler(this.PatternList_SelectedIndexChanged);
-			// 
-			// ButtonBox
-			// 
-			this.ButtonBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.ButtonBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ButtonBox.FormattingEnabled = true;
-			this.ButtonBox.Location = new System.Drawing.Point(6, 19);
-			this.ButtonBox.Name = "ButtonBox";
-			this.ButtonBox.Size = new System.Drawing.Size(225, 21);
-			this.ButtonBox.TabIndex = 420;
-			this.ButtonBox.SelectedIndexChanged += new System.EventHandler(this.ButtonBox_SelectedIndexChanged);
-			// 
-			// groupBox2
-			// 
-			this.groupBox2.Controls.Add(this.PatternCustomRadioButton);
-			this.groupBox2.Controls.Add(this.PatternHoldRadioButton);
-			this.groupBox2.Controls.Add(this.PatternAutoFireRadioButton);
-			this.groupBox2.Location = new System.Drawing.Point(154, 3);
-			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(143, 94);
-			this.groupBox2.TabIndex = 4;
-			this.groupBox2.TabStop = false;
-			this.groupBox2.Text = "Choose pattern";
-			// 
-			// PatternCustomRadioButton
-			// 
-			this.PatternCustomRadioButton.AutoSize = true;
-			this.PatternCustomRadioButton.Location = new System.Drawing.Point(6, 68);
-			this.PatternCustomRadioButton.Name = "PatternCustomRadioButton";
-			this.PatternCustomRadioButton.Size = new System.Drawing.Size(60, 17);
-			this.PatternCustomRadioButton.TabIndex = 412;
-			this.PatternCustomRadioButton.TabStop = true;
-			this.PatternCustomRadioButton.Text = "Custom";
-			this.toolTip1.SetToolTip(this.PatternCustomRadioButton, "Auto-fire buttons will use a custom pattern on newly emulated frames past the end of the movie.");
-			this.PatternCustomRadioButton.UseVisualStyleBackColor = true;
-			this.PatternCustomRadioButton.CheckedChanged += new System.EventHandler(this.PatternCustomRadioButton_CheckedChanged);
-			// 
-			// PatternHoldRadioButton
-			// 
-			this.PatternHoldRadioButton.AutoSize = true;
-			this.PatternHoldRadioButton.Location = new System.Drawing.Point(6, 22);
-			this.PatternHoldRadioButton.Name = "PatternHoldRadioButton";
-			this.PatternHoldRadioButton.Size = new System.Drawing.Size(47, 17);
-			this.PatternHoldRadioButton.TabIndex = 410;
-			this.PatternHoldRadioButton.TabStop = true;
-			this.PatternHoldRadioButton.Text = "Hold";
-			this.toolTip1.SetToolTip(this.PatternHoldRadioButton, "Auto-fire buttons will be held on newly emulated frames past the end of the movie.");
-			this.PatternHoldRadioButton.UseVisualStyleBackColor = true;
-			// 
-			// PatternAutoFireRadioButton
-			// 
-			this.PatternAutoFireRadioButton.AutoSize = true;
-			this.PatternAutoFireRadioButton.Location = new System.Drawing.Point(6, 45);
-			this.PatternAutoFireRadioButton.Name = "PatternAutoFireRadioButton";
-			this.PatternAutoFireRadioButton.Size = new System.Drawing.Size(67, 17);
-			this.PatternAutoFireRadioButton.TabIndex = 411;
-			this.PatternAutoFireRadioButton.TabStop = true;
-			this.PatternAutoFireRadioButton.Text = "Auto-Fire";
-			this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, "Auto-fire buttons will alternate on/off on newly emulated frames past the end of the movie.");
-			this.PatternAutoFireRadioButton.UseVisualStyleBackColor = true;
-			// 
-			// groupBox1
-			// 
-			this.groupBox1.Controls.Add(this.PatternPaintAlwaysRadioButton);
-			this.groupBox1.Controls.Add(this.PatternPaintAutoColumnsOnlyRadioButton);
-			this.groupBox1.Controls.Add(this.PatternPaintNeverRadioButton);
-			this.groupBox1.Location = new System.Drawing.Point(6, 6);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(142, 91);
-			this.groupBox1.TabIndex = 3;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Use pattern for painting";
-			// 
-			// PatternPaintAlwaysRadioButton
-			// 
-			this.PatternPaintAlwaysRadioButton.AutoSize = true;
-			this.PatternPaintAlwaysRadioButton.Location = new System.Drawing.Point(6, 65);
-			this.PatternPaintAlwaysRadioButton.Name = "PatternPaintAlwaysRadioButton";
-			this.PatternPaintAlwaysRadioButton.Size = new System.Drawing.Size(58, 17);
-			this.PatternPaintAlwaysRadioButton.TabIndex = 402;
-			this.PatternPaintAlwaysRadioButton.TabStop = true;
-			this.PatternPaintAlwaysRadioButton.Text = "Always";
-			this.toolTip1.SetToolTip(this.PatternPaintAlwaysRadioButton, "Painting in all button columns will be painted as auto-fire, or\r\nwith their custo" +
-        "m pattern, if \"Auto-Fire\" or \"Custom\" is selected.\r\n");
-			this.PatternPaintAlwaysRadioButton.UseVisualStyleBackColor = true;
-			// 
-			// PatternPaintAutoColumnsOnlyRadioButton
-			// 
-			this.PatternPaintAutoColumnsOnlyRadioButton.AutoSize = true;
-			this.PatternPaintAutoColumnsOnlyRadioButton.Location = new System.Drawing.Point(6, 42);
-			this.PatternPaintAutoColumnsOnlyRadioButton.Name = "PatternPaintAutoColumnsOnlyRadioButton";
-			this.PatternPaintAutoColumnsOnlyRadioButton.Size = new System.Drawing.Size(131, 17);
-			this.PatternPaintAutoColumnsOnlyRadioButton.TabIndex = 401;
-			this.PatternPaintAutoColumnsOnlyRadioButton.TabStop = true;
-			this.PatternPaintAutoColumnsOnlyRadioButton.Text = "Auto-Fire columns only";
-			this.toolTip1.SetToolTip(this.PatternPaintAutoColumnsOnlyRadioButton, "Painting in auto-fire columns will be painted as auto-fire, or\r\nwith their custom " +
-        "pattern, if \"Auto-Fire\" or \"Custom\" is selected.");
-			this.PatternPaintAutoColumnsOnlyRadioButton.UseVisualStyleBackColor = true;
-			// 
-			// PatternPaintNeverRadioButton
-			// 
-			this.PatternPaintNeverRadioButton.AutoSize = true;
-			this.PatternPaintNeverRadioButton.Location = new System.Drawing.Point(6, 19);
-			this.PatternPaintNeverRadioButton.Name = "PatternPaintNeverRadioButton";
-			this.PatternPaintNeverRadioButton.Size = new System.Drawing.Size(54, 17);
-			this.PatternPaintNeverRadioButton.TabIndex = 400;
-			this.PatternPaintNeverRadioButton.TabStop = true;
-			this.PatternPaintNeverRadioButton.Text = "Never";
-			this.toolTip1.SetToolTip(this.PatternPaintNeverRadioButton, "Normal painting.");
-			this.PatternPaintNeverRadioButton.UseVisualStyleBackColor = true;
-			// 
-			// tabPage3
-			// 
-			this.tabPage3.Controls.Add(this.StatesForMarkersCheckbox);
-			this.tabPage3.Controls.Add(this.OldBranchesCheckbox);
-			this.tabPage3.Controls.Add(this.BranchDoubleClickCheckbox);
-			this.tabPage3.Controls.Add(this.FastRewindNum);
-			this.tabPage3.Controls.Add(this.label8);
-			this.tabPage3.Controls.Add(this.RewindNum);
-			this.tabPage3.Controls.Add(this.label7);
-			this.tabPage3.Controls.Add(this.BindMarkersCheckbox);
-			this.tabPage3.Controls.Add(this.IncludeFrameNumberCheckbox);
-			this.tabPage3.Controls.Add(this.UndoCountNum);
-			this.tabPage3.Controls.Add(this.label1);
-			this.tabPage3.Controls.Add(this.AutopauseCheckbox);
-			this.tabPage3.Location = new System.Drawing.Point(4, 22);
-			this.tabPage3.Name = "tabPage3";
-			this.tabPage3.Size = new System.Drawing.Size(366, 407);
-			this.tabPage3.TabIndex = 2;
-			this.tabPage3.Text = "Misc";
-			this.tabPage3.UseVisualStyleBackColor = true;
-			// 
-			// OldBranchesCheckbox
-			// 
-			this.OldBranchesCheckbox.AutoSize = true;
-			this.OldBranchesCheckbox.Location = new System.Drawing.Point(12, 177);
-			this.OldBranchesCheckbox.Name = "OldBranchesCheckbox";
-			this.OldBranchesCheckbox.Size = new System.Drawing.Size(179, 17);
-			this.OldBranchesCheckbox.TabIndex = 518;
-			this.OldBranchesCheckbox.Text = "Old control scheme for branches";
-			this.toolTip1.SetToolTip(this.OldBranchesCheckbox, resources.GetString("OldBranchesCheckbox.ToolTip"));
-			this.OldBranchesCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// BranchDoubleClickCheckbox
-			// 
-			this.BranchDoubleClickCheckbox.AutoSize = true;
-			this.BranchDoubleClickCheckbox.Location = new System.Drawing.Point(12, 154);
-			this.BranchDoubleClickCheckbox.Name = "BranchDoubleClickCheckbox";
-			this.BranchDoubleClickCheckbox.Size = new System.Drawing.Size(174, 17);
-			this.BranchDoubleClickCheckbox.TabIndex = 517;
-			this.BranchDoubleClickCheckbox.Text = "Load branch by double clicking";
-			this.BranchDoubleClickCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// FastRewindNum
-			// 
-			this.FastRewindNum.Location = new System.Drawing.Point(116, 31);
-			this.FastRewindNum.Minimum = new decimal(new int[] {
+            this.ValueNum.Name = "ValueNum";
+            this.toolTip1.SetToolTip(this.ValueNum, resources.GetString("ValueNum.ToolTip"));
+            this.ValueNum.ValueChanged += new System.EventHandler(this.ValueNum_ValueChanged);
+            // 
+            // locLabelEx1
+            // 
+            resources.ApplyResources(this.locLabelEx1, "locLabelEx1");
+            this.locLabelEx1.Name = "locLabelEx1";
+            this.toolTip1.SetToolTip(this.locLabelEx1, resources.GetString("locLabelEx1.ToolTip"));
+            // 
+            // locLabelEx2
+            // 
+            resources.ApplyResources(this.locLabelEx2, "locLabelEx2");
+            this.locLabelEx2.Name = "locLabelEx2";
+            this.toolTip1.SetToolTip(this.locLabelEx2, resources.GetString("locLabelEx2.ToolTip"));
+            // 
+            // LagBox
+            // 
+            resources.ApplyResources(this.LagBox, "LagBox");
+            this.LagBox.Checked = true;
+            this.LagBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.LagBox.Name = "LagBox";
+            this.toolTip1.SetToolTip(this.LagBox, resources.GetString("LagBox.ToolTip"));
+            this.LagBox.UseVisualStyleBackColor = true;
+            this.LagBox.CheckedChanged += new System.EventHandler(this.LagBox_CheckedChanged);
+            // 
+            // DeleteButton
+            // 
+            resources.ApplyResources(this.DeleteButton, "DeleteButton");
+            this.DeleteButton.Name = "DeleteButton";
+            this.toolTip1.SetToolTip(this.DeleteButton, resources.GetString("DeleteButton.ToolTip"));
+            this.DeleteButton.UseVisualStyleBackColor = true;
+            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
+            // 
+            // InsertButton
+            // 
+            resources.ApplyResources(this.InsertButton, "InsertButton");
+            this.InsertButton.Name = "InsertButton";
+            this.toolTip1.SetToolTip(this.InsertButton, resources.GetString("InsertButton.ToolTip"));
+            this.InsertButton.UseVisualStyleBackColor = true;
+            this.InsertButton.Click += new System.EventHandler(this.InsertButton_Click);
+            // 
+            // PatternList
+            // 
+            resources.ApplyResources(this.PatternList, "PatternList");
+            this.PatternList.FormattingEnabled = true;
+            this.PatternList.Items.AddRange(new object[] {
+            resources.GetString("PatternList.Items"),
+            resources.GetString("PatternList.Items1"),
+            resources.GetString("PatternList.Items2")});
+            this.PatternList.Name = "PatternList";
+            this.toolTip1.SetToolTip(this.PatternList, resources.GetString("PatternList.ToolTip"));
+            this.PatternList.SelectedIndexChanged += new System.EventHandler(this.PatternList_SelectedIndexChanged);
+            // 
+            // ButtonBox
+            // 
+            resources.ApplyResources(this.ButtonBox, "ButtonBox");
+            this.ButtonBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ButtonBox.FormattingEnabled = true;
+            this.ButtonBox.Name = "ButtonBox";
+            this.toolTip1.SetToolTip(this.ButtonBox, resources.GetString("ButtonBox.ToolTip"));
+            this.ButtonBox.SelectedIndexChanged += new System.EventHandler(this.ButtonBox_SelectedIndexChanged);
+            // 
+            // groupBox2
+            // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
+            this.groupBox2.Controls.Add(this.PatternCustomRadioButton);
+            this.groupBox2.Controls.Add(this.PatternHoldRadioButton);
+            this.groupBox2.Controls.Add(this.PatternAutoFireRadioButton);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox2, resources.GetString("groupBox2.ToolTip"));
+            // 
+            // PatternCustomRadioButton
+            // 
+            resources.ApplyResources(this.PatternCustomRadioButton, "PatternCustomRadioButton");
+            this.PatternCustomRadioButton.Name = "PatternCustomRadioButton";
+            this.PatternCustomRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.PatternCustomRadioButton, resources.GetString("PatternCustomRadioButton.ToolTip"));
+            this.PatternCustomRadioButton.UseVisualStyleBackColor = true;
+            this.PatternCustomRadioButton.CheckedChanged += new System.EventHandler(this.PatternCustomRadioButton_CheckedChanged);
+            // 
+            // PatternHoldRadioButton
+            // 
+            resources.ApplyResources(this.PatternHoldRadioButton, "PatternHoldRadioButton");
+            this.PatternHoldRadioButton.Name = "PatternHoldRadioButton";
+            this.PatternHoldRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.PatternHoldRadioButton, resources.GetString("PatternHoldRadioButton.ToolTip"));
+            this.PatternHoldRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // PatternAutoFireRadioButton
+            // 
+            resources.ApplyResources(this.PatternAutoFireRadioButton, "PatternAutoFireRadioButton");
+            this.PatternAutoFireRadioButton.Name = "PatternAutoFireRadioButton";
+            this.PatternAutoFireRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.PatternAutoFireRadioButton, resources.GetString("PatternAutoFireRadioButton.ToolTip"));
+            this.PatternAutoFireRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.PatternPaintAlwaysRadioButton);
+            this.groupBox1.Controls.Add(this.PatternPaintAutoColumnsOnlyRadioButton);
+            this.groupBox1.Controls.Add(this.PatternPaintNeverRadioButton);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox1, resources.GetString("groupBox1.ToolTip"));
+            // 
+            // PatternPaintAlwaysRadioButton
+            // 
+            resources.ApplyResources(this.PatternPaintAlwaysRadioButton, "PatternPaintAlwaysRadioButton");
+            this.PatternPaintAlwaysRadioButton.Name = "PatternPaintAlwaysRadioButton";
+            this.PatternPaintAlwaysRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.PatternPaintAlwaysRadioButton, resources.GetString("PatternPaintAlwaysRadioButton.ToolTip"));
+            this.PatternPaintAlwaysRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // PatternPaintAutoColumnsOnlyRadioButton
+            // 
+            resources.ApplyResources(this.PatternPaintAutoColumnsOnlyRadioButton, "PatternPaintAutoColumnsOnlyRadioButton");
+            this.PatternPaintAutoColumnsOnlyRadioButton.Name = "PatternPaintAutoColumnsOnlyRadioButton";
+            this.PatternPaintAutoColumnsOnlyRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.PatternPaintAutoColumnsOnlyRadioButton, resources.GetString("PatternPaintAutoColumnsOnlyRadioButton.ToolTip"));
+            this.PatternPaintAutoColumnsOnlyRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // PatternPaintNeverRadioButton
+            // 
+            resources.ApplyResources(this.PatternPaintNeverRadioButton, "PatternPaintNeverRadioButton");
+            this.PatternPaintNeverRadioButton.Name = "PatternPaintNeverRadioButton";
+            this.PatternPaintNeverRadioButton.TabStop = true;
+            this.toolTip1.SetToolTip(this.PatternPaintNeverRadioButton, resources.GetString("PatternPaintNeverRadioButton.ToolTip"));
+            this.PatternPaintNeverRadioButton.UseVisualStyleBackColor = true;
+            // 
+            // tabPage6
+            // 
+            resources.ApplyResources(this.tabPage6, "tabPage6");
+            this.tabPage6.Controls.Add(this.ScrollSyncCheckbox);
+            this.tabPage6.Controls.Add(this.EditInvisibleColumnsCheckbox);
+            this.tabPage6.Controls.Add(this.groupBox4);
+            this.tabPage6.Controls.Add(this.AlwaysScrollCheckbox);
+            this.tabPage6.Controls.Add(this.label3);
+            this.tabPage6.Controls.Add(this.ScrollSpeedNum);
+            this.tabPage6.Controls.Add(this.label2);
+            this.tabPage6.Name = "tabPage6";
+            this.toolTip1.SetToolTip(this.tabPage6, resources.GetString("tabPage6.ToolTip"));
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // ScrollSyncCheckbox
+            // 
+            resources.ApplyResources(this.ScrollSyncCheckbox, "ScrollSyncCheckbox");
+            this.ScrollSyncCheckbox.Name = "ScrollSyncCheckbox";
+            this.toolTip1.SetToolTip(this.ScrollSyncCheckbox, resources.GetString("ScrollSyncCheckbox.ToolTip"));
+            this.ScrollSyncCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // EditInvisibleColumnsCheckbox
+            // 
+            resources.ApplyResources(this.EditInvisibleColumnsCheckbox, "EditInvisibleColumnsCheckbox");
+            this.EditInvisibleColumnsCheckbox.Name = "EditInvisibleColumnsCheckbox";
+            this.toolTip1.SetToolTip(this.EditInvisibleColumnsCheckbox, resources.GetString("EditInvisibleColumnsCheckbox.ToolTip"));
+            this.EditInvisibleColumnsCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            resources.ApplyResources(this.groupBox4, "groupBox4");
+            this.groupBox4.Controls.Add(this.ScrollToCenterRadio);
+            this.groupBox4.Controls.Add(this.ScrollToBottomRadio);
+            this.groupBox4.Controls.Add(this.ScrollToTopRadio);
+            this.groupBox4.Controls.Add(this.ScrollToViewRadio);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.TabStop = false;
+            this.toolTip1.SetToolTip(this.groupBox4, resources.GetString("groupBox4.ToolTip"));
+            // 
+            // ScrollToCenterRadio
+            // 
+            resources.ApplyResources(this.ScrollToCenterRadio, "ScrollToCenterRadio");
+            this.ScrollToCenterRadio.Name = "ScrollToCenterRadio";
+            this.ScrollToCenterRadio.TabStop = true;
+            this.toolTip1.SetToolTip(this.ScrollToCenterRadio, resources.GetString("ScrollToCenterRadio.ToolTip"));
+            this.ScrollToCenterRadio.UseVisualStyleBackColor = true;
+            // 
+            // ScrollToBottomRadio
+            // 
+            resources.ApplyResources(this.ScrollToBottomRadio, "ScrollToBottomRadio");
+            this.ScrollToBottomRadio.Name = "ScrollToBottomRadio";
+            this.ScrollToBottomRadio.TabStop = true;
+            this.toolTip1.SetToolTip(this.ScrollToBottomRadio, resources.GetString("ScrollToBottomRadio.ToolTip"));
+            this.ScrollToBottomRadio.UseVisualStyleBackColor = true;
+            // 
+            // ScrollToTopRadio
+            // 
+            resources.ApplyResources(this.ScrollToTopRadio, "ScrollToTopRadio");
+            this.ScrollToTopRadio.Name = "ScrollToTopRadio";
+            this.ScrollToTopRadio.TabStop = true;
+            this.toolTip1.SetToolTip(this.ScrollToTopRadio, resources.GetString("ScrollToTopRadio.ToolTip"));
+            this.ScrollToTopRadio.UseVisualStyleBackColor = true;
+            // 
+            // ScrollToViewRadio
+            // 
+            resources.ApplyResources(this.ScrollToViewRadio, "ScrollToViewRadio");
+            this.ScrollToViewRadio.Name = "ScrollToViewRadio";
+            this.ScrollToViewRadio.TabStop = true;
+            this.toolTip1.SetToolTip(this.ScrollToViewRadio, resources.GetString("ScrollToViewRadio.ToolTip"));
+            this.ScrollToViewRadio.UseVisualStyleBackColor = true;
+            // 
+            // AlwaysScrollCheckbox
+            // 
+            resources.ApplyResources(this.AlwaysScrollCheckbox, "AlwaysScrollCheckbox");
+            this.AlwaysScrollCheckbox.Name = "AlwaysScrollCheckbox";
+            this.toolTip1.SetToolTip(this.AlwaysScrollCheckbox, resources.GetString("AlwaysScrollCheckbox.ToolTip"));
+            this.AlwaysScrollCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            this.toolTip1.SetToolTip(this.label3, resources.GetString("label3.ToolTip"));
+            // 
+            // ScrollSpeedNum
+            // 
+            resources.ApplyResources(this.ScrollSpeedNum, "ScrollSpeedNum");
+            this.ScrollSpeedNum.Name = "ScrollSpeedNum";
+            this.toolTip1.SetToolTip(this.ScrollSpeedNum, resources.GetString("ScrollSpeedNum.ToolTip"));
+            // 
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
+            this.toolTip1.SetToolTip(this.label2, resources.GetString("label2.ToolTip"));
+            // 
+            // tabPage3
+            // 
+            resources.ApplyResources(this.tabPage3, "tabPage3");
+            this.tabPage3.Controls.Add(this.StatesForMarkersCheckbox);
+            this.tabPage3.Controls.Add(this.OldBranchesCheckbox);
+            this.tabPage3.Controls.Add(this.BranchDoubleClickCheckbox);
+            this.tabPage3.Controls.Add(this.FastRewindNum);
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.RewindNum);
+            this.tabPage3.Controls.Add(this.label7);
+            this.tabPage3.Controls.Add(this.BindMarkersCheckbox);
+            this.tabPage3.Controls.Add(this.IncludeFrameNumberCheckbox);
+            this.tabPage3.Controls.Add(this.UndoCountNum);
+            this.tabPage3.Controls.Add(this.label1);
+            this.tabPage3.Controls.Add(this.AutopauseCheckbox);
+            this.tabPage3.Name = "tabPage3";
+            this.toolTip1.SetToolTip(this.tabPage3, resources.GetString("tabPage3.ToolTip"));
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // StatesForMarkersCheckbox
+            // 
+            resources.ApplyResources(this.StatesForMarkersCheckbox, "StatesForMarkersCheckbox");
+            this.StatesForMarkersCheckbox.Name = "StatesForMarkersCheckbox";
+            this.toolTip1.SetToolTip(this.StatesForMarkersCheckbox, resources.GetString("StatesForMarkersCheckbox.ToolTip"));
+            this.StatesForMarkersCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // OldBranchesCheckbox
+            // 
+            resources.ApplyResources(this.OldBranchesCheckbox, "OldBranchesCheckbox");
+            this.OldBranchesCheckbox.Name = "OldBranchesCheckbox";
+            this.toolTip1.SetToolTip(this.OldBranchesCheckbox, resources.GetString("OldBranchesCheckbox.ToolTip"));
+            this.OldBranchesCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // BranchDoubleClickCheckbox
+            // 
+            resources.ApplyResources(this.BranchDoubleClickCheckbox, "BranchDoubleClickCheckbox");
+            this.BranchDoubleClickCheckbox.Name = "BranchDoubleClickCheckbox";
+            this.toolTip1.SetToolTip(this.BranchDoubleClickCheckbox, resources.GetString("BranchDoubleClickCheckbox.ToolTip"));
+            this.BranchDoubleClickCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // FastRewindNum
+            // 
+            resources.ApplyResources(this.FastRewindNum, "FastRewindNum");
+            this.FastRewindNum.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.FastRewindNum.Name = "FastRewindNum";
-			this.FastRewindNum.Size = new System.Drawing.Size(67, 20);
-			this.FastRewindNum.TabIndex = 512;
-			this.toolTip1.SetToolTip(this.FastRewindNum, "How many frames backward to go when you press the rewind button or hotkey,\r\nwhile" +
-        " also holding the turbo hotkey or fast forward hotkey.");
-			this.FastRewindNum.Value = new decimal(new int[] {
+            this.FastRewindNum.Name = "FastRewindNum";
+            this.toolTip1.SetToolTip(this.FastRewindNum, resources.GetString("FastRewindNum.ToolTip"));
+            this.FastRewindNum.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			// 
-			// label8
-			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(9, 35);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(87, 13);
-			this.label8.TabIndex = 12;
-			this.label8.Text = "Fast rewind step:";
-			// 
-			// RewindNum
-			// 
-			this.RewindNum.Location = new System.Drawing.Point(116, 6);
-			this.RewindNum.Minimum = new decimal(new int[] {
+            // 
+            // label8
+            // 
+            resources.ApplyResources(this.label8, "label8");
+            this.label8.Name = "label8";
+            this.toolTip1.SetToolTip(this.label8, resources.GetString("label8.ToolTip"));
+            // 
+            // RewindNum
+            // 
+            resources.ApplyResources(this.RewindNum, "RewindNum");
+            this.RewindNum.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.RewindNum.Name = "RewindNum";
-			this.RewindNum.Size = new System.Drawing.Size(67, 20);
-			this.RewindNum.TabIndex = 511;
-			this.toolTip1.SetToolTip(this.RewindNum, "How many frames backward to go when you press the rewind button or hotkey.");
-			this.RewindNum.Value = new decimal(new int[] {
+            this.RewindNum.Name = "RewindNum";
+            this.toolTip1.SetToolTip(this.RewindNum, resources.GetString("RewindNum.ToolTip"));
+            this.RewindNum.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			// 
-			// label7
-			// 
-			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(9, 9);
-			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(69, 13);
-			this.label7.TabIndex = 12;
-			this.label7.Text = "Rewind step:";
-			// 
-			// BindMarkersCheckbox
-			// 
-			this.BindMarkersCheckbox.AutoSize = true;
-			this.BindMarkersCheckbox.Location = new System.Drawing.Point(12, 85);
-			this.BindMarkersCheckbox.Name = "BindMarkersCheckbox";
-			this.BindMarkersCheckbox.Size = new System.Drawing.Size(125, 17);
-			this.BindMarkersCheckbox.TabIndex = 514;
-			this.BindMarkersCheckbox.Text = "Bind markers to input";
-			this.toolTip1.SetToolTip(this.BindMarkersCheckbox, "When enabled, inserting or deleting frames will move any markers that are on futu" +
-        "re frames by the same amount.\r\nDeleting a frame that has a marker will delete th" +
-        "e marker.");
-			this.BindMarkersCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// IncludeFrameNumberCheckbox
-			// 
-			this.IncludeFrameNumberCheckbox.AutoSize = true;
-			this.IncludeFrameNumberCheckbox.Location = new System.Drawing.Point(12, 108);
-			this.IncludeFrameNumberCheckbox.Name = "IncludeFrameNumberCheckbox";
-			this.IncludeFrameNumberCheckbox.Size = new System.Drawing.Size(228, 17);
-			this.IncludeFrameNumberCheckbox.TabIndex = 515;
-			this.IncludeFrameNumberCheckbox.Text = "Include frame numbers when copying input.";
-			this.IncludeFrameNumberCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// UndoCountNum
-			// 
-			this.UndoCountNum.Location = new System.Drawing.Point(116, 58);
-			this.UndoCountNum.Maximum = new decimal(new int[] {
+            // 
+            // label7
+            // 
+            resources.ApplyResources(this.label7, "label7");
+            this.label7.Name = "label7";
+            this.toolTip1.SetToolTip(this.label7, resources.GetString("label7.ToolTip"));
+            // 
+            // BindMarkersCheckbox
+            // 
+            resources.ApplyResources(this.BindMarkersCheckbox, "BindMarkersCheckbox");
+            this.BindMarkersCheckbox.Name = "BindMarkersCheckbox";
+            this.toolTip1.SetToolTip(this.BindMarkersCheckbox, resources.GetString("BindMarkersCheckbox.ToolTip"));
+            this.BindMarkersCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // IncludeFrameNumberCheckbox
+            // 
+            resources.ApplyResources(this.IncludeFrameNumberCheckbox, "IncludeFrameNumberCheckbox");
+            this.IncludeFrameNumberCheckbox.Name = "IncludeFrameNumberCheckbox";
+            this.toolTip1.SetToolTip(this.IncludeFrameNumberCheckbox, resources.GetString("IncludeFrameNumberCheckbox.ToolTip"));
+            this.IncludeFrameNumberCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // UndoCountNum
+            // 
+            resources.ApplyResources(this.UndoCountNum, "UndoCountNum");
+            this.UndoCountNum.Maximum = new decimal(new int[] {
             10000,
             0,
             0,
             0});
-			this.UndoCountNum.Minimum = new decimal(new int[] {
+            this.UndoCountNum.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.UndoCountNum.Name = "UndoCountNum";
-			this.UndoCountNum.Size = new System.Drawing.Size(67, 20);
-			this.UndoCountNum.TabIndex = 513;
-			this.toolTip1.SetToolTip(this.UndoCountNum, "The maximum number of edit actions TAStudio should keep in the undo history.");
-			this.UndoCountNum.Value = new decimal(new int[] {
+            this.UndoCountNum.Name = "UndoCountNum";
+            this.toolTip1.SetToolTip(this.UndoCountNum, resources.GetString("UndoCountNum.ToolTip"));
+            this.UndoCountNum.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(9, 61);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(90, 13);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "Max Undo Count:";
-			// 
-			// AutopauseCheckbox
-			// 
-			this.AutopauseCheckbox.AutoSize = true;
-			this.AutopauseCheckbox.Location = new System.Drawing.Point(12, 131);
-			this.AutopauseCheckbox.Name = "AutopauseCheckbox";
-			this.AutopauseCheckbox.Size = new System.Drawing.Size(196, 17);
-			this.AutopauseCheckbox.TabIndex = 516;
-			this.AutopauseCheckbox.Text = "Automatically pause at end of movie.";
-			this.AutopauseCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// SettingsCancelButton
-			// 
-			this.SettingsCancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.SettingsCancelButton.Location = new System.Drawing.Point(310, 449);
-			this.SettingsCancelButton.Name = "SettingsCancelButton";
-			this.SettingsCancelButton.Size = new System.Drawing.Size(75, 23);
-			this.SettingsCancelButton.TabIndex = 3;
-			this.SettingsCancelButton.Text = "Cancel";
-			this.SettingsCancelButton.UseVisualStyleBackColor = true;
-			this.SettingsCancelButton.Click += new System.EventHandler(this.SettingsCancelButton_Click);
-			// 
-			// ApplyButton
-			// 
-			this.ApplyButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.ApplyButton.Location = new System.Drawing.Point(229, 449);
-			this.ApplyButton.Name = "ApplyButton";
-			this.ApplyButton.Size = new System.Drawing.Size(75, 23);
-			this.ApplyButton.TabIndex = 3;
-			this.ApplyButton.Text = "Apply";
-			this.ApplyButton.UseVisualStyleBackColor = true;
-			this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
-			// 
-			// StatesForMarkersCheckbox
-			// 
-			this.StatesForMarkersCheckbox.AutoSize = true;
-			this.StatesForMarkersCheckbox.Location = new System.Drawing.Point(12, 200);
-			this.StatesForMarkersCheckbox.Name = "StatesForMarkersCheckbox";
-			this.StatesForMarkersCheckbox.Size = new System.Drawing.Size(171, 17);
-			this.StatesForMarkersCheckbox.TabIndex = 518;
-			this.StatesForMarkersCheckbox.Text = "Markers keep states by default";
-			this.toolTip1.SetToolTip(this.StatesForMarkersCheckbox, resources.GetString("StatesForMarkersCheckbox.ToolTip"));
-			this.StatesForMarkersCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// tabPage6
-			// 
-			this.tabPage6.Controls.Add(this.ScrollSyncCheckbox);
-			this.tabPage6.Controls.Add(this.EditInvisibleColumnsCheckbox);
-			this.tabPage6.Controls.Add(this.groupBox4);
-			this.tabPage6.Controls.Add(this.AlwaysScrollCheckbox);
-			this.tabPage6.Controls.Add(this.label3);
-			this.tabPage6.Controls.Add(this.ScrollSpeedNum);
-			this.tabPage6.Controls.Add(this.label2);
-			this.tabPage6.Location = new System.Drawing.Point(4, 22);
-			this.tabPage6.Name = "tabPage6";
-			this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage6.Size = new System.Drawing.Size(366, 407);
-			this.tabPage6.TabIndex = 6;
-			this.tabPage6.Text = "Input Roll";
-			this.tabPage6.UseVisualStyleBackColor = true;
-			// 
-			// groupBox4
-			// 
-			this.groupBox4.Controls.Add(this.ScrollToCenterRadio);
-			this.groupBox4.Controls.Add(this.ScrollToBottomRadio);
-			this.groupBox4.Controls.Add(this.ScrollToTopRadio);
-			this.groupBox4.Controls.Add(this.ScrollToViewRadio);
-			this.groupBox4.Location = new System.Drawing.Point(12, 31);
-			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(168, 116);
-			this.groupBox4.TabIndex = 513;
-			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = "Scroll to cursor method";
-			// 
-			// ScrollToCenterRadio
-			// 
-			this.ScrollToCenterRadio.AutoSize = true;
-			this.ScrollToCenterRadio.Location = new System.Drawing.Point(6, 88);
-			this.ScrollToCenterRadio.Name = "ScrollToCenterRadio";
-			this.ScrollToCenterRadio.Size = new System.Drawing.Size(94, 17);
-			this.ScrollToCenterRadio.TabIndex = 504;
-			this.ScrollToCenterRadio.TabStop = true;
-			this.ScrollToCenterRadio.Text = "scroll to center";
-			this.toolTip1.SetToolTip(this.ScrollToCenterRadio, "scroll so that the cursor is in the middle of the visible frames.");
-			this.ScrollToCenterRadio.UseVisualStyleBackColor = true;
-			// 
-			// ScrollToBottomRadio
-			// 
-			this.ScrollToBottomRadio.AutoSize = true;
-			this.ScrollToBottomRadio.Location = new System.Drawing.Point(6, 65);
-			this.ScrollToBottomRadio.Name = "ScrollToBottomRadio";
-			this.ScrollToBottomRadio.Size = new System.Drawing.Size(96, 17);
-			this.ScrollToBottomRadio.TabIndex = 503;
-			this.ScrollToBottomRadio.TabStop = true;
-			this.ScrollToBottomRadio.Text = "scroll to bottom";
-			this.toolTip1.SetToolTip(this.ScrollToBottomRadio, "scroll so that the cursor is at the bottom of the visible frames.");
-			this.ScrollToBottomRadio.UseVisualStyleBackColor = true;
-			// 
-			// ScrollToTopRadio
-			// 
-			this.ScrollToTopRadio.AutoSize = true;
-			this.ScrollToTopRadio.Location = new System.Drawing.Point(6, 42);
-			this.ScrollToTopRadio.Name = "ScrollToTopRadio";
-			this.ScrollToTopRadio.Size = new System.Drawing.Size(79, 17);
-			this.ScrollToTopRadio.TabIndex = 502;
-			this.ScrollToTopRadio.TabStop = true;
-			this.ScrollToTopRadio.Text = "scroll to top";
-			this.toolTip1.SetToolTip(this.ScrollToTopRadio, "scroll so that the cursor is at the top of the visible frames.");
-			this.ScrollToTopRadio.UseVisualStyleBackColor = true;
-			// 
-			// ScrollToViewRadio
-			// 
-			this.ScrollToViewRadio.AutoSize = true;
-			this.ScrollToViewRadio.Location = new System.Drawing.Point(6, 19);
-			this.ScrollToViewRadio.Name = "ScrollToViewRadio";
-			this.ScrollToViewRadio.Size = new System.Drawing.Size(86, 17);
-			this.ScrollToViewRadio.TabIndex = 501;
-			this.ScrollToViewRadio.TabStop = true;
-			this.ScrollToViewRadio.Text = "scroll to view";
-			this.toolTip1.SetToolTip(this.ScrollToViewRadio, "scroll the minimum amount needed to make the cursor visible.");
-			this.ScrollToViewRadio.UseVisualStyleBackColor = true;
-			// 
-			// AlwaysScrollCheckbox
-			// 
-			this.AlwaysScrollCheckbox.AutoSize = true;
-			this.AlwaysScrollCheckbox.Location = new System.Drawing.Point(12, 8);
-			this.AlwaysScrollCheckbox.Name = "AlwaysScrollCheckbox";
-			this.AlwaysScrollCheckbox.Size = new System.Drawing.Size(231, 17);
-			this.AlwaysScrollCheckbox.TabIndex = 514;
-			this.AlwaysScrollCheckbox.Text = "When following cursor, scroll at every frame";
-			this.toolTip1.SetToolTip(this.AlwaysScrollCheckbox, "When disabled, \"Follow cursor\" will not scroll when the cursor is already visible" +
-        ".");
-			this.AlwaysScrollCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(192, 155);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(76, 13);
-			this.label3.TabIndex = 512;
-			this.label3.Text = "frames per tick";
-			// 
-			// ScrollSpeedNum
-			// 
-			this.ScrollSpeedNum.Location = new System.Drawing.Point(119, 153);
-			this.ScrollSpeedNum.Name = "ScrollSpeedNum";
-			this.ScrollSpeedNum.Size = new System.Drawing.Size(67, 20);
-			this.ScrollSpeedNum.TabIndex = 515;
-			this.toolTip1.SetToolTip(this.ScrollSpeedNum, "How many frames to scroll per tick of the mouse wheel.\nSet to 0 to use the system default.");
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 155);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(100, 13);
-			this.label2.TabIndex = 511;
-			this.label2.Text = "Wheel scroll speed:";
-			// 
-			// EditInvisibleColumnsCheckbox
-			// 
-			this.EditInvisibleColumnsCheckbox.AutoSize = true;
-			this.EditInvisibleColumnsCheckbox.Location = new System.Drawing.Point(12, 202);
-			this.EditInvisibleColumnsCheckbox.Name = "EditInvisibleColumnsCheckbox";
-			this.EditInvisibleColumnsCheckbox.Size = new System.Drawing.Size(308, 17);
-			this.EditInvisibleColumnsCheckbox.TabIndex = 519;
-			this.EditInvisibleColumnsCheckbox.Text = "Allow editing hidden columns (with clear, record, paste, etc.)";
-			this.toolTip1.SetToolTip(this.EditInvisibleColumnsCheckbox, resources.GetString("EditInvisibleColumnsCheckbox.ToolTip"));
-			this.EditInvisibleColumnsCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// ScrollSyncCheckbox
-			// 
-			this.ScrollSyncCheckbox.AutoSize = true;
-			this.ScrollSyncCheckbox.Location = new System.Drawing.Point(12, 179);
-			this.ScrollSyncCheckbox.Name = "ScrollSyncCheckbox";
-			this.ScrollSyncCheckbox.Size = new System.Drawing.Size(171, 17);
-			this.ScrollSyncCheckbox.TabIndex = 520;
-			this.ScrollSyncCheckbox.Text = "Sync scroll across all input rolls";
-			this.ScrollSyncCheckbox.UseVisualStyleBackColor = true;
-			this.toolTip1.SetToolTip(this.ScrollSyncCheckbox, "When enabled, scrolling one input roll will scroll all input rolls.");
-			// 
-			// TAStudioSettingsForm
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(397, 484);
-			this.Controls.Add(this.ApplyButton);
-			this.Controls.Add(this.SettingsCancelButton);
-			this.Controls.Add(this.tabControl1);
-			this.Name = "TAStudioSettingsForm";
-			this.Text = "TAStudio Settings";
-			this.Load += new System.EventHandler(this.TAStudioSettingsForm_Load);
-			this.tabControl1.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
-			this.tabPage2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).EndInit();
-			this.tabPage5.ResumeLayout(false);
-			this.tabPage5.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.AutosaveIntervalNum)).EndInit();
-			this.tabPage4.ResumeLayout(false);
-			this.tabPage4.PerformLayout();
-			this.tabPage1.ResumeLayout(false);
-			this.CustomPatternsGroupBox.ResumeLayout(false);
-			this.CustomPatternsGroupBox.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.CountNum)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.ValueNum)).EndInit();
-			this.groupBox2.ResumeLayout(false);
-			this.groupBox2.PerformLayout();
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
-			this.tabPage3.ResumeLayout(false);
-			this.tabPage3.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.FastRewindNum)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.RewindNum)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.UndoCountNum)).EndInit();
-			this.tabPage6.ResumeLayout(false);
-			this.tabPage6.PerformLayout();
-			this.groupBox4.ResumeLayout(false);
-			this.groupBox4.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.ScrollSpeedNum)).EndInit();
-			this.ResumeLayout(false);
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            this.toolTip1.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
+            // 
+            // AutopauseCheckbox
+            // 
+            resources.ApplyResources(this.AutopauseCheckbox, "AutopauseCheckbox");
+            this.AutopauseCheckbox.Name = "AutopauseCheckbox";
+            this.toolTip1.SetToolTip(this.AutopauseCheckbox, resources.GetString("AutopauseCheckbox.ToolTip"));
+            this.AutopauseCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // SettingsCancelButton
+            // 
+            resources.ApplyResources(this.SettingsCancelButton, "SettingsCancelButton");
+            this.SettingsCancelButton.Name = "SettingsCancelButton";
+            this.toolTip1.SetToolTip(this.SettingsCancelButton, resources.GetString("SettingsCancelButton.ToolTip"));
+            this.SettingsCancelButton.UseVisualStyleBackColor = true;
+            this.SettingsCancelButton.Click += new System.EventHandler(this.SettingsCancelButton_Click);
+            // 
+            // ApplyButton
+            // 
+            resources.ApplyResources(this.ApplyButton, "ApplyButton");
+            this.ApplyButton.Name = "ApplyButton";
+            this.toolTip1.SetToolTip(this.ApplyButton, resources.GetString("ApplyButton.ToolTip"));
+            this.ApplyButton.UseVisualStyleBackColor = true;
+            this.ApplyButton.Click += new System.EventHandler(this.ApplyButton_Click);
+            // 
+            // TAStudioSettingsForm
+            // 
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.ApplyButton);
+            this.Controls.Add(this.SettingsCancelButton);
+            this.Controls.Add(this.tabControl1);
+            this.Name = "TAStudioSettingsForm";
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
+            this.Load += new System.EventHandler(this.TAStudioSettingsForm_Load);
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.HideLagNum)).EndInit();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AutosaveIntervalNum)).EndInit();
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            this.tabPage1.ResumeLayout(false);
+            this.CustomPatternsGroupBox.ResumeLayout(false);
+            this.CustomPatternsGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.CountNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ValueNum)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.tabPage6.ResumeLayout(false);
+            this.tabPage6.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ScrollSpeedNum)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.FastRewindNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RewindNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.UndoCountNum)).EndInit();
+            this.ResumeLayout(false);
 
 		}
 

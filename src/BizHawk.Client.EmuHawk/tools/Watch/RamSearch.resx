@@ -117,16 +117,1792 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="ListViewContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>161, 17</value>
-  </metadata>
+  <data name="modeToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Mode</value>
+  </data>
+  <data name="sizeToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Size</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="RebootToolbarButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DifferenceRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator16.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesRadio.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="FastMenuItem.Text" xml:space="preserve">
+    <value>&amp;Fast</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchAccountForLagMenuItem.Name" xml:space="preserve">
+    <value>AutoSearchAccountForLagMenuItem</value>
+  </data>
+  <data name="AddToRamWatchMenuItem.Text" xml:space="preserve">
+    <value>&amp;Add to RAM Watch</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressRadio.Name" xml:space="preserve">
+    <value>SpecificAddressRadio</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesRadio.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="&gt;&gt;DifferenceBox.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="GreaterThanRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="PreviewModeMenuItem.Text" xml:space="preserve">
+    <value>&amp;Preview Mode</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;FastMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DoSearchContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Search</value>
+  </data>
+  <data name="AutoSearchCheckBox.TabIndex" type="System.Int32, mscorlib">
+    <value>105</value>
+  </data>
+  <data name="ComparisonBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>190, 147</value>
+  </data>
+  <data name="&gt;&gt;MemoryDomainsSubMenu.Name" xml:space="preserve">
+    <value>MemoryDomainsSubMenu</value>
+  </data>
+  <data name="&gt;&gt;DifferentByBox.Name" xml:space="preserve">
+    <value>DifferentByBox</value>
+  </data>
+  <data name="&gt;&gt;ViewInHexEditorContextMenuItem.Name" xml:space="preserve">
+    <value>ViewInHexEditorContextMenuItem</value>
+  </data>
+  <data name="DoSearchToolButton.Text" xml:space="preserve">
+    <value>Search </value>
+  </data>
+  <data name="&gt;&gt;FreezeAddressToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ContextMenuSeparator2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SaveAsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SpecificAddressBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="NumberOfChangesRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 74</value>
+  </data>
+  <data name="PreviousValueRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 16</value>
+  </data>
+  <data name="GreaterThanOrEqualToRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>167, 16</value>
+  </data>
+  <data name="DifferentByRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LessThanRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>60</value>
+  </data>
+  <data name="RamSearchMenu.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="AutoSearchCheckBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>348, 378</value>
+  </data>
+  <data name="DisplayTypeDropdown.TabIndex" type="System.Int32, mscorlib">
+    <value>95</value>
+  </data>
+  <data name="AddToRamWatchToolBarItem.Text" xml:space="preserve">
+    <value>Watch</value>
+  </data>
+  <data name="NotEqualToRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 32</value>
+  </data>
+  <data name="PokeAddressToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="SearchButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 21</value>
+  </data>
+  <data name="&gt;&gt;TotalSearchLabel.Name" xml:space="preserve">
+    <value>TotalSearchLabel</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;MessageLabel.Name" xml:space="preserve">
+    <value>MessageLabel</value>
+  </data>
+  <data name="PreviousValueRadio.Text" xml:space="preserve">
+    <value>Previous Value</value>
+  </data>
+  <data name="&gt;&gt;AddToRamWatchContextMenuItem.Name" xml:space="preserve">
+    <value>AddToRamWatchContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DifferentByRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="CompareToBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="DisplayTypeDropdown.Items2" xml:space="preserve">
+    <value>4 Byte</value>
+  </data>
+  <data name="&gt;&gt;OpenMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DifferenceRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 16</value>
+  </data>
+  <data name="TotalSearchLabel.Text" xml:space="preserve">
+    <value>0 addresses</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator1.Name" xml:space="preserve">
+    <value>toolStripSeparator1</value>
+  </data>
+  <data name="WordMenuItem.Text" xml:space="preserve">
+    <value>&amp;2 Byte</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;searchToolStripMenuItem.Name" xml:space="preserve">
+    <value>searchToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="newSearchToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;New Search</value>
+  </data>
+  <data name="MessageLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 401</value>
+  </data>
+  <data name="&gt;&gt;DoSearchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="NumberOfChangesBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 72</value>
+  </data>
+  <data name="&gt;&gt;SizeDropdown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;UseUndoHistoryMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;FastMenuItem.Name" xml:space="preserve">
+    <value>FastMenuItem</value>
+  </data>
+  <data name="&gt;&gt;GoToAddressMenuItem.Name" xml:space="preserve">
+    <value>GoToAddressMenuItem</value>
+  </data>
+  <data name="DoSearchToolButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="CompareToBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>244, 60</value>
+  </data>
+  <data name="&gt;&gt;ClearChangeCountsMenuItem.Name" xml:space="preserve">
+    <value>ClearChangeCountsMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DetailedMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ByteMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DifferentByBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>88, 122</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchCheckBox.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropdown.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;FreezeAddressToolBarItem.Name" xml:space="preserve">
+    <value>FreezeAddressToolBarItem</value>
+  </data>
+  <data name="FreezeAddressToolBarItem.Text" xml:space="preserve">
+    <value>Freeze</value>
+  </data>
+  <data name="&gt;&gt;TotalSearchLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ContextMenuSeparator1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropdown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueBox.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;ComparisonBox.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;modeToolStripMenuItem.Name" xml:space="preserve">
+    <value>modeToolStripMenuItem</value>
+  </data>
+  <data name="FreezeAddressToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;BigEndianMenuItem.Name" xml:space="preserve">
+    <value>BigEndianMenuItem</value>
+  </data>
+  <data name="CompareToBox.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="CopyValueToPrevToolBarItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesBox.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="ComparisonBox.Text" xml:space="preserve">
+    <value>Comparison Operator</value>
+  </data>
+  <data name="&gt;&gt;AppendFileMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SearchButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="SpecificValueBox.Text" xml:space="preserve">
+    <value>00</value>
+  </data>
+  <data name="RemoveMenuItem.Text" xml:space="preserve">
+    <value>&amp;Remove selected</value>
+  </data>
+  <data name="&gt;&gt;AddToRamWatchToolBarItem.Name" xml:space="preserve">
+    <value>AddToRamWatchToolBarItem</value>
+  </data>
+  <data name="&gt;&gt;EqualToRadio.Name" xml:space="preserve">
+    <value>EqualToRadio</value>
+  </data>
+  <data name="&gt;&gt;sizeToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RedoToolBarItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueRadio.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;ClearChangeCountsToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ClearUndoMenuItem.Name" xml:space="preserve">
+    <value>ClearUndoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ClearPreviewContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="EqualToRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 14</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>445, 424</value>
+  </data>
+  <data name="DifferenceBox.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ByteMenuItem.Name" xml:space="preserve">
+    <value>ByteMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropdown.Name" xml:space="preserve">
+    <value>DisplayTypeDropdown</value>
+  </data>
+  <data name="CopyValueToPrevToolBarItem.Text" xml:space="preserve">
+    <value>Copy Value to Previous</value>
+  </data>
+  <data name="&gt;&gt;AddToRamWatchToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ByteMenuItem.Text" xml:space="preserve">
+    <value>&amp;1 Byte</value>
+  </data>
+  <data name="PreviousValueRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 18</value>
+  </data>
+  <data name="NewSearchContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Start New Search</value>
+  </data>
+  <data name="PreviousValueRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;GoToAddressMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LessThanOrEqualToRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="AutoSearchMenuItem.Text" xml:space="preserve">
+    <value>&amp;Auto-Search</value>
+  </data>
+  <data name="DifferentByRadio.Text" xml:space="preserve">
+    <value>Different by:</value>
+  </data>
+  <data name="SaveAsMenuItem.Text" xml:space="preserve">
+    <value>Save As...</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator6.Name" xml:space="preserve">
+    <value>toolStripSeparator6</value>
+  </data>
+  <data name="PreviousFrameMenuItem.Text" xml:space="preserve">
+    <value>&amp;Previous Frame</value>
+  </data>
+  <data name="SpecificValueRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="RebootToolbarButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;ContextMenuSeparator1.Name" xml:space="preserve">
+    <value>ContextMenuSeparator1</value>
+  </data>
+  <data name="EqualToRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 16</value>
+  </data>
+  <data name="&gt;&gt;ComparisonBox.Name" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="AddToRamWatchContextMenuItem.Text" xml:space="preserve">
+    <value>Add to RAM Watch</value>
+  </data>
+  <data name="ErrorIconButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;DifferentByRadio.Name" xml:space="preserve">
+    <value>DifferentByRadio</value>
+  </data>
+  <data name="&gt;&gt;Previous_OriginalMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Previous_OriginalMenuItem.Text" xml:space="preserve">
+    <value>&amp;Original</value>
+  </data>
+  <data name="SpecificAddressRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;RemoveMenuItem.Name" xml:space="preserve">
+    <value>RemoveMenuItem</value>
+  </data>
+  <data name="GreaterThanRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 68</value>
+  </data>
+  <data name="MemDomainLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>135, 45</value>
+  </data>
+  <data name="ErrorIconButton.Text" xml:space="preserve">
+    <value>Warning! Out of Range Addresses in list, click to remove them</value>
+  </data>
+  <data name="&gt;&gt;DifferenceBox.Name" xml:space="preserve">
+    <value>DifferenceBox</value>
+  </data>
+  <data name="&gt;&gt;OptionsSubMenuMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SettingsMenuItem.Text" xml:space="preserve">
+    <value>&amp;Settings</value>
+  </data>
+  <data name="RemoveMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="UndoMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Z</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator8.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DefinePreviousValueSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="MessageLabel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
+  <data name="&gt;&gt;SelectAllMenuItem.Name" xml:space="preserve">
+    <value>SelectAllMenuItem</value>
+  </data>
+  <data name="GreaterThanOrEqualToRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="TotalSearchLabel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 45</value>
+  </data>
+  <data name="SpecificAddressRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;DifferenceRadio.Name" xml:space="preserve">
+    <value>DifferenceRadio</value>
+  </data>
+  <data name="SpecificValueRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 37</value>
+  </data>
+  <data name="&gt;&gt;DifferenceRadio.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchCheckBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>244, 330</value>
+  </data>
+  <data name="&gt;&gt;RecentSubMenu.Name" xml:space="preserve">
+    <value>RecentSubMenu</value>
+  </data>
+  <data name="PokeContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+P</value>
+  </data>
+  <data name="ExcludeRamWatchMenuItem.Text" xml:space="preserve">
+    <value>Always E&amp;xclude RAM Watch List</value>
+  </data>
+  <data name="&gt;&gt;AddToRamWatchMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="UndoMenuItem.Text" xml:space="preserve">
+    <value>&amp;Undo</value>
+  </data>
+  <data name="SaveAsMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Shift+S</value>
+  </data>
+  <data name="&gt;&gt;RedoToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="SizeDropdown.Items" xml:space="preserve">
+    <value>1 Byte</value>
+  </data>
+  <data name="AddToRamWatchMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+W</value>
+  </data>
+  <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
+    <value>toolStrip1</value>
+  </data>
+  <data name="&gt;&gt;DifferenceRadio.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="CopyValueToPrevMenuItem.Text" xml:space="preserve">
+    <value>Copy Value to Prev</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressBox.Name" xml:space="preserve">
+    <value>SpecificAddressBox</value>
+  </data>
+  <data name="&gt;&gt;ListViewContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AppendFileMenuItem.Text" xml:space="preserve">
+    <value>&amp;Append File...</value>
+  </data>
+  <data name="&gt;&gt;ContextMenuSeparator3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Previous_OriginalMenuItem.Name" xml:space="preserve">
+    <value>Previous_OriginalMenuItem</value>
+  </data>
+  <data name="RedoMenuItem.Text" xml:space="preserve">
+    <value>&amp;Redo</value>
+  </data>
+  <data name="DifferenceRadio.Text" xml:space="preserve">
+    <value>Difference of:</value>
+  </data>
+  <data name="NotEqualToRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>55</value>
+  </data>
+  <data name="MemDomainLabel.Text" xml:space="preserve">
+    <value>Main Memory</value>
+  </data>
+  <data name="Previous_LastChangeMenuItem.Text" xml:space="preserve">
+    <value>Last &amp;Change</value>
+  </data>
+  <data name="ClearUndoMenuItem.Text" xml:space="preserve">
+    <value>Clear Undo History</value>
+  </data>
+  <data name="&gt;&gt;RebootToolbarButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SearchButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;WordMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SpecificAddressBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;ViewInHexEditorContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="LessThanRadio.Text" xml:space="preserve">
+    <value>Less Than</value>
+  </data>
+  <data name="CompareToBox.Text" xml:space="preserve">
+    <value>Compare To / By</value>
+  </data>
+  <data name="FreezeAddressToolBarItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="DisplayTypeDropdown.Items1" xml:space="preserve">
+    <value>2 Byte</value>
+  </data>
+  <data name="&gt;&gt;PreviousValueRadio.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="&gt;&gt;WatchListView.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="GreaterThanRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 16</value>
+  </data>
+  <data name="&gt;&gt;DifferenceBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="RedoToolBarItem.Text" xml:space="preserve">
+    <value>Redo</value>
+  </data>
+  <data name="NumberOfChangesBox.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="GoToAddressMenuItem.Text" xml:space="preserve">
+    <value>&amp;Go to Address...</value>
+  </data>
+  <data name="DifferenceRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="GreaterThanOrEqualToRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EqualToRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>50</value>
+  </data>
+  <data name="DifferentByBox.Text" xml:space="preserve">
+    <value>00</value>
+  </data>
+  <data name="LessThanRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NumberOfChangesBox.TabIndex" type="System.Int32, mscorlib">
+    <value>35</value>
+  </data>
+  <data name="&gt;&gt;LessThanOrEqualToRadio.Name" xml:space="preserve">
+    <value>LessThanOrEqualToRadio</value>
+  </data>
+  <data name="RedoMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+Y</value>
+  </data>
+  <data name="NumberOfChangesBox.MaxLength" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="AutoSearchCheckBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>6, 6</value>
+  </data>
+  <data name="&gt;&gt;SearchButton.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;PreviewModeMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueRadio.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="ComparisonBox.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="SpecificAddressBox.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="DifferenceBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="&gt;&gt;RamSearchMenu.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;UnfreezeAllContextMenuItem.Name" xml:space="preserve">
+    <value>UnfreezeAllContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DifferentByRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>327, 330</value>
+  </data>
+  <data name="LessThanRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;OpenMenuItem.Name" xml:space="preserve">
+    <value>OpenMenuItem</value>
+  </data>
+  <data name="&gt;&gt;LessThanOrEqualToRadio.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;AddToRamWatchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Previous_LastSearchMenuItem.Name" xml:space="preserve">
+    <value>Previous_LastSearchMenuItem</value>
+  </data>
+  <data name="NotEqualToRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>95, 16</value>
+  </data>
+  <data name="&gt;&gt;MessageLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="DifferentByBox.TabIndex" type="System.Int32, mscorlib">
+    <value>85</value>
+  </data>
+  <data name="&gt;&gt;LessThanRadio.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;SaveMenuItem.Name" xml:space="preserve">
+    <value>SaveMenuItem</value>
+  </data>
+  <data name="OptionsSubMenuMenuItem.Text" xml:space="preserve">
+    <value>&amp;Options</value>
+  </data>
+  <data name="&gt;&gt;fileToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="UndoToolBarButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="SpecificAddressRadio.Text" xml:space="preserve">
+    <value>Specific Address:</value>
+  </data>
+  <data name="&gt;&gt;RedoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SpecificValueBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;CopyValueToPrevMenuItem.Name" xml:space="preserve">
+    <value>CopyValueToPrevMenuItem</value>
+  </data>
+  <data name="WatchListView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>230, 338</value>
+  </data>
+  <data name="CompareToBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BigEndianMenuItem.Text" xml:space="preserve">
+    <value>&amp;Big Endian</value>
+  </data>
+  <data name="SpecificAddressRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueBox.Name" xml:space="preserve">
+    <value>SpecificValueBox</value>
+  </data>
+  <data name="&gt;&gt;CheckMisalignedMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RedoToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="PokeAddressMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+P</value>
+  </data>
+  <data name="DifferentByRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 124</value>
+  </data>
+  <data name="NotEqualToRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="AddToRamWatchContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+W</value>
+  </data>
+  <data name="WatchListView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 60</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.UnsignedIntegerBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SpecificValueBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;toolStripSeparator10.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RemoveToolBarItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="DisplayTypeDropdown.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;NotEqualToRadio.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="EqualToRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpecificValueBox.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator13.Name" xml:space="preserve">
+    <value>toolStripSeparator13</value>
+  </data>
+  <data name="OpenMenuItem.Text" xml:space="preserve">
+    <value>&amp;Open...</value>
+  </data>
+  <data name="&gt;&gt;SizeDropdown.Name" xml:space="preserve">
+    <value>SizeDropdown</value>
+  </data>
+  <data name="ClearChangeCountsToolBarItem.ToolTipText" xml:space="preserve">
+    <value>Clear Change Counts</value>
+  </data>
+  <data name="NumberOfChangesRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 16</value>
+  </data>
+  <data name="CopyValueToPrevToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="FreezeContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+F</value>
+  </data>
+  <data name="ComparisonBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="DoSearchToolButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>55, 22</value>
+  </data>
+  <data name="&gt;&gt;MemDomainLabel.Name" xml:space="preserve">
+    <value>MemDomainLabel</value>
+  </data>
+  <data name="RedoMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SearchButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>244, 378</value>
+  </data>
+  <data name="SearchMenuItem.Text" xml:space="preserve">
+    <value>&amp;Search</value>
+  </data>
+  <data name="&gt;&gt;SaveAsMenuItem.Name" xml:space="preserve">
+    <value>SaveAsMenuItem</value>
+  </data>
+  <data name="DifferentByBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>55, 21</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SpecificValueRadio.Text" xml:space="preserve">
+    <value>Specific Value:</value>
+  </data>
+  <data name="&gt;&gt;ExcludeRamWatchMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="NumberOfChangesRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>30</value>
+  </data>
+  <data name="&gt;&gt;sizeToolStripMenuItem.Name" xml:space="preserve">
+    <value>sizeToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;UndoToolBarButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;TotalSearchLabel.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;WatchListView.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="ErrorIconButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;modeToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LessThanRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator12.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PokeAddressToolBarItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="WatchListView.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator12.Name" xml:space="preserve">
+    <value>toolStripSeparator12</value>
+  </data>
+  <data name="SizeDropdown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>244, 345</value>
+  </data>
+  <data name="OpenMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+O</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchCheckBox.Name" xml:space="preserve">
+    <value>AutoSearchCheckBox</value>
+  </data>
+  <data name="&gt;&gt;RebootToolBarSeparator.Name" xml:space="preserve">
+    <value>RebootToolBarSeparator</value>
+  </data>
+  <data name="RemoveToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="DifferenceBox.Text" xml:space="preserve">
+    <value>00</value>
+  </data>
+  <data name="DifferenceBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 90</value>
+  </data>
+  <data name="NumberOfChangesRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpecificAddressRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 55</value>
+  </data>
+  <data name="DWordMenuItem.Text" xml:space="preserve">
+    <value>&amp;4 Byte</value>
+  </data>
+  <data name="SearchButton.Text" xml:space="preserve">
+    <value>&amp;Search</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchMenuItem.Name" xml:space="preserve">
+    <value>AutoSearchMenuItem</value>
+  </data>
+  <data name="UseUndoHistoryMenuItem.Text" xml:space="preserve">
+    <value>&amp;Use Undo History</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ClearChangeCountsMenuItem.Text" xml:space="preserve">
+    <value>&amp;Clear Change Counts</value>
+  </data>
+  <data name="DifferenceBox.TabIndex" type="System.Int32, mscorlib">
+    <value>45</value>
+  </data>
+  <data name="AddToRamWatchToolBarItem.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;ErrorIconButton.Name" xml:space="preserve">
+    <value>ErrorIconButton</value>
+  </data>
+  <data name="UnfreezeAllContextMenuItem.Text" xml:space="preserve">
+    <value>Unfreeze &amp;All</value>
+  </data>
+  <data name="&gt;&gt;PokeAddressToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="PokeAddressToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;Previous_LastChangeMenuItem.Name" xml:space="preserve">
+    <value>Previous_LastChangeMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ExcludeRamWatchMenuItem.Name" xml:space="preserve">
+    <value>ExcludeRamWatchMenuItem</value>
+  </data>
+  <data name="ClearChangeCountsToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;SizeDropdown.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="SpecificValueBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 35</value>
+  </data>
+  <data name="DisplayTypeDropdown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>327, 345</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanRadio.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="SpecificAddressBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 54</value>
+  </data>
+  <data name="&gt;&gt;EqualToRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;NotEqualToRadio.Name" xml:space="preserve">
+    <value>NotEqualToRadio</value>
+  </data>
+  <data name="DetailedMenuItem.Text" xml:space="preserve">
+    <value>&amp;Detailed</value>
+  </data>
+  <data name="&gt;&gt;SearchMenuItem.Name" xml:space="preserve">
+    <value>SearchMenuItem</value>
+  </data>
+  <data name="DifferenceRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 92</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator16.Name" xml:space="preserve">
+    <value>toolStripSeparator16</value>
+  </data>
+  <data name="&gt;&gt;FreezeContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CompareToBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SpecificAddressBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;NewSearchToolButton.Name" xml:space="preserve">
+    <value>NewSearchToolButton</value>
+  </data>
+  <data name="&gt;&gt;ContextMenuSeparator3.Name" xml:space="preserve">
+    <value>ContextMenuSeparator3</value>
+  </data>
+  <data name="&gt;&gt;searchToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RamSearchMenu.Name" xml:space="preserve">
+    <value>RamSearchMenu</value>
+  </data>
+  <data name="&gt;&gt;CompareToBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="toolStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="LessThanOrEqualToRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 86</value>
+  </data>
+  <data name="&gt;&gt;MemoryDomainsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="AutoSearchAccountForLagMenuItem.Text" xml:space="preserve">
+    <value>&amp;Auto-Search Account for Lag</value>
+  </data>
+  <data name="SpecificAddressRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 16</value>
+  </data>
+  <data name="UndoToolBarButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="SelectAllMenuItem.Text" xml:space="preserve">
+    <value>Select All</value>
+  </data>
+  <data name="&gt;&gt;DifferentByRadio.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;PokeContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;DifferentByBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;PreviousValueRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="DifferentByRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>80</value>
+  </data>
+  <data name="GreaterThanRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="DisplayTypeDropdown.Items" xml:space="preserve">
+    <value>1 Byte</value>
+  </data>
+  <data name="MemoryDomainsSubMenu.Text" xml:space="preserve">
+    <value>&amp;Memory Domains</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueBox.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueRadio.Name" xml:space="preserve">
+    <value>SpecificValueRadio</value>
+  </data>
+  <data name="&gt;&gt;EqualToRadio.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="PokeAddressMenuItem.Text" xml:space="preserve">
+    <value>&amp;Poke Address</value>
+  </data>
+  <data name="&gt;&gt;CheckMisalignedMenuItem.Name" xml:space="preserve">
+    <value>CheckMisalignedMenuItem</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanOrEqualToRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="&gt;&gt;MemDomainLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DifferentByBox.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="DifferenceRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;NumberOfChangesRadio.Name" xml:space="preserve">
+    <value>NumberOfChangesRadio</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesBox.Name" xml:space="preserve">
+    <value>NumberOfChangesBox</value>
+  </data>
+  <data name="NumberOfChangesBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="&gt;&gt;NotEqualToRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>RamSearch</value>
+  </data>
+  <data name="&gt;&gt;WatchListView.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator5.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RemoveToolBarItem.Text" xml:space="preserve">
+    <value>C&amp;ut</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressBox.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="GreaterThanRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>65</value>
+  </data>
+  <data name="&gt;&gt;SettingsMenuItem.Name" xml:space="preserve">
+    <value>SettingsMenuItem</value>
+  </data>
+  <data name="NotEqualToRadio.Text" xml:space="preserve">
+    <value>Not Equal To</value>
+  </data>
+  <data name="&gt;&gt;FreezeContextMenuItem.Name" xml:space="preserve">
+    <value>FreezeContextMenuItem</value>
+  </data>
+  <data name="CheckMisalignedMenuItem.Text" xml:space="preserve">
+    <value>Check Mis-aligned</value>
+  </data>
+  <data name="DisplayTypeDropdown.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchAccountForLagMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PokeAddressToolBarItem.Text" xml:space="preserve">
+    <value>Poke</value>
+  </data>
+  <data name="EqualToRadio.Text" xml:space="preserve">
+    <value>Equal To</value>
+  </data>
+  <data name="&gt;&gt;TruncateFromFileMenuItem.Name" xml:space="preserve">
+    <value>TruncateFromFileMenuItem</value>
+  </data>
+  <data name="&gt;&gt;SelectAllMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SaveMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+S</value>
+  </data>
+  <data name="SearchButton.ImageAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="&gt;&gt;LessThanRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ClearPreviewContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Clear Preview</value>
+  </data>
+  <data name="&gt;&gt;RebootToolBarSeparator.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="SpecificAddressBox.MaxLength" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="AutoSearchCheckBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;AddToRamWatchMenuItem.Name" xml:space="preserve">
+    <value>AddToRamWatchMenuItem</value>
+  </data>
+  <data name="ClearChangeCountsToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;UnfreezeAllContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PreviousValueRadio.Name" xml:space="preserve">
+    <value>PreviousValueRadio</value>
+  </data>
+  <data name="&gt;&gt;LessThanRadio.Name" xml:space="preserve">
+    <value>LessThanRadio</value>
+  </data>
+  <data name="CopyValueToPrevToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="ViewInHexEditorContextMenuItem.Text" xml:space="preserve">
+    <value>View in Hex Editor</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.HexTextBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="toolStrip1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;RebootToolbarButton.Name" xml:space="preserve">
+    <value>RebootToolbarButton</value>
+  </data>
+  <data name="&gt;&gt;ClearChangeCountsToolBarItem.Name" xml:space="preserve">
+    <value>ClearChangeCountsToolBarItem</value>
+  </data>
+  <data name="SpecificValueRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GoToAddressMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+G</value>
+  </data>
+  <data name="&gt;&gt;SearchMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SizeDropdown.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="RemoveToolBarItem.ToolTipText" xml:space="preserve">
+    <value>Eliminate Selected Items</value>
+  </data>
+  <data name="DifferenceBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
+    <value>toolStripSeparator2</value>
+  </data>
+  <data name="SearchButton.TabIndex" type="System.Int32, mscorlib">
+    <value>100</value>
+  </data>
+  <data name="FreezeAddressToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator7.Name" xml:space="preserve">
+    <value>toolStripSeparator7</value>
+  </data>
+  <data name="&gt;&gt;DoSearchToolButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator9.Name" xml:space="preserve">
+    <value>toolStripSeparator9</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator10.Name" xml:space="preserve">
+    <value>toolStripSeparator10</value>
+  </data>
+  <data name="&gt;&gt;ClearChangeCountsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;UndoMenuItem.Name" xml:space="preserve">
+    <value>UndoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator15.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;EqualToRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="FreezeAddressMenuItem.Text" xml:space="preserve">
+    <value>Freeze Address</value>
+  </data>
+  <data name="&gt;&gt;RemoveToolBarItem.Name" xml:space="preserve">
+    <value>RemoveToolBarItem</value>
+  </data>
+  <data name="&gt;&gt;LessThanOrEqualToRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="LessThanOrEqualToRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>70</value>
+  </data>
+  <data name="&gt;&gt;UndoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DoSearchContextMenuItem.Name" xml:space="preserve">
+    <value>DoSearchContextMenuItem</value>
+  </data>
+  <data name="AutoSearchCheckBox.Appearance" type="System.Windows.Forms.Appearance, System.Windows.Forms">
+    <value>Button</value>
+  </data>
+  <data name="&gt;&gt;AutoSearchCheckBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;PokeAddressMenuItem.Name" xml:space="preserve">
+    <value>PokeAddressMenuItem</value>
+  </data>
+  <data name="DifferenceBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;DoSearchToolButton.Name" xml:space="preserve">
+    <value>DoSearchToolButton</value>
+  </data>
+  <data name="LessThanOrEqualToRadio.Text" xml:space="preserve">
+    <value>Less Than or Equal To</value>
+  </data>
+  <data name="EqualToRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;DisplayTypeSubMenu.Name" xml:space="preserve">
+    <value>DisplayTypeSubMenu</value>
+  </data>
+  <data name="&gt;&gt;UseUndoHistoryMenuItem.Name" xml:space="preserve">
+    <value>UseUndoHistoryMenuItem</value>
+  </data>
+  <data name="SizeDropdown.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;ErrorIconButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SpecificValueBox.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;SizeDropdown.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanOrEqualToRadio.Name" xml:space="preserve">
+    <value>GreaterThanOrEqualToRadio</value>
+  </data>
+  <data name="&gt;&gt;RamSearchMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="LessThanOrEqualToRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DifferentByBox.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="SpecificValueRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;RemoveToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanRadio.Name" xml:space="preserve">
+    <value>GreaterThanRadio</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanOrEqualToRadio.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="LessThanOrEqualToRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;RamSearchMenu.ZOrder" xml:space="preserve">
+    <value>14</value>
+  </data>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;File</value>
+  </data>
+  <data name="AutoSearchCheckBox.ToolTip" xml:space="preserve">
+    <value>Automatically search each frame</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="SelectAllMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+A</value>
+  </data>
+  <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 25</value>
+  </data>
+  <data name="&gt;&gt;newSearchToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;DWordMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Right</value>
+  </data>
+  <data name="&gt;&gt;PreviewModeMenuItem.Name" xml:space="preserve">
+    <value>PreviewModeMenuItem</value>
+  </data>
+  <data name="&gt;&gt;NotEqualToRadio.Parent" xml:space="preserve">
+    <value>ComparisonBox</value>
+  </data>
+  <data name="&gt;&gt;DifferenceBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.WatchValueBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NewSearchContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator15.Name" xml:space="preserve">
+    <value>toolStripSeparator15</value>
+  </data>
+  <data name="ComparisonBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>244, 181</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator9.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PokeAddressMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SpecificValueRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 16</value>
+  </data>
+  <data name="&gt;&gt;NumberOfChangesBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="GreaterThanOrEqualToRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>75</value>
+  </data>
+  <data name="PreviousValueRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LessThanOrEqualToRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>149, 16</value>
+  </data>
+  <data name="UndoToolBarButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="SpecificValueBox.MaxLength" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="SpecificAddressBox.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="DifferentByRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;SaveMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SpecificValueBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.WatchValueBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SearchButton.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="AddToRamWatchToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="&gt;&gt;DWordMenuItem.Name" xml:space="preserve">
+    <value>DWordMenuItem</value>
+  </data>
+  <data name="SizeDropdown.Items1" xml:space="preserve">
+    <value>2 Byte</value>
+  </data>
+  <data name="&gt;&gt;MemDomainLabel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;CopyValueToPrevToolBarItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AutoSearchCheckBox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;PreviousFrameMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MemDomainLabel.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;RedoToolBarItem.Name" xml:space="preserve">
+    <value>RedoToolBarItem</value>
+  </data>
+  <data name="MessageLabel.Text" xml:space="preserve">
+    <value> todo                         </value>
+  </data>
+  <data name="&gt;&gt;RemoveContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Previous_LastSearchMenuItem.Text" xml:space="preserve">
+    <value>Last &amp;Search</value>
+  </data>
+  <data name="&gt;&gt;PreviousFrameMenuItem.Name" xml:space="preserve">
+    <value>PreviousFrameMenuItem</value>
+  </data>
+  <data name="GreaterThanOrEqualToRadio.Text" xml:space="preserve">
+    <value>Greater Than or Equal To</value>
+  </data>
+  <data name="LessThanRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 50</value>
+  </data>
+  <data name="&gt;&gt;DifferenceRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;RemoveMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="SizeDropdown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>73, 20</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;SearchButton.Name" xml:space="preserve">
+    <value>SearchButton</value>
+  </data>
+  <data name="&gt;&gt;TotalSearchLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="searchToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Search</value>
+  </data>
+  <data name="&gt;&gt;ComparisonBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="ClearChangeCountsToolBarItem.Text" xml:space="preserve">
+    <value>C</value>
+  </data>
+  <data name="DisplayTypeDropdown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 20</value>
+  </data>
+  <data name="&gt;&gt;FreezeAddressMenuItem.Name" xml:space="preserve">
+    <value>FreezeAddressMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ClearPreviewContextMenuItem.Name" xml:space="preserve">
+    <value>ClearPreviewContextMenuItem</value>
+  </data>
+  <data name="SearchButton.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;PokeContextMenuItem.Name" xml:space="preserve">
+    <value>PokeContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;CopyValueToPrevToolBarItem.Name" xml:space="preserve">
+    <value>CopyValueToPrevToolBarItem</value>
+  </data>
+  <data name="&gt;&gt;RedoMenuItem.Name" xml:space="preserve">
+    <value>RedoMenuItem</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;AppendFileMenuItem.Name" xml:space="preserve">
+    <value>AppendFileMenuItem</value>
+  </data>
+  <data name="&gt;&gt;CompareToBox.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="DifferentByBox.MaxLength" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;MessageLabel.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;BigEndianMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NewSearchToolButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator5.Name" xml:space="preserve">
+    <value>toolStripSeparator5</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="UndoToolBarButton.Text" xml:space="preserve">
+    <value>Undo Search</value>
+  </data>
+  <data name="DifferentByBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RemoveToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="TruncateFromFileMenuItem.Text" xml:space="preserve">
+    <value>&amp;Truncate from File...</value>
+  </data>
+  <data name="&gt;&gt;newSearchToolStripMenuItem.Name" xml:space="preserve">
+    <value>newSearchToolStripMenuItem</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="NewSearchToolButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>38, 22</value>
+  </data>
+  <data name="FreezeContextMenuItem.Text" xml:space="preserve">
+    <value>Freeze Address</value>
+  </data>
+  <data name="DifferenceBox.MaxLength" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;TruncateFromFileMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="GreaterThanRadio.Text" xml:space="preserve">
+    <value>Greater Than</value>
+  </data>
+  <data name="&gt;&gt;ComparisonBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;PreviousValueRadio.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="PreviousValueRadio.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>290, 371</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator13.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="DefinePreviousValueSubMenu.Text" xml:space="preserve">
+    <value>Define Previous Value</value>
+  </data>
+  <data name="SizeDropdown.TabIndex" type="System.Int32, mscorlib">
+    <value>90</value>
+  </data>
+  <data name="&gt;&gt;DetailedMenuItem.Name" xml:space="preserve">
+    <value>DetailedMenuItem</value>
+  </data>
+  <data name="&gt;&gt;RecentSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;fileToolStripMenuItem.Name" xml:space="preserve">
+    <value>fileToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;DisplayTypeDropdown.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;GreaterThanOrEqualToRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="FreezeAddressMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+F</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressRadio.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="NumberOfChangesBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AutoSearchCheckBox.TextImageRelation" type="System.Windows.Forms.TextImageRelation, System.Windows.Forms">
+    <value>ImageBeforeText</value>
+  </data>
+  <data name="AddToRamWatchToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="RebootToolbarButton.Text" xml:space="preserve">
+    <value>A new search needs to be started in order for these changes to take effect</value>
+  </data>
+  <data name="&gt;&gt;RemoveContextMenuItem.Name" xml:space="preserve">
+    <value>RemoveContextMenuItem</value>
+  </data>
+  <data name="ComparisonBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;DifferentByBox.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.WatchValueBox, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ListViewContextMenu.Name" xml:space="preserve">
+    <value>ListViewContextMenu</value>
+  </data>
+  <data name="&gt;&gt;UndoToolBarButton.Name" xml:space="preserve">
+    <value>UndoToolBarButton</value>
+  </data>
+  <data name="SizeDropdown.Items2" xml:space="preserve">
+    <value>4 Byte</value>
+  </data>
+  <data name="&gt;&gt;MessageLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RedoToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="SpecificValueBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 21</value>
+  </data>
+  <data name="NumberOfChangesRadio.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="GreaterThanOrEqualToRadio.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 104</value>
+  </data>
+  <data name="SelectAllMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+A</value>
+  </data>
+  <data name="NumberOfChangesBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="DisplayTypeSubMenu.Text" xml:space="preserve">
+    <value>&amp;Display Type</value>
+  </data>
+  <data name="DoSearchToolButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;SpecificAddressRadio.Parent" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="NumberOfChangesRadio.Text" xml:space="preserve">
+    <value>Specific Changes:</value>
+  </data>
+  <data name="&gt;&gt;CompareToBox.Name" xml:space="preserve">
+    <value>CompareToBox</value>
+  </data>
+  <data name="&gt;&gt;WordMenuItem.Name" xml:space="preserve">
+    <value>WordMenuItem</value>
+  </data>
+  <data name="NotEqualToRadio.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;SettingsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="LessThanRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 16</value>
+  </data>
+  <data name="RemoveContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Del</value>
+  </data>
+  <data name="NewSearchToolButton.Text" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="ListViewContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>238, 220</value>
+  </data>
+  <data name="WatchListView.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="SaveMenuItem.Text" xml:space="preserve">
+    <value>&amp;Save</value>
+  </data>
+  <data name="NewSearchToolButton.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator8.Name" xml:space="preserve">
+    <value>toolStripSeparator8</value>
+  </data>
+  <data name="&gt;&gt;OptionsSubMenuMenuItem.Name" xml:space="preserve">
+    <value>OptionsSubMenuMenuItem</value>
+  </data>
+  <data name="&gt;&gt;Previous_LastChangeMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="CompareToBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>190, 115</value>
+  </data>
+  <data name="&gt;&gt;ClearUndoMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ContextMenuSeparator2.Name" xml:space="preserve">
+    <value>ContextMenuSeparator2</value>
+  </data>
+  <data name="RemoveContextMenuItem.Text" xml:space="preserve">
+    <value>Remove Selected</value>
+  </data>
+  <data name="label2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;DefinePreviousValueSubMenu.Name" xml:space="preserve">
+    <value>DefinePreviousValueSubMenu</value>
+  </data>
+  <data name="&gt;&gt;Previous_LastSearchMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NewSearchContextMenuItem.Name" xml:space="preserve">
+    <value>NewSearchContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;WatchListView.Name" xml:space="preserve">
+    <value>WatchListView</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator6.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PokeContextMenuItem.Text" xml:space="preserve">
+    <value>Poke Address</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;CopyValueToPrevMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator7.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;FreezeAddressMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;PokeAddressToolBarItem.Name" xml:space="preserve">
+    <value>PokeAddressToolBarItem</value>
+  </data>
+  <data name="DifferentByRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 16</value>
+  </data>
+  <data name="&gt;&gt;SearchButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <metadata name="RamSearchMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>331, 17</value>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
   <metadata name="toolStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>428, 17</value>
+  </metadata>
+  <metadata name="ListViewContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>161, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>331, 17</value>
   </metadata>
 </root>
