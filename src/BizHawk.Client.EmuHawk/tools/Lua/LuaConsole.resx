@@ -1095,9 +1095,6 @@
   <data name="&gt;&gt;SelectAllContextItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
-  </metadata>
   <metadata name="ConsoleContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>333, 17</value>
   </metadata>
