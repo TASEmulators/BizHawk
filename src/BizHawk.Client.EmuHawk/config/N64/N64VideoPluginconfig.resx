@@ -117,10 +117,913 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>577, 370</value>
+  </data>
+  <data name="&gt;&gt;RiceTabPage.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;label48.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label49.Text" xml:space="preserve">
+    <value>Rsp Plugin</value>
+  </data>
+  <data name="RspTypeDropdown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 20</value>
+  </data>
+  <data name="VideoResolutionYTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 21</value>
+  </data>
+  <data name="label71.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 94</value>
+  </data>
+  <data name="&gt;&gt;label68.Name" xml:space="preserve">
+    <value>label68</value>
+  </data>
+  <data name="&gt;&gt;label49.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="Glide64mk2TabPage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="CoreTypeDropdown.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;Glide64mk2TabPage.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="GlidePropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>566, 311</value>
+  </data>
+  <data name="label69.Text" xml:space="preserve">
+    <value>Direct3D Clear Mode</value>
+  </data>
+  <data name="LabelVideoResolutionX.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;label70.Name" xml:space="preserve">
+    <value>label70</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionYTextBox.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="N64vpluginglobaltab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="CancelBT.TabIndex" type="System.Int32, mscorlib">
+    <value>105</value>
+  </data>
+  <data name="label61.Location" type="System.Drawing.Point, System.Drawing">
+    <value>49, 49</value>
+  </data>
+  <data name="VideoResolutionXTextBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>35, 21</value>
+  </data>
+  <data name="&gt;&gt;AngrylionTab.Parent" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="label63.Text" xml:space="preserve">
+    <value>to match yours</value>
+  </data>
+  <data name="&gt;&gt;label66.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items2" xml:space="preserve">
+    <value>480 x 360</value>
+  </data>
+  <data name="N64plugintabcontrol.Location" type="System.Drawing.Point, System.Drawing">
+    <value>-2, -2</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionXTextBox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="VideoResolutionYTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>66, 249</value>
+  </data>
+  <data name="&gt;&gt;AngrylionTab.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="LabelVideoResolutionY.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="GLideN64Tab.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items1" xml:space="preserve">
+    <value>400 x 300</value>
+  </data>
+  <data name="label48.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 12</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionYTextBox.Name" xml:space="preserve">
+    <value>VideoResolutionYTextBox</value>
+  </data>
+  <data name="label70.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 64</value>
+  </data>
+  <data name="&gt;&gt;RiceTabPage.Parent" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionComboBox.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;AngrylionTab.Name" xml:space="preserve">
+    <value>AngrylionTab</value>
+  </data>
+  <data name="Glide64TabPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>572, 315</value>
+  </data>
+  <data name="PluginComboBox.Items1" xml:space="preserve">
+    <value>Glide64</value>
+  </data>
+  <data name="PluginComboBox.Items4" xml:space="preserve">
+    <value>Angrylion</value>
+  </data>
+  <data name="PluginComboBox.Items3" xml:space="preserve">
+    <value>GLideN64</value>
+  </data>
+  <data name="PluginComboBox.Items2" xml:space="preserve">
+    <value>Glide64mk2</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="VideoResolutionYTextBox.TextAlign" type="System.Windows.Forms.HorizontalAlignment, System.Windows.Forms">
+    <value>Right</value>
+  </data>
+  <data name="&gt;&gt;label65.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Glide64TabPage.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="label60.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 136</value>
+  </data>
+  <data name="GlidePropertyGrid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="PluginComboBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 84</value>
+  </data>
+  <data name="label49.Location" type="System.Drawing.Point, System.Drawing">
+    <value>206, 12</value>
+  </data>
+  <data name="&gt;&gt;SaveButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Glide64Mk2PropertyGrid.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionX.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RspTypeDropdown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>209, 27</value>
+  </data>
+  <data name="label59.Text" xml:space="preserve">
+    <value>Super 2xsal</value>
+  </data>
+  <data name="Glide64mk2TabPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>572, 315</value>
+  </data>
+  <data name="&gt;&gt;CancelBT.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PluginComboBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>173, 20</value>
+  </data>
+  <data name="label61.Text" xml:space="preserve">
+    <value>Antialiasing Level</value>
+  </data>
+  <data name="&gt;&gt;AngrylionTab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Active Video Plugin</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>N64VideoPluginConfig</value>
+  </data>
+  <data name="label62.Text" xml:space="preserve">
+    <value>Adjust game aspect ratio</value>
+  </data>
+  <data name="label47.Text" xml:space="preserve">
+    <value>(GLideN64 is good for performance, while Angrylion has the best compatibility)</value>
+  </data>
+  <data name="VideoResolutionYTextBox.MaxLength" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="CoreTypeDropdown.Items2" xml:space="preserve">
+    <value>DynaRec</value>
+  </data>
+  <data name="LabelVideoResolutionY.Text" xml:space="preserve">
+    <value>Height:</value>
+  </data>
+  <data name="&gt;&gt;Glide64Mk2PropertyGrid.Name" xml:space="preserve">
+    <value>Glide64Mk2PropertyGrid</value>
+  </data>
+  <data name="VideoResolutionComboBox.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="RicePropertyGrid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionY.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GLideN64Tab.Name" xml:space="preserve">
+    <value>GLideN64Tab</value>
+  </data>
+  <data name="VideoResolutionXTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="label59.Location" type="System.Drawing.Point, System.Drawing">
+    <value>76, 107</value>
+  </data>
+  <data name="&gt;&gt;label51.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label63.Name" xml:space="preserve">
+    <value>label63</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items4" xml:space="preserve">
+    <value>640 x 480</value>
+  </data>
+  <data name="N64vpluginglobaltab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>572, 315</value>
+  </data>
+  <data name="&gt;&gt;SaveButton.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="Glide64Mk2PropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>566, 311</value>
+  </data>
+  <data name="&gt;&gt;label48.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;label65.Name" xml:space="preserve">
+    <value>label65</value>
+  </data>
+  <data name="&gt;&gt;label62.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items3" xml:space="preserve">
+    <value>512 x 384</value>
+  </data>
+  <data name="&gt;&gt;AngrylionPropertyGrid.Name" xml:space="preserve">
+    <value>AngrylionPropertyGrid</value>
+  </data>
+  <data name="&gt;&gt;CancelBT.Name" xml:space="preserve">
+    <value>CancelBT</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 69</value>
+  </data>
+  <data name="&gt;&gt;GlidePropertyGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PropertyGrid, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label66.Text" xml:space="preserve">
+    <value>Direct3D trans pipeline</value>
+  </data>
+  <data name="&gt;&gt;SaveButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Glide64TabPage.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items13" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;GlideN64PropertyGrid.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="Glide64TabPage.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="label67.Location" type="System.Drawing.Point, System.Drawing">
+    <value>49, 286</value>
+  </data>
+  <data name="&gt;&gt;SaveButton.Name" xml:space="preserve">
+    <value>SaveButton</value>
+  </data>
+  <data name="RiceTabPage.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;Glide64TabPage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label57.Text" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="label51.Text" xml:space="preserve">
+    <value>Anisotropic filtering level</value>
+  </data>
+  <data name="&gt;&gt;RicePropertyGrid.Parent" xml:space="preserve">
+    <value>RiceTabPage</value>
+  </data>
+  <data name="&gt;&gt;GlideN64PropertyGrid.Parent" xml:space="preserve">
+    <value>GLideN64Tab</value>
+  </data>
+  <data name="N64plugintabcontrol.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;CoreTypeDropdown.Name" xml:space="preserve">
+    <value>CoreTypeDropdown</value>
+  </data>
+  <data name="&gt;&gt;Glide64TabPage.Parent" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="VideoResolutionYTextBox.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="&gt;&gt;RspTypeDropdown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="CancelBT.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="N64plugintabcontrol.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Plugin Settings</value>
+  </data>
+  <data name="&gt;&gt;label60.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="GlideN64PropertyGrid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;CoreTypeDropdown.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;RicePropertyGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PropertyGrid, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AngrylionPropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>566, 311</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items8" xml:space="preserve">
+    <value>1280 x 960</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="SaveButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>409, 344</value>
+  </data>
+  <data name="&gt;&gt;label62.Name" xml:space="preserve">
+    <value>label62</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;label47.Name" xml:space="preserve">
+    <value>label47</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;Glide64mk2TabPage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;PluginComboBox.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="PluginComboBox.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="CancelBT.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;label70.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="VideoResolutionXTextBox.TextAlign" type="System.Windows.Forms.HorizontalAlignment, System.Windows.Forms">
+    <value>Right</value>
+  </data>
+  <data name="SaveButton.TabIndex" type="System.Int32, mscorlib">
+    <value>100</value>
+  </data>
+  <data name="&gt;&gt;GlidePropertyGrid.Parent" xml:space="preserve">
+    <value>Glide64TabPage</value>
+  </data>
+  <data name="CancelBT.Location" type="System.Drawing.Point, System.Drawing">
+    <value>490, 344</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionXTextBox.Name" xml:space="preserve">
+    <value>VideoResolutionXTextBox</value>
+  </data>
+  <data name="&gt;&gt;PluginComboBox.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionX.Name" xml:space="preserve">
+    <value>LabelVideoResolutionX</value>
+  </data>
+  <data name="AngrylionPropertyGrid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionYTextBox.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;CoreTypeDropdown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionX.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;AngrylionPropertyGrid.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionY.Name" xml:space="preserve">
+    <value>LabelVideoResolutionY</value>
+  </data>
+  <data name="&gt;&gt;N64vpluginglobaltab.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;N64plugintabcontrol.Name" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="&gt;&gt;label48.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CoreTypeDropdown.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;label49.Name" xml:space="preserve">
+    <value>label49</value>
+  </data>
+  <data name="&gt;&gt;N64vpluginglobaltab.Name" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="Glide64mk2TabPage.Text" xml:space="preserve">
+    <value>Glide64mk2</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionYTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="VideoResolutionXTextBox.MaxLength" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="label67.Text" xml:space="preserve">
+    <value>Force Z Compare</value>
+  </data>
+  <data name="&gt;&gt;N64plugintabcontrol.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="GlideN64PropertyGrid.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;GlidePropertyGrid.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="LabelVideoResolutionX.Text" xml:space="preserve">
+    <value>Width:</value>
+  </data>
+  <data name="AngrylionTab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="&gt;&gt;N64plugintabcontrol.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="CoreTypeDropdown.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 27</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionXTextBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label64.Text" xml:space="preserve">
+    <value>Use legacy pixel pipeline</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items5" xml:space="preserve">
+    <value>800 x 600</value>
+  </data>
+  <data name="&gt;&gt;RspTypeDropdown.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="LabelVideoResolutionX.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 228</value>
+  </data>
+  <data name="RspTypeDropdown.Items2" xml:space="preserve">
+    <value>DynaRec</value>
+  </data>
+  <data name="&gt;&gt;RicePropertyGrid.Name" xml:space="preserve">
+    <value>RicePropertyGrid</value>
+  </data>
+  <data name="&gt;&gt;label57.Name" xml:space="preserve">
+    <value>label57</value>
+  </data>
+  <data name="N64vpluginglobaltab.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;GLideN64Tab.Parent" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="&gt;&gt;label67.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="CoreTypeDropdown.Items" xml:space="preserve">
+    <value>Pure Interpreter</value>
+  </data>
+  <data name="&gt;&gt;label59.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionY.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label68.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RicePropertyGrid.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;Glide64mk2TabPage.Name" xml:space="preserve">
+    <value>Glide64mk2TabPage</value>
+  </data>
+  <data name="label63.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 177</value>
+  </data>
+  <data name="&gt;&gt;PluginComboBox.Name" xml:space="preserve">
+    <value>PluginComboBox</value>
+  </data>
+  <data name="&gt;&gt;label47.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="label69.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 34</value>
+  </data>
+  <data name="AngrylionPropertyGrid.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="label51.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 15</value>
+  </data>
+  <data name="CancelBT.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="&gt;&gt;CancelBT.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label47.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GlidePropertyGrid.Name" xml:space="preserve">
+    <value>GlidePropertyGrid</value>
+  </data>
+  <data name="AngrylionTab.Text" xml:space="preserve">
+    <value>Angrylion</value>
+  </data>
+  <data name="&gt;&gt;label67.Name" xml:space="preserve">
+    <value>label67</value>
+  </data>
+  <data name="GLideN64Tab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>572, 315</value>
+  </data>
+  <data name="RiceTabPage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="label62.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 164</value>
+  </data>
+  <data name="&gt;&gt;N64vpluginglobaltab.Parent" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items6" xml:space="preserve">
+    <value>1024 x 768</value>
+  </data>
+  <data name="RiceTabPage.Text" xml:space="preserve">
+    <value>Rice</value>
+  </data>
+  <data name="&gt;&gt;label71.Name" xml:space="preserve">
+    <value>label71</value>
+  </data>
+  <data name="&gt;&gt;label71.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Glide64TabPage.Name" xml:space="preserve">
+    <value>Glide64TabPage</value>
+  </data>
+  <data name="label65.Text" xml:space="preserve">
+    <value>Force alpha blending</value>
+  </data>
+  <data name="PluginComboBox.Items" xml:space="preserve">
+    <value>Rice</value>
+  </data>
+  <data name="GLideN64Tab.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;label48.Name" xml:space="preserve">
+    <value>label48</value>
+  </data>
+  <data name="VideoResolutionComboBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 20</value>
+  </data>
+  <data name="VideoResolutionXTextBox.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="GLideN64Tab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionComboBox.Name" xml:space="preserve">
+    <value>VideoResolutionComboBox</value>
+  </data>
+  <data name="RiceTabPage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>572, 315</value>
+  </data>
+  <data name="label71.Text" xml:space="preserve">
+    <value>Resolution Height</value>
+  </data>
+  <data name="&gt;&gt;label64.Name" xml:space="preserve">
+    <value>label64</value>
+  </data>
+  <data name="&gt;&gt;GlideN64PropertyGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PropertyGrid, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Glide64mk2TabPage.Parent" xml:space="preserve">
+    <value>N64plugintabcontrol</value>
+  </data>
+  <data name="VideoResolutionYTextBox.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="&gt;&gt;label51.Name" xml:space="preserve">
+    <value>label51</value>
+  </data>
+  <data name="label68.Location" type="System.Drawing.Point, System.Drawing">
+    <value>51, 316</value>
+  </data>
+  <data name="RspTypeDropdown.Items" xml:space="preserve">
+    <value>Pure Interpreter</value>
+  </data>
+  <data name="&gt;&gt;AngrylionPropertyGrid.Parent" xml:space="preserve">
+    <value>AngrylionTab</value>
+  </data>
+  <data name="AngrylionTab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>572, 315</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionComboBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label70.Text" xml:space="preserve">
+    <value>Resolution Width</value>
+  </data>
+  <data name="&gt;&gt;label59.Name" xml:space="preserve">
+    <value>label59</value>
+  </data>
+  <data name="Glide64TabPage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="AngrylionTab.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;label63.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionX.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="CoreTypeDropdown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>136, 20</value>
+  </data>
+  <data name="&gt;&gt;Glide64Mk2PropertyGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PropertyGrid, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Video Resolution</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionComboBox.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="label68.Text" xml:space="preserve">
+    <value>Copy framebuffer</value>
+  </data>
+  <data name="&gt;&gt;AngrylionPropertyGrid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PropertyGrid, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label61.Name" xml:space="preserve">
+    <value>label61</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items11" xml:space="preserve">
+    <value>1920 x 1440</value>
+  </data>
+  <data name="&gt;&gt;LabelVideoResolutionY.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="VideoResolutionComboBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 200</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items9" xml:space="preserve">
+    <value>1400 x 1050</value>
+  </data>
+  <data name="N64vpluginglobaltab.Text" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="SaveButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="label65.Location" type="System.Drawing.Point, System.Drawing">
+    <value>32, 226</value>
+  </data>
+  <data name="&gt;&gt;label69.Name" xml:space="preserve">
+    <value>label69</value>
+  </data>
+  <data name="&gt;&gt;label61.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;N64plugintabcontrol.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="GLideN64Tab.Text" xml:space="preserve">
+    <value>GLideN64</value>
+  </data>
+  <data name="&gt;&gt;label49.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="Glide64mk2TabPage.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;PluginComboBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label69.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RicePropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>566, 311</value>
+  </data>
+  <data name="&gt;&gt;RiceTabPage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RspTypeDropdown.Name" xml:space="preserve">
+    <value>RspTypeDropdown</value>
+  </data>
+  <data name="&gt;&gt;RiceTabPage.Name" xml:space="preserve">
+    <value>RiceTabPage</value>
+  </data>
+  <data name="RspTypeDropdown.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="AngrylionTab.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="LabelVideoResolutionY.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 252</value>
+  </data>
+  <data name="label47.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 106</value>
+  </data>
+  <data name="&gt;&gt;GLideN64Tab.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;GLideN64Tab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;CancelBT.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items10" xml:space="preserve">
+    <value>1600 x 1200</value>
+  </data>
+  <data name="&gt;&gt;Glide64Mk2PropertyGrid.Parent" xml:space="preserve">
+    <value>Glide64mk2TabPage</value>
+  </data>
+  <data name="&gt;&gt;N64vpluginglobaltab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="Glide64Mk2PropertyGrid.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;VideoResolutionXTextBox.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="N64plugintabcontrol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>580, 341</value>
+  </data>
+  <data name="label66.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 256</value>
+  </data>
+  <data name="CoreTypeDropdown.Items1" xml:space="preserve">
+    <value>Interpreter</value>
+  </data>
+  <data name="&gt;&gt;label57.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label48.Text" xml:space="preserve">
+    <value>Core Type</value>
+  </data>
+  <data name="Glide64TabPage.Text" xml:space="preserve">
+    <value>Glide64</value>
+  </data>
+  <data name="SaveButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;label64.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="N64vpluginglobaltab.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label47.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="&gt;&gt;label66.Name" xml:space="preserve">
+    <value>label66</value>
+  </data>
+  <data name="&gt;&gt;RspTypeDropdown.Parent" xml:space="preserve">
+    <value>N64vpluginglobaltab</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items7" xml:space="preserve">
+    <value>1152 x 864</value>
+  </data>
+  <data name="label64.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 195</value>
+  </data>
+  <data name="&gt;&gt;label49.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="GlideN64PropertyGrid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>566, 311</value>
+  </data>
+  <data name="GlidePropertyGrid.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="RspTypeDropdown.Items1" xml:space="preserve">
+    <value>Interpreter</value>
+  </data>
+  <data name="label60.Text" xml:space="preserve">
+    <value>Always use texture filter</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items" xml:space="preserve">
+    <value>320 x 240</value>
+  </data>
+  <data name="label57.Location" type="System.Drawing.Point, System.Drawing">
+    <value>82, 79</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>10, 186</value>
+  </data>
+  <data name="VideoResolutionXTextBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>66, 225</value>
+  </data>
+  <data name="VideoResolutionComboBox.Items12" xml:space="preserve">
+    <value>2048 x 1536</value>
+  </data>
+  <data name="&gt;&gt;GlideN64PropertyGrid.Name" xml:space="preserve">
+    <value>GlideN64PropertyGrid</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Glide64Mk2PropertyGrid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;RicePropertyGrid.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label60.Name" xml:space="preserve">
+    <value>label60</value>
+  </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>36</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
 </root>

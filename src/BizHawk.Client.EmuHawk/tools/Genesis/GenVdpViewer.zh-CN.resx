@@ -136,10 +136,16 @@
     <value>CTRL+C 复制鼠标下面板的内容到剪贴板。</value>
   </data>
   <data name="saveBGAScreenshotToolStripMenuItem.Text" xml:space="preserve">
-    <value>保存 BG A 的截图</value>
+    <value>保存背景 A 的截图</value>
   </data>
   <data name="saveBGBScreenshotToolStripMenuItem.Text" xml:space="preserve">
-    <value>保存 BG B 的截图</value>
+    <value>保存背景 B 的截图</value>
+  </data>
+  <data name="saveTilesScreenshotToolStripMenuItem.Text" xml:space="preserve">
+    <value>保存块截图</value>
+  </data>
+  <data name="saveWindowScreenshotToolStripMenuItem.Text" xml:space="preserve">
+    <value>保存窗口截图</value>
   </data>
   <data name="savePaletteScreenshotToolStripMenuItem.Text" xml:space="preserve">
     <value>保存调色板的截图</value>

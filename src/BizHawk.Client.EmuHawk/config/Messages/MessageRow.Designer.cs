@@ -28,32 +28,30 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageRow));
             this.RowRadio = new BizHawk.WinForms.Controls.RadioButtonEx();
             this.LocationLabel = new BizHawk.WinForms.Controls.LocLabelEx();
             this.SuspendLayout();
             // 
             // RowRadio
             // 
+            resources.ApplyResources(this.RowRadio, "RowRadio");
             this.RowRadio.Name = "RowRadio";
-            this.RowRadio.Text = "Frame Counter";
             this.RowRadio.CheckedChanged += new System.EventHandler(this.RowRadio_CheckedChanged);
             // 
             // LocationLabel
             // 
+            resources.ApplyResources(this.LocationLabel, "LocationLabel");
             this.LocationLabel.AllowDrop = true;
-            this.LocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LocationLabel.Location = new System.Drawing.Point(167, 2);
             this.LocationLabel.Name = "LocationLabel";
-            this.LocationLabel.Text = "255, 255";
             // 
             // MessageRow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.LocationLabel);
             this.Controls.Add(this.RowRadio);
             this.Name = "MessageRow";
-            this.Size = new System.Drawing.Size(224, 23);
             this.ResumeLayout(false);
             this.PerformLayout();
 

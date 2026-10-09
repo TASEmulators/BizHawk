@@ -43,97 +43,71 @@
             // 
             // OkBtn
             // 
-            this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(170, 312);
+            resources.ApplyResources(this.OkBtn, "OkBtn");
             this.OkBtn.Name = "OkBtn";
-            this.OkBtn.Size = new System.Drawing.Size(60, 23);
-            this.OkBtn.TabIndex = 3;
-            this.OkBtn.Text = "&OK";
             this.OkBtn.UseVisualStyleBackColor = true;
             this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
             // 
             // CancelBtn
             // 
-            this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(236, 312);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(60, 23);
-            this.CancelBtn.TabIndex = 4;
-            this.CancelBtn.Text = "&Cancel";
             this.CancelBtn.UseVisualStyleBackColor = true;
             this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
             // 
             // label5
             // 
-            this.label5.Location = new System.Drawing.Point(9, 207);
+            resources.ApplyResources(this.label5, "label5");
             this.label5.Name = "label5";
-            this.label5.Text = "Joystick 2:";
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(12, 157);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Text = "Joystick 1:";
             // 
             // Port2ComboBox
             // 
-            this.Port2ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Port2ComboBox, "Port2ComboBox");
             this.Port2ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Port2ComboBox.FormattingEnabled = true;
-            this.Port2ComboBox.Location = new System.Drawing.Point(12, 223);
             this.Port2ComboBox.Name = "Port2ComboBox";
-            this.Port2ComboBox.Size = new System.Drawing.Size(284, 21);
-            this.Port2ComboBox.TabIndex = 14;
             // 
             // Port1ComboBox
             // 
-            this.Port1ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Port1ComboBox, "Port1ComboBox");
             this.Port1ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Port1ComboBox.FormattingEnabled = true;
-            this.Port1ComboBox.Location = new System.Drawing.Point(12, 173);
             this.Port1ComboBox.Name = "Port1ComboBox";
-            this.Port1ComboBox.Size = new System.Drawing.Size(284, 21);
-            this.Port1ComboBox.TabIndex = 13;
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 14);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Text = "ZX Spectrum Joystick Settings";
             // 
             // Port3ComboBox
             // 
-            this.Port3ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Port3ComboBox, "Port3ComboBox");
             this.Port3ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.Port3ComboBox.FormattingEnabled = true;
-            this.Port3ComboBox.Location = new System.Drawing.Point(12, 275);
             this.Port3ComboBox.Name = "Port3ComboBox";
-            this.Port3ComboBox.Size = new System.Drawing.Size(284, 21);
-            this.Port3ComboBox.TabIndex = 18;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(12, 259);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Text = "Joystick 3:";
             // 
             // lblDoubleSize
             // 
-            this.lblDoubleSize.Location = new System.Drawing.Point(26, 40);
+            resources.ApplyResources(this.lblDoubleSize, "lblDoubleSize");
             this.lblDoubleSize.Name = "lblDoubleSize";
-            this.lblDoubleSize.Text = resources.GetString("lblDoubleSize.Text");
             // 
-            // ZXSpectrumJoystickSettings
+            // ZxSpectrumJoystickSettings
             // 
             this.AcceptButton = this.OkBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(308, 347);
             this.Controls.Add(this.lblDoubleSize);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.Port3ComboBox);
@@ -146,8 +120,6 @@
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ZxSpectrumJoystickSettings";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Joystick Settings";
             this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

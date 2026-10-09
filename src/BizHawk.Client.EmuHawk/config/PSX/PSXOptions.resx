@@ -117,6 +117,788 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;rbPixelPro.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Drawing Area</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnAreaFull.Name" xml:space="preserve">
+    <value>btnAreaFull</value>
+  </data>
+  <data name="&gt;&gt;lblMednafen.Name" xml:space="preserve">
+    <value>lblMednafen</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="groupBox5.TabIndex" type="System.Int32, mscorlib">
+    <value>47</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>Displays all content unmodified
+ • Window size will constantly change
+ • Aspect ratio is usually wrong
+ • Recommended for hacking
+ • Ideal for segmented AV dumping
+ • Ideal for screen shots
+
+</value>
+  </data>
+  <data name="rbWeave.TabIndex" type="System.Int32, mscorlib">
+    <value>48</value>
+  </data>
+  <data name="&gt;&gt;NTSC_LastLineNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>Emulation User Settings</value>
+  </data>
+  <data name="&gt;&gt;rbClipBasic.Name" xml:space="preserve">
+    <value>rbClipBasic</value>
+  </data>
+  <data name="&gt;&gt;rbMednafenMode.Name" xml:space="preserve">
+    <value>rbMednafenMode</value>
+  </data>
+  <data name="btnNiceDisplayConfig.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDebugMode.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="groupBox5.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="rbBobOffset.Size" type="System.Drawing.Size, System.Drawing">
+    <value>83, 16</value>
+  </data>
+  <data name="rbBob.Text" xml:space="preserve">
+    <value>Bob</value>
+  </data>
+  <data name="&gt;&gt;lblPAL.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="rbBob.ToolTip" xml:space="preserve">
+    <value>Good for causing a headache. All glory to Bob.</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>31</value>
+  </data>
+  <data name="&gt;&gt;rbClipToFramebuffer.Name" xml:space="preserve">
+    <value>rbClipToFramebuffer</value>
+  </data>
+  <data name="&gt;&gt;rbMednafenMode.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;lblPAL.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lblTweakedMednafen.Name" xml:space="preserve">
+    <value>lblTweakedMednafen</value>
+  </data>
+  <data name="&gt;&gt;lblPAL.Name" xml:space="preserve">
+    <value>lblPAL</value>
+  </data>
+  <data name="lblNTSC.Location" type="System.Drawing.Point, System.Drawing">
+    <value>62, 16</value>
+  </data>
+  <data name="&gt;&gt;cbGpuLag.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnAreaFull.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 87</value>
+  </data>
+  <data name="&gt;&gt;lblTweakedMednafen.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="rbBobOffset.Text" xml:space="preserve">
+    <value>Bob Offset</value>
+  </data>
+  <data name="rbPixelPro.Text" xml:space="preserve">
+    <value>Pixel Pro Mode</value>
+  </data>
+  <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>264, 284</value>
+  </data>
+  <data name="&gt;&gt;lblTweakedMednafen.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="rbClipNone.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="linkLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 12</value>
+  </data>
+  <data name="&gt;&gt;cbLEC.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbClipToFramebuffer.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;rbTweakedMednafenMode.Name" xml:space="preserve">
+    <value>rbTweakedMednafenMode</value>
+  </data>
+  <data name="btnCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;PAL_FirstLineNumeric.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Name" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 221</value>
+  </data>
+  <data name="NTSC_FirstLineNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>59, 33</value>
+  </data>
+  <data name="&gt;&gt;lblPAL.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbGpuLag.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="rbDebugMode.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnNiceDisplayConfig.Size" type="System.Drawing.Size, System.Drawing">
+    <value>173, 22</value>
+  </data>
+  <data name="groupBox3.TabIndex" type="System.Int32, mscorlib">
+    <value>46</value>
+  </data>
+  <data name="rbTweakedMednafenMode.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="rbClipBasic.Text" xml:space="preserve">
+    <value>Basic Clipping</value>
+  </data>
+  <data name="&gt;&gt;PAL_FirstLineNumeric.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;rbClipNone.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="rbTweakedMednafenMode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>246, 109</value>
+  </data>
+  <data name="&gt;&gt;rbPixelPro.Name" xml:space="preserve">
+    <value>rbPixelPro</value>
+  </data>
+  <data name="rbWeave.ToolTip" xml:space="preserve">
+    <value>Good for low-motion video</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="rbPixelPro.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbDebugMode.Text" xml:space="preserve">
+    <value>Hardcore Debug Mode</value>
+  </data>
+  <data name="cbLEC.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;rbDebugMode.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="rbClipBasic.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 39</value>
+  </data>
+  <data name="PAL_FirstLineNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;NTSC_FirstLineNumeric.Name" xml:space="preserve">
+    <value>NTSC_FirstLineNumeric</value>
+  </data>
+  <data name="&gt;&gt;NTSC_FirstLineNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbBobOffset.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;rbDebugMode.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="btnOk.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
+    <value>541, 342</value>
+  </data>
+  <data name="rbDebugMode.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>713, 374</value>
+  </data>
+  <data name="rbMednafenMode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 109</value>
+  </data>
+  <data name="lblNTSC.Text" xml:space="preserve">
+    <value>NTSC</value>
+  </data>
+  <data name="PAL_FirstLineNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 21</value>
+  </data>
+  <data name="rbMednafenMode.Text" xml:space="preserve">
+    <value>Mednafen Mode (4:3 AR)</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="rbClipBasic.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 16</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 35</value>
+  </data>
+  <data name="&gt;&gt;rbDebugMode.Name" xml:space="preserve">
+    <value>rbDebugMode</value>
+  </data>
+  <data name="&gt;&gt;lblNTSC.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;rbClipNone.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblNTSC.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;rbPixelPro.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;cbGpuLag.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;cbGpuLag.Name" xml:space="preserve">
+    <value>cbGpuLag</value>
+  </data>
+  <data name="NTSC_FirstLineNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>First line:</value>
+  </data>
+  <data name="NTSC_FirstLineNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 21</value>
+  </data>
+  <data name="&gt;&gt;rbBob.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="rbBob.Size" type="System.Drawing.Size, System.Drawing">
+    <value>41, 16</value>
+  </data>
+  <data name="lblPAL.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;linkLabel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.LinkLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblPAL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>131, 16</value>
+  </data>
+  <data name="&gt;&gt;rbClipBasic.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbGpuLag.Text" xml:space="preserve">
+    <value>Determine Lag from GPU Frames</value>
+  </data>
+  <data name="&gt;&gt;lblPixelPro.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="groupBox4.TabIndex" type="System.Int32, mscorlib">
+    <value>50</value>
+  </data>
+  <data name="&gt;&gt;PAL_FirstLineNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbPixelPro.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="groupBox6.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="rbBob.Location" type="System.Drawing.Point, System.Drawing">
+    <value>72, 18</value>
+  </data>
+  <data name="rbMednafenMode.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="&gt;&gt;btnNiceDisplayConfig.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="groupBox5.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 282</value>
+  </data>
+  <data name="rbWeave.Text" xml:space="preserve">
+    <value>Weave</value>
+  </data>
+  <data name="groupBox4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
+    <value>btnCancel</value>
+  </data>
+  <data name="&gt;&gt;rbWeave.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbLEC.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;PAL_LastLineNumeric.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="btnCancel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbLEC.Size" type="System.Drawing.Size, System.Drawing">
+    <value>258, 28</value>
+  </data>
+  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>197, 81</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>492, 6</value>
+  </data>
+  <data name="PAL_LastLineNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>43</value>
+  </data>
+  <data name="&gt;&gt;NTSC_LastLineNumeric.Name" xml:space="preserve">
+    <value>NTSC_LastLineNumeric</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Name" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="label4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 59</value>
+  </data>
+  <data name="rbDebugMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>137, 16</value>
+  </data>
+  <data name="&gt;&gt;lblMednafen.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;rbBob.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
+    <value>btnOk</value>
+  </data>
+  <data name="rbClipNone.Text" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="btnAreaFull.TabIndex" type="System.Int32, mscorlib">
+    <value>40</value>
+  </data>
+  <data name="&gt;&gt;label4.Name" xml:space="preserve">
+    <value>label4</value>
+  </data>
+  <data name="&gt;&gt;rbDebugMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>474, 270</value>
+  </data>
+  <data name="rbBob.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="groupBox6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>238, 78</value>
+  </data>
+  <data name="rbWeave.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 16</value>
+  </data>
+  <data name="&gt;&gt;NTSC_FirstLineNumeric.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbClipNone.ToolTip" xml:space="preserve">
+    <value>Mednafen adds quite a bit overscan to closely emulate minor quirks of the psx's display output.
+Using this option may result in objectionable levels of black bars, but will fix some rare quirks in games.
+</value>
+  </data>
+  <data name="rbMednafenMode.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbGpuLag.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 16</value>
+  </data>
+  <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="rbDebugMode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>246, 18</value>
+  </data>
+  <data name="&gt;&gt;rbMednafenMode.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="label4.Text" xml:space="preserve">
+    <value>Last line:</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="linkLabel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>326, 234</value>
+  </data>
+  <data name="btnAreaFull.Size" type="System.Drawing.Size, System.Drawing">
+    <value>163, 21</value>
+  </data>
+  <data name="&gt;&gt;rbBobOffset.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;rbClipBasic.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="rbPixelPro.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbClipNone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="&gt;&gt;lblTweakedMednafen.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="rbWeave.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="btnOk.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>622, 342</value>
+  </data>
+  <data name="groupBox5.Text" xml:space="preserve">
+    <value>Emulation Sync Settings</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblMednafen.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="lblTweakedMednafen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>249, 124</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbTweakedMednafenMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>203, 16</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>PSXOptions</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="NTSC_LastLineNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>59, 57</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="linkLabel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbBobOffset.TabIndex" type="System.Int32, mscorlib">
+    <value>47</value>
+  </data>
+  <data name="groupBox6.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;NTSC_LastLineNumeric.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="btnNiceDisplayConfig.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="rbClipToFramebuffer.Text" xml:space="preserve">
+    <value>Clip To Framebuffer</value>
+  </data>
+  <data name="&gt;&gt;NTSC_FirstLineNumeric.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;rbBob.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="label3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 6</value>
+  </data>
+  <data name="PAL_LastLineNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="groupBox5.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;rbTweakedMednafenMode.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="lblPixelPro.Text" xml:space="preserve">
+    <value>Converts content with nearest neighbor to 
+fit gracefully in a 800x480 window.
+ • Content is pixel perfect
+ • Aspect ratio is usually wrong
+ • Recommended for study
+ • Game may seen to have scale varying by mode</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbClipBasic.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbLEC.Parent" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="btnNiceDisplayConfig.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="rbPixelPro.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="NTSC_FirstLineNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PAL_FirstLineNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>42</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;groupBox4.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="linkLabel1.Text" xml:space="preserve">
+    <value>About Me</value>
+  </data>
+  <data name="lblTweakedMednafen.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbClipToFramebuffer.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 60</value>
+  </data>
+  <data name="lblPixelPro.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 32</value>
+  </data>
+  <data name="lblMednafen.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 124</value>
+  </data>
+  <data name="&gt;&gt;btnAreaFull.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="btnAreaFull.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PAL_FirstLineNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>124, 33</value>
+  </data>
+  <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
+    <value>groupBox5</value>
+  </data>
+  <data name="&gt;&gt;btnAreaFull.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;rbBobOffset.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;lblNTSC.Name" xml:space="preserve">
+    <value>lblNTSC</value>
+  </data>
+  <data name="cbGpuLag.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>238, 78</value>
+  </data>
+  <data name="groupBox2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="linkLabel1.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="&gt;&gt;linkLabel1.Name" xml:space="preserve">
+    <value>linkLabel1</value>
+  </data>
+  <data name="lblPAL.Text" xml:space="preserve">
+    <value>PAL</value>
+  </data>
+  <data name="&gt;&gt;label4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="lblNTSC.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NTSC_LastLineNumeric.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;lblPixelPro.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbLEC.Name" xml:space="preserve">
+    <value>cbLEC</value>
+  </data>
+  <data name="&gt;&gt;rbClipNone.Name" xml:space="preserve">
+    <value>rbClipNone</value>
+  </data>
+  <data name="rbTweakedMednafenMode.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblPixelPro.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="rbBobOffset.ToolTip" xml:space="preserve">
+    <value>Good for high-motion video, but is a bit flickery; reduces the subjective vertical resolution.</value>
+  </data>
+  <data name="groupBox3.Text" xml:space="preserve">
+    <value>Horizontal Overscan Clipping</value>
+  </data>
+  <data name="&gt;&gt;rbTweakedMednafenMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="NTSC_LastLineNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 21</value>
+  </data>
+  <data name="&gt;&gt;lblMednafen.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="rbMednafenMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 16</value>
+  </data>
+  <data name="groupBox1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;rbWeave.Name" xml:space="preserve">
+    <value>rbWeave</value>
+  </data>
+  <data name="&gt;&gt;cbLEC.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="groupBox2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;NTSC_LastLineNumeric.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;rbTweakedMednafenMode.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NTSC_LastLineNumeric.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>7, 121</value>
+  </data>
+  <data name="btnAreaFull.Text" xml:space="preserve">
+    <value>Full [0,239] and [0,287]</value>
+  </data>
+  <data name="&gt;&gt;btnNiceDisplayConfig.Name" xml:space="preserve">
+    <value>btnNiceDisplayConfig</value>
+  </data>
+  <data name="&gt;&gt;btnNiceDisplayConfig.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnAreaFull.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbClipNone.TabIndex" type="System.Int32, mscorlib">
+    <value>48</value>
+  </data>
+  <data name="rbTweakedMednafenMode.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
   <data name="lblTweakedMednafen.Text" xml:space="preserve">
     <value>Displays all content at a multiple of 400x300.
  • Correct aspect ratio
@@ -125,6 +907,167 @@
  • Recommended for gaming
  • Requires certain display configuration:
 </value>
+  </data>
+  <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 45</value>
+  </data>
+  <data name="rbMednafenMode.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="PAL_LastLineNumeric.Location" type="System.Drawing.Point, System.Drawing">
+    <value>124, 57</value>
+  </data>
+  <data name="&gt;&gt;rbClipBasic.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="groupBox4.Text" xml:space="preserve">
+    <value>Deinterlacing</value>
+  </data>
+  <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
+    <value>toolTip1</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="rbClipToFramebuffer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>137, 16</value>
+  </data>
+  <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;rbWeave.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;rbBob.Name" xml:space="preserve">
+    <value>rbBob</value>
+  </data>
+  <data name="&gt;&gt;lblPixelPro.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="cbLEC.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>PSX Options</value>
+  </data>
+  <data name="&gt;&gt;PAL_LastLineNumeric.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbBob.TabIndex" type="System.Int32, mscorlib">
+    <value>46</value>
+  </data>
+  <data name="linkLabel1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="groupBox6.TabIndex" type="System.Int32, mscorlib">
+    <value>48</value>
+  </data>
+  <data name="&gt;&gt;PAL_LastLineNumeric.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="rbWeave.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;PAL_LastLineNumeric.Name" xml:space="preserve">
+    <value>PAL_LastLineNumeric</value>
+  </data>
+  <data name="PAL_LastLineNumeric.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 21</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;rbBobOffset.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbClipToFramebuffer.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="btnNiceDisplayConfig.Text" xml:space="preserve">
+    <value>Change My Display Options</value>
+  </data>
+  <data name="rbBobOffset.Location" type="System.Drawing.Point, System.Drawing">
+    <value>122, 18</value>
+  </data>
+  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;lblNTSC.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="cbLEC.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 18</value>
+  </data>
+  <data name="&gt;&gt;PAL_FirstLineNumeric.Name" xml:space="preserve">
+    <value>PAL_FirstLineNumeric</value>
+  </data>
+  <data name="rbClipToFramebuffer.TabIndex" type="System.Int32, mscorlib">
+    <value>47</value>
+  </data>
+  <data name="cbGpuLag.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 18</value>
+  </data>
+  <data name="&gt;&gt;rbClipToFramebuffer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbGpuLag.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="groupBox3.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="cbLEC.Text" xml:space="preserve">
+    <value>Emulate Sector Error Correction
+(usually unneeded; breaks some patches)</value>
+  </data>
+  <data name="rbClipBasic.TabIndex" type="System.Int32, mscorlib">
+    <value>46</value>
+  </data>
+  <data name="rbClipToFramebuffer.ToolTip" xml:space="preserve">
+    <value>Subverts mednafen's internal video display field emulation to show only the game's framebuffer.
+Horizontal letterbox bars may be re-added in Mednafen-style resolution modes to maintain correct AR.</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Resolution Management</value>
+  </data>
+  <data name="&gt;&gt;rbPixelPro.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="cbGpuLag.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;rbMednafenMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="rbClipBasic.ToolTip" xml:space="preserve">
+    <value>A mednafen option -- appears to be 5.5% horizontally</value>
+  </data>
+  <data name="lblMednafen.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;groupBox4.Name" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="&gt;&gt;rbBobOffset.Name" xml:space="preserve">
+    <value>rbBobOffset</value>
+  </data>
+  <data name="&gt;&gt;rbClipNone.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="lblMednafen.Text" xml:space="preserve">
     <value>Displays all content at a multiple of 320x240
@@ -135,20 +1078,49 @@
  • Requires certain display configuration:
 </value>
   </data>
-  <data name="lblPixelPro.Text" xml:space="preserve">
-    <value>Converts content with nearest neighbor to 
-fit gracefully in a 800x480 window.
- • Content is pixel perfect
- • Aspect ratio is usually wrong
- • Recommended for study
- • Game may seen to have scale varying by mode</value>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;rbClipToFramebuffer.Parent" xml:space="preserve">
+    <value>groupBox3</value>
+  </data>
+  <data name="&gt;&gt;rbWeave.Parent" xml:space="preserve">
+    <value>groupBox4</value>
+  </data>
+  <data name="btnNiceDisplayConfig.Location" type="System.Drawing.Point, System.Drawing">
+    <value>145, 225</value>
+  </data>
+  <data name="rbClipNone.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 18</value>
+  </data>
+  <data name="&gt;&gt;btnNiceDisplayConfig.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="rbPixelPro.Size" type="System.Drawing.Size, System.Drawing">
+    <value>107, 16</value>
+  </data>
+  <data name="&gt;&gt;lblPixelPro.Name" xml:space="preserve">
+    <value>lblPixelPro</value>
+  </data>
+  <data name="rbTweakedMednafenMode.Text" xml:space="preserve">
+    <value>Tweaked Mednafen Mode (4:3 AR)</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>492, 232</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>249, 32</value>
   </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="rbClipNone.ToolTip" xml:space="preserve">
-    <value>Mednafen adds quite a bit overscan to closely emulate minor quirks of the psx's display output.
-Using this option may result in objectionable levels of black bars, but will fix some rare quirks in games.
-</value>
-  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

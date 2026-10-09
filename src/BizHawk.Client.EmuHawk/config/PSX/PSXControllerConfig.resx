@@ -117,4 +117,739 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>586, 186</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="combo_1_1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="combo_2_4.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="combo_2_3.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="lbl_p_2_4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 97</value>
+  </data>
+  <data name="&gt;&gt;combo_2_4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="lbl_p_2_3.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;combo_1_4.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="lbl_p_1_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 22</value>
+  </data>
+  <data name="combo_1_3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="lbl_2_3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 72</value>
+  </data>
+  <data name="lbl_p_1_2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_4.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_4.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="lbl_p_2_3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 72</value>
+  </data>
+  <data name="btnOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;combo_1_4.Name" xml:space="preserve">
+    <value>combo_1_4</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_4.Name" xml:space="preserve">
+    <value>lbl_1_4</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="combo_1_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 19</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_1.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;combo_1_1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lbl_1_4.Text" xml:space="preserve">
+    <value>D</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_3.Name" xml:space="preserve">
+    <value>lbl_1_3</value>
+  </data>
+  <data name="lbl_2_3.Text" xml:space="preserve">
+    <value>C</value>
+  </data>
+  <data name="cbMemcard_1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 16</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_2.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="combo_2_2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_3.Name" xml:space="preserve">
+    <value>lbl_p_2_3</value>
+  </data>
+  <data name="combo_2_3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 69</value>
+  </data>
+  <data name="lbl_p_1_1.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="&gt;&gt;combo_1_2.Name" xml:space="preserve">
+    <value>combo_1_2</value>
+  </data>
+  <data name="combo_1_4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_3.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="lbl_2_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 47</value>
+  </data>
+  <data name="cbMultitap_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 40</value>
+  </data>
+  <data name="cbMemcard_1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="combo_1_1.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="combo_1_2.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_2.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_2.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_1.Name" xml:space="preserve">
+    <value>lbl_p_1_1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_2.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_2.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;combo_2_2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>PSXControllerConfig</value>
+  </data>
+  <data name="lbl_p_2_4.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="btnOK.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="combo_1_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 44</value>
+  </data>
+  <data name="cbMultitap_1.Text" xml:space="preserve">
+    <value>Multitap</value>
+  </data>
+  <data name="combo_2_4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 94</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_1.Name" xml:space="preserve">
+    <value>lbl_2_1</value>
+  </data>
+  <data name="&gt;&gt;combo_1_3.Name" xml:space="preserve">
+    <value>combo_1_3</value>
+  </data>
+  <data name="cbMemcard_2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;combo_2_1.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_1.Name" xml:space="preserve">
+    <value>cbMultitap_1</value>
+  </data>
+  <data name="cbMultitap_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 40</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_4.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_2.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_2.Name" xml:space="preserve">
+    <value>lbl_p_2_2</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="lbl_2_2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>291, 11</value>
+  </data>
+  <data name="cbMemcard_2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_4.Name" xml:space="preserve">
+    <value>lbl_p_2_4</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_3.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Port 1</value>
+  </data>
+  <data name="lbl_1_2.Text" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_1.Name" xml:space="preserve">
+    <value>cbMemcard_1</value>
+  </data>
+  <data name="combo_1_4.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="cbMultitap_2.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbMemcard_1.Text" xml:space="preserve">
+    <value>Memcard</value>
+  </data>
+  <data name="cbMemcard_2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>66, 16</value>
+  </data>
+  <data name="combo_2_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 44</value>
+  </data>
+  <data name="cbMemcard_1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lbl_p_2_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 46</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_2.Name" xml:space="preserve">
+    <value>cbMemcard_2</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Controller / Memcard Configuration</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_4.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lbl_p_2_1.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="&gt;&gt;combo_1_1.Name" xml:space="preserve">
+    <value>combo_1_1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_2.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lbl_1_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 22</value>
+  </data>
+  <data name="lbl_p_1_4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 97</value>
+  </data>
+  <data name="&gt;&gt;combo_2_3.Name" xml:space="preserve">
+    <value>combo_2_3</value>
+  </data>
+  <data name="&gt;&gt;combo_2_1.Name" xml:space="preserve">
+    <value>combo_2_1</value>
+  </data>
+  <data name="&gt;&gt;combo_2_1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_1.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;combo_2_4.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="combo_2_2.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="lbl_2_2.Text" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_3.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_2.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_2.Name" xml:space="preserve">
+    <value>lbl_p_1_2</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_2.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="lbl_1_3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 72</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_3.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lbl_p_2_2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_4.Name" xml:space="preserve">
+    <value>lbl_2_4</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_1.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="lbl_1_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 47</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lbl_2_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 22</value>
+  </data>
+  <data name="lbl_2_4.Text" xml:space="preserve">
+    <value>D</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_2.Name" xml:space="preserve">
+    <value>lbl_1_2</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="lbl_p_1_4.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="combo_1_4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 94</value>
+  </data>
+  <data name="lbl_p_2_3.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="cbMultitap_2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="lbl_p_2_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 22</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_4.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;combo_2_3.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_1.Name" xml:space="preserve">
+    <value>lbl_1_1</value>
+  </data>
+  <data name="cbMemcard_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 19</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>273, 126</value>
+  </data>
+  <data name="cbMemcard_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 19</value>
+  </data>
+  <data name="&gt;&gt;combo_2_3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>489, 150</value>
+  </data>
+  <data name="lbl_1_4.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="lbl_1_1.Text" xml:space="preserve">
+    <value>A</value>
+  </data>
+  <data name="combo_2_1.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;btnOK.Name" xml:space="preserve">
+    <value>btnOK</value>
+  </data>
+  <data name="cbMemcard_2.Text" xml:space="preserve">
+    <value>Memcard</value>
+  </data>
+  <data name="&gt;&gt;btnOK.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;combo_1_2.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="btnOK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>408, 150</value>
+  </data>
+  <data name="combo_1_2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="combo_2_4.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="&gt;&gt;combo_2_1.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;combo_2_2.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="lbl_p_1_4.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="lbl_2_4.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="lbl_p_2_1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;combo_2_4.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="lbl_p_1_1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="combo_2_1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 19</value>
+  </data>
+  <data name="&gt;&gt;combo_2_3.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="lbl_1_1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
+    <value>btnCancel</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_2.Name" xml:space="preserve">
+    <value>cbMultitap_2</value>
+  </data>
+  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lbl_p_1_3.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_2.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_4.Name" xml:space="preserve">
+    <value>lbl_p_1_4</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="lbl_2_3.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="lbl_1_4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 97</value>
+  </data>
+  <data name="lbl_p_1_2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 46</value>
+  </data>
+  <data name="&gt;&gt;combo_1_2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;combo_1_3.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lbl_1_3.Text" xml:space="preserve">
+    <value>C</value>
+  </data>
+  <data name="&gt;&gt;combo_2_2.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;combo_1_4.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="cbMultitap_2.Text" xml:space="preserve">
+    <value>Multitap</value>
+  </data>
+  <data name="combo_1_3.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="lbl_1_2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_2.Name" xml:space="preserve">
+    <value>lbl_2_2</value>
+  </data>
+  <data name="cbMultitap_1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;combo_1_4.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="cbMultitap_1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_3.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_1.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_3.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="lbl_2_1.Text" xml:space="preserve">
+    <value>A</value>
+  </data>
+  <data name="&gt;&gt;combo_1_2.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lbl_p_2_4.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_4.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_4.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_4.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_1.Name" xml:space="preserve">
+    <value>lbl_p_2_1</value>
+  </data>
+  <data name="lbl_p_1_2.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="&gt;&gt;combo_1_1.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_3.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="lbl_2_4.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 97</value>
+  </data>
+  <data name="lbl_p_1_3.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="combo_1_3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>114, 69</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_1.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_3.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Port 2</value>
+  </data>
+  <data name="&gt;&gt;combo_1_3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>273, 126</value>
+  </data>
+  <data name="lbl_2_1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;combo_2_2.Name" xml:space="preserve">
+    <value>combo_2_2</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="combo_2_3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 11</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_2_3.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="lbl_p_1_3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>241, 72</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_1.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_2.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;combo_1_3.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="cbMultitap_2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lbl_1_3.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="&gt;&gt;lbl_p_1_3.Name" xml:space="preserve">
+    <value>lbl_p_1_3</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_1.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="btnOK.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lbl_1_4.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="combo_2_1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>121, 20</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cbMemcard_2.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;cbMultitap_1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lbl_p_2_2.Text" xml:space="preserve">
+    <value>P1</value>
+  </data>
+  <data name="&gt;&gt;lbl_2_3.Name" xml:space="preserve">
+    <value>lbl_2_3</value>
+  </data>
+  <data name="cbMultitap_1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="&gt;&gt;combo_1_1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;combo_2_4.Name" xml:space="preserve">
+    <value>combo_2_4</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

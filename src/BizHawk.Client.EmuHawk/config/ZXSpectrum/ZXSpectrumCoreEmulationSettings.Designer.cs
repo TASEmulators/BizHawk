@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZxSpectrumCoreEmulationSettings));
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
             this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -44,126 +45,86 @@
             // 
             // OkBtn
             // 
-            this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(310, 434);
+            resources.ApplyResources(this.OkBtn, "OkBtn");
             this.OkBtn.Name = "OkBtn";
-            this.OkBtn.Size = new System.Drawing.Size(60, 23);
-            this.OkBtn.TabIndex = 3;
-            this.OkBtn.Text = "&OK";
             this.OkBtn.UseVisualStyleBackColor = true;
             this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
             // 
             // CancelBtn
             // 
-            this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(376, 434);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(60, 23);
-            this.CancelBtn.TabIndex = 4;
-            this.CancelBtn.Text = "&Cancel";
             this.CancelBtn.UseVisualStyleBackColor = true;
             this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(12, 46);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Text = "Emulated Machine:";
             // 
             // MachineSelectionComboBox
             // 
-            this.MachineSelectionComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.MachineSelectionComboBox, "MachineSelectionComboBox");
             this.MachineSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.MachineSelectionComboBox.FormattingEnabled = true;
-            this.MachineSelectionComboBox.Location = new System.Drawing.Point(12, 62);
             this.MachineSelectionComboBox.Name = "MachineSelectionComboBox";
-            this.MachineSelectionComboBox.Size = new System.Drawing.Size(424, 21);
-            this.MachineSelectionComboBox.TabIndex = 13;
             this.MachineSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.MachineSelectionComboBox_SelectionChangeCommitted);
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 14);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Text = "ZX Spectrum Emulation Settings";
             // 
             // determEmucheckBox1
             // 
-            this.determEmucheckBox1.AutoSize = true;
-            this.determEmucheckBox1.Location = new System.Drawing.Point(15, 302);
+            resources.ApplyResources(this.determEmucheckBox1, "determEmucheckBox1");
             this.determEmucheckBox1.Name = "determEmucheckBox1";
-            this.determEmucheckBox1.Size = new System.Drawing.Size(135, 17);
-            this.determEmucheckBox1.TabIndex = 21;
-            this.determEmucheckBox1.Text = "Deterministic Emulation";
             this.determEmucheckBox1.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(12, 335);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Text = "Rendered Border Type:";
             // 
             // borderTypecomboBox1
             // 
-            this.borderTypecomboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.borderTypecomboBox1, "borderTypecomboBox1");
             this.borderTypecomboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.borderTypecomboBox1.FormattingEnabled = true;
-            this.borderTypecomboBox1.Location = new System.Drawing.Point(12, 351);
             this.borderTypecomboBox1.Name = "borderTypecomboBox1";
-            this.borderTypecomboBox1.Size = new System.Drawing.Size(220, 21);
-            this.borderTypecomboBox1.TabIndex = 22;
             this.borderTypecomboBox1.SelectedIndexChanged += new System.EventHandler(this.BorderTypeComboBox_SelectedIndexChanged);
             // 
             // lblBorderInfo
             // 
-            this.lblBorderInfo.Font = new System.Drawing.Font("Courier New", 8F);
-            this.lblBorderInfo.Location = new System.Drawing.Point(240, 335);
+            resources.ApplyResources(this.lblBorderInfo, "lblBorderInfo");
             this.lblBorderInfo.Name = "lblBorderInfo";
-            this.lblBorderInfo.Text = "null";
-            this.lblBorderInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblAutoLoadText
             // 
-            this.lblAutoLoadText.Font = new System.Drawing.Font("Courier New", 8F);
-            this.lblAutoLoadText.Location = new System.Drawing.Point(124, 388);
+            resources.ApplyResources(this.lblAutoLoadText, "lblAutoLoadText");
             this.lblAutoLoadText.Name = "lblAutoLoadText";
-            this.lblAutoLoadText.Text = "When enabled, will attempt to control the tape device automatically when the " +
-    "correct traps are detected";
-            this.lblAutoLoadText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // autoLoadcheckBox1
             // 
-            this.autoLoadcheckBox1.AutoSize = true;
-            this.autoLoadcheckBox1.Location = new System.Drawing.Point(15, 394);
+            resources.ApplyResources(this.autoLoadcheckBox1, "autoLoadcheckBox1");
             this.autoLoadcheckBox1.Name = "autoLoadcheckBox1";
-            this.autoLoadcheckBox1.Size = new System.Drawing.Size(103, 17);
-            this.autoLoadcheckBox1.TabIndex = 26;
-            this.autoLoadcheckBox1.Text = "Auto-Load Tape";
             this.autoLoadcheckBox1.UseVisualStyleBackColor = true;
             // 
             // textBoxCoreDetails
             // 
             this.textBoxCoreDetails.AcceptsReturn = true;
             this.textBoxCoreDetails.AcceptsTab = true;
-            this.textBoxCoreDetails.Font = new System.Drawing.Font("Courier New", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxCoreDetails.Location = new System.Drawing.Point(12, 90);
-            this.textBoxCoreDetails.Multiline = true;
+            resources.ApplyResources(this.textBoxCoreDetails, "textBoxCoreDetails");
             this.textBoxCoreDetails.Name = "textBoxCoreDetails";
             this.textBoxCoreDetails.ReadOnly = true;
-            this.textBoxCoreDetails.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBoxCoreDetails.Size = new System.Drawing.Size(424, 206);
-            this.textBoxCoreDetails.TabIndex = 28;
             // 
-            // ZXSpectrumCoreEmulationSettings
+            // ZxSpectrumCoreEmulationSettings
             // 
             this.AcceptButton = this.OkBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(448, 469);
             this.Controls.Add(this.textBoxCoreDetails);
             this.Controls.Add(this.lblAutoLoadText);
             this.Controls.Add(this.autoLoadcheckBox1);
@@ -178,8 +139,6 @@
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ZxSpectrumCoreEmulationSettings";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Core Emulation Settings";
             this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SameBoyColorChooserForm));
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -43,116 +44,87 @@
             // 
             // panel1
             // 
+            resources.ApplyResources(this.panel1, "panel1");
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel1.Location = new System.Drawing.Point(56, 18);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(40, 32);
-            this.panel1.TabIndex = 0;
             this.panel1.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
             // 
             // panel2
             // 
+            resources.ApplyResources(this.panel2, "panel2");
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel2.Location = new System.Drawing.Point(103, 18);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(40, 32);
-            this.panel2.TabIndex = 1;
             this.panel2.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
             // 
             // panel3
             // 
+            resources.ApplyResources(this.panel3, "panel3");
             this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel3.Location = new System.Drawing.Point(149, 18);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(40, 32);
-            this.panel3.TabIndex = 2;
             this.panel3.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
             // 
             // panel4
             // 
+            resources.ApplyResources(this.panel4, "panel4");
             this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel4.Location = new System.Drawing.Point(195, 18);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(40, 32);
-            this.panel4.TabIndex = 3;
             this.panel4.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
             // 
             // panel5
             // 
+            resources.ApplyResources(this.panel5, "panel5");
             this.panel5.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panel5.Location = new System.Drawing.Point(241, 18);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(40, 32);
-            this.panel5.TabIndex = 4;
             this.panel5.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(14, 27);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Text = "Colors";
             // 
             // OK
             // 
-            this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.OK, "OK");
             this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OK.Location = new System.Drawing.Point(206, 84);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(75, 23);
-            this.OK.TabIndex = 22;
-            this.OK.Text = "&OK";
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.OK_Click);
             // 
             // Cancel
             // 
-            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Cancel, "Cancel");
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(287, 84);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Cancel.TabIndex = 23;
-            this.Cancel.Text = "&Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
             // 
             // buttonInterpolateBG
             // 
-            this.buttonInterpolateBG.Location = new System.Drawing.Point(287, 22);
+            resources.ApplyResources(this.buttonInterpolateBG, "buttonInterpolateBG");
             this.buttonInterpolateBG.Name = "buttonInterpolateBG";
-            this.buttonInterpolateBG.Size = new System.Drawing.Size(75, 23);
-            this.buttonInterpolateBG.TabIndex = 25;
-            this.buttonInterpolateBG.Text = "Interpolate";
             this.buttonInterpolateBG.UseVisualStyleBackColor = true;
             this.buttonInterpolateBG.Click += new System.EventHandler(this.Button3_Click);
             // 
             // buttonLoad
             // 
-            this.buttonLoad.Location = new System.Drawing.Point(17, 84);
+            resources.ApplyResources(this.buttonLoad, "buttonLoad");
             this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(60, 23);
-            this.buttonLoad.TabIndex = 28;
-            this.buttonLoad.Text = "&Load...";
             this.buttonLoad.UseVisualStyleBackColor = true;
             this.buttonLoad.Click += new System.EventHandler(this.Button6_Click);
             // 
             // buttonSave
             // 
-            this.buttonSave.Location = new System.Drawing.Point(83, 84);
+            resources.ApplyResources(this.buttonSave, "buttonSave");
             this.buttonSave.Name = "buttonSave";
-            this.buttonSave.Size = new System.Drawing.Size(60, 23);
-            this.buttonSave.TabIndex = 29;
-            this.buttonSave.Text = "&Save...";
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.Button7_Click);
             // 
             // SameBoyColorChooserForm
             // 
             this.AcceptButton = this.OK;
+            resources.ApplyResources(this, "$this");
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(373, 119);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.buttonLoad);
             this.Controls.Add(this.buttonInterpolateBG);
@@ -164,10 +136,7 @@
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.MinimumSize = new System.Drawing.Size(310, 140);
             this.Name = "SameBoyColorChooserForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "SameBoy Palette Config";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragEnter);
             this.ResumeLayout(false);

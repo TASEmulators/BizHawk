@@ -117,18 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FileSubMenu.Text" xml:space="preserve">
-    <value>文件(&amp;F)</value>
-  </data>
-  <data name="EditMenuItem.Text" xml:space="preserve">
-    <value>编辑(&amp;E)</value>
-  </data>
-  <data name="OptionsSubMenu.Text" xml:space="preserve">
-    <value>选项(&amp;O)</value>
-  </data>
-  <data name="SettingsSubMenu.Text" xml:space="preserve">
-    <value>设置(&amp;S)</value>
-  </data>
   <data name="SaveMenuItem.Text" xml:space="preserve">
     <value>保存</value>
   </data>
@@ -147,11 +135,14 @@
   <data name="CloseTableFileMenuItem.Text" xml:space="preserve">
     <value>关闭 .tbl 文件</value>
   </data>
+  <data name="noneToolStripMenuItem.Text" xml:space="preserve">
+    <value>无</value>
+  </data>
   <data name="RecentTablesSubMenu.Text" xml:space="preserve">
     <value>历史</value>
   </data>
-  <data name="noneToolStripMenuItem.Text" xml:space="preserve">
-    <value>无</value>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>文件(&amp;F)</value>
   </data>
   <data name="CopyMenuItem.Text" xml:space="preserve">
     <value>复制(&amp;C)</value>
@@ -171,11 +162,11 @@
   <data name="FindPrevMenuItem.Text" xml:space="preserve">
     <value>查找上一个</value>
   </data>
+  <data name="EditMenuItem.Text" xml:space="preserve">
+    <value>编辑(&amp;E)</value>
+  </data>
   <data name="MemoryDomainsMenuItem.Text" xml:space="preserve">
     <value>内存域(&amp;M)</value>
-  </data>
-  <data name="DataSizeSubMenu.Text" xml:space="preserve">
-    <value>数据大小</value>
   </data>
   <data name="DataSizeByteMenuItem.Text" xml:space="preserve">
     <value>1 字节</value>
@@ -185,6 +176,9 @@
   </data>
   <data name="DataSizeDWordMenuItem.Text" xml:space="preserve">
     <value>4 字节</value>
+  </data>
+  <data name="DataSizeSubMenu.Text" xml:space="preserve">
+    <value>数据大小</value>
   </data>
   <data name="BigEndianMenuItem.Text" xml:space="preserve">
     <value>大端序</value>
@@ -204,14 +198,20 @@
   <data name="PokeAddressMenuItem.Text" xml:space="preserve">
     <value>刺探地址(&amp;P)</value>
   </data>
-  <data name="CustomColorsSubMenu.Text" xml:space="preserve">
-    <value>自定义颜色</value>
+  <data name="OptionsSubMenu.Text" xml:space="preserve">
+    <value>选项(&amp;O)</value>
   </data>
   <data name="SetColorsMenuItem.Text" xml:space="preserve">
     <value>设置颜色</value>
   </data>
   <data name="ResetColorsToDefaultMenuItem.Text" xml:space="preserve">
     <value>重置为默认</value>
+  </data>
+  <data name="CustomColorsSubMenu.Text" xml:space="preserve">
+    <value>自定义颜色</value>
+  </data>
+  <data name="SettingsSubMenu.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
   </data>
   <data name="AddressLabel.Text" xml:space="preserve">
     <value>地址</value>

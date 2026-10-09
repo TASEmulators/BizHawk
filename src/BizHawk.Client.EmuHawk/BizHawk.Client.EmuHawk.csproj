@@ -17,19 +17,48 @@
 	<!-- 本项目文件夹路径和命名空间不严格匹配，为了本地化，我们需要特别处理本地化 resx 文件的 LogicalName 。 -->
 	<!-- folder path and namespace of this project are not strictly matched. In order to localize, we need to specially handle the LogicalName of the localized resx file. -->
 	<ItemGroup>
-		<!-- 第一步：先移除所有自动探测的 zh-CN.resx，消除自动生成冲突 -->
-		<!-- We should first remove all the auto-detected zh-CN.resx to eliminate the auto-generation conflict.-->
-		<EmbeddedResource Remove="**\*.zh-CN.resx" />
-		<!-- 第二步：重新手动包含所有 tools 下嵌套的 zh-CN.resx 并重新指定 LogicalName 和 ManifestResourceName-->
-		<!-- Then manually include them again and reset LogicalName and ManifestResourceName.-->
-		<EmbeddedResource Include="**\*.zh-CN.resx">
+		<EmbeddedResource Update="**\*.zh-CN.resx">
 			<LogicalName>BizHawk.Client.EmuHawk.%(Filename).resources</LogicalName>
-			<ManifestResourceName>BizHawk.Client.EmuHawk.%(Filename)._zh_CN</ManifestResourceName>
-			<!-- 使用正则获取文件名主干 Use regex to get file name trunk. -->
-			<DependentUpon>$([System.Text.RegularExpressions.Regex]::Replace('%(Filename)', '\.zh-CN$', '')).cs</DependentUpon>
 		</EmbeddedResource>
 	</ItemGroup>
-		
+	
+	<!-- 又有几个窗口的命名空间既不对应路径，又不是 BizHawk.Client.EmuHawk ，需要单独处理 -->
+	<!-- There are also several window namespaces that do not correspond to any paths and are not of the type BizHawk.Client.EmuHawk; these need to be handled separately. -->
+	<ItemGroup>
+		<EmbeddedResource Update="debug\FirmwareAutopatchDebugToolForm.zh-CN.resx" LogicalName="BizHawk.Client.EmuHawk.ForDebugging.FirmwareAutopatchDebugToolForm.zh-CN.resources" />
+		<EmbeddedResource Update="debug\N64RomByteswapToolForm.zh-CN.resx" LogicalName="BizHawk.Client.EmuHawk.ForDebugging.N64RomByteswapToolForm.zh-CN.resources" />
+		<EmbeddedResource Update="debug\N64VideoSettingsFuzzToolForm.zh-CN.resx" LogicalName="BizHawk.Client.EmuHawk.ForDebugging.N64VideoSettingsFuzzToolForm.zh-CN.resources" />
+		<EmbeddedResource Update="CustomControls\MsgBox.zh-CN.resx" LogicalName="BizHawk.Client.EmuHawk.CustomControls.MsgBox.zh-CN.resources" />
+		<EmbeddedResource Update="CustomControls\MsgBox.zh-CN.resx" LogicalName="BizHawk.Client.EmuHawk.CustomControls.MsgBox.zh-CN.resources" />
+	</ItemGroup>
+	
+	<!-- 原项目中有些中性的 .resx 文件为指定 DependentUpon ，又由于路径与命名空间不匹配的问题导致开启 Localization 后找不到资源 -->
+	<!-- In the original project, those neutral.resx files did not have a DependentUpon attribute specified, and due to mismatches in paths and namespaces, the resources could not be found after localization was enabled. -->
+	<ItemGroup>
+		<EmbeddedResource Update="config\ControllerConfig\AnalogBindPanel.resx" DependentUpon="AnalogBindPanel.cs" />
+		<EmbeddedResource Update="config\ControllerConfig\FeedbackBindControl.resx" DependentUpon="FeedbackBindControl.cs" />
+		<EmbeddedResource Update="config\ControllerConfig\FeedbacksBindPanel.resx" DependentUpon="FeedbacksBindPanel.cs" />
+		<EmbeddedResource Update="config\GB\SameBoyColorChooserForm.resx" DependentUpon="SameBoyColorChooserForm.cs" />
+		<EmbeddedResource Update="config\SNES\BSNESControllerSettings.resx" DependentUpon="BSNESControllerSettings.cs" />
+		<EmbeddedResource Update="config\SNES\BSNESOptions.resx" DependentUpon="BSNESOptions.cs" />
+		<EmbeddedResource Update="CustomControls\ScreenshotForm.resx" DependentUpon="ScreenshotForm.cs" />
+		<EmbeddedResource Update="debug\FirmwareAutopatchDebugToolForm.resx" DependentUpon="FirmwareAutopatchDebugToolForm.cs" />
+		<EmbeddedResource Update="debug\N64RomByteswapToolForm.resx" DependentUpon="N64RomByteswapToolForm.cs" />
+		<EmbeddedResource Update="debug\N64VideoSettingsFuzzToolForm.resx" DependentUpon="N64VideoSettingsFuzzToolForm.cs" />
+		<EmbeddedResource Update="DownloaderForm.resx" DependentUpon="DownloaderForm.cs" />
+		<EmbeddedResource Update="FormBase.resx" DependentUpon="FormBase.cs" />
+		<EmbeddedResource Update="RetroAchievements\RCheevosAchievementForm.resx" DependentUpon="RCheevosAchievementForm.cs" />
+		<EmbeddedResource Update="RetroAchievements\RCheevosAchievementListForm.resx" DependentUpon="RCheevosAchievementListForm.cs" />
+		<EmbeddedResource Update="RetroAchievements\RCheevosGameInfoForm.resx" DependentUpon="RCheevosGameInfoForm.cs" />
+		<EmbeddedResource Update="RetroAchievements\RCheevosLeaderboardForm.resx" DependentUpon="RCheevosLeaderboardForm.cs" />
+		<EmbeddedResource Update="RetroAchievements\RCheevosLeaderboardListForm.resx" DependentUpon="RCheevosLeaderboardListForm.cs" />
+		<EmbeddedResource Update="RetroAchievements\RCheevosLoginForm.resx" DependentUpon="RCheevosLoginForm.cs" />
+		<EmbeddedResource Update="tools\Lua\LuaCanvas.resx" DependentUpon="LuaCanvas.cs" />
+		<EmbeddedResource Update="tools\ToolFormBase.resx" DependentUpon="ToolFormBase.cs" />
+		<EmbeddedResource Update="tools\Watch\WatchEditor.resx" DependentUpon="WatchEditor.cs" />
+	</ItemGroup>
+	<!-- 修改结束 Edit Done -->	
+	
 	<ItemGroup>
 		<Reference Include="PresentationFramework" />
 	</ItemGroup>
@@ -290,7 +319,7 @@
 		<!-- The original project forgot to include two files, MainForm.Debug.cs and MainForm.VSystem.cs, which led to the misunderstanding of these two files as window files during localization, resulting in bugs. -->
 		<Compile Update="MainForm.Debug.cs" DependentUpon="MainForm.cs" />
 		<Compile Update="MainForm.VSystem.cs" DependentUpon="MainForm.cs" />
-		<!-- 包含： Imclude:  MainForm.Debug.cs & MainForm.VSystem.cs -->
+		<!-- 编辑结束 Edit End -->
 		<EmbeddedResource Update="MainForm.resx" DependentUpon="MainForm.cs" SubType="Designer" />
 		<Compile Update="movie/EditCommentsForm.cs" SubType="Form" />
 		<Compile Update="movie/EditCommentsForm.Designer.cs" DependentUpon="EditCommentsForm.cs" />
@@ -417,6 +446,7 @@
 		<Compile Update="tools\Macros\MacroInputTool.Designer.cs" DependentUpon="MacroInputTool.cs" />
 		<!-- 这里又有一个忘挂载被误读成窗口的 -->
 		<Compile Update="tools\Macros\MacroInputTool.ButtonSelect.cs" DependentUpon="MacroInputTool.cs" />
+		<!-- 修改结束 -->
 		<EmbeddedResource Update="tools\Macros\MacroInputTool.zh-CN.resx">
 		  <DependentUpon>MacroInputTool.cs</DependentUpon>
 		</EmbeddedResource>

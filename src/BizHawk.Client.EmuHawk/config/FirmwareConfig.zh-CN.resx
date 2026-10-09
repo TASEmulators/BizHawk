@@ -175,6 +175,9 @@
   <data name="tbbCloseReload.Text" xml:space="preserve">
     <value>关闭并重载 ROM</value>
   </data>
+  <data name="tbbCloseReload.ToolTipText" xml:space="preserve">
+    <value>关闭并重载 ROM</value>
+  </data>
   <data name="tbbOpenFolder.Size" type="System.Drawing.Size, System.Drawing">
     <value>96, 22</value>
   </data>
@@ -202,14 +205,14 @@
   <data name="_cbAllowImport.Text" xml:space="preserve">
     <value>允许导入未知文件</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>BIOS 文件等固件是受版权保护的材料，不由 BizHawk 提供。</value>
-  </data>
   <data name="linkBasePath.Location" type="System.Drawing.Point, System.Drawing">
     <value>302, 0</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>将在此路径扫描 (可在 配置→路径→全局 中设置) ：</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>BIOS 文件等固件是受版权保护的材料，不由 BizHawk 提供。</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>固件</value>

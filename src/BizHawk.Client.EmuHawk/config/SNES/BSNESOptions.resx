@@ -117,4 +117,1003 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;Bg4_1Checkbox.Name" xml:space="preserve">
+    <value>Bg4_1Checkbox</value>
+  </data>
+  <data name="lblInitialTime.Text" xml:space="preserve">
+    <value>Initial Time</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="Bg2_0Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>128, 47</value>
+  </data>
+  <data name="&gt;&gt;Bg2_0Checkbox.Name" xml:space="preserve">
+    <value>Bg2_0Checkbox</value>
+  </data>
+  <data name="&gt;&gt;Obj4Checkbox.Name" xml:space="preserve">
+    <value>Obj4Checkbox</value>
+  </data>
+  <data name="&gt;&gt;Obj2Checkbox.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="cbShowCursor.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="&gt;&gt;cbShowOverscan.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;cbFastDSP.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbFastDSP.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblInitialTime.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;AspectRatioCorrectionBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="EntropyBox.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;lblSatellaviewCartridge.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="cbFastDSP.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 16</value>
+  </data>
+  <data name="&gt;&gt;lblPriority0.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lblAspectRatioCorrection.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Name" xml:space="preserve">
+    <value>btnOk</value>
+  </data>
+  <data name="&gt;&gt;Bg4_0Checkbox.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="Bg3_1Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="Obj3Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="AspectRatioCorrectionBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 20</value>
+  </data>
+  <data name="&gt;&gt;SatellaviewCartridgeBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;SatellaviewCartridgeBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;EntropyBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbUseSGB2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 97</value>
+  </data>
+  <data name="&gt;&gt;lblAspectRatioCorrection.Name" xml:space="preserve">
+    <value>lblAspectRatioCorrection</value>
+  </data>
+  <data name="&gt;&gt;EntropyBox.ZOrder" xml:space="preserve">
+    <value>16</value>
+  </data>
+  <data name="&gt;&gt;cbGameHotfixes.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbCropSGBFrame.Text" xml:space="preserve">
+    <value>Crop SGB Frame</value>
+  </data>
+  <data name="&gt;&gt;Bg2_1Checkbox.Name" xml:space="preserve">
+    <value>Bg2_1Checkbox</value>
+  </data>
+  <data name="&gt;&gt;lblPriority1.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="lblInitialTime.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>0, 4, 0, 4</value>
+  </data>
+  <data name="&gt;&gt;lblInitialTime.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="btnOk.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="Bg4_0Checkbox.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="cbGameHotfixes.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="btnCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbNoPPUSpriteLimit.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 141</value>
+  </data>
+  <data name="Bg3_0Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblDoubleSize.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbUseRealTime.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 162</value>
+  </data>
+  <data name="Bg1_0Checkbox.Text" xml:space="preserve">
+    <value>BG 1    </value>
+  </data>
+  <data name="Bg4_0Checkbox.Text" xml:space="preserve">
+    <value>BG 4    </value>
+  </data>
+  <data name="&gt;&gt;lblRegion.Name" xml:space="preserve">
+    <value>lblRegion</value>
+  </data>
+  <data name="&gt;&gt;cbUseRealTime.Name" xml:space="preserve">
+    <value>cbUseRealTime</value>
+  </data>
+  <data name="&gt;&gt;Bg3_0Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbDoubleSize.Size" type="System.Drawing.Size, System.Drawing">
+    <value>204, 16</value>
+  </data>
+  <data name="cbUseRealTime.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 16</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="btnCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;Bg3_1Checkbox.Name" xml:space="preserve">
+    <value>Bg3_1Checkbox</value>
+  </data>
+  <data name="Bg2_0Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;Obj3Checkbox.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="Obj3Checkbox.Text" xml:space="preserve">
+    <value>OBJ 3</value>
+  </data>
+  <data name="&gt;&gt;cbFastCoprocessor.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Bg2_1Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="Bg3_0Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="cbNoPPUSpriteLimit.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;Bg2_1Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Bg4_1Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblPriority0.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>100, 0</value>
+  </data>
+  <data name="&gt;&gt;Obj3Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbFastCoprocessor.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblPriority0.Text" xml:space="preserve">
+    <value>Priority 0</value>
+  </data>
+  <data name="cbNoPPUSpriteLimit.Text" xml:space="preserve">
+    <value>No PPU sprite limit</value>
+  </data>
+  <data name="Bg3_1Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblPriority0.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="RegionBox.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="cbShowOverscan.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 119</value>
+  </data>
+  <data name="&gt;&gt;lblSatellaviewCartridge.Name" xml:space="preserve">
+    <value>lblSatellaviewCartridge</value>
+  </data>
+  <data name="cbFastDSP.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;Bg1_1Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbDoubleSize.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Obj4Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>304, 434</value>
+  </data>
+  <data name="&gt;&gt;Bg1_1Checkbox.Name" xml:space="preserve">
+    <value>Bg1_1Checkbox</value>
+  </data>
+  <data name="Bg1_0Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;lblDoubleSize.Name" xml:space="preserve">
+    <value>lblDoubleSize</value>
+  </data>
+  <data name="Bg4_1Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
+  </data>
+  <data name="&gt;&gt;lblRegion.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Obj2Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Bg2_0Checkbox.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="Obj3Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 16</value>
+  </data>
+  <data name="&gt;&gt;cbShowOverscan.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbShowCursor.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbFastPPU.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;cbUseSGB2.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="btnOk.Location" type="System.Drawing.Point, System.Drawing">
+    <value>136, 405</value>
+  </data>
+  <data name="cbFastDSP.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbFastDSP.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;btnOk.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbDoubleSize.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbFastPPU.Text" xml:space="preserve">
+    <value>Use fast PPU</value>
+  </data>
+  <data name="lblAspectRatioCorrection.Text" xml:space="preserve">
+    <value>Aspect Ratio Correction</value>
+  </data>
+  <data name="lblEntropy.Text" xml:space="preserve">
+    <value>Entropy</value>
+  </data>
+  <data name="lblDoubleSize.Location" type="System.Drawing.Point, System.Drawing">
+    <value>31, 30</value>
+  </data>
+  <data name="lblPriority0.Location" type="System.Drawing.Point, System.Drawing">
+    <value>162, 13</value>
+  </data>
+  <data name="Bg2_0Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="cbFastDSP.Text" xml:space="preserve">
+    <value>DSP Fast Mode</value>
+  </data>
+  <data name="&gt;&gt;Obj1Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Bg3_1Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="Bg1_1Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>234, 29</value>
+  </data>
+  <data name="cbNoPPUSpriteLimit.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;cbGameHotfixes.Name" xml:space="preserve">
+    <value>cbGameHotfixes</value>
+  </data>
+  <data name="&gt;&gt;lblPriority0.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="Bg3_0Checkbox.Text" xml:space="preserve">
+    <value>BG 3    </value>
+  </data>
+  <data name="Obj1Checkbox.Text" xml:space="preserve">
+    <value>OBJ 1</value>
+  </data>
+  <data name="&gt;&gt;Bg1_0Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Obj2Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="Bg2_0Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="lblInitialTime.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>260, 0</value>
+  </data>
+  <data name="cbFastPPU.Size" type="System.Drawing.Size, System.Drawing">
+    <value>96, 16</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>274, 106</value>
+  </data>
+  <data name="&gt;&gt;RegionBox.Name" xml:space="preserve">
+    <value>RegionBox</value>
+  </data>
+  <data name="Bg2_1Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;Bg1_1Checkbox.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="lblPriority1.Text" xml:space="preserve">
+    <value>Priority 1</value>
+  </data>
+  <data name="&gt;&gt;Bg4_1Checkbox.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="Obj2Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 16</value>
+  </data>
+  <data name="Bg3_0Checkbox.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="cbGameHotfixes.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="cbDoubleSize.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;Obj1Checkbox.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;lblEntropy.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Obj4Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 86</value>
+  </data>
+  <data name="&gt;&gt;cbGameHotfixes.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Bg3_1Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;RegionBox.ZOrder" xml:space="preserve">
+    <value>17</value>
+  </data>
+  <data name="&gt;&gt;cbShowOverscan.Name" xml:space="preserve">
+    <value>cbShowOverscan</value>
+  </data>
+  <data name="&gt;&gt;Obj3Checkbox.Name" xml:space="preserve">
+    <value>Obj3Checkbox</value>
+  </data>
+  <data name="&gt;&gt;cbCropSGBFrame.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;lblEntropy.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Obj1Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 28</value>
+  </data>
+  <data name="Obj2Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;lblSatellaviewCartridge.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="AspectRatioCorrectionBox.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>18</value>
+  </data>
+  <data name="groupBox1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
+  </data>
+  <data name="btnCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="dtpInitialTime.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="btnOk.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="btnCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>217, 405</value>
+  </data>
+  <data name="cbFastCoprocessor.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="Obj1Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;Bg3_0Checkbox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="Obj4Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="EntropyBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 230</value>
+  </data>
+  <data name="&gt;&gt;Bg1_1Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cbCropSGBFrame.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Bg4_1Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="lblPriority1.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>100, 0</value>
+  </data>
+  <data name="Obj3Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="&gt;&gt;cbUseRealTime.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Bg2_1Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>234, 48</value>
+  </data>
+  <data name="cbFastCoprocessor.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 141</value>
+  </data>
+  <data name="Bg3_1Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>234, 67</value>
+  </data>
+  <data name="Obj2Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 47</value>
+  </data>
+  <data name="&gt;&gt;lblRegion.ZOrder" xml:space="preserve">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;Bg4_0Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cbNoPPUSpriteLimit.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Bg4_1Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>234, 87</value>
+  </data>
+  <data name="&gt;&gt;Bg2_0Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cbFastDSP.Name" xml:space="preserve">
+    <value>cbFastDSP</value>
+  </data>
+  <data name="&gt;&gt;RegionBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbShowOverscan.Text" xml:space="preserve">
+    <value>Show Overscan</value>
+  </data>
+  <data name="&gt;&gt;AspectRatioCorrectionBox.Name" xml:space="preserve">
+    <value>AspectRatioCorrectionBox</value>
+  </data>
+  <data name="btnOk.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="&gt;&gt;Obj1Checkbox.Name" xml:space="preserve">
+    <value>Obj1Checkbox</value>
+  </data>
+  <data name="lblAspectRatioCorrection.Location" type="System.Drawing.Point, System.Drawing">
+    <value>159, 215</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 292</value>
+  </data>
+  <data name="SatellaviewCartridgeBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 20</value>
+  </data>
+  <data name="cbCropSGBFrame.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbFastCoprocessor.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbDoubleSize.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 15</value>
+  </data>
+  <data name="&gt;&gt;Bg2_0Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbUseRealTime.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblPriority1.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;cbFastCoprocessor.Name" xml:space="preserve">
+    <value>cbFastCoprocessor</value>
+  </data>
+  <data name="&gt;&gt;cbFastCoprocessor.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="lblRegion.Text" xml:space="preserve">
+    <value>Region</value>
+  </data>
+  <data name="&gt;&gt;cbUseSGB2.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="cbUseRealTime.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="&gt;&gt;cbFastPPU.Name" xml:space="preserve">
+    <value>cbFastPPU</value>
+  </data>
+  <data name="cbFastCoprocessor.Text" xml:space="preserve">
+    <value>Coprocessor Fast Mode</value>
+  </data>
+  <data name="&gt;&gt;cbCropSGBFrame.Name" xml:space="preserve">
+    <value>cbCropSGBFrame</value>
+  </data>
+  <data name="&gt;&gt;AspectRatioCorrectionBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;cbNoPPUSpriteLimit.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="Bg2_0Checkbox.Text" xml:space="preserve">
+    <value>BG 2    </value>
+  </data>
+  <data name="&gt;&gt;cbCropSGBFrame.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Obj4Checkbox.Text" xml:space="preserve">
+    <value>OBJ 4</value>
+  </data>
+  <data name="Bg3_0Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>128, 66</value>
+  </data>
+  <data name="cbCropSGBFrame.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="cbCropSGBFrame.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 75</value>
+  </data>
+  <data name="&gt;&gt;Bg4_0Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="AspectRatioCorrectionBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 230</value>
+  </data>
+  <data name="cbUseSGB2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Obj1Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="Bg1_0Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="&gt;&gt;lblAspectRatioCorrection.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbShowCursor.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbShowCursor.Name" xml:space="preserve">
+    <value>cbShowCursor</value>
+  </data>
+  <data name="btnCancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="cbGameHotfixes.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 75</value>
+  </data>
+  <data name="&gt;&gt;cbUseSGB2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;Bg3_0Checkbox.Name" xml:space="preserve">
+    <value>Bg3_0Checkbox</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>BSNESOptions</value>
+  </data>
+  <data name="&gt;&gt;cbShowCursor.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbFastPPU.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblSatellaviewCartridge.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbFastPPU.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 119</value>
+  </data>
+  <data name="&gt;&gt;Obj2Checkbox.Name" xml:space="preserve">
+    <value>Obj2Checkbox</value>
+  </data>
+  <data name="Bg4_0Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>128, 86</value>
+  </data>
+  <data name="Bg4_0Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Obj3Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 66</value>
+  </data>
+  <data name="Bg2_1Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="cbShowOverscan.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 16</value>
+  </data>
+  <data name="&gt;&gt;Bg4_1Checkbox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Bg3_0Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="&gt;&gt;SatellaviewCartridgeBox.Name" xml:space="preserve">
+    <value>SatellaviewCartridgeBox</value>
+  </data>
+  <data name="&gt;&gt;lblPriority1.Name" xml:space="preserve">
+    <value>lblPriority1</value>
+  </data>
+  <data name="Bg4_0Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="&gt;&gt;Bg1_0Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lblPriority0.Name" xml:space="preserve">
+    <value>lblPriority0</value>
+  </data>
+  <data name="&gt;&gt;cbDoubleSize.Name" xml:space="preserve">
+    <value>cbDoubleSize</value>
+  </data>
+  <data name="&gt;&gt;Bg2_1Checkbox.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="RegionBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 20</value>
+  </data>
+  <data name="&gt;&gt;Bg3_0Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;Obj4Checkbox.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="lblInitialTime.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 186</value>
+  </data>
+  <data name="&gt;&gt;cbUseSGB2.Name" xml:space="preserve">
+    <value>cbUseSGB2</value>
+  </data>
+  <data name="cbDoubleSize.Text" xml:space="preserve">
+    <value>Always Double-Size Framebuffer</value>
+  </data>
+  <data name="&gt;&gt;EntropyBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbDoubleSize.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SatellaviewCartridgeBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 267</value>
+  </data>
+  <data name="Bg1_1Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Bg1_1Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="Bg4_1Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="cbNoPPUSpriteLimit.Size" type="System.Drawing.Size, System.Drawing">
+    <value>138, 16</value>
+  </data>
+  <data name="&gt;&gt;lblInitialTime.Name" xml:space="preserve">
+    <value>lblInitialTime</value>
+  </data>
+  <data name="cbShowOverscan.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;Obj4Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="Bg1_0Checkbox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>128, 28</value>
+  </data>
+  <data name="&gt;&gt;EntropyBox.Name" xml:space="preserve">
+    <value>EntropyBox</value>
+  </data>
+  <data name="lblDoubleSize.Text" xml:space="preserve">
+    <value>Some games are changing the resolution constantly (e.g. SD3) so this option can force the SNES output to stay double-size always.</value>
+  </data>
+  <data name="lblPriority0.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleCenter</value>
+  </data>
+  <data name="lblEntropy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 215</value>
+  </data>
+  <data name="&gt;&gt;cbDoubleSize.ZOrder" xml:space="preserve">
+    <value>20</value>
+  </data>
+  <data name="&gt;&gt;lblAspectRatioCorrection.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="lblPriority1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>220, 13</value>
+  </data>
+  <data name="Bg2_1Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="Obj4Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 16</value>
+  </data>
+  <data name="cbUseSGB2.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="SatellaviewCartridgeBox.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;Bg1_0Checkbox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="cbGameHotfixes.Text" xml:space="preserve">
+    <value>Game hotfixes</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>BSNES Options</value>
+  </data>
+  <data name="cbUseRealTime.Text" xml:space="preserve">
+    <value>Use Real Time</value>
+  </data>
+  <data name="&gt;&gt;lblDoubleSize.ZOrder" xml:space="preserve">
+    <value>19</value>
+  </data>
+  <data name="&gt;&gt;lblDoubleSize.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;cbShowOverscan.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Bg1_0Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="RegionBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 267</value>
+  </data>
+  <data name="lblDoubleSize.MaximumSize" type="System.Drawing.Size, System.Drawing">
+    <value>260, 0</value>
+  </data>
+  <data name="lblRegion.Location" type="System.Drawing.Point, System.Drawing">
+    <value>159, 252</value>
+  </data>
+  <data name="&gt;&gt;cbShowCursor.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.ZOrder" xml:space="preserve">
+    <value>23</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="&gt;&gt;AspectRatioCorrectionBox.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;cbNoPPUSpriteLimit.Name" xml:space="preserve">
+    <value>cbNoPPUSpriteLimit</value>
+  </data>
+  <data name="&gt;&gt;SatellaviewCartridgeBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cbShowOverscan.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;btnOk.ZOrder" xml:space="preserve">
+    <value>24</value>
+  </data>
+  <data name="Obj2Checkbox.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;cbFastPPU.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="cbShowCursor.Size" type="System.Drawing.Size, System.Drawing">
+    <value>144, 16</value>
+  </data>
+  <data name="&gt;&gt;lblEntropy.Name" xml:space="preserve">
+    <value>lblEntropy</value>
+  </data>
+  <data name="cbUseSGB2.Text" xml:space="preserve">
+    <value>Use SGB2</value>
+  </data>
+  <data name="&gt;&gt;cbNoPPUSpriteLimit.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;dtpInitialTime.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DateTimePicker, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="dtpInitialTime.Size" type="System.Drawing.Size, System.Drawing">
+    <value>206, 21</value>
+  </data>
+  <data name="&gt;&gt;lblPriority1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="Obj1Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>54, 16</value>
+  </data>
+  <data name="cbShowCursor.Text" xml:space="preserve">
+    <value>Show Lightgun Cursor</value>
+  </data>
+  <data name="&gt;&gt;Bg4_0Checkbox.Name" xml:space="preserve">
+    <value>Bg4_0Checkbox</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;Obj1Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;dtpInitialTime.Name" xml:space="preserve">
+    <value>dtpInitialTime</value>
+  </data>
+  <data name="cbCropSGBFrame.Size" type="System.Drawing.Size, System.Drawing">
+    <value>108, 16</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="EntropyBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 20</value>
+  </data>
+  <data name="&gt;&gt;RegionBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbFastPPU.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="Bg4_0Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>24</value>
+  </data>
+  <data name="&gt;&gt;cbGameHotfixes.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="cbUseRealTime.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblEntropy.ZOrder" xml:space="preserve">
+    <value>15</value>
+  </data>
+  <data name="&gt;&gt;Bg3_1Checkbox.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;lblInitialTime.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblRegion.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Bg2_0Checkbox.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="cbFastDSP.Location" type="System.Drawing.Point, System.Drawing">
+    <value>161, 97</value>
+  </data>
+  <data name="Obj2Checkbox.Text" xml:space="preserve">
+    <value>OBJ 2</value>
+  </data>
+  <data name="cbGameHotfixes.Size" type="System.Drawing.Size, System.Drawing">
+    <value>102, 16</value>
+  </data>
+  <data name="Bg1_1Checkbox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="&gt;&gt;Bg3_1Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="cbFastCoprocessor.Size" type="System.Drawing.Size, System.Drawing">
+    <value>150, 16</value>
+  </data>
+  <data name="cbShowCursor.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 162</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblSatellaviewCartridge.Location" type="System.Drawing.Point, System.Drawing">
+    <value>16, 252</value>
+  </data>
+  <data name="&gt;&gt;Obj3Checkbox.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="btnOk.Text" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="&gt;&gt;Bg1_0Checkbox.Name" xml:space="preserve">
+    <value>Bg1_0Checkbox</value>
+  </data>
+  <data name="cbFastPPU.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="cbUseSGB2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="dtpInitialTime.CustomFormat" xml:space="preserve">
+    <value>yyyy-MM-dd HH:mm:ss</value>
+  </data>
+  <data name="&gt;&gt;cbUseRealTime.ZOrder" xml:space="preserve">
+    <value>21</value>
+  </data>
+  <data name="dtpInitialTime.Location" type="System.Drawing.Point, System.Drawing">
+    <value>79, 187</value>
+  </data>
+  <data name="&gt;&gt;dtpInitialTime.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="Obj4Checkbox.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="&gt;&gt;btnCancel.Name" xml:space="preserve">
+    <value>btnCancel</value>
+  </data>
+  <data name="&gt;&gt;dtpInitialTime.ZOrder" xml:space="preserve">
+    <value>22</value>
+  </data>
+  <data name="lblSatellaviewCartridge.Text" xml:space="preserve">
+    <value>Satellaview cartridge</value>
+  </data>
+  <data name="Bg1_0Checkbox.CheckAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
+  </metadata>
 </root>

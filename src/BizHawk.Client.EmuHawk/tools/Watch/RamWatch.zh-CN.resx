@@ -120,6 +120,84 @@
   <data name="WatchCountLabel.Text" xml:space="preserve">
     <value>0 监视</value>
   </data>
+  <data name="newToolStripButton.Text" xml:space="preserve">
+    <value>新建(&amp;N)</value>
+  </data>
+  <data name="newToolStripButton.ToolTipText" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="openToolStripButton.Text" xml:space="preserve">
+    <value>打开(&amp;O)</value>
+  </data>
+  <data name="openToolStripButton.ToolTipText" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="saveToolStripButton.Text" xml:space="preserve">
+    <value>保存(S)</value>
+  </data>
+  <data name="saveToolStripButton.ToolTipText" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="newWatchToolStripButton.Text" xml:space="preserve">
+    <value>新建监视</value>
+  </data>
+  <data name="newWatchToolStripButton.ToolTipText" xml:space="preserve">
+    <value>新建监视</value>
+  </data>
+  <data name="editWatchToolStripButton.Text" xml:space="preserve">
+    <value>编辑监视</value>
+  </data>
+  <data name="cutToolStripButton.Text" xml:space="preserve">
+    <value>剪切(&amp;U)</value>
+  </data>
+  <data name="cutToolStripButton.ToolTipText" xml:space="preserve">
+    <value>移除监视</value>
+  </data>
+  <data name="clearChangeCountsToolStripButton.ToolTipText" xml:space="preserve">
+    <value>清空变更计数</value>
+  </data>
+  <data name="duplicateWatchToolStripButton.Text" xml:space="preserve">
+    <value>克隆监视</value>
+  </data>
+  <data name="SplitWatchToolStripButton.Text" xml:space="preserve">
+    <value>拆分监视</value>
+  </data>
+  <data name="PokeAddressToolBarItem.ToolTipText" xml:space="preserve">
+    <value>刺探地址</value>
+  </data>
+  <data name="FreezeAddressToolBarItem.Text" xml:space="preserve">
+    <value>冻结地址</value>
+  </data>
+  <data name="seperatorToolStripButton.ToolTipText" xml:space="preserve">
+    <value>插入分隔符</value>
+  </data>
+  <data name="moveUpToolStripButton.Text" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="moveUpToolStripButton.ToolTipText" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="moveDownToolStripButton.Text" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="NewListMenuItem.Text" xml:space="preserve">
+    <value>新建列表(&amp;N)</value>
+  </data>
+  <data name="OpenMenuItem.Text" xml:space="preserve">
+    <value>打开(&amp;O)</value>
+  </data>
+  <data name="SaveMenuItem.Text" xml:space="preserve">
+    <value>保存(&amp;S)</value>
+  </data>
+  <data name="SaveAsMenuItem.Text" xml:space="preserve">
+    <value>另存为(&amp;A)</value>
+  </data>
+  <data name="AppendMenuItem.Text" xml:space="preserve">
+    <value>附加文件(&amp;P)</value>
+  </data>
+  <data name="RecentSubMenu.Text" xml:space="preserve">
+    <value>历史</value>
+  </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
     <value>文件(&amp;F)</value>
   </data>
@@ -171,30 +249,6 @@
   <data name="WatchesSubMenu.Text" xml:space="preserve">
     <value>监视(&amp;W)</value>
   </data>
-  <data name="OptionsSubMenu.Text" xml:space="preserve">
-    <value>设置(&amp;S)</value>
-  </data>
-  <data name="NewListMenuItem.Text" xml:space="preserve">
-    <value>新建列表(&amp;N)</value>
-  </data>
-  <data name="OpenMenuItem.Text" xml:space="preserve">
-    <value>打开(&amp;O)</value>
-  </data>
-  <data name="SaveMenuItem.Text" xml:space="preserve">
-    <value>保存(&amp;S)</value>
-  </data>
-  <data name="SaveAsMenuItem.Text" xml:space="preserve">
-    <value>另存为(&amp;A)</value>
-  </data>
-  <data name="AppendMenuItem.Text" xml:space="preserve">
-    <value>附加文件(&amp;P)</value>
-  </data>
-  <data name="RecentSubMenu.Text" xml:space="preserve">
-    <value>历史</value>
-  </data>
-  <data name="DefinePreviousValueSubMenu.Text" xml:space="preserve">
-    <value>定义前值</value>
-  </data>
   <data name="PreviousFrameMenuItem.Text" xml:space="preserve">
     <value>前一帧</value>
   </data>
@@ -204,16 +258,22 @@
   <data name="OriginalMenuItem.Text" xml:space="preserve">
     <value>原始值(&amp;O)</value>
   </data>
+  <data name="DefinePreviousValueSubMenu.Text" xml:space="preserve">
+    <value>定义前值</value>
+  </data>
   <data name="WatchesOnScreenMenuItem.Text" xml:space="preserve">
     <value>在屏幕上显示监视</value>
-  </data>
-  <data name="DoubleClickActionSubMenu.Text" xml:space="preserve">
-    <value>双击监视时</value>
   </data>
   <data name="DoubleClickToEditMenuItem.Text" xml:space="preserve">
     <value>编辑监视</value>
   </data>
   <data name="DoubleClickToPokeMenuItem.Text" xml:space="preserve">
     <value>刺探地址</value>
+  </data>
+  <data name="DoubleClickActionSubMenu.Text" xml:space="preserve">
+    <value>双击监视时</value>
+  </data>
+  <data name="OptionsSubMenu.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
   </data>
 </root>

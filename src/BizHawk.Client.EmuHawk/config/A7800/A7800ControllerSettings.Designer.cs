@@ -28,98 +28,77 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.OkBtn = new System.Windows.Forms.Button();
-			this.CancelBtn = new System.Windows.Forms.Button();
-			this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.Port2ComboBox = new System.Windows.Forms.ComboBox();
-			this.Port1ComboBox = new System.Windows.Forms.ComboBox();
-			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.SuspendLayout();
-			// 
-			// OkBtn
-			// 
-			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(170, 249);
-			this.OkBtn.Name = "OkBtn";
-			this.OkBtn.Size = new System.Drawing.Size(60, 23);
-			this.OkBtn.TabIndex = 3;
-			this.OkBtn.Text = "&OK";
-			this.OkBtn.UseVisualStyleBackColor = true;
-			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
-			// CancelBtn
-			// 
-			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(236, 249);
-			this.CancelBtn.Name = "CancelBtn";
-			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
-			this.CancelBtn.TabIndex = 4;
-			this.CancelBtn.Text = "&Cancel";
-			this.CancelBtn.UseVisualStyleBackColor = true;
-			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
-			// label5
-			// 
-			this.label5.Location = new System.Drawing.Point(9, 94);
-			this.label5.Name = "label5";
-			this.label5.Text = "Port 2:";
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(12, 44);
-			this.label4.Name = "label4";
-			this.label4.Text = "Port 1:";
-			// 
-			// Port2ComboBox
-			// 
-			this.Port2ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.Port2ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.Port2ComboBox.FormattingEnabled = true;
-			this.Port2ComboBox.Location = new System.Drawing.Point(12, 110);
-			this.Port2ComboBox.Name = "Port2ComboBox";
-			this.Port2ComboBox.Size = new System.Drawing.Size(284, 21);
-			this.Port2ComboBox.TabIndex = 14;
-			// 
-			// Port1ComboBox
-			// 
-			this.Port1ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.Port1ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.Port1ComboBox.FormattingEnabled = true;
-			this.Port1ComboBox.Location = new System.Drawing.Point(12, 60);
-			this.Port1ComboBox.Name = "Port1ComboBox";
-			this.Port1ComboBox.Size = new System.Drawing.Size(284, 21);
-			this.Port1ComboBox.TabIndex = 13;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(12, 14);
-			this.label1.Name = "label1";
-			this.label1.Text = "A7800 Controller Settings";
-			// 
-			// A7800ControllerSettings
-			// 
-			this.AcceptButton = this.OkBtn;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(308, 284);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.label5);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.Port2ComboBox);
-			this.Controls.Add(this.Port1ComboBox);
-			this.Controls.Add(this.CancelBtn);
-			this.Controls.Add(this.OkBtn);
-			this.Name = "A7800ControllerSettings";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Controller Settings";
-			this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(A7800ControllerSettings));
+            this.OkBtn = new System.Windows.Forms.Button();
+            this.CancelBtn = new System.Windows.Forms.Button();
+            this.label5 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.Port2ComboBox = new System.Windows.Forms.ComboBox();
+            this.Port1ComboBox = new System.Windows.Forms.ComboBox();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.SuspendLayout();
+            // 
+            // OkBtn
+            // 
+            resources.ApplyResources(this.OkBtn, "OkBtn");
+            this.OkBtn.Name = "OkBtn";
+            this.OkBtn.UseVisualStyleBackColor = true;
+            this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
+            // 
+            // CancelBtn
+            // 
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
+            this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelBtn.Name = "CancelBtn";
+            this.CancelBtn.UseVisualStyleBackColor = true;
+            this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
+            // 
+            // label5
+            // 
+            resources.ApplyResources(this.label5, "label5");
+            this.label5.Name = "label5";
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
+            // Port2ComboBox
+            // 
+            resources.ApplyResources(this.Port2ComboBox, "Port2ComboBox");
+            this.Port2ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Port2ComboBox.FormattingEnabled = true;
+            this.Port2ComboBox.Name = "Port2ComboBox";
+            // 
+            // Port1ComboBox
+            // 
+            resources.ApplyResources(this.Port1ComboBox, "Port1ComboBox");
+            this.Port1ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.Port1ComboBox.FormattingEnabled = true;
+            this.Port1ComboBox.Name = "Port1ComboBox";
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            // 
+            // A7800ControllerSettings
+            // 
+            this.AcceptButton = this.OkBtn;
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelBtn;
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.Port2ComboBox);
+            this.Controls.Add(this.Port1ComboBox);
+            this.Controls.Add(this.CancelBtn);
+            this.Controls.Add(this.OkBtn);
+            this.Name = "A7800ControllerSettings";
+            this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

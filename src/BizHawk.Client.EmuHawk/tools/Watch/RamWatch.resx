@@ -175,8 +175,8 @@
   <data name="&gt;&gt;FileSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="UnfreezeAllContextMenuItem.Text" xml:space="preserve">
-    <value>Unfreeze &amp;All</value>
+  <data name="&gt;&gt;openToolStripButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;duplicateWatchToolStripButton.Name" xml:space="preserve">
     <value>duplicateWatchToolStripButton</value>
@@ -229,9 +229,6 @@
   <data name="FreezeAddressToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
     <value>Magenta</value>
   </data>
-  <data name="WatchesSubMenu.Text" xml:space="preserve">
-    <value>&amp;Watches</value>
-  </data>
   <data name="EditContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+E</value>
   </data>
@@ -258,9 +255,6 @@
   </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
     <value>&amp;Files</value>
-  </data>
-  <data name="&gt;&gt;RamWatchMenu.Parent" xml:space="preserve">
-    <value>$this</value>
   </data>
   <data name="&gt;&gt;SplitWatchMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -295,10 +289,10 @@
   <data name="&gt;&gt;RemoveWatchMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;InsertSeperatorContextMenuItem.Name" xml:space="preserve">
-    <value>InsertSeperatorContextMenuItem</value>
-  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ClearChangeCountsMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+C</value>
+  </data>
   <data name="MoveDownMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+Down</value>
   </data>
@@ -311,8 +305,8 @@
   <data name="&gt;&gt;toolStripSeparator6.Name" xml:space="preserve">
     <value>toolStripSeparator6</value>
   </data>
-  <data name="&gt;&gt;SplitWatchMenuItem.Name" xml:space="preserve">
-    <value>SplitWatchMenuItem</value>
+  <data name="NewWatchMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+W</value>
   </data>
   <data name="PreviousFrameMenuItem.Text" xml:space="preserve">
     <value>Previous Frame</value>
@@ -492,6 +486,9 @@
   <data name="&gt;&gt;SplitWatchToolStripButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="PokeContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Poke</value>
+  </data>
   <data name="MessageLabel.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 17</value>
   </data>
@@ -549,8 +546,8 @@
   <data name="&gt;&gt;ClearChangeCountsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="MoveDownContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+Down</value>
+  <data name="&gt;&gt;MoveDownMenuItem.Name" xml:space="preserve">
+    <value>MoveDownMenuItem</value>
   </data>
   <data name="OpenMenuItem.Text" xml:space="preserve">
     <value>&amp;Open...</value>
@@ -624,6 +621,9 @@
   <data name="&gt;&gt;WatchCountLabel.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;InsertSeperatorContextMenuItem.Name" xml:space="preserve">
+    <value>InsertSeperatorContextMenuItem</value>
+  </data>
   <data name="DuplicateContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+D</value>
   </data>
@@ -639,8 +639,8 @@
   <data name="&gt;&gt;DuplicateContextMenuItem.Name" xml:space="preserve">
     <value>DuplicateContextMenuItem</value>
   </data>
-  <data name="ClearChangeCountsMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+C</value>
+  <data name="&gt;&gt;ErrorIconButton.Name" xml:space="preserve">
+    <value>ErrorIconButton</value>
   </data>
   <data name="PokeAddressMenuItem.Text" xml:space="preserve">
     <value>Poke Address</value>
@@ -744,14 +744,14 @@
   <data name="DefinePreviousValueSubMenu.Text" xml:space="preserve">
     <value>Define Previous Value</value>
   </data>
-  <data name="NewWatchMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+W</value>
-  </data>
   <data name="&gt;&gt;openToolStripButton.Name" xml:space="preserve">
     <value>openToolStripButton</value>
   </data>
   <data name="&gt;&gt;FreezeAddressToolBarItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SplitWatchMenuItem.Text" xml:space="preserve">
+    <value>Sp&amp;lit Watch</value>
   </data>
   <data name="SplitWatchMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+L</value>
@@ -767,9 +767,6 @@
   </data>
   <data name="&gt;&gt;UnfreezeAllContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;openToolStripButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ViewInHexEditorContextMenuItem.Text" xml:space="preserve">
     <value>View in Hex Editor</value>
@@ -798,8 +795,8 @@
   <data name="RecentSubMenu.Text" xml:space="preserve">
     <value>Recent</value>
   </data>
-  <data name="SplitWatchMenuItem.Text" xml:space="preserve">
-    <value>Sp&amp;lit Watch</value>
+  <data name="&gt;&gt;RamWatchMenu.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="&gt;&gt;PokeAddressMenuItem.Name" xml:space="preserve">
     <value>PokeAddressMenuItem</value>
@@ -822,6 +819,9 @@
   <data name="&gt;&gt;InsertSeperatorContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;WatchListView.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="saveToolStripButton.Text" xml:space="preserve">
     <value>&amp;Save</value>
   </data>
@@ -843,11 +843,11 @@
   <data name="seperatorToolStripButton.ToolTipText" xml:space="preserve">
     <value>Insert Separator</value>
   </data>
-  <data name="&gt;&gt;WatchListView.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;SplitWatchMenuItem.Name" xml:space="preserve">
+    <value>SplitWatchMenuItem</value>
   </data>
-  <data name="MoveBottomContextMenuItem.Text" xml:space="preserve">
-    <value>Move &amp;Bottom</value>
+  <data name="WatchesSubMenu.Text" xml:space="preserve">
+    <value>&amp;Watches</value>
   </data>
   <data name="&gt;&gt;newWatchToolStripButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -867,8 +867,8 @@
   <data name="&gt;&gt;MoveUpMenuItem.Name" xml:space="preserve">
     <value>MoveUpMenuItem</value>
   </data>
-  <data name="RemoveContextMenuItem.Text" xml:space="preserve">
-    <value>&amp;Remove</value>
+  <data name="UnfreezeAllContextMenuItem.Text" xml:space="preserve">
+    <value>Unfreeze &amp;All</value>
   </data>
   <data name="&gt;&gt;SaveMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -885,14 +885,17 @@
   <data name="&gt;&gt;PreviousFrameMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="MessageLabel.Text" xml:space="preserve">
+    <value>        </value>
+  </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
     <value>CenterParent</value>
   </data>
   <data name="&gt;&gt;EditWatchMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="MessageLabel.Text" xml:space="preserve">
-    <value>        </value>
+  <data name="RemoveContextMenuItem.Text" xml:space="preserve">
+    <value>&amp;Remove</value>
   </data>
   <data name="&gt;&gt;RemoveContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -960,9 +963,6 @@
   <data name="DuplicateWatchMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+D</value>
   </data>
-  <data name="&gt;&gt;ErrorIconButton.Name" xml:space="preserve">
-    <value>ErrorIconButton</value>
-  </data>
   <data name="&gt;&gt;MemoryDomainsSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -1008,9 +1008,6 @@
   <data name="FreezeAddressMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+F</value>
   </data>
-  <data name="SplitContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+L</value>
-  </data>
   <data name="DuplicateContextMenuItem.Text" xml:space="preserve">
     <value>&amp;Duplicate</value>
   </data>
@@ -1025,6 +1022,9 @@
   </data>
   <data name="NewListMenuItem.Text" xml:space="preserve">
     <value>&amp;New List</value>
+  </data>
+  <data name="MoveBottomContextMenuItem.Text" xml:space="preserve">
+    <value>Move &amp;Bottom</value>
   </data>
   <data name="RemoveContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+R</value>
@@ -1056,11 +1056,11 @@
   <data name="openToolStripButton.Text" xml:space="preserve">
     <value>&amp;Open</value>
   </data>
-  <data name="&gt;&gt;MoveDownMenuItem.Name" xml:space="preserve">
-    <value>MoveDownMenuItem</value>
+  <data name="MoveDownContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+Down</value>
   </data>
-  <data name="PokeContextMenuItem.Text" xml:space="preserve">
-    <value>&amp;Poke</value>
+  <data name="SplitContextMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+L</value>
   </data>
   <data name="&gt;&gt;OriginalMenuItem.Name" xml:space="preserve">
     <value>OriginalMenuItem</value>

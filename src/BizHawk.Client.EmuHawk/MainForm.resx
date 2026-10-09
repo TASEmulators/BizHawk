@@ -120,14 +120,17 @@
   <data name="&gt;&gt;SaveConfigMenuItem.Name" xml:space="preserve">
     <value>SaveConfigMenuItem</value>
   </data>
-  <data name="&gt;&gt;ZXSpectrumTapesSubMenu.Name" xml:space="preserve">
-    <value>ZXSpectrumTapesSubMenu</value>
+  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;EmuStatus.Name" xml:space="preserve">
     <value>EmuStatus</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator10.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;timerMouseIdle.Name" xml:space="preserve">
+    <value>timerMouseIdle</value>
+  </data>
+  <data name="SelectSlot2MenuItem.Text" xml:space="preserve">
+    <value>Select Slot 2</value>
   </data>
   <data name="SNESSubMenu.Text" xml:space="preserve">
     <value>&amp;SNES</value>
@@ -180,14 +183,14 @@
   <data name="&gt;&gt;SelectSlot8MenuItem.Name" xml:space="preserve">
     <value>SelectSlot8MenuItem</value>
   </data>
-  <data name="&gt;&gt;HelpSubMenu.Name" xml:space="preserve">
-    <value>HelpSubMenu</value>
+  <data name="&gt;&gt;BarcodeReaderMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GenericCoreSubMenu.Name" xml:space="preserve">
+    <value>GenericCoreSubMenu</value>
   </data>
   <data name="SaveState6MenuItem.Text" xml:space="preserve">
     <value>6</value>
-  </data>
-  <data name="SwitchToFullscreenMenuItem.Text" xml:space="preserve">
-    <value>Switch to Fullscreen</value>
   </data>
   <data name="&gt;&gt;PauseMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -213,8 +216,8 @@
   <data name="&gt;&gt;GBSubMenu.Name" xml:space="preserve">
     <value>GBSubMenu</value>
   </data>
-  <data name="&gt;&gt;GenericCoreSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="LoadState5MenuItem.Text" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="MusicRipperMenuItem.Text" xml:space="preserve">
     <value>Music Ripper</value>
@@ -222,8 +225,8 @@
   <data name="VSInsertCoinP1MenuItem.Text" xml:space="preserve">
     <value>Insert Coin P1</value>
   </data>
-  <data name="&gt;&gt;StopMovieContextMenuItem.Name" xml:space="preserve">
-    <value>StopMovieContextMenuItem</value>
+  <data name="Slot1StatusButton.ToolTipText" xml:space="preserve">
+    <value>Save slot 1</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator30.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -234,8 +237,8 @@
   <data name="&gt;&gt;ZXSpectrumCoreEmulationSettingsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;AutomaticallyBackupMoviesMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="SaveToCurrentSlotMenuItem.Text" xml:space="preserve">
+    <value>Save to Current Slot</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -263,6 +266,9 @@
   </data>
   <data name="&gt;&gt;StopAVMenuItem.Name" xml:space="preserve">
     <value>StopAVMenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator10.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="OnlineHelpMenuItem.Text" xml:space="preserve">
     <value>Open TASVideos Wiki in Browser</value>
@@ -304,8 +310,8 @@
   <data name="&gt;&gt;LoadState5MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ShowMenuContextMenuItem.Name" xml:space="preserve">
-    <value>ShowMenuContextMenuItem</value>
+  <data name="&gt;&gt;OpenAdvancedMenuItem.Name" xml:space="preserve">
+    <value>OpenAdvancedMenuItem</value>
   </data>
   <data name="CheatsMenuItem.Text" xml:space="preserve">
     <value>Cheats</value>
@@ -319,23 +325,20 @@
   <data name="&gt;&gt;IntVControllerSettingsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem2.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="RebootCoreMenuItem.Text" xml:space="preserve">
     <value>&amp;Reboot Core</value>
   </data>
-  <data name="DebuggerMenuItem.Text" xml:space="preserve">
-    <value>&amp;Debugger</value>
+  <data name="&gt;&gt;MupenStyleLagMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="RecordMovieMenuItem.Text" xml:space="preserve">
-    <value>&amp;Record Movie...</value>
+  <data name="Speed100MenuItem.Text" xml:space="preserve">
+    <value>Speed 100%</value>
   </data>
   <data name="&gt;&gt;LuaConsoleMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;CloseRomContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;VSServiceSwitchMenuItem.Name" xml:space="preserve">
+    <value>VSServiceSwitchMenuItem</value>
   </data>
   <data name="SoundMenuItem.Text" xml:space="preserve">
     <value>&amp;Sound...</value>
@@ -346,20 +349,29 @@
   <data name="SnesGfxDebuggerMenuItem.Text" xml:space="preserve">
     <value>Graphics Debugger</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem67.Type" xml:space="preserve">
+  <data name="&gt;&gt;SoftResetMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SelectSlot2MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;SoftResetMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;StopAVContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;Slot3StatusButton.Name" xml:space="preserve">
-    <value>Slot3StatusButton</value>
+  <data name="&gt;&gt;toolStripMenuItem5.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="UpdateNotification.Text" xml:space="preserve">
+    <value>New version available!</value>
   </data>
   <data name="HexEditorMenuItem.Text" xml:space="preserve">
     <value>&amp;Hex Editor</value>
+  </data>
+  <data name="&gt;&gt;Slot9StatusButton.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem6.Name" xml:space="preserve">
     <value>toolStripMenuItem6</value>
@@ -373,11 +385,8 @@
   <data name="&gt;&gt;Ares64SettingsMenuItem.Name" xml:space="preserve">
     <value>Ares64SettingsMenuItem</value>
   </data>
-  <data name="&gt;&gt;RewindOptionsMenuItem.Name" xml:space="preserve">
-    <value>RewindOptionsMenuItem</value>
-  </data>
-  <data name="ExternalToolMenuItem.Text" xml:space="preserve">
-    <value>External Tool</value>
+  <data name="SaveMovieAsContextMenuItem.Text" xml:space="preserve">
+    <value>Save Movie As...</value>
   </data>
   <data name="&gt;&gt;paletteToolStripMenuItem.Name" xml:space="preserve">
     <value>paletteToolStripMenuItem</value>
@@ -430,13 +439,26 @@
   <data name="AboutMenuItem.Text" xml:space="preserve">
     <value>&amp;About...</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="ExitMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Alt+F4</value>
+  </data>
   <data name="&gt;&gt;AboutMenuItem.Name" xml:space="preserve">
     <value>AboutMenuItem</value>
+  </data>
+  <data name="AmstradCPCMediaToolStripMenuItem.Text" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="&gt;&gt;Slot4StatusButton.Name" xml:space="preserve">
+    <value>Slot4StatusButton</value>
+  </data>
+  <data name="ReadonlyMenuItem.Text" xml:space="preserve">
+    <value>Read-only</value>
   </data>
   <data name="&gt;&gt;MovieEndPauseMenuItem.Name" xml:space="preserve">
     <value>MovieEndPauseMenuItem</value>
   </data>
-  <data name="&gt;&gt;SNESSubMenu.Type" xml:space="preserve">
+  <data name="&gt;&gt;ConfigContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="SaveState1MenuItem.Text" xml:space="preserve">
@@ -448,16 +470,16 @@
   <data name="&gt;&gt;AutomaticallyBackupMoviesMenuItem.Name" xml:space="preserve">
     <value>AutomaticallyBackupMoviesMenuItem</value>
   </data>
-  <data name="&gt;&gt;GenericCoreSubMenu.Name" xml:space="preserve">
-    <value>GenericCoreSubMenu</value>
-  </data>
-  <data name="LoadLastMovieContextMenuItem.Text" xml:space="preserve">
-    <value>Load Last Movie</value>
+  <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt</value>
   </data>
   <data name="&gt;&gt;SameBoyColorChooserMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;SaveState3MenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;ColecoUseSGMMenuItem.Name" xml:space="preserve">
+    <value>ColecoUseSGMMenuItem</value>
+  </data>
+  <data name="&gt;&gt;RestartMovieContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SaveSlotSubMenu.Type" xml:space="preserve">
@@ -469,25 +491,22 @@
   <data name="Slot5StatusButton.Text" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;ZXSpectrumTapesSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="CaptureLuaMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>224, 22</value>
   </data>
   <data name="&gt;&gt;IntvSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;UndoSavestateContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;DisplayFrameCounterMenuItem.Name" xml:space="preserve">
+    <value>DisplayFrameCounterMenuItem</value>
+  </data>
+  <data name="ScreenshotClientClipboardMenuItem.Text" xml:space="preserve">
+    <value>Screenshot (client) -&gt; Clipboard</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
     <value>toolStripMenuItem1</value>
   </data>
   <data name="&gt;&gt;LoadStateSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;NESSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="SaveState3MenuItem.Text" xml:space="preserve">
@@ -511,8 +530,8 @@
   <data name="ViewSubMenu.Text" xml:space="preserve">
     <value>&amp;View</value>
   </data>
-  <data name="&gt;&gt;Slot7StatusButton.Name" xml:space="preserve">
-    <value>Slot7StatusButton</value>
+  <data name="&gt;&gt;RewindOptionsMenuItem.Name" xml:space="preserve">
+    <value>RewindOptionsMenuItem</value>
   </data>
   <data name="KeyPriorityStatusLabel.Text" xml:space="preserve">
     <value>KeyPriority</value>
@@ -523,8 +542,8 @@
   <data name="&gt;&gt;DumpStatusButton.Name" xml:space="preserve">
     <value>DumpStatusButton</value>
   </data>
-  <data name="&gt;&gt;ShowMenuContextMenuSeparator.Name" xml:space="preserve">
-    <value>ShowMenuContextMenuSeparator</value>
+  <data name="&gt;&gt;FdsEjectDiskMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;RecentMovieSubMenu.Name" xml:space="preserve">
     <value>RecentMovieSubMenu</value>
@@ -532,8 +551,11 @@
   <data name="&gt;&gt;DisplayFPSMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;NESSoundChannelsMenuItem.Name" xml:space="preserve">
-    <value>NESSoundChannelsMenuItem</value>
+  <data name="&gt;&gt;MusicRipperMenuItem.Name" xml:space="preserve">
+    <value>MusicRipperMenuItem</value>
+  </data>
+  <data name="&gt;&gt;FdsEjectDiskMenuItem.Name" xml:space="preserve">
+    <value>FdsEjectDiskMenuItem</value>
   </data>
   <data name="&gt;&gt;PauseStatusButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripDropDownButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -541,17 +563,17 @@
   <data name="&gt;&gt;TraceLoggerMenuItem.Name" xml:space="preserve">
     <value>TraceLoggerMenuItem</value>
   </data>
-  <data name="&gt;&gt;ExitMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;toolStripStatusLabel1.Name" xml:space="preserve">
+    <value>toolStripStatusLabel1</value>
   </data>
-  <data name="&gt;&gt;DebuggerMenuItem.Name" xml:space="preserve">
-    <value>DebuggerMenuItem</value>
+  <data name="&gt;&gt;SelectSlot7MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="FlushSaveRAMMenuItem.Text" xml:space="preserve">
     <value>&amp;Flush Save Ram</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator29.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;RamWatchMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ViewSubMenu.Name" xml:space="preserve">
     <value>ViewSubMenu</value>
@@ -562,8 +584,8 @@
   <data name="&gt;&gt;StopNoSaveContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;Speed100MenuItem.Name" xml:space="preserve">
-    <value>Speed100MenuItem</value>
+  <data name="&gt;&gt;StopMovieContextMenuItem.Name" xml:space="preserve">
+    <value>StopMovieContextMenuItem</value>
   </data>
   <data name="&gt;&gt;Slot6StatusButton.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -583,20 +605,23 @@
   <data name="&gt;&gt;MusicRipperMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;Speed200MenuItem.Name" xml:space="preserve">
-    <value>Speed200MenuItem</value>
+  <data name="&gt;&gt;CoresSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem66.Name" xml:space="preserve">
-    <value>toolStripMenuItem66</value>
+  <data name="&gt;&gt;RestartMovieContextMenuItem.Name" xml:space="preserve">
+    <value>RestartMovieContextMenuItem</value>
+  </data>
+  <data name="InputOverHkMenuItem.Text" xml:space="preserve">
+    <value>Input overrides Hotkeys</value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem5.Name" xml:space="preserve">
+    <value>toolStripMenuItem5</value>
   </data>
   <data name="SelectSlot1MenuItem.Text" xml:space="preserve">
     <value>Select Slot 1</value>
   </data>
-  <data name="&gt;&gt;ClearSRAMContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;SaveState5MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="NesControllerSettingsMenuItem.Text" xml:space="preserve">
+    <value>Controller Settings...</value>
   </data>
   <data name="GenericCoreSubMenu.Text" xml:space="preserve">
     <value>&amp;Core</value>
@@ -606,6 +631,9 @@
   </data>
   <data name="&gt;&gt;AVStatusLabel.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;GameSharkConverterMenuItem.Name" xml:space="preserve">
+    <value>GameSharkConverterMenuItem</value>
   </data>
   <data name="ScreenshotSubMenu.Text" xml:space="preserve">
     <value>Scree&amp;nshot</value>
@@ -619,11 +647,17 @@
   <data name="&gt;&gt;PathsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;DumpStatusButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripDropDownButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;GameSharkConverterMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;Speed400MenuItem.Name" xml:space="preserve">
     <value>Speed400MenuItem</value>
+  </data>
+  <data name="&gt;&gt;ProfileFirstBootLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="ViewCommentsContextMenuItem.Text" xml:space="preserve">
     <value>View Comments</value>
@@ -634,20 +668,17 @@
   <data name="&gt;&gt;AmstradCPCMediaToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="ConfigSubMenu.Text" xml:space="preserve">
-    <value>&amp;Config</value>
-  </data>
-  <data name="InputOverHkMenuItem.Text" xml:space="preserve">
-    <value>Input overrides Hotkeys</value>
+  <data name="&gt;&gt;toolStripSeparator19.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;MessagesMenuItem.Name" xml:space="preserve">
     <value>MessagesMenuItem</value>
   </data>
-  <data name="&gt;&gt;Frameskip8MenuItem.Name" xml:space="preserve">
-    <value>Frameskip8MenuItem</value>
+  <data name="DumpStatusButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>4, 20</value>
   </data>
-  <data name="&gt;&gt;PSXHashDiscsToolStripMenuItem.Name" xml:space="preserve">
-    <value>PSXHashDiscsToolStripMenuItem</value>
+  <data name="RecordMovieMenuItem.Text" xml:space="preserve">
+    <value>&amp;Record Movie...</value>
   </data>
   <data name="&gt;&gt;N64SubMenu.Name" xml:space="preserve">
     <value>N64SubMenu</value>
@@ -655,11 +686,11 @@
   <data name="Frameskip5MenuItem.Text" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem5.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;MupenStyleLagMenuItem.Name" xml:space="preserve">
+    <value>MupenStyleLagMenuItem</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator17.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;LoadState8MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="Slot8StatusButton.ToolTipText" xml:space="preserve">
     <value>Save slot 8</value>
@@ -673,8 +704,8 @@
   <data name="&gt;&gt;toolStripSeparator23.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;StopMovieContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="HardResetMenuItem.Text" xml:space="preserve">
+    <value>&amp;Hard Reset</value>
   </data>
   <data name="Slot7StatusButton.ToolTipText" xml:space="preserve">
     <value>Save slot 7</value>
@@ -682,14 +713,14 @@
   <data name="DisplayRerecordCountMenuItem.Text" xml:space="preserve">
     <value>Display Rerecord Count</value>
   </data>
-  <data name="&gt;&gt;MupenStyleLagMenuItem.Name" xml:space="preserve">
-    <value>MupenStyleLagMenuItem</value>
+  <data name="cpcd1ToolStripMenuItem.Text" xml:space="preserve">
+    <value>cpcd1</value>
   </data>
   <data name="&gt;&gt;RecentMovieSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ColecoSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;Speed50MenuItem.Name" xml:space="preserve">
+    <value>Speed50MenuItem</value>
   </data>
   <data name="RetroAchievementsMenuItem.Text" xml:space="preserve">
     <value>&amp;RetroAchievements</value>
@@ -697,17 +728,11 @@
   <data name="Ares64SettingsMenuItem.Text" xml:space="preserve">
     <value>Settings...</value>
   </data>
-  <data name="N64CircularAnalogRangeMenuItem.Text" xml:space="preserve">
-    <value>Circular Analog Range</value>
-  </data>
-  <data name="SelectSlot2MenuItem.Text" xml:space="preserve">
-    <value>Select Slot 2</value>
+  <data name="&gt;&gt;KeyPrioritySubMenu.Name" xml:space="preserve">
+    <value>KeyPrioritySubMenu</value>
   </data>
   <data name="OpenRomContextMenuItem.Text" xml:space="preserve">
     <value>Open Rom</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator25.Name" xml:space="preserve">
-    <value>toolStripSeparator25</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator20.Name" xml:space="preserve">
     <value>toolStripSeparator20</value>
@@ -721,6 +746,9 @@
   <data name="&gt;&gt;MainformMenu.Name" xml:space="preserve">
     <value>MainformMenu</value>
   </data>
+  <data name="&gt;&gt;VSInsertCoinP2MenuItem.Name" xml:space="preserve">
+    <value>VSInsertCoinP2MenuItem</value>
+  </data>
   <data name="&gt;&gt;toolStripSeparator12.Name" xml:space="preserve">
     <value>toolStripSeparator12</value>
   </data>
@@ -729,6 +757,9 @@
   </data>
   <data name="&gt;&gt;SaveState9MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="toolStripStatusLabel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>0, 17</value>
   </data>
   <data name="RamSearchMenuItem.Text" xml:space="preserve">
     <value>RAM &amp;Search</value>
@@ -748,8 +779,8 @@
   <data name="MainFormContextMenu.Size" type="System.Drawing.Size, System.Drawing">
     <value>232, 490</value>
   </data>
-  <data name="&gt;&gt;CodeDataLoggerMenuItem.Name" xml:space="preserve">
-    <value>CodeDataLoggerMenuItem</value>
+  <data name="&gt;&gt;NextSlotMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SaveNamedStateMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -772,23 +803,20 @@
   <data name="LinkConnectStatusBarButton.ToolTipText" xml:space="preserve">
     <value>Link connection is currently enabled</value>
   </data>
-  <data name="FeaturesMenuItem.Text" xml:space="preserve">
-    <value>&amp;Features</value>
-  </data>
   <data name="&gt;&gt;SaveState6MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="Slot2StatusButton.ToolTipText" xml:space="preserve">
-    <value>Save slot 2</value>
+  <data name="Slot6StatusButton.ToolTipText" xml:space="preserve">
+    <value>Save slot 6</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem9.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ProfileFirstBootLabel.Name" xml:space="preserve">
-    <value>ProfileFirstBootLabel</value>
+  <data name="&gt;&gt;Frameskip6MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ProfileFirstBootLabel.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;Speed100MenuItem.Name" xml:space="preserve">
+    <value>Speed100MenuItem</value>
   </data>
   <data name="StartRetroAchievementsMenuItem.Text" xml:space="preserve">
     <value>&amp;Start RetroAchievements</value>
@@ -808,11 +836,14 @@
   <data name="MovieEndPlaySoundMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 22</value>
   </data>
-  <data name="&gt;&gt;MainformMenu.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;zxt2ToolStripMenuItem.Name" xml:space="preserve">
+    <value>zxt2ToolStripMenuItem</value>
   </data>
   <data name="Slot3StatusButton.Text" xml:space="preserve">
     <value>3</value>
+  </data>
+  <data name="&gt;&gt;ColecoControllerSettingsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="HelpSubMenu.Text" xml:space="preserve">
     <value>&amp;Help</value>
@@ -820,8 +851,8 @@
   <data name="FirmwareMenuItem.Text" xml:space="preserve">
     <value>&amp;Firmware...</value>
   </data>
-  <data name="&gt;&gt;LoadTIFileMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;FullMovieLoadstatesMenuItem.Name" xml:space="preserve">
+    <value>FullMovieLoadstatesMenuItem</value>
   </data>
   <data name="&gt;&gt;ScreenshotContextMenuItem.Name" xml:space="preserve">
     <value>ScreenshotContextMenuItem</value>
@@ -845,8 +876,8 @@
   <data name="&gt;&gt;ScreenshotAsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="RecordMovieContextMenuItem.Text" xml:space="preserve">
-    <value>Record Movie</value>
+  <data name="&gt;&gt;ExitMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="UpdateNotification.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
     <value>MiddleRight</value>
@@ -881,14 +912,14 @@
   <data name="ColecoSkipBiosMenuItem.Text" xml:space="preserve">
     <value>&amp;Skip BIOS intro (When Applicable)</value>
   </data>
-  <data name="&gt;&gt;AmstradCPCMediaToolStripMenuItem.Name" xml:space="preserve">
-    <value>AmstradCPCMediaToolStripMenuItem</value>
+  <data name="&gt;&gt;CodeDataLoggerMenuItem.Name" xml:space="preserve">
+    <value>CodeDataLoggerMenuItem</value>
   </data>
   <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
     <value>FileSubMenu</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>MainForm</value>
+  <data name="SelectSlot8MenuItem.Text" xml:space="preserve">
+    <value>Select Slot 8</value>
   </data>
   <data name="SynclessRecordingMenuItem.Text" xml:space="preserve">
     <value>S&amp;yncless Recording Tools</value>
@@ -899,12 +930,6 @@
   <data name="&gt;&gt;MovieEndFinishMenuItem.Name" xml:space="preserve">
     <value>MovieEndFinishMenuItem</value>
   </data>
-  <data name="&gt;&gt;Ares64SubMenu.Name" xml:space="preserve">
-    <value>Ares64SubMenu</value>
-  </data>
-  <data name="SaveToCurrentSlotMenuItem.Text" xml:space="preserve">
-    <value>Save to Current Slot</value>
-  </data>
   <data name="ZXSpectrumCoreEmulationSettingsMenuItem.Text" xml:space="preserve">
     <value>Core Emulation Settings</value>
   </data>
@@ -913,6 +938,9 @@
   </data>
   <data name="RecentMovieSubMenu.Text" xml:space="preserve">
     <value>Recent</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator36.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator28.Name" xml:space="preserve">
     <value>toolStripSeparator28</value>
@@ -923,8 +951,8 @@
   <data name="&gt;&gt;LoadedCoreNameMenuItem.Name" xml:space="preserve">
     <value>LoadedCoreNameMenuItem</value>
   </data>
-  <data name="&gt;&gt;SaveStateSubMenu.Name" xml:space="preserve">
-    <value>SaveStateSubMenu</value>
+  <data name="&gt;&gt;Frameskip3MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;Frameskip7MenuItem.Name" xml:space="preserve">
     <value>Frameskip7MenuItem</value>
@@ -938,13 +966,13 @@
   <data name="TI83SubMenu.Text" xml:space="preserve">
     <value>TI83</value>
   </data>
-  <data name="&gt;&gt;settingsToolStripMenuItem1.Name" xml:space="preserve">
-    <value>settingsToolStripMenuItem1</value>
+  <data name="&gt;&gt;GBcoreSettingsToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SaveConfigAsMenuItem.Name" xml:space="preserve">
     <value>SaveConfigAsMenuItem</value>
   </data>
-  <data name="&gt;&gt;StopMovieWithoutSavingMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;LoadState1MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="PlayMovieContextMenuItem.Text" xml:space="preserve">
@@ -956,11 +984,17 @@
   <data name="&gt;&gt;toolStripSeparator7.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;MupenStyleLagMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;Speed150MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="MacroToolMenuItem.Text" xml:space="preserve">
     <value>&amp;Macro Tool</value>
+  </data>
+  <data name="&gt;&gt;ColecoSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;AmstradCPCNonSyncSettingsToolStripMenuItem.Name" xml:space="preserve">
+    <value>AmstradCPCNonSyncSettingsToolStripMenuItem</value>
   </data>
   <data name="MainformMenu.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -968,10 +1002,10 @@
   <data name="AVStatusLabel.Text" xml:space="preserve">
     <value>A/V Capture</value>
   </data>
-  <data name="&gt;&gt;HotkeysMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;LedLightStatusLabel.Name" xml:space="preserve">
+    <value>LedLightStatusLabel</value>
   </data>
-  <data name="&gt;&gt;ConfigContextMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;HotkeysMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;CheatsMenuItem.Type" xml:space="preserve">
@@ -1010,9 +1044,6 @@
   <data name="&gt;&gt;MovieEndFinishMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;AutoloadLastSlotMenuItem.Name" xml:space="preserve">
-    <value>AutoloadLastSlotMenuItem</value>
-  </data>
   <data name="&gt;&gt;zXSpectrumToolStripMenuItem.Name" xml:space="preserve">
     <value>zXSpectrumToolStripMenuItem</value>
   </data>
@@ -1025,11 +1056,17 @@
   <data name="&gt;&gt;DisplaySubtitlesMenuItem.Name" xml:space="preserve">
     <value>DisplaySubtitlesMenuItem</value>
   </data>
+  <data name="&gt;&gt;CloseRomContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="&gt;&gt;zxt2ToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="UpdateNotification.Text" xml:space="preserve">
-    <value>New version available!</value>
+  <data name="LoadLastMovieContextMenuItem.Text" xml:space="preserve">
+    <value>Load Last Movie</value>
+  </data>
+  <data name="&gt;&gt;ScreenshotContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem7.Name" xml:space="preserve">
     <value>toolStripMenuItem7</value>
@@ -1058,6 +1095,9 @@
   <data name="&gt;&gt;SpeedSkipSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>MainForm</value>
+  </data>
   <data name="&gt;&gt;customizeToolStripMenuItem.Name" xml:space="preserve">
     <value>customizeToolStripMenuItem</value>
   </data>
@@ -1078,9 +1118,6 @@
   </data>
   <data name="&gt;&gt;NESPPUViewerMenuItem.Name" xml:space="preserve">
     <value>NESPPUViewerMenuItem</value>
-  </data>
-  <data name="&gt;&gt;toolStripMenuItem15.Name" xml:space="preserve">
-    <value>toolStripMenuItem15</value>
   </data>
   <data name="StopAVContextMenuItem.Text" xml:space="preserve">
     <value>Stop A/V Writer</value>
@@ -1112,9 +1149,6 @@
   <data name="&gt;&gt;toolStripSeparator16.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;DisplayFrameCounterMenuItem.Name" xml:space="preserve">
-    <value>DisplayFrameCounterMenuItem</value>
-  </data>
   <data name="&gt;&gt;DisplayRerecordCountMenuItem.Name" xml:space="preserve">
     <value>DisplayRerecordCountMenuItem</value>
   </data>
@@ -1123,6 +1157,9 @@
   </data>
   <data name="customizeToolStripMenuItem.Text" xml:space="preserve">
     <value>Customize...</value>
+  </data>
+  <data name="&gt;&gt;PSXHashDiscsToolStripMenuItem.Name" xml:space="preserve">
+    <value>PSXHashDiscsToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;RebootCoreMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1142,8 +1179,11 @@
   <data name="&gt;&gt;SaveState4MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="LoadState3MenuItem.Text" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;RecordMovieContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="Slot2StatusButton.ToolTipText" xml:space="preserve">
+    <value>Save slot 2</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem66.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1151,11 +1191,11 @@
   <data name="&gt;&gt;SelectSlot2MenuItem.Name" xml:space="preserve">
     <value>SelectSlot2MenuItem</value>
   </data>
-  <data name="ForumsMenuItem.Text" xml:space="preserve">
-    <value>Open Forums in Browser</value>
+  <data name="&gt;&gt;toolStripMenuItem66.Name" xml:space="preserve">
+    <value>toolStripMenuItem66</value>
   </data>
-  <data name="&gt;&gt;ZXSpectrumCoreEmulationSettingsMenuItem.Name" xml:space="preserve">
-    <value>ZXSpectrumCoreEmulationSettingsMenuItem</value>
+  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
+    <value>toolStripSeparator3</value>
   </data>
   <data name="StopNoSaveContextMenuItem.Text" xml:space="preserve">
     <value>Stop Movie without Saving</value>
@@ -1178,8 +1218,11 @@
   <data name="&gt;&gt;toolStripSeparator5.Name" xml:space="preserve">
     <value>toolStripSeparator5</value>
   </data>
-  <data name="&gt;&gt;Speed50MenuItem.Name" xml:space="preserve">
-    <value>Speed50MenuItem</value>
+  <data name="IntvSubMenu.Text" xml:space="preserve">
+    <value>&amp;Intv</value>
+  </data>
+  <data name="ImportMoviesMenuItem.Text" xml:space="preserve">
+    <value>Import Movies...</value>
   </data>
   <data name="DisplayInputMenuItem.Text" xml:space="preserve">
     <value>Display Input</value>
@@ -1196,14 +1239,14 @@
   <data name="toolStripMenuItem10.Text" xml:space="preserve">
     <value>Paths...</value>
   </data>
-  <data name="UndoSavestateContextMenuItem.Text" xml:space="preserve">
-    <value>Undo Savestate</value>
-  </data>
-  <data name="&gt;&gt;GBcoreSettingsToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;LoadTIFileMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator36.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;PauseStatusButton.Name" xml:space="preserve">
+    <value>PauseStatusButton</value>
+  </data>
+  <data name="ForumsMenuItem.Text" xml:space="preserve">
+    <value>Open Forums in Browser</value>
   </data>
   <data name="&gt;&gt;AudioThrottleMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1238,11 +1281,8 @@
   <data name="&gt;&gt;MovieEndPauseMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;BarcodeReaderMenuItem.Name" xml:space="preserve">
-    <value>BarcodeReaderMenuItem</value>
-  </data>
-  <data name="$this.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt</value>
+  <data name="SelectSlot9MenuItem.Text" xml:space="preserve">
+    <value>Select Slot 9</value>
   </data>
   <data name="&gt;&gt;A7800SubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1250,8 +1290,11 @@
   <data name="SaveSlotSubMenu.Text" xml:space="preserve">
     <value>Save S&amp;lot</value>
   </data>
-  <data name="&gt;&gt;RestartMovieContextMenuItem.Name" xml:space="preserve">
-    <value>RestartMovieContextMenuItem</value>
+  <data name="&gt;&gt;Slot0StatusButton.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ShowMenuContextMenuItem.Name" xml:space="preserve">
+    <value>ShowMenuContextMenuItem</value>
   </data>
   <data name="ZXSpectrumTapesSubMenu.Text" xml:space="preserve">
     <value>Tapes</value>
@@ -1259,7 +1302,7 @@
   <data name="&gt;&gt;SaveMovieMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;C64SettingsMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;AutomaticallyBackupMoviesMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="PathsMenuItem.Text" xml:space="preserve">
@@ -1289,14 +1332,17 @@
   <data name="&gt;&gt;AddSubtitleContextMenuItem.Name" xml:space="preserve">
     <value>AddSubtitleContextMenuItem</value>
   </data>
+  <data name="&gt;&gt;customizeToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="&gt;&gt;WindowSizeSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SaveState3MenuItem.Name" xml:space="preserve">
     <value>SaveState3MenuItem</value>
   </data>
-  <data name="toolStripMenuItem6.Text" xml:space="preserve">
-    <value>&amp;Controllers...</value>
+  <data name="&gt;&gt;cpcd1ToolStripMenuItem.Name" xml:space="preserve">
+    <value>cpcd1ToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;GBGPUViewerMenuItem.Name" xml:space="preserve">
     <value>GBGPUViewerMenuItem</value>
@@ -1304,23 +1350,20 @@
   <data name="&gt;&gt;SelectSlot0MenuItem.Name" xml:space="preserve">
     <value>SelectSlot0MenuItem</value>
   </data>
-  <data name="&gt;&gt;Speed150MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="DisplayFrameCounterMenuItem.Text" xml:space="preserve">
     <value>Display Frame Count</value>
+  </data>
+  <data name="&gt;&gt;RebootStatusBarIcon.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;amstradCPCCoreEmulationSettingsToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="CoreNameStatusBarButton.Text" xml:space="preserve">
-    <value>&lt;core name&gt;</value>
-  </data>
-  <data name="amstradCPCToolStripMenuItem.Text" xml:space="preserve">
-    <value>Amstrad CPC</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator27.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;LoadState3MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;VsyncEnabledMenuItem.Name" xml:space="preserve">
     <value>VsyncEnabledMenuItem</value>
@@ -1334,11 +1377,17 @@
   <data name="AVSubMenu.Text" xml:space="preserve">
     <value>&amp;A/V Writer</value>
   </data>
+  <data name="&gt;&gt;NESGraphicSettingsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="&gt;&gt;ZXSpectrumMediaMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="PlayFromBeginningMenuItem.Text" xml:space="preserve">
     <value>Play from Beginning</value>
+  </data>
+  <data name="&gt;&gt;toolStripMenuItem15.Name" xml:space="preserve">
+    <value>toolStripMenuItem15</value>
   </data>
   <data name="SaveNamedStateMenuItem.Text" xml:space="preserve">
     <value>Save Named State...</value>
@@ -1346,8 +1395,8 @@
   <data name="PauseMenuItem.Text" xml:space="preserve">
     <value>&amp;Pause</value>
   </data>
-  <data name="&gt;&gt;cpcd1ToolStripMenuItem.Name" xml:space="preserve">
-    <value>cpcd1ToolStripMenuItem</value>
+  <data name="&gt;&gt;Frameskip3MenuItem.Name" xml:space="preserve">
+    <value>Frameskip3MenuItem</value>
   </data>
   <data name="&gt;&gt;PlayFromBeginningMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1358,17 +1407,14 @@
   <data name="PSXDiscControlsMenuItem.Text" xml:space="preserve">
     <value>&amp;Disc Controls</value>
   </data>
-  <data name="HardResetMenuItem.Text" xml:space="preserve">
-    <value>&amp;Hard Reset</value>
+  <data name="Speed50MenuItem.Text" xml:space="preserve">
+    <value>Speed 50%</value>
   </data>
-  <data name="VSServiceSwitchMenuItem.Text" xml:space="preserve">
-    <value>Service Switch</value>
+  <data name="C64SubMenu.Text" xml:space="preserve">
+    <value>&amp;C64</value>
   </data>
   <data name="Slot6StatusButton.Text" xml:space="preserve">
     <value>6</value>
-  </data>
-  <data name="&gt;&gt;ScreenshotClipboardMenuItem.Name" xml:space="preserve">
-    <value>ScreenshotClipboardMenuItem</value>
   </data>
   <data name="&gt;&gt;OpenAdvancedMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1418,8 +1464,8 @@
   <data name="&gt;&gt;PathsMenuItem.Name" xml:space="preserve">
     <value>PathsMenuItem</value>
   </data>
-  <data name="&gt;&gt;Slot9StatusButton.Name" xml:space="preserve">
-    <value>Slot9StatusButton</value>
+  <data name="&gt;&gt;FDSControlsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ScreenshotMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1436,14 +1482,17 @@
   <data name="&gt;&gt;toolStripSeparator11.Name" xml:space="preserve">
     <value>toolStripSeparator11</value>
   </data>
+  <data name="&gt;&gt;RecordMovieContextMenuItem.Name" xml:space="preserve">
+    <value>RecordMovieContextMenuItem</value>
+  </data>
   <data name="&gt;&gt;toolStripMenuItem11.Name" xml:space="preserve">
     <value>toolStripMenuItem11</value>
   </data>
   <data name="ScreenshotContextMenuItem.Text" xml:space="preserve">
     <value>Screenshot</value>
   </data>
-  <data name="DisplayLagCounterMenuItem.Text" xml:space="preserve">
-    <value>Display Lag Frame Count</value>
+  <data name="&gt;&gt;AutoloadLastSlotMenuItem.Name" xml:space="preserve">
+    <value>AutoloadLastSlotMenuItem</value>
   </data>
   <data name="ViewSubtitlesContextMenuItem.Text" xml:space="preserve">
     <value>View Subtitles</value>
@@ -1457,14 +1506,11 @@
   <data name="&gt;&gt;DisplayConfigMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="toolStripMenuItem7.Text" xml:space="preserve">
-    <value>&amp;Hotkeys...</value>
-  </data>
   <data name="&gt;&gt;SelectSlot8MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="ProfileFirstBootLabel.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="&gt;&gt;EmuStatus.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;RetroAchievementsMenuItem.Name" xml:space="preserve">
     <value>RetroAchievementsMenuItem</value>
@@ -1478,8 +1524,11 @@
   <data name="&gt;&gt;RecentRomSubMenu.Name" xml:space="preserve">
     <value>RecentRomSubMenu</value>
   </data>
-  <data name="&gt;&gt;Slot1StatusButton.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;ClearSRAMContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;RamWatchMenuItem.Name" xml:space="preserve">
+    <value>RamWatchMenuItem</value>
   </data>
   <data name="BasicBotMenuItem.Text" xml:space="preserve">
     <value>Basic Bot</value>
@@ -1487,11 +1536,14 @@
   <data name="toolStripMenuItem13.Text" xml:space="preserve">
     <value>&amp;Autofire...</value>
   </data>
+  <data name="&gt;&gt;toolStripMenuItem67.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="ClockThrottleMenuItem.Text" xml:space="preserve">
     <value>Clock Throttle</value>
   </data>
-  <data name="&gt;&gt;MacroToolMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="LoadTIFileMenuItem.Text" xml:space="preserve">
+    <value>Load TI-83 File...</value>
   </data>
   <data name="toolStripMenuItem66.Text" xml:space="preserve">
     <value>Save Config</value>
@@ -1505,23 +1557,26 @@
   <data name="Slot2StatusButton.Text" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="&gt;&gt;LoadLastRomContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;ScreenshotClipboardMenuItem.Name" xml:space="preserve">
+    <value>ScreenshotClipboardMenuItem</value>
   </data>
   <data name="&gt;&gt;MainStatusBar.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.StatusStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;PSXDiscControlsMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="ZXSpectrumDisksSubMenu.Text" xml:space="preserve">
+    <value>Disks</value>
   </data>
   <data name="&gt;&gt;Frameskip7MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;Frameskip5MenuItem.Name" xml:space="preserve">
+    <value>Frameskip5MenuItem</value>
+  </data>
   <data name="MultiDiskBundlerFileMenuItem.Text" xml:space="preserve">
     <value>Multi-disk Bundler</value>
   </data>
-  <data name="&gt;&gt;LedLightStatusLabel.Name" xml:space="preserve">
-    <value>LedLightStatusLabel</value>
+  <data name="&gt;&gt;GBLsettingsToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator31.Name" xml:space="preserve">
     <value>toolStripSeparator31</value>
@@ -1532,8 +1587,14 @@
   <data name="RecordAVMenuItem.Text" xml:space="preserve">
     <value>&amp;Record A/V</value>
   </data>
+  <data name="&gt;&gt;ZXSpectrumTapesSubMenu.Name" xml:space="preserve">
+    <value>ZXSpectrumTapesSubMenu</value>
+  </data>
   <data name="toolStripMenuItem14.Text" xml:space="preserve">
     <value>&amp;Rewind...</value>
+  </data>
+  <data name="AutomaticallyBackupMoviesMenuItem.Text" xml:space="preserve">
+    <value>Automatically Backup Movies</value>
   </data>
   <data name="&gt;&gt;DisplayInputMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1556,14 +1617,14 @@
   <data name="SaveState8MenuItem.Text" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="&gt;&gt;ColecoControllerSettingsMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;StopMovieWithoutSavingMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;CaptureLuaMenuItem.Name" xml:space="preserve">
     <value>CaptureLuaMenuItem</value>
   </data>
-  <data name="&gt;&gt;BarcodeReaderMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;toolStripSeparator17.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="Frameskip3MenuItem.Text" xml:space="preserve">
     <value>3</value>
@@ -1571,8 +1632,8 @@
   <data name="&gt;&gt;ForumsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ShowMenuContextMenuSeparator.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;toolStripSeparator25.Name" xml:space="preserve">
+    <value>toolStripSeparator25</value>
   </data>
   <data name="&gt;&gt;Speed400MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1580,20 +1641,23 @@
   <data name="&gt;&gt;BackupMovieContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;AmstradCPCMediaToolStripMenuItem.Name" xml:space="preserve">
+    <value>AmstradCPCMediaToolStripMenuItem</value>
+  </data>
   <data name="&gt;&gt;VSControlsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;AVStatusLabel.Name" xml:space="preserve">
     <value>AVStatusLabel</value>
   </data>
-  <data name="&gt;&gt;LoadState8MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;DebuggerMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;GameSharkConverterMenuItem.Name" xml:space="preserve">
-    <value>GameSharkConverterMenuItem</value>
+  <data name="DisplayLagCounterMenuItem.Text" xml:space="preserve">
+    <value>Display Lag Frame Count</value>
+  </data>
+  <data name="DebuggerMenuItem.Text" xml:space="preserve">
+    <value>&amp;Debugger</value>
   </data>
   <data name="FullMovieLoadstatesMenuItem.Text" xml:space="preserve">
     <value>Full Movie Loadstates</value>
@@ -1601,8 +1665,8 @@
   <data name="BothHkAndControllerMenuItem.Text" xml:space="preserve">
     <value>Both Hotkeys and Controllers</value>
   </data>
-  <data name="&gt;&gt;Slot2StatusButton.Name" xml:space="preserve">
-    <value>Slot2StatusButton</value>
+  <data name="CoreNameStatusBarButton.Text" xml:space="preserve">
+    <value>&lt;core name&gt;</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator29.Name" xml:space="preserve">
     <value>toolStripSeparator29</value>
@@ -1612,9 +1676,6 @@
   </data>
   <data name="&gt;&gt;toolStripMenuItem4.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;MessagesMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SynclessRecordingMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1634,22 +1695,16 @@
   <data name="ScreenshotMenuItem.Text" xml:space="preserve">
     <value>Screenshot</value>
   </data>
-  <data name="&gt;&gt;SelectSlot7MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;Frameskip6MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;ControllersMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="MovieEndRecordMenuItem.Text" xml:space="preserve">
     <value>Switch to Record</value>
   </data>
-  <data name="&gt;&gt;VSInsertCoinP2MenuItem.Name" xml:space="preserve">
-    <value>VSInsertCoinP2MenuItem</value>
+  <data name="&gt;&gt;VirtualPadMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;Frameskip3MenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;ZXSpectrumTapesSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="ZXSpectrumExportSnapshotMenuItemMenuItem.Text" xml:space="preserve">
@@ -1664,8 +1719,8 @@
   <data name="&gt;&gt;RamSearchMenuItem.Name" xml:space="preserve">
     <value>RamSearchMenuItem</value>
   </data>
-  <data name="&gt;&gt;RecordMovieContextMenuItem.Name" xml:space="preserve">
-    <value>RecordMovieContextMenuItem</value>
+  <data name="toolStripMenuItem7.Text" xml:space="preserve">
+    <value>&amp;Hotkeys...</value>
   </data>
   <data name="&gt;&gt;NeverSkipMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1679,14 +1734,8 @@
   <data name="&gt;&gt;SNESControllerConfigurationMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="Speed200MenuItem.Text" xml:space="preserve">
-    <value>Speed 200%</value>
-  </data>
-  <data name="&gt;&gt;SaveStateSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="DumpStatusButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>4, 20</value>
+  <data name="SwitchToFullscreenMenuItem.Text" xml:space="preserve">
+    <value>Switch to Fullscreen</value>
   </data>
   <data name="&gt;&gt;AmstradCPCTapesSubMenu.Name" xml:space="preserve">
     <value>AmstradCPCTapesSubMenu</value>
@@ -1695,9 +1744,6 @@
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;TI83SubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;FdsEjectDiskMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;FlushSaveRAMMenuItem.Name" xml:space="preserve">
@@ -1709,7 +1755,10 @@
   <data name="&gt;&gt;Frameskip6MenuItem.Name" xml:space="preserve">
     <value>Frameskip6MenuItem</value>
   </data>
-  <data name="&gt;&gt;RecordMovieContextMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;Slot9StatusButton.Name" xml:space="preserve">
+    <value>Slot9StatusButton</value>
+  </data>
+  <data name="&gt;&gt;GenericCoreSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;LoadState7MenuItem.Name" xml:space="preserve">
@@ -1721,44 +1770,59 @@
   <data name="&gt;&gt;FirmwareMenuItem.Name" xml:space="preserve">
     <value>FirmwareMenuItem</value>
   </data>
-  <data name="&gt;&gt;ColecoUseSGMMenuItem.Name" xml:space="preserve">
-    <value>ColecoUseSGMMenuItem</value>
+  <data name="&gt;&gt;SNESSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;AmstradCPCDisksSubMenu.Name" xml:space="preserve">
     <value>AmstradCPCDisksSubMenu</value>
   </data>
-  <data name="&gt;&gt;customizeToolStripMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;UpdateNotification.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;toolStripSeparator17.Name" xml:space="preserve">
+    <value>toolStripSeparator17</value>
   </data>
   <data name="&gt;&gt;KeypadMenuItem.Name" xml:space="preserve">
     <value>KeypadMenuItem</value>
   </data>
+  <data name="&gt;&gt;UpdateNotification.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ImportMoviesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="SaveState0MenuItem.Text" xml:space="preserve">
     <value>10</value>
+  </data>
+  <data name="&gt;&gt;Slot7StatusButton.Name" xml:space="preserve">
+    <value>Slot7StatusButton</value>
   </data>
   <data name="ConfigContextMenuItem.Text" xml:space="preserve">
     <value>Config</value>
   </data>
-  <data name="Slot1StatusButton.ToolTipText" xml:space="preserve">
-    <value>Save slot 1</value>
-  </data>
-  <data name="ReadonlyMenuItem.Text" xml:space="preserve">
-    <value>Read-only</value>
+  <data name="&gt;&gt;toolStripSeparator20.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;miUnthrottled.Name" xml:space="preserve">
     <value>miUnthrottled</value>
   </data>
-  <data name="&gt;&gt;InputOverHkMenuItem.Name" xml:space="preserve">
-    <value>InputOverHkMenuItem</value>
+  <data name="&gt;&gt;LedLightStatusLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PlayMovieMenuItem.Text" xml:space="preserve">
+    <value>&amp;Play Movie...</value>
   </data>
   <data name="&gt;&gt;AppleDisksSubMenu.Name" xml:space="preserve">
     <value>AppleDisksSubMenu</value>
   </data>
   <data name="ZXSpectrumMediaMenuItem.Text" xml:space="preserve">
     <value>Media</value>
+  </data>
+  <data name="PauseStatusButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>4, 20</value>
+  </data>
+  <data name="&gt;&gt;NESSoundChannelsMenuItem.Name" xml:space="preserve">
+    <value>NESSoundChannelsMenuItem</value>
+  </data>
+  <data name="&gt;&gt;Slot1StatusButton.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="DisplaySubtitlesMenuItem.Text" xml:space="preserve">
     <value>Display Subtitles</value>
@@ -1769,6 +1833,9 @@
   <data name="HkOverInputMenuItem.Text" xml:space="preserve">
     <value>Hotkeys override Input</value>
   </data>
+  <data name="RecordMovieContextMenuItem.Text" xml:space="preserve">
+    <value>Record Movie</value>
+  </data>
   <data name="MovieEndFinishMenuItem.Text" xml:space="preserve">
     <value>Switch to Finished</value>
   </data>
@@ -1778,14 +1845,14 @@
   <data name="&gt;&gt;A7800ControllerSettingsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ConfigAndRecordAVMenuItem.Name" xml:space="preserve">
-    <value>ConfigAndRecordAVMenuItem</value>
-  </data>
   <data name="LoadState0MenuItem.Text" xml:space="preserve">
     <value>10</value>
   </data>
   <data name="&gt;&gt;NESSubMenu.Name" xml:space="preserve">
     <value>NESSubMenu</value>
+  </data>
+  <data name="&gt;&gt;PlayMovieContextMenuItem.Name" xml:space="preserve">
+    <value>PlayMovieContextMenuItem</value>
   </data>
   <data name="&gt;&gt;GBPrinterViewerMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1810,6 +1877,9 @@
   </data>
   <data name="LinkConnectStatusBarButton.Text" xml:space="preserve">
     <value>Link connection is currently enabled</value>
+  </data>
+  <data name="&gt;&gt;CloseRomContextMenuItem.Name" xml:space="preserve">
+    <value>CloseRomContextMenuItem</value>
   </data>
   <data name="&gt;&gt;SaveConfigMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1838,8 +1908,8 @@
   <data name="&gt;&gt;A7800ControllerSettingsMenuItem.Name" xml:space="preserve">
     <value>A7800ControllerSettingsMenuItem</value>
   </data>
-  <data name="&gt;&gt;CloseRomContextMenuItem.Name" xml:space="preserve">
-    <value>CloseRomContextMenuItem</value>
+  <data name="toolStripMenuItem6.Text" xml:space="preserve">
+    <value>&amp;Controllers...</value>
   </data>
   <data name="AutofireMenuItem.Text" xml:space="preserve">
     <value>&amp;Autofire...</value>
@@ -1853,11 +1923,17 @@
   <data name="&gt;&gt;toolStripSeparator9.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
-    <value>toolStripSeparator3</value>
+  <data name="&gt;&gt;SaveStateSubMenu.Name" xml:space="preserve">
+    <value>SaveStateSubMenu</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem13.Name" xml:space="preserve">
     <value>toolStripMenuItem13</value>
+  </data>
+  <data name="&gt;&gt;LoadLastRomContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;InputOverHkMenuItem.Name" xml:space="preserve">
+    <value>InputOverHkMenuItem</value>
   </data>
   <data name="CloseRomContextMenuItem.Text" xml:space="preserve">
     <value>Close ROM</value>
@@ -1870,6 +1946,9 @@
   </data>
   <data name="&gt;&gt;CloseRomMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;A7800FilterSettingsMenuItem.Name" xml:space="preserve">
+    <value>A7800FilterSettingsMenuItem</value>
   </data>
   <data name="&gt;&gt;ImportMoviesMenuItem.Name" xml:space="preserve">
     <value>ImportMoviesMenuItem</value>
@@ -1892,6 +1971,9 @@
   <data name="&gt;&gt;StopMovieMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;Slot2StatusButton.Name" xml:space="preserve">
+    <value>Slot2StatusButton</value>
+  </data>
   <data name="&gt;&gt;ZXSpectrumNonSyncSettingsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -1907,8 +1989,8 @@
   <data name="&gt;&gt;SaveMovieMenuItem.Name" xml:space="preserve">
     <value>SaveMovieMenuItem</value>
   </data>
-  <data name="&gt;&gt;AmstradCPCNonSyncSettingsToolStripMenuItem.Name" xml:space="preserve">
-    <value>AmstradCPCNonSyncSettingsToolStripMenuItem</value>
+  <data name="&gt;&gt;SaveState5MenuItem.Name" xml:space="preserve">
+    <value>SaveState5MenuItem</value>
   </data>
   <data name="ClearSRAMContextMenuItem.Text" xml:space="preserve">
     <value>Close and Clear SRAM</value>
@@ -1919,14 +2001,23 @@
   <data name="&gt;&gt;PSXControllerSettingsMenuItem.Name" xml:space="preserve">
     <value>PSXControllerSettingsMenuItem</value>
   </data>
-  <data name="ZXSpectrumDisksSubMenu.Text" xml:space="preserve">
-    <value>Disks</value>
+  <data name="&gt;&gt;SaveState3MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ExitMenuItem.Name" xml:space="preserve">
     <value>ExitMenuItem</value>
   </data>
-  <data name="&gt;&gt;EmuStatus.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;KeyPriorityStatusLabel.Name" xml:space="preserve">
+    <value>KeyPriorityStatusLabel</value>
+  </data>
+  <data name="&gt;&gt;NESSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;LoadState6MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PSXSubMenu.Text" xml:space="preserve">
+    <value>PSX</value>
   </data>
   <data name="&gt;&gt;HkOverInputMenuItem.Name" xml:space="preserve">
     <value>HkOverInputMenuItem</value>
@@ -1946,6 +2037,12 @@
   <data name="&gt;&gt;PlayRecordStatusButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripDropDownButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;toolStripMenuItem11.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Speed200MenuItem.Name" xml:space="preserve">
+    <value>Speed200MenuItem</value>
+  </data>
   <data name="&gt;&gt;SNESSubMenu.Name" xml:space="preserve">
     <value>SNESSubMenu</value>
   </data>
@@ -1954,6 +2051,9 @@
   </data>
   <data name="NESGraphicSettingsMenuItem.Text" xml:space="preserve">
     <value>Graphics Settings...</value>
+  </data>
+  <data name="&gt;&gt;UndoSavestateContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;RebootStatusBarIcon.Name" xml:space="preserve">
     <value>RebootStatusBarIcon</value>
@@ -1964,8 +2064,8 @@
   <data name="&gt;&gt;AddSubtitleContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;LoadState6MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="MovieSettingsMenuItem.Text" xml:space="preserve">
+    <value>Advanced Settings...</value>
   </data>
   <data name="&gt;&gt;RecordAVMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1979,14 +2079,20 @@
   <data name="N64ExpansionSlotMenuItem.Text" xml:space="preserve">
     <value>&amp;Use Expansion Slot</value>
   </data>
-  <data name="&gt;&gt;Frameskip5MenuItem.Name" xml:space="preserve">
-    <value>Frameskip5MenuItem</value>
+  <data name="zxt2ToolStripMenuItem.Text" xml:space="preserve">
+    <value>zxt2</value>
   </data>
-  <data name="cpcd1ToolStripMenuItem.Text" xml:space="preserve">
-    <value>cpcd1</value>
+  <data name="Speed200MenuItem.Text" xml:space="preserve">
+    <value>Speed 200%</value>
   </data>
   <data name="&gt;&gt;SaveConfigAsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;NesControllerSettingsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;toolStripSeparator29.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="A7800ControllerSettingsMenuItem.Text" xml:space="preserve">
     <value>Controller Settings</value>
@@ -2012,23 +2118,20 @@
   <data name="&gt;&gt;Speed100MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;KeyPrioritySubMenu.Name" xml:space="preserve">
-    <value>KeyPrioritySubMenu</value>
+  <data name="N64CircularAnalogRangeMenuItem.Text" xml:space="preserve">
+    <value>Circular Analog Range</value>
   </data>
   <data name="&gt;&gt;VSInsertCoinP2MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;amstradCPCCoreEmulationSettingsToolStripMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="ProfileFirstBootLabel.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem17.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator19.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="Slot6StatusButton.ToolTipText" xml:space="preserve">
-    <value>Save slot 6</value>
+  <data name="Slot5StatusButton.ToolTipText" xml:space="preserve">
+    <value>Save slot 5</value>
   </data>
   <data name="&gt;&gt;DisplayFPSMenuItem.Name" xml:space="preserve">
     <value>DisplayFPSMenuItem</value>
@@ -2036,8 +2139,8 @@
   <data name="RestartMovieContextMenuItem.Text" xml:space="preserve">
     <value>Restart Movie</value>
   </data>
-  <data name="&gt;&gt;PlayMovieContextMenuItem.Name" xml:space="preserve">
-    <value>PlayMovieContextMenuItem</value>
+  <data name="FeaturesMenuItem.Text" xml:space="preserve">
+    <value>&amp;Features</value>
   </data>
   <data name="NeverSkipMenuItem.Text" xml:space="preserve">
     <value>Skip 0 (never)</value>
@@ -2081,17 +2184,11 @@
   <data name="&gt;&gt;SelectSlot0MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator18.Name" xml:space="preserve">
-    <value>toolStripSeparator18</value>
-  </data>
-  <data name="Speed50MenuItem.Text" xml:space="preserve">
-    <value>Speed 50%</value>
-  </data>
   <data name="&gt;&gt;PauseMenuItem.Name" xml:space="preserve">
     <value>PauseMenuItem</value>
   </data>
-  <data name="&gt;&gt;RamWatchMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;ProfileFirstBootLabel.Name" xml:space="preserve">
+    <value>ProfileFirstBootLabel</value>
   </data>
   <data name="LoadNamedStateMenuItem.Text" xml:space="preserve">
     <value>Load Named State...</value>
@@ -2099,14 +2196,14 @@
   <data name="GameSharkConverterMenuItem.Text" xml:space="preserve">
     <value>Cheat Code Converter</value>
   </data>
-  <data name="&gt;&gt;CoresSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="Slot0StatusButton.ToolTipText" xml:space="preserve">
+    <value>Save slot 10</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator15.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;RamWatchMenuItem.Name" xml:space="preserve">
-    <value>RamWatchMenuItem</value>
+  <data name="cpct1ToolStripMenuItem.Text" xml:space="preserve">
+    <value>cpct1</value>
   </data>
   <data name="&gt;&gt;AppleDisksSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -2117,8 +2214,8 @@
   <data name="&gt;&gt;DisplayLagCounterMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ZXSpectrumAudioSettingsMenuItem.Name" xml:space="preserve">
-    <value>ZXSpectrumAudioSettingsMenuItem</value>
+  <data name="&gt;&gt;C64SettingsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="ZXSpectrumNonSyncSettingsMenuItem.Text" xml:space="preserve">
     <value>Non-Sync Settings</value>
@@ -2129,20 +2226,11 @@
   <data name="SaveRAMSubMenu.Text" xml:space="preserve">
     <value>Save &amp;RAM</value>
   </data>
-  <data name="&gt;&gt;A7800SubMenu.Name" xml:space="preserve">
-    <value>A7800SubMenu</value>
-  </data>
   <data name="&gt;&gt;FirmwareMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem5.Name" xml:space="preserve">
-    <value>toolStripMenuItem5</value>
-  </data>
   <data name="&gt;&gt;StartRetroAchievementsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="SelectSlot6MenuItem.Text" xml:space="preserve">
     <value>Select Slot 6</value>
@@ -2183,14 +2271,14 @@
   <data name="&gt;&gt;SnesGfxDebuggerMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="MessagesMenuItem.Text" xml:space="preserve">
-    <value>&amp;Messages...</value>
-  </data>
   <data name="&gt;&gt;IntVControllerSettingsMenuItem.Name" xml:space="preserve">
     <value>IntVControllerSettingsMenuItem</value>
   </data>
   <data name="&gt;&gt;LoadLastRomContextMenuItem.Name" xml:space="preserve">
     <value>LoadLastRomContextMenuItem</value>
+  </data>
+  <data name="&gt;&gt;PSXDiscControlsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator10.Name" xml:space="preserve">
     <value>toolStripSeparator10</value>
@@ -2210,8 +2298,8 @@
   <data name="Slot4StatusButton.Text" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;PauseStatusButton.Name" xml:space="preserve">
-    <value>PauseStatusButton</value>
+  <data name="MessagesMenuItem.Text" xml:space="preserve">
+    <value>&amp;Messages...</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator35.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -2237,20 +2325,11 @@
   <data name="&gt;&gt;PSXSubMenu.Name" xml:space="preserve">
     <value>PSXSubMenu</value>
   </data>
-  <data name="&gt;&gt;ImportMoviesMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;MovieSettingsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="NesControllerSettingsMenuItem.Text" xml:space="preserve">
-    <value>Controller Settings...</value>
-  </data>
   <data name="&gt;&gt;toolStripMenuItem8.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="cpct1ToolStripMenuItem.Text" xml:space="preserve">
-    <value>cpct1</value>
   </data>
   <data name="&gt;&gt;LoadState0MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -2273,9 +2352,6 @@
   <data name="SelectSlot4MenuItem.Text" xml:space="preserve">
     <value>Select Slot 4</value>
   </data>
-  <data name="&gt;&gt;NextSlotMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="RebootStatusBarIcon.Text" xml:space="preserve">
     <value>Reboot</value>
   </data>
@@ -2297,8 +2373,8 @@
   <data name="&gt;&gt;Ares64CircularAnalogRangeMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator17.Name" xml:space="preserve">
-    <value>toolStripSeparator17</value>
+  <data name="&gt;&gt;ScreenshotMenuItem.Name" xml:space="preserve">
+    <value>ScreenshotMenuItem</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator9.Name" xml:space="preserve">
     <value>toolStripSeparator9</value>
@@ -2312,11 +2388,8 @@
   <data name="NESNametableViewerMenuItem.Text" xml:space="preserve">
     <value>&amp;Nametable Viewer</value>
   </data>
-  <data name="&gt;&gt;NesControllerSettingsMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="ProfileFirstBootLabel.Text" xml:space="preserve">
-    <value>ProfileFirstBootLabel</value>
+  <data name="&gt;&gt;SaveMovieAsMenuItem.Name" xml:space="preserve">
+    <value>SaveMovieAsMenuItem</value>
   </data>
   <data name="KeyPrioritySubMenu.Text" xml:space="preserve">
     <value>Key Priority</value>
@@ -2327,17 +2400,14 @@
   <data name="&gt;&gt;GBcoreSettingsToolStripMenuItem.Name" xml:space="preserve">
     <value>GBcoreSettingsToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;OpenAdvancedMenuItem.Name" xml:space="preserve">
-    <value>OpenAdvancedMenuItem</value>
-  </data>
-  <data name="&gt;&gt;ToolsSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;SaveState1MenuItem.Name" xml:space="preserve">
     <value>SaveState1MenuItem</value>
   </data>
-  <data name="SaveStateSubMenu.Text" xml:space="preserve">
-    <value>&amp;Save State</value>
+  <data name="ProfileFirstBootLabel.Text" xml:space="preserve">
+    <value>ProfileFirstBootLabel</value>
+  </data>
+  <data name="&gt;&gt;HelpSubMenu.Name" xml:space="preserve">
+    <value>HelpSubMenu</value>
   </data>
   <data name="&gt;&gt;FullMovieLoadstatesMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -2372,9 +2442,6 @@
   <data name="&gt;&gt;AboutMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator20.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="LoadState4MenuItem.Text" xml:space="preserve">
     <value>4</value>
   </data>
@@ -2390,20 +2457,23 @@
   <data name="&gt;&gt;ScreenshotCaptureOSDMenuItem1.Name" xml:space="preserve">
     <value>ScreenshotCaptureOSDMenuItem1</value>
   </data>
-  <data name="&gt;&gt;A7800FilterSettingsMenuItem.Name" xml:space="preserve">
-    <value>A7800FilterSettingsMenuItem</value>
+  <data name="&gt;&gt;RecordAVMenuItem.Name" xml:space="preserve">
+    <value>RecordAVMenuItem</value>
   </data>
   <data name="paletteToolStripMenuItem.Text" xml:space="preserve">
     <value>Palette...</value>
   </data>
-  <data name="&gt;&gt;StopAVContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;toolStripSeparator18.Name" xml:space="preserve">
+    <value>toolStripSeparator18</value>
   </data>
-  <data name="ScreenshotClientClipboardMenuItem.Text" xml:space="preserve">
-    <value>Screenshot (client) -&gt; Clipboard</value>
+  <data name="&gt;&gt;ReadonlyMenuItem.Name" xml:space="preserve">
+    <value>ReadonlyMenuItem</value>
   </data>
   <data name="&gt;&gt;LoadState5MenuItem.Name" xml:space="preserve">
     <value>LoadState5MenuItem</value>
+  </data>
+  <data name="&gt;&gt;toolStripStatusLabel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripStatusLabel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="Slot1StatusButton.Text" xml:space="preserve">
     <value>1</value>
@@ -2417,8 +2487,8 @@
   <data name="PreviousSlotMenuItem.Text" xml:space="preserve">
     <value>Previous Slot</value>
   </data>
-  <data name="&gt;&gt;Slot4StatusButton.Name" xml:space="preserve">
-    <value>Slot4StatusButton</value>
+  <data name="SpeedSkipSubMenu.Text" xml:space="preserve">
+    <value>Speed/Skip</value>
   </data>
   <data name="&gt;&gt;C64SettingsMenuItem.Name" xml:space="preserve">
     <value>C64SettingsMenuItem</value>
@@ -2438,7 +2508,7 @@
   <data name="&gt;&gt;Frameskip1MenuItem.Name" xml:space="preserve">
     <value>Frameskip1MenuItem</value>
   </data>
-  <data name="&gt;&gt;NESSoundChannelsMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;ToolsSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;LoadState9MenuItem.Type" xml:space="preserve">
@@ -2447,8 +2517,8 @@
   <data name="&gt;&gt;toolStripSeparator31.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;MusicRipperMenuItem.Name" xml:space="preserve">
-    <value>MusicRipperMenuItem</value>
+  <data name="&gt;&gt;Ares64SubMenu.Name" xml:space="preserve">
+    <value>Ares64SubMenu</value>
   </data>
   <data name="AudioThrottleMenuItem.Text" xml:space="preserve">
     <value>Audio Throttle</value>
@@ -2459,11 +2529,8 @@
   <data name="ColecoUseSGMMenuItem.Text" xml:space="preserve">
     <value>&amp;Use the Super Game Module</value>
   </data>
-  <data name="&gt;&gt;toolStripMenuItem11.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="ImportMoviesMenuItem.Text" xml:space="preserve">
-    <value>Import Movies...</value>
+  <data name="SaveStateSubMenu.Text" xml:space="preserve">
+    <value>&amp;Save State</value>
   </data>
   <data name="&gt;&gt;ConfigContextMenuItem.Name" xml:space="preserve">
     <value>ConfigContextMenuItem</value>
@@ -2471,14 +2538,11 @@
   <data name="&gt;&gt;SaveState4MenuItem.Name" xml:space="preserve">
     <value>SaveState4MenuItem</value>
   </data>
-  <data name="&gt;&gt;Frameskip3MenuItem.Name" xml:space="preserve">
-    <value>Frameskip3MenuItem</value>
-  </data>
   <data name="&gt;&gt;toolStripMenuItem3.Name" xml:space="preserve">
     <value>toolStripMenuItem3</value>
   </data>
-  <data name="&gt;&gt;NESGraphicSettingsMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;PlayMovieMenuItem.Name" xml:space="preserve">
+    <value>PlayMovieMenuItem</value>
   </data>
   <data name="LoadConfigMenuItem.Text" xml:space="preserve">
     <value>Load Config</value>
@@ -2489,11 +2553,11 @@
   <data name="&gt;&gt;NESGraphicSettingsMenuItem.Name" xml:space="preserve">
     <value>NESGraphicSettingsMenuItem</value>
   </data>
-  <data name="&gt;&gt;SaveMovieAsMenuItem.Name" xml:space="preserve">
-    <value>SaveMovieAsMenuItem</value>
+  <data name="&gt;&gt;MainformMenu.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;RecordAVMenuItem.Name" xml:space="preserve">
-    <value>RecordAVMenuItem</value>
+  <data name="&gt;&gt;N64ExpansionSlotMenuItem.Name" xml:space="preserve">
+    <value>N64ExpansionSlotMenuItem</value>
   </data>
   <data name="&gt;&gt;UndoSavestateContextMenuItem.Name" xml:space="preserve">
     <value>UndoSavestateContextMenuItem</value>
@@ -2504,8 +2568,8 @@
   <data name="C64DisksSubMenu.Text" xml:space="preserve">
     <value>Disks</value>
   </data>
-  <data name="&gt;&gt;zxt2ToolStripMenuItem.Name" xml:space="preserve">
-    <value>zxt2ToolStripMenuItem</value>
+  <data name="&gt;&gt;RecentRomSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="toolStripMenuItem17.Text" xml:space="preserve">
     <value>Skip 1..9</value>
@@ -2525,17 +2589,17 @@
   <data name="LoadState1MenuItem.Text" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="SelectSlot5MenuItem.Text" xml:space="preserve">
-    <value>Select Slot 5</value>
+  <data name="MovieEndSubMenu.Text" xml:space="preserve">
+    <value>On Movie End</value>
   </data>
   <data name="extensionsToolStripMenuItem.Text" xml:space="preserve">
     <value>File Extensions...</value>
   </data>
-  <data name="AutomaticallyBackupMoviesMenuItem.Text" xml:space="preserve">
-    <value>Automatically Backup Movies</value>
+  <data name="UndoSavestateContextMenuItem.Text" xml:space="preserve">
+    <value>Undo Savestate</value>
   </data>
-  <data name="&gt;&gt;timerMouseIdle.Name" xml:space="preserve">
-    <value>timerMouseIdle</value>
+  <data name="&gt;&gt;toolStripSeparator27.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;DisableResizeWithFramebufferMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -2543,19 +2607,10 @@
   <data name="&gt;&gt;ToolBoxMenuItem.Name" xml:space="preserve">
     <value>ToolBoxMenuItem</value>
   </data>
-  <data name="MovieSettingsMenuItem.Text" xml:space="preserve">
-    <value>Advanced Settings...</value>
-  </data>
   <data name="&gt;&gt;toolStripSeparator18.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ViewCommentsContextMenuItem.Name" xml:space="preserve">
-    <value>ViewCommentsContextMenuItem</value>
-  </data>
-  <data name="&gt;&gt;LoadState3MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;Speed200MenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;SaveState7MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="Slot9StatusButton.Text" xml:space="preserve">
@@ -2567,9 +2622,6 @@
   <data name="&gt;&gt;SameBoyColorChooserMenuItem.Name" xml:space="preserve">
     <value>SameBoyColorChooserMenuItem</value>
   </data>
-  <data name="&gt;&gt;KeyPriorityStatusLabel.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;SelectSlot3MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -2579,8 +2631,8 @@
   <data name="&gt;&gt;zxt1ToolStripMenuItem.Name" xml:space="preserve">
     <value>zxt1ToolStripMenuItem</value>
   </data>
-  <data name="Speed100MenuItem.Text" xml:space="preserve">
-    <value>Speed 100%</value>
+  <data name="&gt;&gt;ScreenshotSubMenu.Name" xml:space="preserve">
+    <value>ScreenshotSubMenu</value>
   </data>
   <data name="ZXSpectrumAudioSettingsMenuItem.Text" xml:space="preserve">
     <value>Audio Settings</value>
@@ -2591,23 +2643,20 @@
   <data name="Frameskip4MenuItem.Text" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="Slot5StatusButton.ToolTipText" xml:space="preserve">
-    <value>Save slot 5</value>
-  </data>
   <data name="&gt;&gt;AutofireMenuItem.Name" xml:space="preserve">
     <value>AutofireMenuItem</value>
   </data>
-  <data name="&gt;&gt;Slot0StatusButton.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;HexEditorMenuItem.Name" xml:space="preserve">
+    <value>HexEditorMenuItem</value>
   </data>
   <data name="&gt;&gt;LoadState9MenuItem.Name" xml:space="preserve">
     <value>LoadState9MenuItem</value>
   </data>
-  <data name="C64SubMenu.Text" xml:space="preserve">
-    <value>&amp;C64</value>
+  <data name="StopMovieMenuItem.Text" xml:space="preserve">
+    <value>Stop Movie</value>
   </data>
-  <data name="AmstradCPCMediaToolStripMenuItem.Text" xml:space="preserve">
-    <value>Media</value>
+  <data name="NESSoundChannelsMenuItem.Text" xml:space="preserve">
+    <value>Sound Channels...</value>
   </data>
   <data name="&gt;&gt;ClearSRAMContextMenuItem.Name" xml:space="preserve">
     <value>ClearSRAMContextMenuItem</value>
@@ -2636,8 +2685,8 @@
   <data name="MainStatusBar.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 386</value>
   </data>
-  <data name="&gt;&gt;RebootStatusBarIcon.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="SelectSlot5MenuItem.Text" xml:space="preserve">
+    <value>Select Slot 5</value>
   </data>
   <data name="SaveState5MenuItem.Text" xml:space="preserve">
     <value>5</value>
@@ -2654,8 +2703,8 @@
   <data name="&gt;&gt;SoundMenuItem.Name" xml:space="preserve">
     <value>SoundMenuItem</value>
   </data>
-  <data name="StopMovieMenuItem.Text" xml:space="preserve">
-    <value>Stop Movie</value>
+  <data name="&gt;&gt;LoadState2MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="AmstradCPCNonSyncSettingsToolStripMenuItem.Text" xml:space="preserve">
     <value>Non-Sync Settings</value>
@@ -2663,14 +2712,14 @@
   <data name="&gt;&gt;LoadCurrentSlotMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ScreenshotSubMenu.Name" xml:space="preserve">
-    <value>ScreenshotSubMenu</value>
+  <data name="&gt;&gt;DebuggerMenuItem.Name" xml:space="preserve">
+    <value>DebuggerMenuItem</value>
   </data>
   <data name="&gt;&gt;BothHkAndControllerMenuItem.Name" xml:space="preserve">
     <value>BothHkAndControllerMenuItem</value>
   </data>
-  <data name="&gt;&gt;DumpStatusButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripDropDownButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;BarcodeReaderMenuItem.Name" xml:space="preserve">
+    <value>BarcodeReaderMenuItem</value>
   </data>
   <data name="&gt;&gt;AmstradCPCAudioSettingsToolStripMenuItem.Name" xml:space="preserve">
     <value>AmstradCPCAudioSettingsToolStripMenuItem</value>
@@ -2681,26 +2730,20 @@
   <data name="&gt;&gt;Slot8StatusButton.Name" xml:space="preserve">
     <value>Slot8StatusButton</value>
   </data>
-  <data name="&gt;&gt;SaveState7MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;toolStripSeparator32.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;KeyPriorityStatusLabel.Name" xml:space="preserve">
-    <value>KeyPriorityStatusLabel</value>
+  <data name="&gt;&gt;ConfigAndRecordAVMenuItem.Name" xml:space="preserve">
+    <value>ConfigAndRecordAVMenuItem</value>
   </data>
   <data name="toolStripMenuItem9.Text" xml:space="preserve">
     <value>&amp;Sound...</value>
   </data>
-  <data name="SelectSlot9MenuItem.Text" xml:space="preserve">
-    <value>Select Slot 9</value>
-  </data>
-  <data name="&gt;&gt;GBLsettingsToolStripMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;MacroToolMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="ColecoSubMenu.Text" xml:space="preserve">
-    <value>&amp;Coleco</value>
+  <data name="&gt;&gt;KeyPriorityStatusLabel.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;SaveState7MenuItem.Name" xml:space="preserve">
     <value>SaveState7MenuItem</value>
@@ -2717,8 +2760,8 @@
   <data name="&gt;&gt;StopAVContextMenuItem.Name" xml:space="preserve">
     <value>StopAVContextMenuItem</value>
   </data>
-  <data name="Slot0StatusButton.ToolTipText" xml:space="preserve">
-    <value>Save slot 10</value>
+  <data name="toolStripMenuItem15.Text" xml:space="preserve">
+    <value>File Extensions...</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator22.Name" xml:space="preserve">
     <value>toolStripSeparator22</value>
@@ -2726,8 +2769,8 @@
   <data name="&gt;&gt;AutofireMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;Slot9StatusButton.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
+    <value>toolStripSeparator2</value>
   </data>
   <data name="&gt;&gt;SwitchToFullscreenMenuItem.Name" xml:space="preserve">
     <value>SwitchToFullscreenMenuItem</value>
@@ -2747,23 +2790,26 @@
   <data name="Slot4StatusButton.ToolTipText" xml:space="preserve">
     <value>Save slot 4</value>
   </data>
-  <data name="&gt;&gt;LedLightStatusLabel.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;A7800SubMenu.Name" xml:space="preserve">
+    <value>A7800SubMenu</value>
+  </data>
+  <data name="&gt;&gt;ZXSpectrumCoreEmulationSettingsMenuItem.Name" xml:space="preserve">
+    <value>ZXSpectrumCoreEmulationSettingsMenuItem</value>
   </data>
   <data name="&gt;&gt;LoadTIFileMenuItem.Name" xml:space="preserve">
     <value>LoadTIFileMenuItem</value>
   </data>
-  <data name="toolStripMenuItem15.Text" xml:space="preserve">
-    <value>File Extensions...</value>
-  </data>
   <data name="&gt;&gt;LoadLastMovieContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="SelectSlot8MenuItem.Text" xml:space="preserve">
-    <value>Select Slot 8</value>
+  <data name="&gt;&gt;Frameskip8MenuItem.Name" xml:space="preserve">
+    <value>Frameskip8MenuItem</value>
   </data>
   <data name="StopMovieWithoutSavingMenuItem.Text" xml:space="preserve">
     <value>Stop Movie without Saving</value>
+  </data>
+  <data name="VSServiceSwitchMenuItem.Text" xml:space="preserve">
+    <value>Service Switch</value>
   </data>
   <data name="&gt;&gt;GBLsettingsToolStripMenuItem.Name" xml:space="preserve">
     <value>GBLsettingsToolStripMenuItem</value>
@@ -2774,8 +2820,8 @@
   <data name="&gt;&gt;toolStripSeparator16.Name" xml:space="preserve">
     <value>toolStripSeparator16</value>
   </data>
-  <data name="PlayMovieMenuItem.Text" xml:space="preserve">
-    <value>&amp;Play Movie...</value>
+  <data name="&gt;&gt;ShowMenuContextMenuSeparator.Name" xml:space="preserve">
+    <value>ShowMenuContextMenuSeparator</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem8.Name" xml:space="preserve">
     <value>toolStripMenuItem8</value>
@@ -2786,8 +2832,8 @@
   <data name="&gt;&gt;toolStripSeparator11.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="MovieEndSubMenu.Text" xml:space="preserve">
-    <value>On Movie End</value>
+  <data name="ColecoSubMenu.Text" xml:space="preserve">
+    <value>&amp;Coleco</value>
   </data>
   <data name="IntVControllerSettingsMenuItem.Text" xml:space="preserve">
     <value>Controller Settings...</value>
@@ -2800,9 +2846,6 @@
   </data>
   <data name="CaptureOSDMenuItem.Text" xml:space="preserve">
     <value>Capture OSD</value>
-  </data>
-  <data name="&gt;&gt;SoftResetMenuItem.Name" xml:space="preserve">
-    <value>SoftResetMenuItem</value>
   </data>
   <data name="SameBoyColorChooserMenuItem.Text" xml:space="preserve">
     <value>&amp;Choose Custom Palette...</value>
@@ -2843,9 +2886,6 @@
   <data name="&gt;&gt;MovieEndRecordMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ScreenshotMenuItem.Name" xml:space="preserve">
-    <value>ScreenshotMenuItem</value>
-  </data>
   <data name="&gt;&gt;DisplaySubtitlesMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -2861,8 +2901,8 @@
   <data name="WindowSizeSubMenu.Text" xml:space="preserve">
     <value>&amp;Window Size</value>
   </data>
-  <data name="zxt2ToolStripMenuItem.Text" xml:space="preserve">
-    <value>zxt2</value>
+  <data name="&gt;&gt;ReadonlyMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;CoreNameStatusBarButton.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.StatusLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -2870,7 +2910,6 @@
   <data name="PlayRecordStatusButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>4, 20</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="RebootStatusBarIcon.RightToLeft" type="System.Windows.Forms.RightToLeft, System.Windows.Forms">
     <value>No</value>
   </data>
@@ -2904,8 +2943,8 @@
   <data name="&gt;&gt;AudioThrottleMenuItem.Name" xml:space="preserve">
     <value>AudioThrottleMenuItem</value>
   </data>
-  <data name="&gt;&gt;FdsEjectDiskMenuItem.Name" xml:space="preserve">
-    <value>FdsEjectDiskMenuItem</value>
+  <data name="DisplayLogWindowMenuItem.Text" xml:space="preserve">
+    <value>Open &amp;Log Window...</value>
   </data>
   <data name="RecentRomSubMenu.Text" xml:space="preserve">
     <value>&amp;Recent ROM</value>
@@ -2914,12 +2953,6 @@
     <value>Add Subtitle</value>
   </data>
   <data name="&gt;&gt;ScreenshotClipboardMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;RecentRomSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;OpenRomMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="NextSlotMenuItem.Text" xml:space="preserve">
@@ -2933,9 +2966,6 @@
   </data>
   <data name="&gt;&gt;SpeedSkipSubMenu.Name" xml:space="preserve">
     <value>SpeedSkipSubMenu</value>
-  </data>
-  <data name="&gt;&gt;VSServiceSwitchMenuItem.Name" xml:space="preserve">
-    <value>VSServiceSwitchMenuItem</value>
   </data>
   <data name="&gt;&gt;Ares64CircularAnalogRangeMenuItem.Name" xml:space="preserve">
     <value>Ares64CircularAnalogRangeMenuItem</value>
@@ -2961,23 +2991,20 @@
   <data name="KeypadMenuItem.Text" xml:space="preserve">
     <value>Keypad</value>
   </data>
-  <data name="&gt;&gt;ReadonlyMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="LoadStateSubMenu.Text" xml:space="preserve">
     <value>&amp;Load State</value>
   </data>
   <data name="&gt;&gt;ViewSubtitlesContextMenuItem.Name" xml:space="preserve">
     <value>ViewSubtitlesContextMenuItem</value>
   </data>
-  <data name="&gt;&gt;LoadState1MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="ConfigSubMenu.Text" xml:space="preserve">
+    <value>&amp;Config</value>
   </data>
   <data name="Frameskip9MenuItem.Text" xml:space="preserve">
     <value>9</value>
   </data>
-  <data name="ExitMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Alt+F4</value>
+  <data name="&gt;&gt;SaveStateSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;LoadState0MenuItem.Name" xml:space="preserve">
     <value>LoadState0MenuItem</value>
@@ -2997,8 +3024,8 @@
   <data name="&gt;&gt;toolStripSeparator12.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;N64ExpansionSlotMenuItem.Name" xml:space="preserve">
-    <value>N64ExpansionSlotMenuItem</value>
+  <data name="ExternalToolMenuItem.Text" xml:space="preserve">
+    <value>External Tool</value>
   </data>
   <data name="&gt;&gt;LoadLastMovieContextMenuItem.Name" xml:space="preserve">
     <value>LoadLastMovieContextMenuItem</value>
@@ -3011,9 +3038,6 @@
   </data>
   <data name="SaveMovieContextMenuItem.Text" xml:space="preserve">
     <value>Save Movie</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
-    <value>toolStripSeparator2</value>
   </data>
   <data name="TraceLoggerMenuItem.Text" xml:space="preserve">
     <value>Trace &amp;Logger</value>
@@ -3036,8 +3060,11 @@
   <data name="&gt;&gt;CloseRomMenuItem.Name" xml:space="preserve">
     <value>CloseRomMenuItem</value>
   </data>
-  <data name="SpeedSkipSubMenu.Text" xml:space="preserve">
-    <value>Speed/Skip</value>
+  <data name="amstradCPCToolStripMenuItem.Text" xml:space="preserve">
+    <value>Amstrad CPC</value>
+  </data>
+  <data name="&gt;&gt;ShowMenuContextMenuSeparator.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;Ares64SubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -3060,20 +3087,20 @@
   <data name="&gt;&gt;extensionsToolStripMenuItem.Name" xml:space="preserve">
     <value>extensionsToolStripMenuItem</value>
   </data>
-  <data name="SaveMovieAsContextMenuItem.Text" xml:space="preserve">
-    <value>Save Movie As...</value>
-  </data>
   <data name="SaveState4MenuItem.Text" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;ScreenshotContextMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;Speed200MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;Slot3StatusButton.Name" xml:space="preserve">
+    <value>Slot3StatusButton</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator24.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="PSXSubMenu.Text" xml:space="preserve">
-    <value>PSX</value>
+  <data name="GBGPUViewerMenuItem.Text" xml:space="preserve">
+    <value>GPU Viewer</value>
   </data>
   <data name="ExitMenuItem.Text" xml:space="preserve">
     <value>E&amp;xit</value>
@@ -3083,6 +3110,9 @@
   </data>
   <data name="&gt;&gt;PSXDiscControlsMenuItem.Name" xml:space="preserve">
     <value>PSXDiscControlsMenuItem</value>
+  </data>
+  <data name="&gt;&gt;settingsToolStripMenuItem1.Name" xml:space="preserve">
+    <value>settingsToolStripMenuItem1</value>
   </data>
   <data name="&gt;&gt;EmulationSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -3099,17 +3129,11 @@
   <data name="&gt;&gt;zxt1ToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;RestartMovieContextMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;ViewSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;NextSlotMenuItem.Name" xml:space="preserve">
     <value>NextSlotMenuItem</value>
-  </data>
-  <data name="&gt;&gt;LoadState2MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;ShowMenuContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -3126,8 +3150,8 @@
   <data name="&gt;&gt;PlayMovieMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="IntvSubMenu.Text" xml:space="preserve">
-    <value>&amp;Intv</value>
+  <data name="&gt;&gt;MessagesMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="ConfigAndRecordAVMenuItem.Text" xml:space="preserve">
     <value>Config and Record A/V...</value>
@@ -3135,8 +3159,8 @@
   <data name="&gt;&gt;PSXHashDiscsToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ReadonlyMenuItem.Name" xml:space="preserve">
-    <value>ReadonlyMenuItem</value>
+  <data name="&gt;&gt;ViewCommentsContextMenuItem.Name" xml:space="preserve">
+    <value>ViewCommentsContextMenuItem</value>
   </data>
   <data name="&gt;&gt;settingsToolStripMenuItem1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -3165,9 +3189,6 @@
   <data name="&gt;&gt;ExternalToolMenuItem.Name" xml:space="preserve">
     <value>ExternalToolMenuItem</value>
   </data>
-  <data name="&gt;&gt;PlayMovieMenuItem.Name" xml:space="preserve">
-    <value>PlayMovieMenuItem</value>
-  </data>
   <data name="&gt;&gt;ColecoSkipBiosMenuItem.Name" xml:space="preserve">
     <value>ColecoSkipBiosMenuItem</value>
   </data>
@@ -3192,14 +3213,11 @@
   <data name="&gt;&gt;ProfilesMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;HexEditorMenuItem.Name" xml:space="preserve">
-    <value>HexEditorMenuItem</value>
+  <data name="&gt;&gt;NESSoundChannelsMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="GBLsettingsToolStripMenuItem.Text" xml:space="preserve">
     <value>Settings...</value>
-  </data>
-  <data name="DisplayLogWindowMenuItem.Text" xml:space="preserve">
-    <value>Open &amp;Log Window...</value>
   </data>
   <data name="&gt;&gt;ColecoSubMenu.Name" xml:space="preserve">
     <value>ColecoSubMenu</value>
@@ -3210,20 +3228,17 @@
   <data name="&gt;&gt;SaveToCurrentSlotMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;FullMovieLoadstatesMenuItem.Name" xml:space="preserve">
-    <value>FullMovieLoadstatesMenuItem</value>
+  <data name="&gt;&gt;StopMovieContextMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="LoadState5MenuItem.Text" xml:space="preserve">
-    <value>5</value>
+  <data name="&gt;&gt;SaveState5MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;DisplayStatusBarMenuItem.Name" xml:space="preserve">
     <value>DisplayStatusBarMenuItem</value>
   </data>
   <data name="DisplayStatusBarMenuItem.Text" xml:space="preserve">
     <value>Display Status Bar</value>
-  </data>
-  <data name="&gt;&gt;SaveState5MenuItem.Name" xml:space="preserve">
-    <value>SaveState5MenuItem</value>
   </data>
   <data name="A7800HawkCoreMenuItem.Text" xml:space="preserve">
     <value>A7800Hawk</value>
@@ -3239,6 +3254,9 @@
   </data>
   <data name="SelectSlot3MenuItem.Text" xml:space="preserve">
     <value>Select Slot 3</value>
+  </data>
+  <data name="&gt;&gt;ZXSpectrumAudioSettingsMenuItem.Name" xml:space="preserve">
+    <value>ZXSpectrumAudioSettingsMenuItem</value>
   </data>
   <data name="&gt;&gt;A7800HawkCoreMenuItem.Name" xml:space="preserve">
     <value>A7800HawkCoreMenuItem</value>
@@ -3258,12 +3276,6 @@
   <data name="&gt;&gt;toolStripSeparator13.Name" xml:space="preserve">
     <value>toolStripSeparator13</value>
   </data>
-  <data name="&gt;&gt;FDSControlsMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;VirtualPadMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;FlushSaveRAMMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -3279,14 +3291,14 @@
   <data name="&gt;&gt;ScreenshotSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="LoadTIFileMenuItem.Text" xml:space="preserve">
-    <value>Load TI-83 File...</value>
+  <data name="&gt;&gt;OpenRomMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;HotkeysMenuItem.Name" xml:space="preserve">
     <value>HotkeysMenuItem</value>
   </data>
-  <data name="GBGPUViewerMenuItem.Text" xml:space="preserve">
-    <value>GPU Viewer</value>
+  <data name="&gt;&gt;SoftResetMenuItem.Name" xml:space="preserve">
+    <value>SoftResetMenuItem</value>
   </data>
   <data name="&gt;&gt;SaveRAMSubMenu.Name" xml:space="preserve">
     <value>SaveRAMSubMenu</value>
@@ -3312,9 +3324,6 @@
   <data name="&gt;&gt;cpcd1ToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="NESSoundChannelsMenuItem.Text" xml:space="preserve">
-    <value>Sound Channels...</value>
-  </data>
   <data name="&gt;&gt;ZXSpectrumNonSyncSettingsMenuItem.Name" xml:space="preserve">
     <value>ZXSpectrumNonSyncSettingsMenuItem</value>
   </data>
@@ -3327,8 +3336,8 @@
   <data name="Slot8StatusButton.Text" xml:space="preserve">
     <value>8</value>
   </data>
-  <data name="PauseStatusButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>4, 20</value>
+  <data name="LoadState3MenuItem.Text" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;OpenRomMenuItem.Name" xml:space="preserve">
     <value>OpenRomMenuItem</value>
@@ -3336,20 +3345,20 @@
   <data name="LoadedCoreNameMenuItem.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
+  <metadata name="timerMouseIdle.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>399, 13</value>
   </metadata>
   <metadata name="MainStatusBar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>126, 17</value>
-  </metadata>
-  <metadata name="timerMouseIdle.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>399, 13</value>
   </metadata>
   <metadata name="MainFormContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>233, 13</value>
   </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
   <metadata name="MainformMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>

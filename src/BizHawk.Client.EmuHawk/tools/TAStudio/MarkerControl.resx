@@ -153,8 +153,8 @@
   <data name="EditMarkerFrameButton.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="&gt;&gt;ScrollToMarkerButton.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;EditMarkerFrameToolStripMenuItem.Name" xml:space="preserve">
+    <value>EditMarkerFrameToolStripMenuItem</value>
   </data>
   <data name="EditMarkerButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>117, 247</value>
@@ -168,26 +168,17 @@
   <data name="&gt;&gt;MarkersGroupBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;RemoveMarkerButton.Parent" xml:space="preserve">
-    <value>MarkersGroupBox</value>
-  </data>
-  <data name="&gt;&gt;EditMarkerFrameButton.ZOrder" xml:space="preserve">
-    <value>6</value>
-  </data>
-  <data name="MarkerContextMenu.Size" type="System.Drawing.Size, System.Drawing">
-    <value>212, 142</value>
+  <data name="ScrollToMarkerButton.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
   <data name="AddMarkerButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
   </data>
-  <data name="JumpToMarkerToolStripMenuItem.Text" xml:space="preserve">
-    <value>Jump To</value>
+  <data name="JumpToMarkerButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;EditMarkerToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;AddMarkerButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;JumpToMarkerButton.Parent" xml:space="preserve">
     <value>MarkersGroupBox</value>
@@ -207,17 +198,23 @@
   <data name="&gt;&gt;AddMarkerWithTextButton.Parent" xml:space="preserve">
     <value>MarkersGroupBox</value>
   </data>
+  <data name="&gt;&gt;EditMarkerFrameButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;AddMarkerButton.Name" xml:space="preserve">
+    <value>AddMarkerButton</value>
+  </data>
   <data name="&gt;&gt;JumpToMarkerButton.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
   <data name="ScrollToMarkerButton.ToolTip" xml:space="preserve">
     <value>Scroll View To Marker Frame</value>
   </data>
-  <data name="EditMarkerFrameButton.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
-  </data>
   <data name="EditMarkerButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
+  </data>
+  <data name="AddMarkerButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 247</value>
   </data>
   <data name="EditMarkerFrameButton.ToolTip" xml:space="preserve">
     <value>Edit Marker Frame (Alt + Drag)</value>
@@ -234,14 +231,8 @@
   <data name="&gt;&gt;AddMarkerWithTextButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="MarkersGroupBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>198, 278</value>
-  </data>
   <data name="MarkerView.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
-  </data>
-  <data name="&gt;&gt;AddMarkerWithTextButton.Name" xml:space="preserve">
-    <value>AddMarkerWithTextButton</value>
   </data>
   <data name="JumpToMarkerButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
@@ -261,8 +252,8 @@
   <data name="RemoveMarkerButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
   </data>
-  <data name="&gt;&gt;EditMarkerButton.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="EditMarkerFrameButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
   </data>
   <data name="AddMarkerWithTextButton.ToolTip" xml:space="preserve">
     <value>Add Marker with Text to Emulated Frame</value>
@@ -270,17 +261,17 @@
   <data name="JumpToMarkerButton.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
-  <data name="ScrollToMarkerButton.Size" type="System.Drawing.Size, System.Drawing">
-    <value>24, 24</value>
-  </data>
   <data name="AddMarkerButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
   </data>
   <data name="&gt;&gt;EditMarkerFrameButton.Name" xml:space="preserve">
     <value>EditMarkerFrameButton</value>
   </data>
-  <data name="MarkerView.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Arial, 8.25pt, style=Bold</value>
+  <data name="&gt;&gt;EditMarkerToolStripMenuItem.Name" xml:space="preserve">
+    <value>EditMarkerToolStripMenuItem</value>
+  </data>
+  <data name="MarkerView.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="RemoveMarkerButton.Location" type="System.Drawing.Point, System.Drawing">
     <value>173, 247</value>
@@ -294,8 +285,8 @@
   <data name="&gt;&gt;AddMarkerButton.Parent" xml:space="preserve">
     <value>MarkersGroupBox</value>
   </data>
-  <data name="&gt;&gt;AddMarkerWithTextButton.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
     <value>198, 278</value>
@@ -312,17 +303,14 @@
   <data name="&gt;&gt;RemoveMarkerToolStripMenuItem.Name" xml:space="preserve">
     <value>RemoveMarkerToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;MarkerView.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="RemoveMarkerButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
   </data>
   <data name="&gt;&gt;RemoveMarkerButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ScrollToMarkerButton.Name" xml:space="preserve">
-    <value>ScrollToMarkerButton</value>
+  <data name="MarkerView.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Arial, 8.25pt, style=Bold</value>
   </data>
   <data name="&gt;&gt;MarkersGroupBox.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -333,17 +321,23 @@
   <data name="RemoveMarkerButton.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
+  <data name="MarkersGroupBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;AddMarkerWithTextButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="ScrollToMarkerToolStripMenuItem.Text" xml:space="preserve">
     <value>Scroll To</value>
   </data>
-  <data name="MarkerView.Size" type="System.Drawing.Size, System.Drawing">
-    <value>186, 224</value>
+  <data name="EditMarkerButton.ToolTip" xml:space="preserve">
+    <value>Edit Marker Text</value>
   </data>
   <data name="RemoveMarkerButton.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="AddMarkerButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>5, 247</value>
+  <data name="MarkersGroupBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>198, 278</value>
   </data>
   <data name="&gt;&gt;RemoveMarkerButton.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -354,11 +348,14 @@
   <data name="&gt;&gt;JumpToMarkerToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="MarkerView.ToolTip" xml:space="preserve">
-    <value />
+  <data name="&gt;&gt;RemoveMarkerButton.Parent" xml:space="preserve">
+    <value>MarkersGroupBox</value>
   </data>
   <data name="&gt;&gt;JumpToMarkerToolStripMenuItem.Name" xml:space="preserve">
     <value>JumpToMarkerToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;ScrollToMarkerToolStripMenuItem.Name" xml:space="preserve">
+    <value>ScrollToMarkerToolStripMenuItem</value>
   </data>
   <data name="EditMarkerButton.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -378,8 +375,8 @@
   <data name="&gt;&gt;RemoveMarkerToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;EditMarkerFrameButton.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;AddMarkerWithTextButton.Name" xml:space="preserve">
+    <value>AddMarkerWithTextButton</value>
   </data>
   <data name="&gt;&gt;EditMarkerFrameButton.Parent" xml:space="preserve">
     <value>MarkersGroupBox</value>
@@ -387,8 +384,8 @@
   <data name="&gt;&gt;MarkersGroupBox.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ScrollToMarkerToolStripMenuItem.Name" xml:space="preserve">
-    <value>ScrollToMarkerToolStripMenuItem</value>
+  <data name="&gt;&gt;AddMarkerButton.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="MarkersGroupBox.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -399,8 +396,8 @@
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MarkerControl</value>
   </data>
-  <data name="RemoveMarkerButton.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="EditMarkerButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
   </data>
   <data name="MarkerContextMenu.ToolTip" xml:space="preserve">
     <value />
@@ -408,38 +405,35 @@
   <data name="&gt;&gt;toolStripSeparator1.Name" xml:space="preserve">
     <value>toolStripSeparator1</value>
   </data>
-  <data name="&gt;&gt;AddMarkerButton.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="&gt;&gt;toolTip1.Name" xml:space="preserve">
     <value>toolTip1</value>
   </data>
-  <data name="EditMarkerButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
+  <data name="&gt;&gt;MarkerView.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;AddMarkerButton.Name" xml:space="preserve">
-    <value>AddMarkerButton</value>
+  <data name="ScrollToMarkerButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>24, 24</value>
   </data>
   <data name="&gt;&gt;JumpToMarkerButton.Name" xml:space="preserve">
     <value>JumpToMarkerButton</value>
   </data>
-  <data name="MarkersGroupBox.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="MarkerView.Size" type="System.Drawing.Size, System.Drawing">
+    <value>186, 224</value>
   </data>
-  <data name="JumpToMarkerButton.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="&gt;&gt;AddMarkerButton.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;EditMarkerToolStripMenuItem.Name" xml:space="preserve">
-    <value>EditMarkerToolStripMenuItem</value>
+  <data name="&gt;&gt;ScrollToMarkerButton.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
   <data name="&gt;&gt;MarkersGroupBox.Name" xml:space="preserve">
     <value>MarkersGroupBox</value>
   </data>
-  <data name="ScrollToMarkerButton.Enabled" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="&gt;&gt;ScrollToMarkerButton.Name" xml:space="preserve">
+    <value>ScrollToMarkerButton</value>
   </data>
-  <data name="EditMarkerButton.ToolTip" xml:space="preserve">
-    <value>Edit Marker Text</value>
+  <data name="RemoveMarkerButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="EditMarkerToolStripMenuItem.Text" xml:space="preserve">
     <value>Edit Text</value>
@@ -447,23 +441,26 @@
   <data name="MarkersGroupBox.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="MarkerView.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 19</value>
-  </data>
-  <data name="ScrollToMarkerButton.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
   <data name="&gt;&gt;MarkerContextMenu.Type" xml:space="preserve">
     <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="EditMarkerFrameButton.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
+  <data name="MarkerView.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 19</value>
+  </data>
+  <data name="&gt;&gt;EditMarkerFrameButton.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="JumpToMarkerToolStripMenuItem.Text" xml:space="preserve">
+    <value>Jump To</value>
+  </data>
+  <data name="EditMarkerFrameButton.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
   </data>
   <data name="&gt;&gt;EditMarkerButton.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="$this.ToolTip" xml:space="preserve">
-    <value />
+  <data name="MarkerContextMenu.Size" type="System.Drawing.Size, System.Drawing">
+    <value>212, 142</value>
   </data>
   <data name="MarkersGroupBox.Text" xml:space="preserve">
     <value>Markers</value>
@@ -471,8 +468,11 @@
   <data name="&gt;&gt;EditMarkerButton.Name" xml:space="preserve">
     <value>EditMarkerButton</value>
   </data>
-  <data name="&gt;&gt;EditMarkerFrameToolStripMenuItem.Name" xml:space="preserve">
-    <value>EditMarkerFrameToolStripMenuItem</value>
+  <data name="ScrollToMarkerButton.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;EditMarkerButton.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>168, 17</value>

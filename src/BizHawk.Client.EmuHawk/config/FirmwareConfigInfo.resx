@@ -117,6 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;colHash.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;imageList1.Name" xml:space="preserve">
+    <value>imageList1</value>
+  </data>
   <data name="&gt;&gt;lblFirmware.Name" xml:space="preserve">
     <value>lblFirmware</value>
   </data>
@@ -149,6 +155,9 @@
   <data name="&gt;&gt;colStandardFilename.Name" xml:space="preserve">
     <value>colStandardFilename</value>
   </data>
+  <data name="label2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;colSize.Name" xml:space="preserve">
     <value>colSize</value>
   </data>
@@ -180,11 +189,17 @@
   <data name="&gt;&gt;colSize.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="btnClose.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;colInfo.Name" xml:space="preserve">
     <value>colInfo</value>
   </data>
   <data name="&gt;&gt;lvOptions.Name" xml:space="preserve">
     <value>lvOptions</value>
+  </data>
+  <data name="lvmiOptionsContextMenuStrip.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;btnClose.Name" xml:space="preserve">
     <value>btnClose</value>
@@ -210,8 +225,8 @@
   <data name="tableLayoutPanel1.RowCount" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
-  <data name="btnClose.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="btnClose.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="lvOptions.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 27</value>
@@ -219,8 +234,8 @@
   <data name="&gt;&gt;flowLayoutPanel1.Parent" xml:space="preserve">
     <value>tableLayoutPanel1</value>
   </data>
-  <data name="colStandardFilename.Width" type="System.Int32, mscorlib">
-    <value>175</value>
+  <data name="&gt;&gt;tsmiOptionsCopy.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;lvOptions.Type" xml:space="preserve">
     <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -246,14 +261,26 @@
   <data name="colSize.Text" xml:space="preserve">
     <value>Size</value>
   </data>
+  <data name="flowLayoutPanel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="tableLayoutPanel1.ColumnCount" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="&gt;&gt;colDescription.Name" xml:space="preserve">
     <value>colDescription</value>
   </data>
-  <data name="colStandardFilename.Text" xml:space="preserve">
-    <value>Standard Filename</value>
+  <data name="&gt;&gt;lvOptions.Parent" xml:space="preserve">
+    <value>tableLayoutPanel1</value>
+  </data>
+  <data name="lblFirmware.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="colStandardFilename.Width" type="System.Int32, mscorlib">
+    <value>175</value>
   </data>
   <data name="colInfo.Text" xml:space="preserve">
     <value>Info</value>
@@ -297,17 +324,23 @@
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
     <value>6, 12</value>
   </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>FirmwareConfigInfo</value>
+  </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="&gt;&gt;tableLayoutPanel1.Type" xml:space="preserve">
     <value>System.Windows.Forms.TableLayoutPanel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tsmiOptionsCopy.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="tableLayoutPanel1.ToolTip" xml:space="preserve">
+    <value />
   </data>
-  <data name="colInfo.Width" type="System.Int32, mscorlib">
-    <value>165</value>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>728, 433</value>
@@ -324,17 +357,11 @@
   <data name="&gt;&gt;lvmiOptionsContextMenuStrip.Name" xml:space="preserve">
     <value>lvmiOptionsContextMenuStrip</value>
   </data>
-  <data name="&gt;&gt;lblFirmware.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="tableLayoutPanel1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="btnClose.Text" xml:space="preserve">
     <value>Close</value>
-  </data>
-  <data name="&gt;&gt;lblFirmware.ZOrder" xml:space="preserve">
-    <value>1</value>
   </data>
   <data name="lvOptions.Size" type="System.Drawing.Size, System.Drawing">
     <value>722, 369</value>
@@ -342,8 +369,8 @@
   <data name="&gt;&gt;flowLayoutPanel1.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>FirmwareConfigInfo</value>
+  <data name="&gt;&gt;lblFirmware.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;tableLayoutPanel1.Parent" xml:space="preserve">
     <value>$this</value>
@@ -372,23 +399,23 @@
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>tableLayoutPanel1</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="colStandardFilename.Text" xml:space="preserve">
+    <value>Standard Filename</value>
   </data>
   <data name="&gt;&gt;lvmiOptionsContextMenuStrip.Type" xml:space="preserve">
     <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;colHash.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="colInfo.Width" type="System.Int32, mscorlib">
+    <value>165</value>
   </data>
   <data name="colDescription.Width" type="System.Int32, mscorlib">
     <value>214</value>
   </data>
-  <data name="&gt;&gt;lvOptions.Parent" xml:space="preserve">
-    <value>tableLayoutPanel1</value>
+  <data name="btnClose.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;imageList1.Name" xml:space="preserve">
-    <value>imageList1</value>
+  <data name="&gt;&gt;lblFirmware.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;colStandardFilename.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -396,14 +423,14 @@
   <data name="flowLayoutPanel1.AutoSizeMode" type="System.Windows.Forms.AutoSizeMode, System.Windows.Forms">
     <value>GrowAndShrink</value>
   </data>
+  <data name="lvOptions.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblFirmware.Text" xml:space="preserve">
     <value>label3</value>
   </data>
   <data name="&gt;&gt;flowLayoutPanel1.Name" xml:space="preserve">
     <value>flowLayoutPanel1</value>
-  </data>
-  <data name="btnClose.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>6, 6, 6, 6</value>
   </data>
   <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>zh-CN</value>

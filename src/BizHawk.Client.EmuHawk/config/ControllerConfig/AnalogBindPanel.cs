@@ -47,5 +47,18 @@ namespace BizHawk.Client.EmuHawk
 				saveTo[abc.ButtonName] = abc.Bind;
 			}
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AnalogBindPanel));
+            this.SuspendLayout();
+            // 
+            // AnalogBindPanel
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "AnalogBindPanel";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

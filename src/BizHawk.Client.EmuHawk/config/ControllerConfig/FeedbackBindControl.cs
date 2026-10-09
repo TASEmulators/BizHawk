@@ -124,5 +124,18 @@ namespace BizHawk.Client.EmuHawk
 			if (disposing) _components.Dispose();
 			base.Dispose(disposing);
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FeedbackBindControl));
+            this.SuspendLayout();
+            // 
+            // FeedbackBindControl
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "FeedbackBindControl";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

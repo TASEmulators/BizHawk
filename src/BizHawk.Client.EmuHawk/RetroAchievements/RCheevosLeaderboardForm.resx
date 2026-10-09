@@ -155,9 +155,6 @@
   <data name="&gt;&gt;titleLabel.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lowerIsBetterBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="scoreBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>411, 21</value>
   </data>
@@ -180,6 +177,9 @@
     <value>Title:</value>
   </data>
   <data name="&gt;&gt;scoreBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;descriptionBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <data name="scoreBox.Location" type="System.Drawing.Point, System.Drawing">
@@ -312,7 +312,7 @@
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>300, 103</value>
   </data>
-  <data name="&gt;&gt;descriptionBox.Parent" xml:space="preserve">
+  <data name="&gt;&gt;lowerIsBetterBox.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">

@@ -121,6 +121,9 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>584, 278</value>
   </data>
+  <data name="&gt;&gt;FindPrevMenuItem.Name" xml:space="preserve">
+    <value>FindPrevMenuItem</value>
+  </data>
   <data name="&gt;&gt;AddressLabel.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
@@ -133,8 +136,8 @@
   <data name="HexScrollBar.Location" type="System.Drawing.Point, System.Drawing">
     <value>541, 16</value>
   </data>
-  <data name="&gt;&gt;IncrementContextItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="IncrementContextItem.Text" xml:space="preserve">
+    <value>&amp;Increment</value>
   </data>
   <data name="&gt;&gt;ContextSeparator1.Name" xml:space="preserve">
     <value>ContextSeparator1</value>
@@ -142,20 +145,17 @@
   <data name="FreezeContextItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Space</value>
   </data>
+  <data name="FindPrevMenuItem.Text" xml:space="preserve">
+    <value>Find Prev</value>
+  </data>
   <data name="FreezeAddressMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Space</value>
   </data>
   <data name="&gt;&gt;OptionsSubMenu.Name" xml:space="preserve">
     <value>OptionsSubMenu</value>
   </data>
-  <data name="&gt;&gt;FindMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;ContextSeparator2.Name" xml:space="preserve">
     <value>ContextSeparator2</value>
-  </data>
-  <data name="&gt;&gt;HexMenuStrip.Parent" xml:space="preserve">
-    <value>$this</value>
   </data>
   <data name="UnfreezeAllContextItem.Text" xml:space="preserve">
     <value>&amp;Unfreeze All</value>
@@ -165,6 +165,9 @@
   </data>
   <data name="&gt;&gt;HexMenuStrip.Name" xml:space="preserve">
     <value>HexMenuStrip</value>
+  </data>
+  <data name="noneToolStripMenuItem.Text" xml:space="preserve">
+    <value>None</value>
   </data>
   <data name="&gt;&gt;AddToRamWatchContextItem.Name" xml:space="preserve">
     <value>AddToRamWatchContextItem</value>
@@ -187,12 +190,15 @@
   <data name="GoToAddressMenuItem.Text" xml:space="preserve">
     <value>&amp;Go to Address...</value>
   </data>
+  <data name="&gt;&gt;UnfreezeAllContextItem.Name" xml:space="preserve">
+    <value>UnfreezeAllContextItem</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="PasteMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+V</value>
   </data>
-  <data name="&gt;&gt;SaveMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
   </data>
   <data name="SaveAsBinaryMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+Shift+S</value>
@@ -203,9 +209,6 @@
   <data name="&gt;&gt;AddressLabel.Parent" xml:space="preserve">
     <value>MemoryViewerBox</value>
   </data>
-  <data name="DataSizeWordMenuItem.Text" xml:space="preserve">
-    <value>2 Byte</value>
-  </data>
   <data name="&gt;&gt;AddressesLabel.Parent" xml:space="preserve">
     <value>MemoryViewerBox</value>
   </data>
@@ -215,11 +218,17 @@
   <data name="UnfreezeAllContextItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Shift+Del</value>
   </data>
+  <data name="FreezeAddressMenuItem.Text" xml:space="preserve">
+    <value>&amp;Freeze Address</value>
+  </data>
   <data name="&gt;&gt;toolStripSeparator2.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="viewN64MatrixToolStripMenuItem.Text" xml:space="preserve">
     <value>View N64 Matrix</value>
+  </data>
+  <data name="PokeContextItem.Text" xml:space="preserve">
+    <value>&amp;Poke Address</value>
   </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
     <value>&amp;File</value>
@@ -227,17 +236,11 @@
   <data name="&gt;&gt;AddToRamWatchContextItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;PasteMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;toolStripSeparator8.Name" xml:space="preserve">
+    <value>toolStripSeparator8</value>
+  </data>
+  <data name="&gt;&gt;UnfreezeAllMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;importAsBinaryToolStripMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="SaveAsTextMenuItem.Text" xml:space="preserve">
-    <value>Save as text...</value>
-  </data>
-  <data name="DecrementContextItem.Text" xml:space="preserve">
-    <value>&amp;Decrement</value>
   </data>
   <data name="&gt;&gt;viewN64MatrixToolStripMenuItem.Name" xml:space="preserve">
     <value>viewN64MatrixToolStripMenuItem</value>
@@ -245,8 +248,8 @@
   <data name="&gt;&gt;ResetColorsToDefaultMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="AddressLabel.Text" xml:space="preserve">
-    <value>Addresses</value>
+  <data name="DataSizeDWordMenuItem.Text" xml:space="preserve">
+    <value>4 Byte</value>
   </data>
   <data name="GoToAddressMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+G</value>
@@ -275,17 +278,20 @@
   <data name="&gt;&gt;MemoryViewerBox.Name" xml:space="preserve">
     <value>MemoryViewerBox</value>
   </data>
-  <data name="&gt;&gt;MemoryViewerBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="OptionsSubMenu.Text" xml:space="preserve">
     <value>&amp;Options</value>
   </data>
-  <data name="&gt;&gt;CloseTableFileMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="MemoryViewerBox.Font" type="System.Drawing.Font, System.Drawing">
+    <value>Microsoft Sans Serif, 8.25pt, style=Underline</value>
+  </data>
+  <data name="FindNextMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>F3</value>
   </data>
   <data name="&gt;&gt;noneToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="ExportContextItem.Text" xml:space="preserve">
+    <value>&amp;Export</value>
   </data>
   <data name="&gt;&gt;IncrementContextItem.Name" xml:space="preserve">
     <value>IncrementContextItem</value>
@@ -293,7 +299,7 @@
   <data name="&gt;&gt;resetToDefaultToolStripMenuItem.Name" xml:space="preserve">
     <value>resetToDefaultToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;LoadTableFileMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;PokeAddressMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
@@ -302,8 +308,8 @@
   <data name="SettingsSubMenu.Text" xml:space="preserve">
     <value>&amp;Settings</value>
   </data>
-  <data name="DataSizeDWordMenuItem.Text" xml:space="preserve">
-    <value>4 Byte</value>
+  <data name="&gt;&gt;ExportContextItem.Name" xml:space="preserve">
+    <value>ExportContextItem</value>
   </data>
   <data name="&gt;&gt;HexScrollBar.Name" xml:space="preserve">
     <value>HexScrollBar</value>
@@ -318,9 +324,6 @@
   <data name="FindPrevMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>F2</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator7.Name" xml:space="preserve">
-    <value>toolStripSeparator7</value>
-  </data>
   <data name="&gt;&gt;toolStripSeparator3.Name" xml:space="preserve">
     <value>toolStripSeparator3</value>
   </data>
@@ -329,6 +332,9 @@
   </data>
   <data name="&gt;&gt;importAsBinaryToolStripMenuItem.Name" xml:space="preserve">
     <value>importAsBinaryToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;AddressesLabel.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;MemoryDomainsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -344,12 +350,6 @@
   </data>
   <data name="AddToRamWatchMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+W</value>
-  </data>
-  <data name="&gt;&gt;OptionsSubMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;FreezeContextItem.Name" xml:space="preserve">
-    <value>FreezeContextItem</value>
   </data>
   <data name="&gt;&gt;AddToRamWatchMenuItem.Name" xml:space="preserve">
     <value>AddToRamWatchMenuItem</value>
@@ -390,12 +390,6 @@
   <data name="&gt;&gt;CopyMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;UnfreezeAllMenuItem.Name" xml:space="preserve">
-    <value>UnfreezeAllMenuItem</value>
-  </data>
-  <data name="MemoryViewerBox.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>260, 166</value>
-  </data>
   <data name="&gt;&gt;ViewerContextMenuStrip.Name" xml:space="preserve">
     <value>ViewerContextMenuStrip</value>
   </data>
@@ -405,11 +399,14 @@
   <data name="&gt;&gt;DataSizeSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="LoadTableFileMenuItem.Text" xml:space="preserve">
+    <value>&amp;Load .tbl file</value>
+  </data>
   <data name="ResetColorsToDefaultMenuItem.Text" xml:space="preserve">
     <value>Reset to Default</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
+  <data name="&gt;&gt;CloseTableFileMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>360, 169</value>
@@ -417,8 +414,8 @@
   <data name="&gt;&gt;FindMenuItem.Name" xml:space="preserve">
     <value>FindMenuItem</value>
   </data>
-  <data name="MemoryViewerBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Bottom, Left, Right</value>
+  <data name="&gt;&gt;SaveAsTextMenuItem.Name" xml:space="preserve">
+    <value>SaveAsTextMenuItem</value>
   </data>
   <data name="Header.Text" xml:space="preserve">
     <value>Header</value>
@@ -429,17 +426,17 @@
   <data name="&gt;&gt;Header.Name" xml:space="preserve">
     <value>Header</value>
   </data>
+  <data name="&gt;&gt;SaveAsBinaryMenuItem.Name" xml:space="preserve">
+    <value>SaveAsBinaryMenuItem</value>
+  </data>
   <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
     <value>toolStripMenuItem1</value>
   </data>
   <data name="&gt;&gt;EditMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;AddToRamWatchMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="FindNextMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>F3</value>
+  <data name="MemoryViewerBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Bottom, Left, Right</value>
   </data>
   <data name="importAsBinaryToolStripMenuItem.Text" xml:space="preserve">
     <value>Import as binary...</value>
@@ -453,8 +450,8 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;HexScrollBar.Parent" xml:space="preserve">
-    <value>MemoryViewerBox</value>
+  <data name="&gt;&gt;FreezeAddressMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;DataSizeDWordMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -474,23 +471,20 @@
   <data name="SaveMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+S</value>
   </data>
-  <data name="&gt;&gt;ExportContextItem.Name" xml:space="preserve">
-    <value>ExportContextItem</value>
-  </data>
   <data name="AddToRamWatchContextItem.Text" xml:space="preserve">
     <value>&amp;Add to RAM Watch</value>
   </data>
   <data name="&gt;&gt;CopyMenuItem.Name" xml:space="preserve">
     <value>CopyMenuItem</value>
   </data>
-  <data name="&gt;&gt;PokeAddressMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;RecentTablesSubMenu.Name" xml:space="preserve">
     <value>RecentTablesSubMenu</value>
   </data>
   <data name="&gt;&gt;FindPrevMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="AddressLabel.Text" xml:space="preserve">
+    <value>Addresses</value>
   </data>
   <data name="PasteContextItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+V</value>
@@ -522,8 +516,8 @@
   <data name="SetColorsMenuItem.Text" xml:space="preserve">
     <value>Set Colors</value>
   </data>
-  <data name="&gt;&gt;Header.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="&gt;&gt;PasteMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="MemoryDomainsMenuItem.Text" xml:space="preserve">
     <value>&amp;Memory Domains</value>
@@ -543,8 +537,8 @@
   <data name="&gt;&gt;DataSizeWordMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;SaveAsBinaryMenuItem.Name" xml:space="preserve">
-    <value>SaveAsBinaryMenuItem</value>
+  <data name="&gt;&gt;LoadTableFileMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="PasteContextItem.Text" xml:space="preserve">
     <value>&amp;Paste</value>
@@ -558,8 +552,14 @@
   <data name="&gt;&gt;toolStripSeparator4.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;PokeContextItem.Name" xml:space="preserve">
+    <value>PokeContextItem</value>
+  </data>
   <data name="RecentTablesSubMenu.Text" xml:space="preserve">
     <value>Recent</value>
+  </data>
+  <data name="&gt;&gt;ViewerContextMenuStrip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;HexMenuStrip.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.MenuStripEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -573,17 +573,14 @@
   <data name="&gt;&gt;FreezeContextItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;FindPrevMenuItem.Name" xml:space="preserve">
-    <value>FindPrevMenuItem</value>
-  </data>
-  <data name="&gt;&gt;UnfreezeAllMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;FreezeContextItem.Name" xml:space="preserve">
+    <value>FreezeContextItem</value>
   </data>
   <data name="PokeAddressMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+P</value>
   </data>
-  <data name="&gt;&gt;ViewerContextMenuStrip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="MemoryViewerBox.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>260, 166</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -594,6 +591,9 @@
   <data name="&gt;&gt;DataSizeByteMenuItem.Name" xml:space="preserve">
     <value>DataSizeByteMenuItem</value>
   </data>
+  <data name="&gt;&gt;HexScrollBar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.VScrollBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="PokeContextItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value>Ctrl+P</value>
   </data>
@@ -603,14 +603,17 @@
   <data name="HexScrollBar.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;toolStripSeparator8.Name" xml:space="preserve">
-    <value>toolStripSeparator8</value>
+  <data name="SaveAsBinaryMenuItem.Text" xml:space="preserve">
+    <value>Save as binary...</value>
+  </data>
+  <data name="&gt;&gt;AddressLabel.Name" xml:space="preserve">
+    <value>AddressLabel</value>
   </data>
   <data name="AddToRamWatchMenuItem.Text" xml:space="preserve">
     <value>Add to RAM Watch</value>
   </data>
-  <data name="PokeContextItem.Text" xml:space="preserve">
-    <value>&amp;Poke Address</value>
+  <data name="&gt;&gt;Header.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="&gt;&gt;AddressesLabel.Name" xml:space="preserve">
     <value>AddressesLabel</value>
@@ -618,14 +621,17 @@
   <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
     <value>FileSubMenu</value>
   </data>
+  <data name="PasteMenuItem.Text" xml:space="preserve">
+    <value>&amp;Paste</value>
+  </data>
   <data name="&gt;&gt;PasteContextItem.Name" xml:space="preserve">
     <value>PasteContextItem</value>
   </data>
   <data name="&gt;&gt;LoadTableFileMenuItem.Name" xml:space="preserve">
     <value>LoadTableFileMenuItem</value>
   </data>
-  <data name="&gt;&gt;AddressesLabel.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;OptionsSubMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="ViewerContextMenuStrip.Size" type="System.Drawing.Size, System.Drawing">
     <value>238, 264</value>
@@ -633,11 +639,8 @@
   <data name="&gt;&gt;noneToolStripMenuItem.Name" xml:space="preserve">
     <value>noneToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;PasteContextItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;IncrementContextItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="noneToolStripMenuItem.Text" xml:space="preserve">
-    <value>None</value>
   </data>
   <data name="&gt;&gt;GoToAddressMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -654,32 +657,26 @@
   <data name="resetToDefaultToolStripMenuItem.Text" xml:space="preserve">
     <value>Reset to Default</value>
   </data>
-  <data name="&gt;&gt;SaveAsTextMenuItem.Name" xml:space="preserve">
-    <value>SaveAsTextMenuItem</value>
+  <data name="&gt;&gt;FindMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ResetColorsToDefaultMenuItem.Name" xml:space="preserve">
-    <value>ResetColorsToDefaultMenuItem</value>
+  <data name="&gt;&gt;toolStripSeparator7.Name" xml:space="preserve">
+    <value>toolStripSeparator7</value>
   </data>
   <data name="&gt;&gt;SettingsSubMenu.Name" xml:space="preserve">
     <value>SettingsSubMenu</value>
   </data>
-  <data name="ExportMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
-    <value>Ctrl+E</value>
+  <data name="DecrementContextItem.Text" xml:space="preserve">
+    <value>&amp;Decrement</value>
   </data>
-  <data name="&gt;&gt;AddressLabel.Name" xml:space="preserve">
-    <value>AddressLabel</value>
-  </data>
-  <data name="IncrementContextItem.Text" xml:space="preserve">
-    <value>&amp;Increment</value>
+  <data name="&gt;&gt;UnfreezeAllMenuItem.Name" xml:space="preserve">
+    <value>UnfreezeAllMenuItem</value>
   </data>
   <data name="PokeAddressMenuItem.Text" xml:space="preserve">
     <value>&amp;Poke Address</value>
   </data>
   <data name="MemoryViewerBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 25</value>
-  </data>
-  <data name="&gt;&gt;GoToAddressMenuItem.Name" xml:space="preserve">
-    <value>GoToAddressMenuItem</value>
   </data>
   <data name="FreezeContextItem.Text" xml:space="preserve">
     <value>&amp;Freeze</value>
@@ -702,17 +699,14 @@
   <data name="SaveMenuItem.Text" xml:space="preserve">
     <value>Save</value>
   </data>
-  <data name="&gt;&gt;UnfreezeAllContextItem.Name" xml:space="preserve">
-    <value>UnfreezeAllContextItem</value>
+  <data name="&gt;&gt;HexScrollBar.Parent" xml:space="preserve">
+    <value>MemoryViewerBox</value>
   </data>
   <data name="ExportMenuItem.Text" xml:space="preserve">
     <value>&amp;Export</value>
   </data>
-  <data name="&gt;&gt;PokeAddressMenuItem.Name" xml:space="preserve">
-    <value>PokeAddressMenuItem</value>
-  </data>
-  <data name="IncrementContextItem.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>+</value>
+  <data name="&gt;&gt;GoToAddressMenuItem.Name" xml:space="preserve">
+    <value>GoToAddressMenuItem</value>
   </data>
   <data name="&gt;&gt;MemoryViewerBox.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -720,41 +714,44 @@
   <data name="&gt;&gt;SaveAsTextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;HexScrollBar.Type" xml:space="preserve">
-    <value>System.Windows.Forms.VScrollBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;PasteContextItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator6.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;PokeContextItem.Name" xml:space="preserve">
-    <value>PokeContextItem</value>
+  <data name="SaveAsTextMenuItem.Text" xml:space="preserve">
+    <value>Save as text...</value>
   </data>
   <data name="&gt;&gt;ExportContextItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="ExportContextItem.Text" xml:space="preserve">
-    <value>&amp;Export</value>
+  <data name="&gt;&gt;ResetColorsToDefaultMenuItem.Name" xml:space="preserve">
+    <value>ResetColorsToDefaultMenuItem</value>
   </data>
   <data name="FindMenuItem.Text" xml:space="preserve">
     <value>&amp;Find...</value>
   </data>
-  <data name="MemoryViewerBox.Font" type="System.Drawing.Font, System.Drawing">
-    <value>Microsoft Sans Serif, 8.25pt, style=Underline</value>
+  <data name="&gt;&gt;HexMenuStrip.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="AddressLabel.Font" type="System.Drawing.Font, System.Drawing">
     <value>Microsoft Sans Serif, 8.25pt</value>
   </data>
+  <data name="IncrementContextItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>+</value>
+  </data>
   <data name="CustomColorsSubMenu.Text" xml:space="preserve">
     <value>Custom Colors</value>
   </data>
-  <data name="PasteMenuItem.Text" xml:space="preserve">
-    <value>&amp;Paste</value>
-  </data>
-  <data name="FreezeAddressMenuItem.Text" xml:space="preserve">
-    <value>&amp;Freeze Address</value>
-  </data>
-  <data name="&gt;&gt;FreezeAddressMenuItem.Type" xml:space="preserve">
+  <data name="&gt;&gt;AddToRamWatchMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;MemoryViewerBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;PokeAddressMenuItem.Name" xml:space="preserve">
+    <value>PokeAddressMenuItem</value>
   </data>
   <data name="ExportContextItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+E</value>
@@ -762,8 +759,8 @@
   <data name="&gt;&gt;DataSizeDWordMenuItem.Name" xml:space="preserve">
     <value>DataSizeDWordMenuItem</value>
   </data>
-  <data name="SaveAsBinaryMenuItem.Text" xml:space="preserve">
-    <value>Save as binary...</value>
+  <data name="DataSizeWordMenuItem.Text" xml:space="preserve">
+    <value>2 Byte</value>
   </data>
   <data name="&gt;&gt;CopyContextItem.Name" xml:space="preserve">
     <value>CopyContextItem</value>
@@ -786,14 +783,17 @@
   <data name="&gt;&gt;ExportMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="LoadTableFileMenuItem.Text" xml:space="preserve">
-    <value>&amp;Load .tbl file</value>
+  <data name="&gt;&gt;SaveMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;importAsBinaryToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;FreezeAddressMenuItem.Name" xml:space="preserve">
     <value>FreezeAddressMenuItem</value>
   </data>
-  <data name="FindPrevMenuItem.Text" xml:space="preserve">
-    <value>Find Prev</value>
+  <data name="ExportMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
+    <value>Ctrl+E</value>
   </data>
   <data name="AddressLabel.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 28</value>

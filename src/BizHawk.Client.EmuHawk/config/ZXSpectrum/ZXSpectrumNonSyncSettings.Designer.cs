@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZxSpectrumNonSyncSettings));
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
             this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -41,92 +42,66 @@
             // 
             // OkBtn
             // 
-            this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 160);
+            resources.ApplyResources(this.OkBtn, "OkBtn");
             this.OkBtn.Name = "OkBtn";
-            this.OkBtn.Size = new System.Drawing.Size(60, 23);
-            this.OkBtn.TabIndex = 3;
-            this.OkBtn.Text = "&OK";
             this.OkBtn.UseVisualStyleBackColor = true;
             this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
             // 
             // CancelBtn
             // 
-            this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 160);
             this.CancelBtn.Name = "CancelBtn";
-            this.CancelBtn.Size = new System.Drawing.Size(60, 23);
-            this.CancelBtn.TabIndex = 4;
-            this.CancelBtn.Text = "&Cancel";
             this.CancelBtn.UseVisualStyleBackColor = true;
             this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(12, 14);
+            resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
-            this.label1.Text = "ZX Spectrum Misc Non-Sync Settings";
             // 
             // lblOSDVerbinfo
             // 
-            this.lblOSDVerbinfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOSDVerbinfo.Location = new System.Drawing.Point(175, 89);
+            resources.ApplyResources(this.lblOSDVerbinfo, "lblOSDVerbinfo");
             this.lblOSDVerbinfo.Name = "lblOSDVerbinfo";
-            this.lblOSDVerbinfo.Text = "null";
-            this.lblOSDVerbinfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label4
             // 
-            this.label4.Location = new System.Drawing.Point(12, 101);
+            resources.ApplyResources(this.label4, "label4");
             this.label4.Name = "label4";
-            this.label4.Text = "OSD Message Verbosity:";
             // 
             // osdMessageVerbositycomboBox1
             // 
-            this.osdMessageVerbositycomboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.osdMessageVerbositycomboBox1, "osdMessageVerbositycomboBox1");
             this.osdMessageVerbositycomboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.osdMessageVerbositycomboBox1.FormattingEnabled = true;
-            this.osdMessageVerbositycomboBox1.Location = new System.Drawing.Point(12, 117);
             this.osdMessageVerbositycomboBox1.Name = "osdMessageVerbositycomboBox1";
-            this.osdMessageVerbositycomboBox1.Size = new System.Drawing.Size(157, 21);
-            this.osdMessageVerbositycomboBox1.TabIndex = 26;
             this.osdMessageVerbositycomboBox1.SelectionChangeCommitted += new System.EventHandler(this.OSDComboBox_SelectionChangeCommitted);
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(12, 41);
+            resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
-            this.label2.Text = "Default Background Color:";
             // 
             // buttonChooseBGColor
             // 
-            this.buttonChooseBGColor.Location = new System.Drawing.Point(150, 36);
+            resources.ApplyResources(this.buttonChooseBGColor, "buttonChooseBGColor");
             this.buttonChooseBGColor.Name = "buttonChooseBGColor";
-            this.buttonChooseBGColor.Size = new System.Drawing.Size(75, 23);
-            this.buttonChooseBGColor.TabIndex = 30;
-            this.buttonChooseBGColor.Text = "Select";
             this.buttonChooseBGColor.UseVisualStyleBackColor = true;
             this.buttonChooseBGColor.Click += new System.EventHandler(this.buttonChooseBGColor_Click);
             // 
             // checkBoxShowCoreBrdColor
             // 
-            this.checkBoxShowCoreBrdColor.AutoSize = true;
-            this.checkBoxShowCoreBrdColor.Location = new System.Drawing.Point(15, 69);
+            resources.ApplyResources(this.checkBoxShowCoreBrdColor, "checkBoxShowCoreBrdColor");
             this.checkBoxShowCoreBrdColor.Name = "checkBoxShowCoreBrdColor";
-            this.checkBoxShowCoreBrdColor.Size = new System.Drawing.Size(223, 17);
-            this.checkBoxShowCoreBrdColor.TabIndex = 31;
-            this.checkBoxShowCoreBrdColor.Text = "Use last Core border color for background";
             this.checkBoxShowCoreBrdColor.UseVisualStyleBackColor = true;
             // 
-            // ZXSpectrumNonSyncSettings
+            // ZxSpectrumNonSyncSettings
             // 
             this.AcceptButton = this.OkBtn;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 195);
             this.Controls.Add(this.checkBoxShowCoreBrdColor);
             this.Controls.Add(this.buttonChooseBGColor);
             this.Controls.Add(this.label2);
@@ -138,8 +113,6 @@
             this.Controls.Add(this.OkBtn);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ZxSpectrumNonSyncSettings";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Other Non-Sync Settings";
             this.Load += new System.EventHandler(this.IntvControllerSettings_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

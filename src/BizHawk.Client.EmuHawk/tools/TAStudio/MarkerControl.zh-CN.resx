@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="JumpToMarkerButton.ToolTip" xml:space="preserve">
+    <value>跳转到标记的帧</value>
+  </data>
+  <data name="EditMarkerButton.ToolTip" xml:space="preserve">
+    <value>编辑标记的文本</value>
+  </data>
+  <data name="EditMarkerFrameButton.ToolTip" xml:space="preserve">
+    <value>编辑标记的时间 (按住 Alt 拖动)</value>
+  </data>
+  <data name="AddMarkerButton.ToolTip" xml:space="preserve">
+    <value>添加标记</value>
+  </data>
+  <data name="ScrollToMarkerButton.ToolTip" xml:space="preserve">
+    <value>滚动到标记的帧</value>
+  </data>
+  <data name="AddMarkerWithTextButton.ToolTip" xml:space="preserve">
+    <value>添加带文本的标记</value>
+  </data>
+  <data name="RemoveMarkerButton.ToolTip" xml:space="preserve">
+    <value>移除标记</value>
+  </data>
   <data name="MarkersGroupBox.Text" xml:space="preserve">
     <value>标记</value>
   </data>

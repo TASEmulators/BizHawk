@@ -328,6 +328,9 @@
   <data name="EmulationSubMenu.Text" xml:space="preserve">
     <value>模拟(&amp;E)</value>
   </data>
+  <data name="DisableResizeWithFramebufferMenuItem.Text" xml:space="preserve">
+    <value>静态尺寸(&amp;S)</value>
+  </data>
   <data name="WindowSizeSubMenu.Text" xml:space="preserve">
     <value>窗口大小(&amp;W)</value>
   </data>
@@ -730,8 +733,62 @@
   <data name="HelpSubMenu.Text" xml:space="preserve">
     <value>帮助(&amp;H)</value>
   </data>
+  <data name="DumpStatusButton.Text" xml:space="preserve">
+    <value>未加载 ROM</value>
+  </data>
+  <data name="PlayRecordStatusButton.Text" xml:space="preserve">
+    <value>没有正在播放的影片</value>
+  </data>
+  <data name="PauseStatusButton.ToolTipText" xml:space="preserve">
+    <value>暂停模拟</value>
+  </data>
+  <data name="RebootStatusBarIcon.ToolTipText" xml:space="preserve">
+    <value>需重启内核使更改生效</value>
+  </data>
+  <data name="LedLightStatusLabel.ToolTipText" xml:space="preserve">
+    <value>磁盘驱动器指示灯</value>
+  </data>
   <data name="SaveSlotsStatusLabel.Text" xml:space="preserve">
     <value>进度槽</value>
+  </data>
+  <data name="Slot1StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 1</value>
+  </data>
+  <data name="Slot2StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 2</value>
+  </data>
+  <data name="Slot3StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 3</value>
+  </data>
+  <data name="Slot4StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 4</value>
+  </data>
+  <data name="Slot5StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 5</value>
+  </data>
+  <data name="Slot6StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 6</value>
+  </data>
+  <data name="Slot7StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 7</value>
+  </data>
+  <data name="Slot8StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 8</value>
+  </data>
+  <data name="Slot9StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 9</value>
+  </data>
+  <data name="Slot0StatusButton.ToolTipText" xml:space="preserve">
+    <value>进度槽 10</value>
+  </data>
+  <data name="CoreNameStatusBarButton.Text" xml:space="preserve">
+    <value>&lt;内核名称&gt;</value>
+  </data>
+  <data name="ProfileFirstBootLabel.ToolTipText" xml:space="preserve">
+    <value>打开初始化配置向导</value>
+  </data>
+  <data name="LinkConnectStatusBarButton.ToolTipText" xml:space="preserve">
+    <value>联机连接已启用</value>
   </data>
   <data name="UpdateNotification.Text" xml:space="preserve">
     <value>可更新！</value>

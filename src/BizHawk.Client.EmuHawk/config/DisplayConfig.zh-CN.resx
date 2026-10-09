@@ -117,20 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="btnCancel.Text" xml:space="preserve">
     <value>取消</value>
+  </data>
+  <data name="btnOk.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="btnOk.Text" xml:space="preserve">
     <value>确定</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>缩放滤镜</value>
+  <data name="lblScanlines.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblUserFilterName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="lblUserFilterName.Text" xml:space="preserve">
     <value>将包含用户滤镜名称</value>
   </data>
+  <data name="btnSelectUserFilter.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="btnSelectUserFilter.Text" xml:space="preserve">
     <value>选择</value>
+  </data>
+  <data name="rbUser.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="rbUser.Size" type="System.Drawing.Size, System.Drawing">
@@ -139,11 +155,20 @@
   <data name="rbUser.Text" xml:space="preserve">
     <value>自定义</value>
   </data>
+  <data name="tbScanlineIntensity.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="rbNone.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="rbNone.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 16</value>
   </data>
   <data name="rbNone.Text" xml:space="preserve">
     <value>无</value>
+  </data>
+  <data name="rbScanlines.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="rbScanlines.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 16</value>
@@ -151,11 +176,23 @@
   <data name="rbScanlines.Text" xml:space="preserve">
     <value>扫描线</value>
   </data>
+  <data name="rbHq2x.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>缩放滤镜</value>
+  </data>
+  <data name="checkLetterbox.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="checkLetterbox.Size" type="System.Drawing.Size, System.Drawing">
     <value>150, 16</value>
   </data>
   <data name="checkLetterbox.Text" xml:space="preserve">
     <value>保持纵横比 (信箱模式)</value>
+  </data>
+  <data name="checkPadInteger.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="checkPadInteger.Size" type="System.Drawing.Size, System.Drawing">
     <value>258, 16</value>
@@ -163,8 +200,8 @@
   <data name="checkPadInteger.Text" xml:space="preserve">
     <value>仅按整数拉伸像素 (如：不允许 1.3333 倍)</value>
   </data>
-  <data name="grpFinalFilter.Text" xml:space="preserve">
-    <value>最终滤镜</value>
+  <data name="rbFinalFilterBicubic.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="rbFinalFilterBicubic.Size" type="System.Drawing.Size, System.Drawing">
     <value>179, 16</value>
@@ -172,11 +209,17 @@
   <data name="rbFinalFilterBicubic.Text" xml:space="preserve">
     <value>双三次 (貌似着色器有 bug?)</value>
   </data>
+  <data name="rbFinalFilterNone.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="rbFinalFilterNone.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 16</value>
   </data>
   <data name="rbFinalFilterNone.Text" xml:space="preserve">
     <value>无</value>
+  </data>
+  <data name="rbFinalFilterBilinear.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="rbFinalFilterBilinear.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 16</value>
@@ -184,11 +227,20 @@
   <data name="rbFinalFilterBilinear.Text" xml:space="preserve">
     <value>双线性</value>
   </data>
+  <data name="grpFinalFilter.Text" xml:space="preserve">
+    <value>最终滤镜</value>
+  </data>
+  <data name="rbUseRaw.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="rbUseRaw.Size" type="System.Drawing.Size, System.Drawing">
     <value>227, 16</value>
   </data>
   <data name="rbUseRaw.Text" xml:space="preserve">
     <value>使用 1:1 像素大小 (为了清晰或调试)</value>
+  </data>
+  <data name="rbUseSystem.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="rbUseSystem.Size" type="System.Drawing.Size, System.Drawing">
     <value>71, 16</value>
@@ -196,8 +248,11 @@
   <data name="rbUseSystem.Text" xml:space="preserve">
     <value>系统推荐</value>
   </data>
-  <data name="grpARSelection.Text" xml:space="preserve">
-    <value>纵横比选择</value>
+  <data name="label12.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="rbUseCustomRatio.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="rbUseCustomRatio.Size" type="System.Drawing.Size, System.Drawing">
     <value>95, 16</value>
@@ -205,8 +260,17 @@
   <data name="rbUseCustomRatio.Text" xml:space="preserve">
     <value>自定义比例：</value>
   </data>
+  <data name="label4.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>允许像素变形 (例如，2x1 像素，用于适应比例)。</value>
+  </data>
+  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="rbUseCustom.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="rbUseCustom.Size" type="System.Drawing.Size, System.Drawing">
     <value>95, 16</value>
@@ -214,19 +278,187 @@
   <data name="rbUseCustom.Text" xml:space="preserve">
     <value>自定义大小：</value>
   </data>
+  <data name="grpARSelection.Text" xml:space="preserve">
+    <value>纵横比选择</value>
+  </data>
+  <data name="rbOpenGL.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label5.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="label5.Text" xml:space="preserve">
     <value>- 可能在某些系统上出现故障。
 - 可能提高了基于OpenGL的仿真内核的性能。
 - 可能会降低某些系统的性能。</value>
   </data>
+  <data name="cbScaleOSD.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="cbScaleOSD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>162, 16</value>
+  </data>
+  <data name="cbScaleOSD.Text" xml:space="preserve">
+    <value>用系统比例缩放 OSD 文本</value>
+  </data>
+  <data name="label16.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label16.Location" type="System.Drawing.Point, System.Drawing">
+    <value>229, 23</value>
+  </data>
+  <data name="label16.Text" xml:space="preserve">
+    <value>下：</value>
+  </data>
+  <data name="label15.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label15.Text" xml:space="preserve">
+    <value>上：</value>
+  </data>
+  <data name="label17.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label17.Location" type="System.Drawing.Point, System.Drawing">
+    <value>145, 23</value>
+  </data>
+  <data name="label17.Text" xml:space="preserve">
+    <value>右：</value>
+  </data>
+  <data name="label14.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label14.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 23</value>
+  </data>
+  <data name="label14.Text" xml:space="preserve">
+    <value>左：</value>
+  </data>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>裁切</value>
+  </data>
+  <data name="btnDefaults.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnDefaults.Text" xml:space="preserve">
+    <value>重置为默认</value>
+  </data>
+  <data name="cbAutoPrescale.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="cbAutoPrescale.Size" type="System.Drawing.Size, System.Drawing">
+    <value>84, 16</value>
+  </data>
+  <data name="cbAutoPrescale.Text" xml:space="preserve">
+    <value>自动预缩放</value>
+  </data>
+  <data name="label11.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label11.Text" xml:space="preserve">
+    <value>倍</value>
+  </data>
+  <data name="label10.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label10.Text" xml:space="preserve">
+    <value>使用预缩放：</value>
+  </data>
   <data name="tpAR.Text" xml:space="preserve">
-    <value>缩放 &amp; 滤镜</value>
+    <value>缩放和滤镜</value>
+  </data>
+  <data name="label6.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label6.Text" xml:space="preserve">
+    <value>重启后生效。</value>
+  </data>
+  <data name="label13.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label13.Text" xml:space="preserve">
+    <value>允许画面撕裂：关闭垂直同步时，全屏模式允许出现画面撕裂。
+可变帧率 (VFR) 显示器需要开启此项才能正常工作。
+开启允许撕裂后，快进性能可能下降。</value>
+  </data>
+  <data name="cbAllowTearing.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label8.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label8.Text" xml:space="preserve">
+    <value>- 最佳兼容性。
+- 可能会降低基于 OpenGL 的内核 (NDS、3DS) 的性能。</value>
+  </data>
+  <data name="rbD3D11.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label7.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label7.Text" xml:space="preserve">
+    <value>- 速度慢，只要是为了兼容性。
+- 缺少很多功能。
+- 在远程桌面等场景表现更好。
+</value>
+  </data>
+  <data name="rbGDIPlus.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="tpDispMethod.Text" xml:space="preserve">
     <value>显示方法</value>
   </data>
+  <data name="cbStaticWindowTitles.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="cbStaticWindowTitles.Text" xml:space="preserve">
+    <value>保持静态窗口标题</value>
+  </data>
+  <data name="lblStaticWindowTitles.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblStaticWindowTitles.Text" xml:space="preserve">
+    <value>一些工具会动态改变窗口标题，禁用该功能可能会修复窗口捕获问题 (比如OBS)。</value>
+  </data>
+  <data name="flpStaticWindowTitles.Size" type="System.Drawing.Size, System.Drawing">
+    <value>513, 48</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="rbDisplayAbsoluteZero.Text" xml:space="preserve">
+    <value>不显示</value>
+  </data>
+  <data name="rbDisplayMinimal.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="rbDisplayMinimal.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 16</value>
+  </data>
+  <data name="rbDisplayMinimal.Text" xml:space="preserve">
+    <value>最小 - 只显示 HUD(TBD)</value>
+  </data>
+  <data name="rbDisplayFull.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="rbDisplayFull.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 16</value>
+  </data>
+  <data name="rbDisplayFull.Text" xml:space="preserve">
+    <value>完整 - 全部显示</value>
+  </data>
+  <data name="groupBox5.Text" xml:space="preserve">
+    <value>显示功能 (用于加快回放速度)</value>
+  </data>
   <data name="tpMisc.Text" xml:space="preserve">
     <value>杂项</value>
+  </data>
+  <data name="cbAllowDoubleclickFullscreen.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="cbAllowDoubleclickFullscreen.Size" type="System.Drawing.Size, System.Drawing">
     <value>348, 16</value>
@@ -234,11 +466,17 @@
   <data name="cbAllowDoubleclickFullscreen.Text" xml:space="preserve">
     <value>双击切换到全屏 (使用光枪等外设时可按住 Shift 强制切换)</value>
   </data>
+  <data name="cbFSAutohideMouse.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="cbFSAutohideMouse.Size" type="System.Drawing.Size, System.Drawing">
     <value>96, 16</value>
   </data>
   <data name="cbFSAutohideMouse.Text" xml:space="preserve">
     <value>自动隐藏鼠标</value>
+  </data>
+  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>适用于 Windows Vista 及以上系统。
@@ -248,14 +486,23 @@
 帧延迟（微软新版系统反而越做越差，窗口模
 式本身延迟会更高）</value>
   </data>
+  <data name="cbFullscreenHacks.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="cbFullscreenHacks.Size" type="System.Drawing.Size, System.Drawing">
     <value>174, 16</value>
   </data>
   <data name="cbFullscreenHacks.Text" xml:space="preserve">
     <value>启用 Windows 全屏兼容补丁</value>
   </data>
+  <data name="cbStatusBarFullscreen.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="cbStatusBarFullscreen.Text" xml:space="preserve">
     <value>显示状态栏</value>
+  </data>
+  <data name="cbMenuFullscreen.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="cbMenuFullscreen.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -266,93 +513,8 @@
   <data name="groupBox4.Text" xml:space="preserve">
     <value>全屏</value>
   </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>窗口化</value>
-  </data>
-  <data name="tabPage1.Text" xml:space="preserve">
-    <value>窗口</value>
-  </data>
-  <data name="cbScaleOSD.Size" type="System.Drawing.Size, System.Drawing">
-    <value>162, 16</value>
-  </data>
-  <data name="cbScaleOSD.Text" xml:space="preserve">
-    <value>用系统比例缩放 OSD 文本</value>
-  </data>
-  <data name="groupBox6.Text" xml:space="preserve">
-    <value>裁切</value>
-  </data>
-  <data name="label16.Text" xml:space="preserve">
-    <value>下：</value>
-  </data>
-  <data name="label15.Text" xml:space="preserve">
-    <value>上：</value>
-  </data>
-  <data name="label17.Text" xml:space="preserve">
-    <value>右：</value>
-  </data>
-  <data name="label14.Text" xml:space="preserve">
-    <value>左：</value>
-  </data>
-  <data name="btnDefaults.Text" xml:space="preserve">
-    <value>重置为默认</value>
-  </data>
-  <data name="cbAutoPrescale.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 16</value>
-  </data>
-  <data name="cbAutoPrescale.Text" xml:space="preserve">
-    <value>自动预缩放</value>
-  </data>
-  <data name="label11.Text" xml:space="preserve">
-    <value>倍</value>
-  </data>
-  <data name="label10.Text" xml:space="preserve">
-    <value>使用预缩放：</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>重启后生效。</value>
-  </data>
-  <data name="label13.Text" xml:space="preserve">
-    <value>允许画面撕裂：关闭垂直同步时，全屏模式允许出现画面撕裂。
-可变帧率 (VFR) 显示器需要开启此项才能正常工作。
-开启允许撕裂后，快进性能可能下降。</value>
-  </data>
-  <data name="label8.Text" xml:space="preserve">
-    <value>- 最佳兼容性。
-- 可能会降低基于 OpenGL 的内核 (NDS、3DS) 的性能。</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>- 速度慢，只要是为了兼容性。
-- 缺少很多功能。
-- 在远程桌面等场景表现更好。
-</value>
-  </data>
-  <data name="cbStaticWindowTitles.Text" xml:space="preserve">
-    <value>保持静态窗口标题</value>
-  </data>
-  <data name="lblStaticWindowTitles.Text" xml:space="preserve">
-    <value>一些工具会把文件名、状态等放在它们的窗口标题中。 
-选中此项会禁用这些功能，但可能会修复窗口捕获问题(即OBS中的问题)。</value>
-  </data>
-  <data name="groupBox5.Text" xml:space="preserve">
-    <value>显示功能 (用于加快回放速度)</value>
-  </data>
-  <data name="rbDisplayAbsoluteZero.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 16</value>
-  </data>
-  <data name="rbDisplayAbsoluteZero.Text" xml:space="preserve">
-    <value>不显示</value>
-  </data>
-  <data name="rbDisplayMinimal.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 16</value>
-  </data>
-  <data name="rbDisplayMinimal.Text" xml:space="preserve">
-    <value>最小 - 只显示 HUD(TBD)</value>
-  </data>
-  <data name="rbDisplayFull.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 16</value>
-  </data>
-  <data name="rbDisplayFull.Text" xml:space="preserve">
-    <value>完整 - 全部显示</value>
+  <data name="cbMainFormMouseCaptureForcesTopmost.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="cbMainFormMouseCaptureForcesTopmost.Size" type="System.Drawing.Size, System.Drawing">
     <value>156, 16</value>
@@ -360,11 +522,17 @@
   <data name="cbMainFormMouseCaptureForcesTopmost.Text" xml:space="preserve">
     <value>捕获鼠标时强制窗口置顶</value>
   </data>
+  <data name="cbMainFormStayOnTop.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="cbMainFormStayOnTop.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
   </data>
   <data name="cbMainFormStayOnTop.Text" xml:space="preserve">
     <value>窗口置顶</value>
+  </data>
+  <data name="cbMainFormSaveWindowPosition.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="cbMainFormSaveWindowPosition.Size" type="System.Drawing.Size, System.Drawing">
     <value>96, 16</value>
@@ -372,14 +540,26 @@
   <data name="cbMainFormSaveWindowPosition.Text" xml:space="preserve">
     <value>保存窗口位置</value>
   </data>
+  <data name="lblFrameTypeWindowed.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="lblFrameTypeWindowed.Text" xml:space="preserve">
     <value>(边框类型)</value>
+  </data>
+  <data name="cbStatusBarWindowed.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="cbStatusBarWindowed.Text" xml:space="preserve">
     <value>显示状态栏</value>
   </data>
+  <data name="label9.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="label9.Text" xml:space="preserve">
     <value>边框</value>
+  </data>
+  <data name="cbMenuWindowed.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="cbMenuWindowed.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -387,10 +567,31 @@
   <data name="cbMenuWindowed.Text" xml:space="preserve">
     <value>显示菜单</value>
   </data>
+  <data name="trackbarFrameSizeWindowed.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="cbCaptionWindowed.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
   <data name="cbCaptionWindowed.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
   </data>
   <data name="cbCaptionWindowed.Text" xml:space="preserve">
     <value>显示标题</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>窗口化</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>窗口</value>
+  </data>
+  <data name="linkLabel1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>显示设置</value>
   </data>
 </root>

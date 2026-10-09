@@ -176,8 +176,8 @@
   <data name="&gt;&gt;RemoveContextMenuItem.Name" xml:space="preserve">
     <value>RemoveContextMenuItem</value>
   </data>
-  <data name="SaveToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
-    <value>Magenta</value>
+  <data name="&gt;&gt;GameGenieToolbarSeparator.Name" xml:space="preserve">
+    <value>GameGenieToolbarSeparator</value>
   </data>
   <data name="&gt;&gt;toolStripSeparator2.Name" xml:space="preserve">
     <value>toolStripSeparator2</value>
@@ -193,6 +193,9 @@
   </data>
   <data name="toolStrip1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 25</value>
+  </data>
+  <data name="SaveToolBarItem.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
   </data>
   <data name="&gt;&gt;RemoveCheatMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -263,6 +266,9 @@
   <data name="&gt;&gt;LoadGameGenieToolbarItem.Name" xml:space="preserve">
     <value>LoadGameGenieToolbarItem</value>
   </data>
+  <data name="NewMenuItem.Text" xml:space="preserve">
+    <value>&amp;New</value>
+  </data>
   <data name="&gt;&gt;RemoveToolbarItem.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -278,6 +284,9 @@
   <data name="DisableAllCheatsMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+BackSpace</value>
   </data>
+  <data name="NewToolBarItem.Text" xml:space="preserve">
+    <value>&amp;New</value>
+  </data>
   <data name="&gt;&gt;AutoSaveCheatsMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -290,6 +299,9 @@
   <data name="&gt;&gt;RecentSubMenu.Name" xml:space="preserve">
     <value>RecentSubMenu</value>
   </data>
+  <data name="SaveAsMenuItem.Text" xml:space="preserve">
+    <value>Save &amp;As...</value>
+  </data>
   <data name="NewToolBarItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>23, 22</value>
   </data>
@@ -298,9 +310,6 @@
   </data>
   <data name="ToggleMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+Enter</value>
-  </data>
-  <data name="&gt;&gt;OpenMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="CheatsContextMenu.Size" type="System.Drawing.Size, System.Drawing">
     <value>183, 92</value>
@@ -331,6 +340,9 @@
   </data>
   <data name="CheatListView.Size" type="System.Drawing.Size, System.Drawing">
     <value>414, 296</value>
+  </data>
+  <data name="&gt;&gt;CheatEditor.Name" xml:space="preserve">
+    <value>CheatEditor</value>
   </data>
   <data name="&gt;&gt;AlwaysLoadCheatsMenuItem.Name" xml:space="preserve">
     <value>AlwaysLoadCheatsMenuItem</value>
@@ -405,12 +417,6 @@
   <data name="AppendMenuItem.Text" xml:space="preserve">
     <value>Append File</value>
   </data>
-  <data name="&gt;&gt;CheatGroupBox.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;DisableAllCheatsMenuItem.Name" xml:space="preserve">
-    <value>DisableAllCheatsMenuItem</value>
-  </data>
   <data name="&gt;&gt;MessageLabel.Name" xml:space="preserve">
     <value>MessageLabel</value>
   </data>
@@ -450,8 +456,8 @@
   <data name="SaveMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+S</value>
   </data>
-  <data name="&gt;&gt;CheatEditor.Name" xml:space="preserve">
-    <value>CheatEditor</value>
+  <data name="&gt;&gt;CheatGroupBox.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="MoveDownToolbarItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>23, 22</value>
@@ -474,17 +480,11 @@
   <data name="SelectAllMenuItem.Text" xml:space="preserve">
     <value>Select &amp;All</value>
   </data>
-  <data name="&gt;&gt;GameGenieToolbarSeparator.Name" xml:space="preserve">
-    <value>GameGenieToolbarSeparator</value>
-  </data>
   <data name="&gt;&gt;ViewInHexEditorContextMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;OpenMenuItem.Name" xml:space="preserve">
     <value>OpenMenuItem</value>
-  </data>
-  <data name="&gt;&gt;ToggleMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;NewToolBarItem.Name" xml:space="preserve">
     <value>NewToolBarItem</value>
@@ -579,9 +579,6 @@
   <data name="&gt;&gt;toolStrip1.Name" xml:space="preserve">
     <value>toolStrip1</value>
   </data>
-  <data name="NewMenuItem.Text" xml:space="preserve">
-    <value>&amp;New</value>
-  </data>
   <data name="&gt;&gt;RecentSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -639,8 +636,8 @@
   <data name="&gt;&gt;CheatGroupBox.Name" xml:space="preserve">
     <value>CheatGroupBox</value>
   </data>
-  <data name="NewToolBarItem.Text" xml:space="preserve">
-    <value>&amp;New</value>
+  <data name="&gt;&gt;DisableAllCheatsMenuItem.Name" xml:space="preserve">
+    <value>DisableAllCheatsMenuItem</value>
   </data>
   <data name="CheatsMenu.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -662,6 +659,9 @@
   </data>
   <data name="MoveDownToolbarItem.Text" xml:space="preserve">
     <value>Move Down</value>
+  </data>
+  <data name="SelectAllMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+A</value>
   </data>
   <data name="OpenGameGenieEncoderDecoderMenuItem.Text" xml:space="preserve">
     <value>Code Converter</value>
@@ -687,8 +687,8 @@
   <data name="CheatsSubMenu.Text" xml:space="preserve">
     <value>&amp;Cheats</value>
   </data>
-  <data name="SaveAsMenuItem.Text" xml:space="preserve">
-    <value>Save &amp;As...</value>
+  <data name="&gt;&gt;ToggleMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;CheatEditor.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -696,8 +696,8 @@
   <data name="CheatEditor.Size" type="System.Drawing.Size, System.Drawing">
     <value>190, 283</value>
   </data>
-  <data name="SelectAllMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+A</value>
+  <data name="&gt;&gt;OpenMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;TotalLabel.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>

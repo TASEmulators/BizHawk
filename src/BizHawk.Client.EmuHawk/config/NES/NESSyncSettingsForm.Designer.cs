@@ -28,156 +28,121 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.OkBtn = new System.Windows.Forms.Button();
-			this.CancelBtn = new System.Windows.Forms.Button();
-			this.dataGridView1 = new System.Windows.Forms.DataGridView();
-			this.RegionComboBox = new System.Windows.Forms.ComboBox();
-			this.HelpBtn = new System.Windows.Forms.Button();
-			this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.BoardPropertiesGroupBox = new System.Windows.Forms.GroupBox();
-			this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.InfoLabel = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
-			this.RamPatternOverrideBox = new BizHawk.Client.EmuHawk.HexTextBox();
-			this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-			this.BoardPropertiesGroupBox.SuspendLayout();
-			this.SuspendLayout();
-			// 
-			// OkBtn
-			// 
-			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(221, 423);
-			this.OkBtn.Name = "OkBtn";
-			this.OkBtn.Size = new System.Drawing.Size(67, 23);
-			this.OkBtn.TabIndex = 0;
-			this.OkBtn.Text = "OK";
-			this.OkBtn.UseVisualStyleBackColor = true;
-			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
-			// CancelBtn
-			// 
-			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(294, 423);
-			this.CancelBtn.Name = "CancelBtn";
-			this.CancelBtn.Size = new System.Drawing.Size(67, 23);
-			this.CancelBtn.TabIndex = 1;
-			this.CancelBtn.Text = "Cancel";
-			this.CancelBtn.UseVisualStyleBackColor = true;
-			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
-			// dataGridView1
-			// 
-			this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.dataGridView1.Location = new System.Drawing.Point(10, 19);
-			this.dataGridView1.MultiSelect = false;
-			this.dataGridView1.Name = "dataGridView1";
-			this.dataGridView1.Size = new System.Drawing.Size(333, 181);
-			this.dataGridView1.TabIndex = 9;
-			// 
-			// RegionComboBox
-			// 
-			this.RegionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.RegionComboBox.FormattingEnabled = true;
-			this.RegionComboBox.Location = new System.Drawing.Point(12, 26);
-			this.RegionComboBox.Name = "RegionComboBox";
-			this.RegionComboBox.Size = new System.Drawing.Size(124, 21);
-			this.RegionComboBox.TabIndex = 11;
-			// 
-			// HelpBtn
-			// 
-			this.HelpBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.HelpBtn.Location = new System.Drawing.Point(12, 177);
-			this.HelpBtn.Name = "HelpBtn";
-			this.HelpBtn.Size = new System.Drawing.Size(23, 23);
-			this.HelpBtn.TabIndex = 10;
-			this.HelpBtn.UseVisualStyleBackColor = true;
-			this.HelpBtn.Click += new System.EventHandler(this.HelpBtn_Click);
-			// 
-			// label2
-			// 
-			this.label2.Location = new System.Drawing.Point(9, 10);
-			this.label2.Name = "label2";
-			this.label2.Text = "Region Override:";
-			// 
-			// BoardPropertiesGroupBox
-			// 
-			this.BoardPropertiesGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.BoardPropertiesGroupBox.Controls.Add(this.dataGridView1);
-			this.BoardPropertiesGroupBox.Location = new System.Drawing.Point(12, 204);
-			this.BoardPropertiesGroupBox.Name = "BoardPropertiesGroupBox";
-			this.BoardPropertiesGroupBox.Size = new System.Drawing.Size(349, 206);
-			this.BoardPropertiesGroupBox.TabIndex = 13;
-			this.BoardPropertiesGroupBox.TabStop = false;
-			this.BoardPropertiesGroupBox.Text = "Custom Board Properties";
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(12, 53);
-			this.label1.Name = "label1";
-			this.label1.Text = "Region Override will be ignored when playing Famicom Disk System games.";
-			// 
-			// InfoLabel
-			// 
-			this.InfoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.InfoLabel.Location = new System.Drawing.Point(41, 182);
-			this.InfoLabel.Name = "InfoLabel";
-			this.InfoLabel.Text = "The current board has no custom properties";
-			// 
-			// label3
-			// 
-			this.label3.Location = new System.Drawing.Point(12, 92);
-			this.label3.Name = "label3";
-			this.label3.Text = "Initial Ram pattern override";
-			// 
-			// RamPatternOverrideBox
-			// 
-			this.RamPatternOverrideBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.RamPatternOverrideBox.Location = new System.Drawing.Point(12, 108);
-			this.RamPatternOverrideBox.Name = "RamPatternOverrideBox";
-			this.RamPatternOverrideBox.Nullable = true;
-			this.RamPatternOverrideBox.Size = new System.Drawing.Size(165, 20);
-			this.RamPatternOverrideBox.TabIndex = 17;
-			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(12, 131);
-			this.label4.Name = "label4";
-			this.label4.Text = "Provides an override to the initial WRAM startup pattern";
-			// 
-			// NESSyncSettingsForm
-			// 
-			this.AcceptButton = this.OkBtn;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(373, 458);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.RamPatternOverrideBox);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.InfoLabel);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.BoardPropertiesGroupBox);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.RegionComboBox);
-			this.Controls.Add(this.HelpBtn);
-			this.Controls.Add(this.CancelBtn);
-			this.Controls.Add(this.OkBtn);
-			this.MinimumSize = new System.Drawing.Size(210, 150);
-			this.Name = "NESSyncSettingsForm";
-			this.ShowIcon = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "NES Advanced Settings";
-			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-			this.BoardPropertiesGroupBox.ResumeLayout(false);
-			this.ResumeLayout(false);
-			this.PerformLayout();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NESSyncSettingsForm));
+            this.OkBtn = new System.Windows.Forms.Button();
+            this.CancelBtn = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.RegionComboBox = new System.Windows.Forms.ComboBox();
+            this.HelpBtn = new System.Windows.Forms.Button();
+            this.label2 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.BoardPropertiesGroupBox = new System.Windows.Forms.GroupBox();
+            this.label1 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.InfoLabel = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.label3 = new BizHawk.WinForms.Controls.LocLabelEx();
+            this.RamPatternOverrideBox = new BizHawk.Client.EmuHawk.HexTextBox();
+            this.label4 = new BizHawk.WinForms.Controls.LocLabelEx();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.BoardPropertiesGroupBox.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // OkBtn
+            // 
+            resources.ApplyResources(this.OkBtn, "OkBtn");
+            this.OkBtn.Name = "OkBtn";
+            this.OkBtn.UseVisualStyleBackColor = true;
+            this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
+            // 
+            // CancelBtn
+            // 
+            resources.ApplyResources(this.CancelBtn, "CancelBtn");
+            this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelBtn.Name = "CancelBtn";
+            this.CancelBtn.UseVisualStyleBackColor = true;
+            this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
+            // 
+            // dataGridView1
+            // 
+            resources.ApplyResources(this.dataGridView1, "dataGridView1");
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.MultiSelect = false;
+            this.dataGridView1.Name = "dataGridView1";
+            // 
+            // RegionComboBox
+            // 
+            resources.ApplyResources(this.RegionComboBox, "RegionComboBox");
+            this.RegionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.RegionComboBox.FormattingEnabled = true;
+            this.RegionComboBox.Name = "RegionComboBox";
+            // 
+            // HelpBtn
+            // 
+            resources.ApplyResources(this.HelpBtn, "HelpBtn");
+            this.HelpBtn.Name = "HelpBtn";
+            this.HelpBtn.UseVisualStyleBackColor = true;
+            this.HelpBtn.Click += new System.EventHandler(this.HelpBtn_Click);
+            // 
+            // label2
+            // 
+            resources.ApplyResources(this.label2, "label2");
+            this.label2.Name = "label2";
+            // 
+            // BoardPropertiesGroupBox
+            // 
+            resources.ApplyResources(this.BoardPropertiesGroupBox, "BoardPropertiesGroupBox");
+            this.BoardPropertiesGroupBox.Controls.Add(this.dataGridView1);
+            this.BoardPropertiesGroupBox.Name = "BoardPropertiesGroupBox";
+            this.BoardPropertiesGroupBox.TabStop = false;
+            // 
+            // label1
+            // 
+            resources.ApplyResources(this.label1, "label1");
+            this.label1.Name = "label1";
+            // 
+            // InfoLabel
+            // 
+            resources.ApplyResources(this.InfoLabel, "InfoLabel");
+            this.InfoLabel.Name = "InfoLabel";
+            // 
+            // label3
+            // 
+            resources.ApplyResources(this.label3, "label3");
+            this.label3.Name = "label3";
+            // 
+            // RamPatternOverrideBox
+            // 
+            resources.ApplyResources(this.RamPatternOverrideBox, "RamPatternOverrideBox");
+            this.RamPatternOverrideBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+            this.RamPatternOverrideBox.Name = "RamPatternOverrideBox";
+            this.RamPatternOverrideBox.Nullable = true;
+            // 
+            // label4
+            // 
+            resources.ApplyResources(this.label4, "label4");
+            this.label4.Name = "label4";
+            // 
+            // NESSyncSettingsForm
+            // 
+            this.AcceptButton = this.OkBtn;
+            resources.ApplyResources(this, "$this");
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelBtn;
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.RamPatternOverrideBox);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.InfoLabel);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.BoardPropertiesGroupBox);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.RegionComboBox);
+            this.Controls.Add(this.HelpBtn);
+            this.Controls.Add(this.CancelBtn);
+            this.Controls.Add(this.OkBtn);
+            this.Name = "NESSyncSettingsForm";
+            this.ShowIcon = false;
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.BoardPropertiesGroupBox.ResumeLayout(false);
+            this.ResumeLayout(false);
+            this.PerformLayout();
 
 		}
 

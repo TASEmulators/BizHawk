@@ -162,6 +162,7 @@ namespace BizHawk.Client.EmuHawk
             // 
             resources.ApplyResources(this.TotalSearchLabel, "TotalSearchLabel");
             this.TotalSearchLabel.Name = "TotalSearchLabel";
+            this.toolTip1.SetToolTip(this.TotalSearchLabel, resources.GetString("TotalSearchLabel.ToolTip"));
             // 
             // WatchListView
             // 
@@ -179,6 +180,7 @@ namespace BizHawk.Client.EmuHawk
             this.WatchListView.Name = "WatchListView";
             this.WatchListView.RowCount = 0;
             this.WatchListView.ScrollSpeed = 3;
+            this.toolTip1.SetToolTip(this.WatchListView, resources.GetString("WatchListView.ToolTip"));
             this.WatchListView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.WatchListView_ColumnClick);
             this.WatchListView.SelectedIndexChanged += new System.EventHandler(this.WatchListView_SelectedIndexChanged);
             this.WatchListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);
@@ -204,6 +206,7 @@ namespace BizHawk.Client.EmuHawk
             this.ContextMenuSeparator3,
             this.ClearPreviewContextMenuItem});
             this.ListViewContextMenu.Name = "contextMenuStrip1";
+            this.toolTip1.SetToolTip(this.ListViewContextMenu, resources.GetString("ListViewContextMenu.ToolTip"));
             this.ListViewContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.ListViewContextMenu_Opening);
             // 
             // DoSearchContextMenuItem
@@ -271,6 +274,7 @@ namespace BizHawk.Client.EmuHawk
             this.OptionsSubMenuMenuItem,
             this.searchToolStripMenuItem,
             this.SettingsMenuItem});
+            this.toolTip1.SetToolTip(this.RamSearchMenu, resources.GetString("RamSearchMenu.ToolTip"));
             // 
             // fileToolStripMenuItem
             // 
@@ -581,11 +585,13 @@ namespace BizHawk.Client.EmuHawk
             // 
             resources.ApplyResources(this.MemDomainLabel, "MemDomainLabel");
             this.MemDomainLabel.Name = "MemDomainLabel";
+            this.toolTip1.SetToolTip(this.MemDomainLabel, resources.GetString("MemDomainLabel.ToolTip"));
             // 
             // MessageLabel
             // 
             resources.ApplyResources(this.MessageLabel, "MessageLabel");
             this.MessageLabel.Name = "MessageLabel";
+            this.toolTip1.SetToolTip(this.MessageLabel, resources.GetString("MessageLabel.ToolTip"));
             // 
             // AutoSearchCheckBox
             // 
@@ -971,6 +977,7 @@ namespace BizHawk.Client.EmuHawk
             this.Controls.Add(this.RamSearchMenu);
             this.MainMenuStrip = this.RamSearchMenu;
             this.Name = "RamSearch";
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.Activated += new System.EventHandler(this.NewRamSearch_Activated);
             this.Load += new System.EventHandler(this.RamSearch_Load);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.NewRamSearch_DragDrop);

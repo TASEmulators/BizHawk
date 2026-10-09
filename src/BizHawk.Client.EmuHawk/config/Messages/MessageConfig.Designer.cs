@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MessageConfig));
             this.OK = new System.Windows.Forms.Button();
             this.MessageTypeBox = new BizHawk.WinForms.Controls.LocSzGroupBoxEx();
             this.ColorBox = new BizHawk.WinForms.Controls.LocSzGroupBoxEx();
@@ -39,79 +40,54 @@
             // 
             // OK
             // 
-            this.OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.OK, "OK");
             this.OK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OK.Location = new System.Drawing.Point(348, 418);
             this.OK.Name = "OK";
-            this.OK.Size = new System.Drawing.Size(75, 23);
-            this.OK.TabIndex = 1;
-            this.OK.Text = "&OK";
             this.OK.UseVisualStyleBackColor = true;
             this.OK.Click += new System.EventHandler(this.Ok_Click);
             // 
             // MessageTypeBox
             // 
-            this.MessageTypeBox.Location = new System.Drawing.Point(12, 12);
+            resources.ApplyResources(this.MessageTypeBox, "MessageTypeBox");
             this.MessageTypeBox.Name = "MessageTypeBox";
-            this.MessageTypeBox.Size = new System.Drawing.Size(177, 211);
-            this.MessageTypeBox.Text = "Message Type";
             // 
             // ColorBox
             // 
-            this.ColorBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ColorBox.Location = new System.Drawing.Point(12, 231);
+            resources.ApplyResources(this.ColorBox, "ColorBox");
             this.ColorBox.Name = "ColorBox";
-            this.ColorBox.Size = new System.Drawing.Size(177, 210);
-            this.ColorBox.Text = "Message Colors";
             // 
             // Cancel
             // 
-            this.Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            resources.ApplyResources(this.Cancel, "Cancel");
             this.Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Cancel.Location = new System.Drawing.Point(429, 418);
             this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Cancel.TabIndex = 5;
-            this.Cancel.Text = "&Cancel";
             this.Cancel.UseVisualStyleBackColor = true;
             this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
             // 
             // ResetDefaultsButton
             // 
-            this.ResetDefaultsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.ResetDefaultsButton.Location = new System.Drawing.Point(195, 418);
+            resources.ApplyResources(this.ResetDefaultsButton, "ResetDefaultsButton");
             this.ResetDefaultsButton.Name = "ResetDefaultsButton";
-            this.ResetDefaultsButton.Size = new System.Drawing.Size(96, 23);
-            this.ResetDefaultsButton.TabIndex = 6;
-            this.ResetDefaultsButton.Text = "Restore Defaults";
             this.ResetDefaultsButton.UseVisualStyleBackColor = true;
             this.ResetDefaultsButton.Click += new System.EventHandler(this.ResetDefaultsButton_Click);
             // 
             // StackMessagesCheckbox
             // 
-            this.StackMessagesCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.StackMessagesCheckbox.AutoSize = true;
-            this.StackMessagesCheckbox.Location = new System.Drawing.Point(195, 388);
+            resources.ApplyResources(this.StackMessagesCheckbox, "StackMessagesCheckbox");
             this.StackMessagesCheckbox.Name = "StackMessagesCheckbox";
-            this.StackMessagesCheckbox.Size = new System.Drawing.Size(105, 17);
-            this.StackMessagesCheckbox.TabIndex = 7;
-            this.StackMessagesCheckbox.Text = "Stack Messages";
             this.StackMessagesCheckbox.UseVisualStyleBackColor = true;
             // 
             // MessageEditor
             // 
-            this.MessageEditor.Location = new System.Drawing.Point(195, 12);
+            resources.ApplyResources(this.MessageEditor, "MessageEditor");
             this.MessageEditor.Name = "MessageEditor";
-            this.MessageEditor.Size = new System.Drawing.Size(310, 256);
-            this.MessageEditor.TabIndex = 8;
             // 
             // MessageConfig
             // 
             this.AcceptButton = this.OK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.Cancel;
-            this.ClientSize = new System.Drawing.Size(512, 446);
             this.Controls.Add(this.MessageEditor);
             this.Controls.Add(this.StackMessagesCheckbox);
             this.Controls.Add(this.ResetDefaultsButton);
@@ -120,11 +96,8 @@
             this.Controls.Add(this.MessageTypeBox);
             this.Controls.Add(this.OK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.MinimumSize = new System.Drawing.Size(404, 375);
             this.Name = "MessageConfig";
             this.ShowIcon = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Configure On Screen Messages";
             this.Load += new System.EventHandler(this.MessageConfig_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -123,8 +123,8 @@
   <data name="&gt;&gt;label2.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="btnMisc.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="rbUDLRForbid.Text" xml:space="preserve">
     <value>Forbid</value>
@@ -139,22 +139,25 @@
   <data name="&gt;&gt;rbUDLRPriority.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <data name="pictureBox1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblUDLR.Text" xml:space="preserve">
     <value>U+D/L+R:</value>
   </data>
   <data name="FeedbacksTab.Text" xml:space="preserve">
     <value>Feedbacks</value>
   </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="NormalControlsTab.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
   <data name="&gt;&gt;lblUDLR.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="NormalControlsTab.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="tableLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>908, 486</value>
   </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="buttonCancel.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
@@ -176,6 +179,12 @@
   </data>
   <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
     <value>334, 462</value>
+  </data>
+  <data name="buttonOK.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AnalogControlsTab.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;checkBoxAutoTab.Name" xml:space="preserve">
     <value>checkBoxAutoTab</value>
@@ -234,9 +243,6 @@
   <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;NormalControlsTab.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="AutofireControlsTab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
@@ -282,17 +288,20 @@
   <data name="&gt;&gt;AutofireControlsTab.Parent" xml:space="preserve">
     <value>tabControl1</value>
   </data>
-  <data name="AutofireControlsTab.Text" xml:space="preserve">
-    <value>Autofire Controls</value>
+  <data name="pictureBox1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
   <data name="&gt;&gt;flpUDLR.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="tableLayoutPanel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;rbUDLRAllow.Name" xml:space="preserve">
     <value>rbUDLRAllow</value>
   </data>
-  <data name="btnMisc.ToolTip" xml:space="preserve">
-    <value />
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>932, 528</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -300,8 +309,8 @@
   <data name="&gt;&gt;label3.Name" xml:space="preserve">
     <value>label3</value>
   </data>
-  <data name="&gt;&gt;AutofireControlsTab.Name" xml:space="preserve">
-    <value>AutofireControlsTab</value>
+  <data name="&gt;&gt;label38.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
@@ -327,6 +336,9 @@
   <data name="&gt;&gt;buttonCancel.Name" xml:space="preserve">
     <value>buttonCancel</value>
   </data>
+  <data name="label3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left</value>
+  </data>
   <data name="&gt;&gt;FeedbacksTab.Parent" xml:space="preserve">
     <value>tabControl1</value>
   </data>
@@ -336,14 +348,17 @@
   <data name="rbUDLRAllow.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="&gt;&gt;pictureBox1.Parent" xml:space="preserve">
-    <value>tableLayoutPanel1</value>
-  </data>
   <data name="FeedbacksTab.Size" type="System.Drawing.Size, System.Drawing">
     <value>554, 455</value>
   </data>
+  <data name="&gt;&gt;testToolStripMenuItem.Name" xml:space="preserve">
+    <value>testToolStripMenuItem</value>
+  </data>
   <data name="&gt;&gt;clearToolStripMenuItem.Name" xml:space="preserve">
     <value>clearToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;NormalControlsTab.Name" xml:space="preserve">
+    <value>NormalControlsTab</value>
   </data>
   <data name="&gt;&gt;lblUDLR.Parent" xml:space="preserve">
     <value>flpUDLR</value>
@@ -366,8 +381,8 @@
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>948, 567</value>
   </data>
-  <data name="buttonOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 21</value>
+  <data name="AutofireControlsTab.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;checkBoxAutoTab.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -441,8 +456,11 @@
   <data name="rbUDLRPriority.Text" xml:space="preserve">
     <value>Priority</value>
   </data>
-  <data name="pictureBox1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="checkBoxAutoTab.Text" xml:space="preserve">
+    <value>Auto Tab</value>
+  </data>
+  <data name="NormalControlsTab.Size" type="System.Drawing.Size, System.Drawing">
+    <value>554, 454</value>
   </data>
   <data name="&gt;&gt;btnMisc.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.MenuButton, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -483,11 +501,11 @@
   <data name="AnalogControlsTab.Text" xml:space="preserve">
     <value>Analog Controls</value>
   </data>
-  <data name="&gt;&gt;lblUDLR.Name" xml:space="preserve">
-    <value>lblUDLR</value>
+  <data name="checkBoxAutoTab.ToolTip" xml:space="preserve">
+    <value />
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>932, 528</value>
+  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
+    <value>tabControl1</value>
   </data>
   <data name="&gt;&gt;rbUDLRAllow.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.RadioButtonEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -510,8 +528,8 @@
   <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
     <value>562, 480</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
-    <value>tabControl1</value>
+  <data name="AutofireControlsTab.Text" xml:space="preserve">
+    <value>Autofire Controls</value>
   </data>
   <data name="FeedbacksTab.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -540,14 +558,23 @@
   <data name="btnMisc.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
   </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="tabControl1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>* Disable Auto Tab to multiply bind</value>
+  </data>
+  <data name="buttonCancel.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="&gt;&gt;tableLayoutPanel1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="NormalControlsTab.Size" type="System.Drawing.Size, System.Drawing">
-    <value>554, 454</value>
+  <data name="&gt;&gt;pictureBox1.Parent" xml:space="preserve">
+    <value>tableLayoutPanel1</value>
   </data>
   <data name="buttonCancel.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 21</value>
@@ -561,17 +588,17 @@
   <data name="&gt;&gt;AutofireControlsTab.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="checkBoxAutoTab.Text" xml:space="preserve">
-    <value>Auto Tab</value>
-  </data>
   <data name="NormalControlsTab.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
     <value>571, 21</value>
   </data>
-  <data name="&gt;&gt;NormalControlsTab.Name" xml:space="preserve">
-    <value>NormalControlsTab</value>
+  <data name="&gt;&gt;lblUDLR.Name" xml:space="preserve">
+    <value>lblUDLR</value>
+  </data>
+  <data name="buttonOK.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
   </data>
   <data name="&gt;&gt;AutofireControlsTab.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -585,11 +612,14 @@
   <data name="&gt;&gt;FeedbacksTab.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="contextMenuStrip1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;NormalControlsTab.Parent" xml:space="preserve">
     <value>tabControl1</value>
   </data>
-  <data name="&gt;&gt;testToolStripMenuItem.Name" xml:space="preserve">
-    <value>testToolStripMenuItem</value>
+  <data name="NormalControlsTab.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="label38.Location" type="System.Drawing.Point, System.Drawing">
     <value>41, 508</value>
@@ -627,14 +657,17 @@
   <data name="checkBoxAutoTab.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
   </data>
-  <data name="buttonOK.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+  <data name="FeedbacksTab.ToolTip" xml:space="preserve">
+    <value />
   </data>
-  <data name="label3.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left</value>
+  <data name="buttonOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
   </data>
-  <data name="&gt;&gt;label38.ZOrder" xml:space="preserve">
-    <value>3</value>
+  <data name="&gt;&gt;AutofireControlsTab.Name" xml:space="preserve">
+    <value>AutofireControlsTab</value>
+  </data>
+  <data name="&gt;&gt;NormalControlsTab.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;contextMenuStrip1.Name" xml:space="preserve">
     <value>contextMenuStrip1</value>
@@ -656,6 +689,9 @@
   </data>
   <data name="&gt;&gt;btnMisc.Name" xml:space="preserve">
     <value>btnMisc</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>172, 17</value>

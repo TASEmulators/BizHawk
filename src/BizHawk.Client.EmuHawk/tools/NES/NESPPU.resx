@@ -236,9 +236,6 @@
   <data name="&gt;&gt;toolStripSeparator1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripSeparatorEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="NesPPUMenu.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
   <data name="&gt;&gt;CopyPatternToClipboardMenuItem.Name" xml:space="preserve">
     <value>CopyPatternToClipboardMenuItem</value>
   </data>
@@ -268,6 +265,9 @@
   </data>
   <data name="PatternRefreshMenuItem.Text" xml:space="preserve">
     <value>&amp;Refresh</value>
+  </data>
+  <data name="&gt;&gt;PatternView.Parent" xml:space="preserve">
+    <value>PatternGroup</value>
   </data>
   <data name="&gt;&gt;ZoomBox.Parent" xml:space="preserve">
     <value>DetailsBox</value>
@@ -305,9 +305,6 @@
   <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
     <value>groupBox1</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="FileSubMenu.Text" xml:space="preserve">
     <value>&amp;File</value>
   </data>
@@ -316,6 +313,9 @@
   </data>
   <data name="&gt;&gt;Value2Label.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="PalettesGroup.Text" xml:space="preserve">
+    <value>Palettes</value>
   </data>
   <data name="DetailsBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 95</value>
@@ -377,9 +377,6 @@
   <data name="SpriteView.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 18</value>
   </data>
-  <data name="&gt;&gt;Value4Label.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
   <data name="&gt;&gt;Table0P3MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
@@ -416,9 +413,6 @@
   <data name="Table0P6MenuItem.Text" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="Table1PaletteLabel.Text" xml:space="preserve">
-    <value>Palette: 0</value>
-  </data>
   <data name="Value4Label.Text" xml:space="preserve">
     <value>Value 4</value>
   </data>
@@ -452,9 +446,6 @@
   <data name="&gt;&gt;RefreshRate.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="Table1PaletteSubMenu.Text" xml:space="preserve">
-    <value>Table 1 Palette</value>
-  </data>
   <data name="AddressLabel.Text" xml:space="preserve">
     <value>Address</value>
   </data>
@@ -482,6 +473,9 @@
   <data name="Table0P0MenuItem.Text" xml:space="preserve">
     <value>0</value>
   </data>
+  <data name="&gt;&gt;ZoomBox.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
   <data name="CopySpriteToClipboardMenuItem.Text" xml:space="preserve">
     <value>Copy Sprite to Clipboard</value>
   </data>
@@ -493,6 +487,9 @@
   </data>
   <data name="&gt;&gt;Value5Label.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;SpriteView.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.SpriteViewer, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;label5.Parent" xml:space="preserve">
     <value>CHRROMGroup</value>
@@ -508,9 +505,6 @@
   </data>
   <data name="&gt;&gt;Table1P3MenuItem.Name" xml:space="preserve">
     <value>Table1P3MenuItem</value>
-  </data>
-  <data name="RefreshRate.Location" type="System.Drawing.Point, System.Drawing">
-    <value>39, 15</value>
   </data>
   <data name="NesPPUStatusBar.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -551,6 +545,9 @@
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 31</value>
   </data>
+  <data name="&gt;&gt;CHRROMView.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
@@ -571,6 +568,9 @@
   </data>
   <data name="&gt;&gt;numericUpDownCHRROMBank.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
+    <value>groupBox2</value>
   </data>
   <data name="&gt;&gt;NesPPUMenu.Name" xml:space="preserve">
     <value>NesPPUMenu</value>
@@ -617,8 +617,8 @@
   <data name="Table0P4MenuItem.Text" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="&gt;&gt;Table1P5MenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="&gt;&gt;Table1PaletteLabel.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="Table1P1MenuItem.Text" xml:space="preserve">
     <value>1</value>
@@ -658,6 +658,9 @@
   </data>
   <data name="&gt;&gt;Table1PaletteSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;ValueLabel.Parent" xml:space="preserve">
+    <value>DetailsBox</value>
   </data>
   <data name="SpriteContext.Size" type="System.Drawing.Size, System.Drawing">
     <value>192, 70</value>
@@ -737,8 +740,8 @@
   <data name="&gt;&gt;SavePaletteScreenshotMenuItem.Name" xml:space="preserve">
     <value>SavePaletteScreenshotMenuItem</value>
   </data>
-  <data name="&gt;&gt;ValueLabel.ZOrder" xml:space="preserve">
-    <value>7</value>
+  <data name="NesPPUMenu.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
   </data>
   <data name="CopyPatternToClipboardMenuItem.Text" xml:space="preserve">
     <value>Copy Pattern to Clipboard</value>
@@ -805,14 +808,14 @@
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>NesPPU</value>
   </data>
-  <data name="&gt;&gt;Table0P2MenuItem.Name" xml:space="preserve">
-    <value>Table0P2MenuItem</value>
+  <data name="Table1PaletteLabel.Text" xml:space="preserve">
+    <value>Palette: 0</value>
   </data>
   <data name="&gt;&gt;PaletteView.Parent" xml:space="preserve">
     <value>PalettesGroup</value>
   </data>
-  <data name="&gt;&gt;Table1PaletteLabel.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;ValueLabel.ZOrder" xml:space="preserve">
+    <value>7</value>
   </data>
   <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
     <value>3</value>
@@ -841,20 +844,20 @@
   <data name="&gt;&gt;Table0P1MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;label4.Parent" xml:space="preserve">
-    <value>groupBox2</value>
+  <data name="&gt;&gt;Table0P2MenuItem.Name" xml:space="preserve">
+    <value>Table0P2MenuItem</value>
   </data>
   <data name="PatternImageToClipboardMenuItem.Text" xml:space="preserve">
     <value>Image to &amp;Clipboard</value>
+  </data>
+  <data name="SpriteViewerBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>293, 212</value>
   </data>
   <data name="&gt;&gt;SpriteImageToClipboardMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="SpriteView.Text" xml:space="preserve">
     <value>Sprites</value>
-  </data>
-  <data name="Table1P5MenuItem.Text" xml:space="preserve">
-    <value>5</value>
   </data>
   <data name="&gt;&gt;PaletteRefreshMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -928,8 +931,8 @@
   <data name="&gt;&gt;Table1P1MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;ValueLabel.Parent" xml:space="preserve">
-    <value>DetailsBox</value>
+  <data name="Table1P5MenuItem.Text" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="PatternView.Pattern" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -972,9 +975,6 @@
   </data>
   <data name="Table0P3MenuItem.Text" xml:space="preserve">
     <value>3</value>
-  </data>
-  <data name="&gt;&gt;SpriteView.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="SpriteViewerBox.Text" xml:space="preserve">
     <value>Sprites</value>
@@ -1022,11 +1022,11 @@
   <data name="SpriteRefreshMenuItem.Text" xml:space="preserve">
     <value>&amp;Refresh</value>
   </data>
-  <data name="&gt;&gt;cHRROMTileViewerToolStripMenuItem.Name" xml:space="preserve">
-    <value>cHRROMTileViewerToolStripMenuItem</value>
-  </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="&gt;&gt;Table1P5MenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;Table1P6MenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1109,8 +1109,8 @@
   <data name="PatternContext.Size" type="System.Drawing.Size, System.Drawing">
     <value>192, 70</value>
   </data>
-  <data name="PalettesGroup.Text" xml:space="preserve">
-    <value>Palettes</value>
+  <data name="&gt;&gt;cHRROMTileViewerToolStripMenuItem.Name" xml:space="preserve">
+    <value>cHRROMTileViewerToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;Value4Label.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -1136,20 +1136,20 @@
   <data name="&gt;&gt;Table1P0MenuItem.Name" xml:space="preserve">
     <value>Table1P0MenuItem</value>
   </data>
-  <data name="&gt;&gt;ZoomBox.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;Value4Label.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;PatternView.Parent" xml:space="preserve">
-    <value>PatternGroup</value>
+  <data name="RefreshRate.Location" type="System.Drawing.Point, System.Drawing">
+    <value>39, 15</value>
   </data>
   <data name="&gt;&gt;PalettesGroup.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;SpriteView.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.SpriteViewer, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="Table1PaletteSubMenu.Text" xml:space="preserve">
+    <value>Table 1 Palette</value>
   </data>
-  <data name="&gt;&gt;CHRROMView.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;SpriteView.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;SaveSpriteScreenshotMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -1166,8 +1166,8 @@
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="SpriteViewerBox.Location" type="System.Drawing.Point, System.Drawing">
-    <value>293, 212</value>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;Value2Label.Name" xml:space="preserve">
     <value>Value2Label</value>

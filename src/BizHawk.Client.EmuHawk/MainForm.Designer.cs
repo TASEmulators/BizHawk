@@ -338,6 +338,7 @@ namespace BizHawk.Client.EmuHawk
             this.ProfileFirstBootLabel = new BizHawk.WinForms.Controls.StatusLabelEx();
             this.LinkConnectStatusBarButton = new BizHawk.WinForms.Controls.StatusLabelEx();
             this.UpdateNotification = new BizHawk.WinForms.Controls.StatusLabelEx();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.OpenRomContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
             this.LoadLastRomContextMenuItem = new BizHawk.WinForms.Controls.ToolStripMenuItemEx();
@@ -2173,7 +2174,8 @@ namespace BizHawk.Client.EmuHawk
             this.CoreNameStatusBarButton,
             this.ProfileFirstBootLabel,
             this.LinkConnectStatusBarButton,
-            this.UpdateNotification});
+            this.UpdateNotification,
+            this.toolStripStatusLabel1});
             this.MainStatusBar.Name = "MainStatusBar";
             this.MainStatusBar.ShowItemToolTips = true;
             this.MainStatusBar.SizingGrip = false;
@@ -2311,6 +2313,11 @@ namespace BizHawk.Client.EmuHawk
             this.UpdateNotification.IsLink = true;
             this.UpdateNotification.Spring = true;
             this.UpdateNotification.Click += new System.EventHandler(this.UpdateNotification_Click);
+            // 
+            // toolStripStatusLabel1
+            // 
+            resources.ApplyResources(this.toolStripStatusLabel1, "toolStripStatusLabel1");
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             // 
             // MainFormContextMenu
             // 
@@ -2941,5 +2948,6 @@ namespace BizHawk.Client.EmuHawk
 		private ToolStripSeparatorEx toolStripSeparator26;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator32;
 		private System.Windows.Forms.ToolStripMenuItem MovieEndPlaySoundMenuItem;
+		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 	}
 }

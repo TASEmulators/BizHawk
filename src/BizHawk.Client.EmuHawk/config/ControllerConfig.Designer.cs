@@ -70,35 +70,41 @@
             this.tabControl1.Controls.Add(this.FeedbacksTab);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
+            this.toolTip1.SetToolTip(this.tabControl1, resources.GetString("tabControl1.ToolTip"));
             // 
             // NormalControlsTab
             // 
             resources.ApplyResources(this.NormalControlsTab, "NormalControlsTab");
             this.NormalControlsTab.Name = "NormalControlsTab";
+            this.toolTip1.SetToolTip(this.NormalControlsTab, resources.GetString("NormalControlsTab.ToolTip"));
             this.NormalControlsTab.UseVisualStyleBackColor = true;
             // 
             // AutofireControlsTab
             // 
             resources.ApplyResources(this.AutofireControlsTab, "AutofireControlsTab");
             this.AutofireControlsTab.Name = "AutofireControlsTab";
+            this.toolTip1.SetToolTip(this.AutofireControlsTab, resources.GetString("AutofireControlsTab.ToolTip"));
             this.AutofireControlsTab.UseVisualStyleBackColor = true;
             // 
             // AnalogControlsTab
             // 
             resources.ApplyResources(this.AnalogControlsTab, "AnalogControlsTab");
             this.AnalogControlsTab.Name = "AnalogControlsTab";
+            this.toolTip1.SetToolTip(this.AnalogControlsTab, resources.GetString("AnalogControlsTab.ToolTip"));
             this.AnalogControlsTab.UseVisualStyleBackColor = true;
             // 
             // FeedbacksTab
             // 
             resources.ApplyResources(this.FeedbacksTab, "FeedbacksTab");
             this.FeedbacksTab.Name = "FeedbacksTab";
+            this.toolTip1.SetToolTip(this.FeedbacksTab, resources.GetString("FeedbacksTab.ToolTip"));
             this.FeedbacksTab.UseVisualStyleBackColor = true;
             // 
             // checkBoxAutoTab
             // 
             resources.ApplyResources(this.checkBoxAutoTab, "checkBoxAutoTab");
             this.checkBoxAutoTab.Name = "checkBoxAutoTab";
+            this.toolTip1.SetToolTip(this.checkBoxAutoTab, resources.GetString("checkBoxAutoTab.ToolTip"));
             this.checkBoxAutoTab.UseVisualStyleBackColor = true;
             this.checkBoxAutoTab.CheckedChanged += new System.EventHandler(this.CheckBoxAutoTab_CheckedChanged);
             // 
@@ -106,6 +112,7 @@
             // 
             resources.ApplyResources(this.buttonOK, "buttonOK");
             this.buttonOK.Name = "buttonOK";
+            this.toolTip1.SetToolTip(this.buttonOK, resources.GetString("buttonOK.ToolTip"));
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.ButtonOk_Click);
             // 
@@ -114,6 +121,7 @@
             resources.ApplyResources(this.buttonCancel, "buttonCancel");
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonCancel.Name = "buttonCancel";
+            this.toolTip1.SetToolTip(this.buttonCancel, resources.GetString("buttonCancel.ToolTip"));
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.ButtonCancel_Click);
             // 
@@ -123,6 +131,7 @@
             this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 1, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.toolTip1.SetToolTip(this.tableLayoutPanel1, resources.GetString("tableLayoutPanel1.ToolTip"));
             // 
             // pictureBox1
             // 
@@ -130,6 +139,7 @@
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.TabStop = false;
+            this.toolTip1.SetToolTip(this.pictureBox1, resources.GetString("pictureBox1.ToolTip"));
             // 
             // contextMenuStrip1
             // 
@@ -139,6 +149,7 @@
             this.loadDefaultsToolStripMenuItem,
             this.clearToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.toolTip1.SetToolTip(this.contextMenuStrip1, resources.GetString("contextMenuStrip1.ToolTip"));
             // 
             // testToolStripMenuItem
             // 
@@ -231,6 +242,7 @@
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.checkBoxAutoTab);
             this.Name = "ControllerConfig";
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ControllerConfig_FormClosed);
             this.Load += new System.EventHandler(this.ControllerConfig_Load);
             this.tabControl1.ResumeLayout(false);

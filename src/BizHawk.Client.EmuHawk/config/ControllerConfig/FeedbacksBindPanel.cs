@@ -38,5 +38,18 @@ namespace BizHawk.Client.EmuHawk
 				saveTo[c.VChannelName] = new(c.BoundGamepadPrefix, c.BoundChannels, c.Prescale);
 			}
 		}
+
+		private void InitializeComponent()
+		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FeedbacksBindPanel));
+            this.SuspendLayout();
+            // 
+            // FeedbacksBindPanel
+            // 
+            resources.ApplyResources(this, "$this");
+            this.Name = "FeedbacksBindPanel";
+            this.ResumeLayout(false);
+
+		}
 	}
 }

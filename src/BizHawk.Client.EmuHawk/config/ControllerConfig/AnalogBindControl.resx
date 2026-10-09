@@ -117,7 +117,300 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;buttonBind.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelPositiveButtonName.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="buttonBind.Text" xml:space="preserve">
+    <value>Bind!</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="labelDeadzone.Location" type="System.Drawing.Point, System.Drawing">
+    <value>206, 60</value>
+  </data>
+  <data name="&gt;&gt;labelNegativeButtonName.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="iwPositiveButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 21</value>
+  </data>
+  <data name="&gt;&gt;textBox1.Name" xml:space="preserve">
+    <value>textBox1</value>
+  </data>
+  <data name="labelNegativeButtonName.Text" xml:space="preserve">
+    <value>Bindname -</value>
+  </data>
+  <data name="&gt;&gt;iwNegativeButton.Name" xml:space="preserve">
+    <value>iwNegativeButton</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="buttonFlip.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="trackBarDeadzone.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="labelSensitivity.Text" xml:space="preserve">
+    <value>Sensitivity: 5 billion</value>
+  </data>
+  <data name="trackBarDeadzone.Size" type="System.Drawing.Size, System.Drawing">
+    <value>160, 45</value>
+  </data>
+  <data name="buttonFlip.Text" xml:space="preserve">
+    <value>Flip Axis</value>
+  </data>
+  <data name="&gt;&gt;buttonFlip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="trackBarSensitivity.Location" type="System.Drawing.Point, System.Drawing">
+    <value>307, 29</value>
+  </data>
+  <data name="&gt;&gt;trackBarSensitivity.Name" xml:space="preserve">
+    <value>trackBarSensitivity</value>
+  </data>
+  <data name="&gt;&gt;iwNegativeButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="trackBarDeadzone.Location" type="System.Drawing.Point, System.Drawing">
+    <value>307, 56</value>
+  </data>
+  <data name="&gt;&gt;labelSensitivity.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;trackBarDeadzone.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;labelAxisName.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;iwNegativeButton.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputWidget, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="iwPositiveButton.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;labelSensitivity.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;labelAxisName.Name" xml:space="preserve">
+    <value>labelAxisName</value>
+  </data>
+  <data name="labelPositiveButtonName.Text" xml:space="preserve">
+    <value>Bindname +</value>
+  </data>
+  <data name="&gt;&gt;labelNegativeButtonName.Name" xml:space="preserve">
+    <value>labelNegativeButtonName</value>
+  </data>
+  <data name="&gt;&gt;timer1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Timer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="iwNegativeButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 58</value>
+  </data>
+  <data name="buttonUnbind.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;iwPositiveButton.Name" xml:space="preserve">
+    <value>iwPositiveButton</value>
+  </data>
+  <data name="&gt;&gt;labelAxisName.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="trackBarSensitivity.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;trackBarSensitivity.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonUnbind.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="&gt;&gt;iwPositiveButton.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;labelDeadzone.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;trackBarSensitivity.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;iwNegativeButton.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;timer1.Name" xml:space="preserve">
+    <value>timer1</value>
+  </data>
+  <data name="&gt;&gt;textBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelDeadzone.Name" xml:space="preserve">
+    <value>labelDeadzone</value>
+  </data>
+  <data name="&gt;&gt;trackBarDeadzone.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TrackBar, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonFlip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="trackBarSensitivity.Size" type="System.Drawing.Size, System.Drawing">
+    <value>160, 45</value>
+  </data>
+  <data name="&gt;&gt;labelDeadzone.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="&gt;&gt;labelPositiveButtonName.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>474, 91</value>
+  </data>
+  <data name="&gt;&gt;labelAxisName.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="labelDeadzone.Text" xml:space="preserve">
+    <value>Deadzone: 5 billion</value>
+  </data>
+  <data name="&gt;&gt;buttonUnbind.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="textBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;buttonUnbind.Name" xml:space="preserve">
+    <value>buttonUnbind</value>
+  </data>
+  <data name="iwNegativeButton.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;buttonBind.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;labelSensitivity.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>AnalogBindControl</value>
+  </data>
+  <data name="buttonFlip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>387, 3</value>
+  </data>
+  <data name="&gt;&gt;labelNegativeButtonName.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;buttonFlip.Name" xml:space="preserve">
+    <value>buttonFlip</value>
+  </data>
+  <data name="buttonBind.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 21</value>
+  </data>
+  <data name="labelSensitivity.Location" type="System.Drawing.Point, System.Drawing">
+    <value>206, 32</value>
+  </data>
+  <data name="textBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 21</value>
+  </data>
+  <data name="&gt;&gt;labelPositiveButtonName.Name" xml:space="preserve">
+    <value>labelPositiveButtonName</value>
+  </data>
+  <data name="buttonUnbind.Text" xml:space="preserve">
+    <value>Unbind!</value>
+  </data>
+  <data name="&gt;&gt;trackBarSensitivity.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="buttonUnbind.Location" type="System.Drawing.Point, System.Drawing">
+    <value>297, 3</value>
+  </data>
+  <data name="&gt;&gt;buttonBind.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;buttonFlip.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;buttonUnbind.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;trackBarDeadzone.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;buttonUnbind.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;textBox1.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="labelNegativeButtonName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 61</value>
+  </data>
+  <data name="labelPositiveButtonName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 33</value>
+  </data>
+  <data name="&gt;&gt;labelDeadzone.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="labelAxisName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>109, 6</value>
+  </data>
+  <data name="&gt;&gt;textBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="labelAxisName.Text" xml:space="preserve">
+    <value>Bindname</value>
+  </data>
+  <data name="&gt;&gt;trackBarDeadzone.Name" xml:space="preserve">
+    <value>trackBarDeadzone</value>
+  </data>
+  <data name="&gt;&gt;iwPositiveButton.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;labelPositiveButtonName.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.LocLabelEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="iwPositiveButton.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 30</value>
+  </data>
+  <data name="buttonBind.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;labelNegativeButtonName.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;labelSensitivity.Name" xml:space="preserve">
+    <value>labelSensitivity</value>
+  </data>
+  <data name="buttonBind.Location" type="System.Drawing.Point, System.Drawing">
+    <value>207, 3</value>
+  </data>
+  <data name="iwNegativeButton.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 21</value>
+  </data>
+  <data name="&gt;&gt;buttonBind.Name" xml:space="preserve">
+    <value>buttonBind</value>
+  </data>
+  <data name="&gt;&gt;buttonFlip.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="textBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;iwPositiveButton.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.InputWidget, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <metadata name="timer1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>zh-CN</value>
   </metadata>
 </root>

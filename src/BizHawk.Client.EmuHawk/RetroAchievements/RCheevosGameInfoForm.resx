@@ -137,6 +137,9 @@
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>145, 88</value>
+  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Game Info</value>
   </data>
@@ -187,6 +190,9 @@
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Current Leaderboard:</value>
+  </data>
+  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
+    <value>125, 12</value>
   </data>
   <data name="titleTextBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>261, 21</value>
@@ -245,9 +251,6 @@
   </data>
   <data name="currentLboardBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>231, 60</value>
-  </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>504, 112</value>
@@ -330,8 +333,8 @@
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>145, 88</value>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -339,17 +342,14 @@
   <data name="titleTextBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>231, 11</value>
   </data>
-  <data name="&gt;&gt;gameIconBox.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="richPresenceBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>231, 85</value>
   </data>
   <data name="&gt;&gt;totalPointsBox.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>125, 12</value>
+  <data name="&gt;&gt;gameIconBox.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="titleTextBox.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>

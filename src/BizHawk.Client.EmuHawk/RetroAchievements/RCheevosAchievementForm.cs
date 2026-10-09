@@ -1,5 +1,8 @@
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Globalization;
+using System.Resources;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk

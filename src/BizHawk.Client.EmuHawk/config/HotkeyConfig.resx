@@ -150,6 +150,9 @@
   <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
+  <data name="&gt;&gt;toolStripSeparator1.Name" xml:space="preserve">
+    <value>toolStripSeparator1</value>
+  </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -234,6 +237,9 @@
   <data name="&gt;&gt;IDB_CANCEL.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;clearBtnContextMenu.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="clearBtnContextMenu.Size" type="System.Drawing.Size, System.Drawing">
     <value>246, 98</value>
   </data>
@@ -272,6 +278,9 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>Configure Hotkeys</value>
+  </data>
+  <data name="&gt;&gt;IDB_SAVE.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="&gt;&gt;SearchBox.Parent" xml:space="preserve">
     <value>$this</value>
@@ -345,20 +354,17 @@
   <data name="restoreDefaultsForCurrentTabToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>245, 22</value>
   </data>
-  <data name="&gt;&gt;IDB_SAVE.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
   <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
   </data>
   <data name="&gt;&gt;restoreDefaultsForCurrentTabToolStripMenuItem.Name" xml:space="preserve">
     <value>restoreDefaultsForCurrentTabToolStripMenuItem</value>
   </data>
+  <data name="IDB_SAVE.Text" xml:space="preserve">
+    <value>&amp;Save</value>
+  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>Tips:</value>
-  </data>
-  <data name="&gt;&gt;clearBtnContextMenu.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;IDB_SAVE.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -368,9 +374,6 @@
   </data>
   <data name="label38.Text" xml:space="preserve">
     <value>* Escape clears a key mapping</value>
-  </data>
-  <data name="IDB_SAVE.Text" xml:space="preserve">
-    <value>&amp;Save</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>HotkeyConfig</value>
@@ -389,9 +392,6 @@
   </data>
   <data name="&gt;&gt;MiscButton.Name" xml:space="preserve">
     <value>MiscButton</value>
-  </data>
-  <data name="&gt;&gt;toolStripSeparator1.Name" xml:space="preserve">
-    <value>toolStripSeparator1</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>783, 427</value>

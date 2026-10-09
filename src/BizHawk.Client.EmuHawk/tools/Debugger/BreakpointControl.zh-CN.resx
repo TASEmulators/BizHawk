@@ -117,8 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddBreakpointButton.ToolTip" xml:space="preserve">
+    <value>添加断点</value>
+  </data>
   <data name="BreakpointStatsLabel.Text" xml:space="preserve">
     <value>标签1</value>
+  </data>
+  <data name="ToggleButton.ToolTip" xml:space="preserve">
+    <value>切换所选断点</value>
+  </data>
+  <data name="RemoveBreakpointButton.ToolTip" xml:space="preserve">
+    <value>删除所选断点</value>
+  </data>
+  <data name="DuplicateBreakpointButton.ToolTip" xml:space="preserve">
+    <value>克隆所选断点</value>
+  </data>
+  <data name="EditBreakpointButton.ToolTip" xml:space="preserve">
+    <value>编辑所选断点</value>
   </data>
   <data name="columnHeader1.Text" xml:space="preserve">
     <value>地址</value>

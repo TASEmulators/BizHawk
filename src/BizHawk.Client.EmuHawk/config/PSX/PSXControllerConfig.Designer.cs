@@ -28,6 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PSXControllerConfig));
             this.cbMultitap_1 = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lbl_p_1_4 = new BizHawk.WinForms.Controls.LocLabelEx();
@@ -66,17 +67,14 @@
             // 
             // cbMultitap_1
             // 
-            this.cbMultitap_1.AutoSize = true;
-            this.cbMultitap_1.Location = new System.Drawing.Point(18, 43);
+            resources.ApplyResources(this.cbMultitap_1, "cbMultitap_1");
             this.cbMultitap_1.Name = "cbMultitap_1";
-            this.cbMultitap_1.Size = new System.Drawing.Size(63, 17);
-            this.cbMultitap_1.TabIndex = 0;
-            this.cbMultitap_1.Text = "Multitap";
             this.cbMultitap_1.UseVisualStyleBackColor = true;
             this.cbMultitap_1.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // groupBox1
             // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.lbl_p_1_4);
             this.groupBox1.Controls.Add(this.lbl_p_1_3);
             this.groupBox1.Controls.Add(this.lbl_p_1_2);
@@ -91,143 +89,106 @@
             this.groupBox1.Controls.Add(this.combo_1_1);
             this.groupBox1.Controls.Add(this.cbMemcard_1);
             this.groupBox1.Controls.Add(this.cbMultitap_1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(273, 136);
-            this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Port 1";
             // 
             // lbl_p_1_4
             // 
-            this.lbl_p_1_4.Location = new System.Drawing.Point(241, 105);
+            resources.ApplyResources(this.lbl_p_1_4, "lbl_p_1_4");
             this.lbl_p_1_4.Name = "lbl_p_1_4";
-            this.lbl_p_1_4.Text = "P1";
-            this.lbl_p_1_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_1_3
             // 
-            this.lbl_p_1_3.Location = new System.Drawing.Point(241, 78);
+            resources.ApplyResources(this.lbl_p_1_3, "lbl_p_1_3");
             this.lbl_p_1_3.Name = "lbl_p_1_3";
-            this.lbl_p_1_3.Text = "P1";
-            this.lbl_p_1_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_1_2
             // 
-            this.lbl_p_1_2.Location = new System.Drawing.Point(241, 50);
+            resources.ApplyResources(this.lbl_p_1_2, "lbl_p_1_2");
             this.lbl_p_1_2.Name = "lbl_p_1_2";
-            this.lbl_p_1_2.Text = "P1";
-            this.lbl_p_1_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_1_1
             // 
-            this.lbl_p_1_1.Location = new System.Drawing.Point(241, 24);
+            resources.ApplyResources(this.lbl_p_1_1, "lbl_p_1_1");
             this.lbl_p_1_1.Name = "lbl_p_1_1";
-            this.lbl_p_1_1.Text = "P1";
-            this.lbl_p_1_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_4
             // 
-            this.lbl_1_4.Location = new System.Drawing.Point(94, 105);
+            resources.ApplyResources(this.lbl_1_4, "lbl_1_4");
             this.lbl_1_4.Name = "lbl_1_4";
-            this.lbl_1_4.Text = "D";
-            this.lbl_1_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_3
             // 
-            this.lbl_1_3.Location = new System.Drawing.Point(94, 78);
+            resources.ApplyResources(this.lbl_1_3, "lbl_1_3");
             this.lbl_1_3.Name = "lbl_1_3";
-            this.lbl_1_3.Text = "C";
-            this.lbl_1_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_2
             // 
-            this.lbl_1_2.Location = new System.Drawing.Point(94, 51);
+            resources.ApplyResources(this.lbl_1_2, "lbl_1_2");
             this.lbl_1_2.Name = "lbl_1_2";
-            this.lbl_1_2.Text = "B";
-            this.lbl_1_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_1_1
             // 
-            this.lbl_1_1.Location = new System.Drawing.Point(94, 24);
+            resources.ApplyResources(this.lbl_1_1, "lbl_1_1");
             this.lbl_1_1.Name = "lbl_1_1";
-            this.lbl_1_1.Text = "A";
-            this.lbl_1_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // combo_1_4
             // 
+            resources.ApplyResources(this.combo_1_4, "combo_1_4");
             this.combo_1_4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_1_4.FormattingEnabled = true;
-            this.combo_1_4.Location = new System.Drawing.Point(114, 102);
             this.combo_1_4.Name = "combo_1_4";
-            this.combo_1_4.Size = new System.Drawing.Size(121, 21);
-            this.combo_1_4.TabIndex = 5;
             this.combo_1_4.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_1_3
             // 
+            resources.ApplyResources(this.combo_1_3, "combo_1_3");
             this.combo_1_3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_1_3.FormattingEnabled = true;
-            this.combo_1_3.Location = new System.Drawing.Point(114, 75);
             this.combo_1_3.Name = "combo_1_3";
-            this.combo_1_3.Size = new System.Drawing.Size(121, 21);
-            this.combo_1_3.TabIndex = 4;
             this.combo_1_3.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_1_2
             // 
+            resources.ApplyResources(this.combo_1_2, "combo_1_2");
             this.combo_1_2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_1_2.FormattingEnabled = true;
-            this.combo_1_2.Location = new System.Drawing.Point(114, 48);
             this.combo_1_2.Name = "combo_1_2";
-            this.combo_1_2.Size = new System.Drawing.Size(121, 21);
-            this.combo_1_2.TabIndex = 3;
             this.combo_1_2.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_1_1
             // 
+            resources.ApplyResources(this.combo_1_1, "combo_1_1");
             this.combo_1_1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_1_1.FormattingEnabled = true;
-            this.combo_1_1.Location = new System.Drawing.Point(114, 21);
             this.combo_1_1.Name = "combo_1_1";
-            this.combo_1_1.Size = new System.Drawing.Size(121, 21);
-            this.combo_1_1.TabIndex = 2;
             this.combo_1_1.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // cbMemcard_1
             // 
-            this.cbMemcard_1.AutoSize = true;
-            this.cbMemcard_1.Location = new System.Drawing.Point(18, 21);
+            resources.ApplyResources(this.cbMemcard_1, "cbMemcard_1");
             this.cbMemcard_1.Name = "cbMemcard_1";
-            this.cbMemcard_1.Size = new System.Drawing.Size(70, 17);
-            this.cbMemcard_1.TabIndex = 1;
-            this.cbMemcard_1.Text = "Memcard";
             this.cbMemcard_1.UseVisualStyleBackColor = true;
             this.cbMemcard_1.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // btnOK
             // 
+            resources.ApplyResources(this.btnOK, "btnOK");
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(408, 163);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 2;
-            this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.BtnOk_Click);
             // 
             // btnCancel
             // 
+            resources.ApplyResources(this.btnCancel, "btnCancel");
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(489, 163);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 3;
-            this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.lbl_p_2_4);
             this.groupBox2.Controls.Add(this.lbl_p_2_3);
             this.groupBox2.Controls.Add(this.lbl_p_2_2);
@@ -242,138 +203,101 @@
             this.groupBox2.Controls.Add(this.combo_2_1);
             this.groupBox2.Controls.Add(this.cbMemcard_2);
             this.groupBox2.Controls.Add(this.cbMultitap_2);
-            this.groupBox2.Location = new System.Drawing.Point(291, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(273, 136);
-            this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Port 2";
             // 
             // lbl_p_2_4
             // 
-            this.lbl_p_2_4.Location = new System.Drawing.Point(241, 105);
+            resources.ApplyResources(this.lbl_p_2_4, "lbl_p_2_4");
             this.lbl_p_2_4.Name = "lbl_p_2_4";
-            this.lbl_p_2_4.Text = "P1";
-            this.lbl_p_2_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_2_3
             // 
-            this.lbl_p_2_3.Location = new System.Drawing.Point(241, 78);
+            resources.ApplyResources(this.lbl_p_2_3, "lbl_p_2_3");
             this.lbl_p_2_3.Name = "lbl_p_2_3";
-            this.lbl_p_2_3.Text = "P1";
-            this.lbl_p_2_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_2_2
             // 
-            this.lbl_p_2_2.Location = new System.Drawing.Point(241, 50);
+            resources.ApplyResources(this.lbl_p_2_2, "lbl_p_2_2");
             this.lbl_p_2_2.Name = "lbl_p_2_2";
-            this.lbl_p_2_2.Text = "P1";
-            this.lbl_p_2_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_p_2_1
             // 
-            this.lbl_p_2_1.Location = new System.Drawing.Point(241, 24);
+            resources.ApplyResources(this.lbl_p_2_1, "lbl_p_2_1");
             this.lbl_p_2_1.Name = "lbl_p_2_1";
-            this.lbl_p_2_1.Text = "P1";
-            this.lbl_p_2_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_4
             // 
-            this.lbl_2_4.Location = new System.Drawing.Point(94, 105);
+            resources.ApplyResources(this.lbl_2_4, "lbl_2_4");
             this.lbl_2_4.Name = "lbl_2_4";
-            this.lbl_2_4.Text = "D";
-            this.lbl_2_4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_3
             // 
-            this.lbl_2_3.Location = new System.Drawing.Point(94, 78);
+            resources.ApplyResources(this.lbl_2_3, "lbl_2_3");
             this.lbl_2_3.Name = "lbl_2_3";
-            this.lbl_2_3.Text = "C";
-            this.lbl_2_3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_2
             // 
-            this.lbl_2_2.Location = new System.Drawing.Point(94, 51);
+            resources.ApplyResources(this.lbl_2_2, "lbl_2_2");
             this.lbl_2_2.Name = "lbl_2_2";
-            this.lbl_2_2.Text = "B";
-            this.lbl_2_2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lbl_2_1
             // 
-            this.lbl_2_1.Location = new System.Drawing.Point(94, 24);
+            resources.ApplyResources(this.lbl_2_1, "lbl_2_1");
             this.lbl_2_1.Name = "lbl_2_1";
-            this.lbl_2_1.Text = "A";
-            this.lbl_2_1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // combo_2_4
             // 
+            resources.ApplyResources(this.combo_2_4, "combo_2_4");
             this.combo_2_4.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_2_4.FormattingEnabled = true;
-            this.combo_2_4.Location = new System.Drawing.Point(114, 102);
             this.combo_2_4.Name = "combo_2_4";
-            this.combo_2_4.Size = new System.Drawing.Size(121, 21);
-            this.combo_2_4.TabIndex = 5;
             this.combo_2_4.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_2_3
             // 
+            resources.ApplyResources(this.combo_2_3, "combo_2_3");
             this.combo_2_3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_2_3.FormattingEnabled = true;
-            this.combo_2_3.Location = new System.Drawing.Point(114, 75);
             this.combo_2_3.Name = "combo_2_3";
-            this.combo_2_3.Size = new System.Drawing.Size(121, 21);
-            this.combo_2_3.TabIndex = 4;
             this.combo_2_3.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_2_2
             // 
+            resources.ApplyResources(this.combo_2_2, "combo_2_2");
             this.combo_2_2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_2_2.FormattingEnabled = true;
-            this.combo_2_2.Location = new System.Drawing.Point(114, 48);
             this.combo_2_2.Name = "combo_2_2";
-            this.combo_2_2.Size = new System.Drawing.Size(121, 21);
-            this.combo_2_2.TabIndex = 3;
             this.combo_2_2.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_2_1
             // 
+            resources.ApplyResources(this.combo_2_1, "combo_2_1");
             this.combo_2_1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.combo_2_1.FormattingEnabled = true;
-            this.combo_2_1.Location = new System.Drawing.Point(114, 21);
             this.combo_2_1.Name = "combo_2_1";
-            this.combo_2_1.Size = new System.Drawing.Size(121, 21);
-            this.combo_2_1.TabIndex = 2;
             this.combo_2_1.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // cbMemcard_2
             // 
-            this.cbMemcard_2.AutoSize = true;
-            this.cbMemcard_2.Location = new System.Drawing.Point(18, 21);
+            resources.ApplyResources(this.cbMemcard_2, "cbMemcard_2");
             this.cbMemcard_2.Name = "cbMemcard_2";
-            this.cbMemcard_2.Size = new System.Drawing.Size(70, 17);
-            this.cbMemcard_2.TabIndex = 1;
-            this.cbMemcard_2.Text = "Memcard";
             this.cbMemcard_2.UseVisualStyleBackColor = true;
             this.cbMemcard_2.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // cbMultitap_2
             // 
-            this.cbMultitap_2.AutoSize = true;
-            this.cbMultitap_2.Location = new System.Drawing.Point(18, 43);
+            resources.ApplyResources(this.cbMultitap_2, "cbMultitap_2");
             this.cbMultitap_2.Name = "cbMultitap_2";
-            this.cbMultitap_2.Size = new System.Drawing.Size(63, 17);
-            this.cbMultitap_2.TabIndex = 0;
-            this.cbMultitap_2.Text = "Multitap";
             this.cbMultitap_2.UseVisualStyleBackColor = true;
             this.cbMultitap_2.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
-            // PSXControllerConfigNew
+            // PSXControllerConfig
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(586, 201);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -382,8 +306,6 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "PSXControllerConfig";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Controller / Memcard Configuration";
             this.Load += new System.EventHandler(this.PSXControllerConfigNew_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

@@ -142,9 +142,6 @@
   <data name="groupBox4.Size" type="System.Drawing.Size, System.Drawing">
     <value>524, 496</value>
   </data>
-  <data name="bmpViewNTW.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 17</value>
-  </data>
   <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
@@ -158,8 +155,8 @@
     <value>4</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.AutoScroll" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="bmpViewNTW.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -173,14 +170,8 @@
   <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
     <value>268, 82</value>
   </data>
-  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="saveBGBScreenshotToolStripMenuItem.Text" xml:space="preserve">
     <value>Save BG B Screenshot...</value>
-  </data>
-  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
   </data>
   <data name="&gt;&gt;bmpViewNTW.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -191,11 +182,17 @@
   <data name="&gt;&gt;saveTilesScreenshotToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;bmpViewNTB.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="bmpViewPal.Text" xml:space="preserve">
+    <value>bmpView1</value>
   </data>
-  <data name="bmpViewTiles.Size" type="System.Drawing.Size, System.Drawing">
-    <value>512, 256</value>
+  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>524, 259</value>
   </data>
   <data name="&gt;&gt;bmpViewNTB.Name" xml:space="preserve">
     <value>bmpViewNTB</value>
@@ -230,9 +227,6 @@
   <data name="&gt;&gt;saveBGBScreenshotToolStripMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="bmpViewNTA.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
   <data name="savePaletteScreenshotToolStripMenuItem.Text" xml:space="preserve">
     <value>Save Palette Screenshot...</value>
   </data>
@@ -245,9 +239,6 @@
   <data name="bmpViewNTA.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;bmpViewTiles.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="&gt;&gt;saveBGAScreenshotToolStripMenuItem.Name" xml:space="preserve">
     <value>saveBGAScreenshotToolStripMenuItem</value>
   </data>
@@ -259,9 +250,6 @@
   </data>
   <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="bmpViewNTW.Text" xml:space="preserve">
-    <value>bmpView1</value>
   </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
@@ -278,14 +266,8 @@
   <data name="&gt;&gt;saveWindowScreenshotToolStripMenuItem.Name" xml:space="preserve">
     <value>saveWindowScreenshotToolStripMenuItem</value>
   </data>
-  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
   <data name="bmpViewNTB.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
-  </data>
-  <data name="&gt;&gt;saveBGAScreenshotToolStripMenuItem.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="groupBox3.Text" xml:space="preserve">
     <value>Window</value>
@@ -308,14 +290,20 @@
   <data name="bmpViewPal.Location" type="System.Drawing.Point, System.Drawing">
     <value>6, 17</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>Tiles</value>
-  </data>
-  <data name="bmpViewTiles.Text" xml:space="preserve">
+  <data name="bmpViewNTB.Text" xml:space="preserve">
     <value>bmpView1</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="bmpViewNTW.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 17</value>
   </data>
   <data name="&gt;&gt;fileToolStripMenuItem.Name" xml:space="preserve">
     <value>fileToolStripMenuItem</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>1078, 813</value>
@@ -335,14 +323,20 @@
   <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
+  <data name="&gt;&gt;saveBGAScreenshotToolStripMenuItem.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>GenVdpViewer</value>
+  </data>
+  <data name="&gt;&gt;bmpViewNTB.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="saveTilesScreenshotToolStripMenuItem.Text" xml:space="preserve">
     <value>Save Tiles Screenshot...</value>
+  </data>
+  <data name="&gt;&gt;bmpViewPal.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>743, 789</value>
@@ -359,7 +353,7 @@
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="bmpViewNTB.Text" xml:space="preserve">
+  <data name="bmpViewTiles.Text" xml:space="preserve">
     <value>bmpView1</value>
   </data>
   <data name="&gt;&gt;bmpViewTiles.Parent" xml:space="preserve">
@@ -380,17 +374,20 @@
   <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
     <value>menuStrip1</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>GenVdpViewer</value>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
-    <value>groupBox2</value>
+  <data name="&gt;&gt;bmpViewNTA.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="bmpViewNTW.Text" xml:space="preserve">
+    <value>bmpView1</value>
   </data>
   <data name="&gt;&gt;groupBox5.Name" xml:space="preserve">
     <value>groupBox5</value>
   </data>
-  <data name="&gt;&gt;groupBox3.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="bmpViewTiles.Size" type="System.Drawing.Size, System.Drawing">
+    <value>512, 256</value>
   </data>
   <data name="groupBox4.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -404,8 +401,8 @@
   <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
     <value>524, 496</value>
   </data>
-  <data name="bmpViewPal.Text" xml:space="preserve">
-    <value>bmpView1</value>
+  <data name="&gt;&gt;bmpViewTiles.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="bmpViewNTB.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -419,32 +416,35 @@
   <data name="&gt;&gt;bmpViewNTA.Parent" xml:space="preserve">
     <value>groupBox4</value>
   </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Tiles</value>
+  </data>
   <data name="groupBox3.Location" type="System.Drawing.Point, System.Drawing">
     <value>542, 524</value>
-  </data>
-  <data name="&gt;&gt;groupBox3.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;groupBox5.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="&gt;&gt;bmpViewNTA.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.BmpView, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="bmpViewNTA.Text" xml:space="preserve">
+    <value>bmpView1</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
   </data>
   <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="groupBox3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>524, 259</value>
+  <data name="&gt;&gt;groupBox3.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
-  <data name="bmpViewNTW.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="$this.AutoScroll" type="System.Boolean, mscorlib">
+    <value>True</value>
   </data>
-  <data name="&gt;&gt;bmpViewPal.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="bmpViewNTA.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
   </data>
-  <data name="bmpViewNTA.Text" xml:space="preserve">
-    <value>bmpView1</value>
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
   </data>
   <data name="&gt;&gt;saveTilesScreenshotToolStripMenuItem.Name" xml:space="preserve">
     <value>saveTilesScreenshotToolStripMenuItem</value>

@@ -132,14 +132,26 @@
   <data name="colInfo.Text" xml:space="preserve">
     <value>信息</value>
   </data>
+  <data name="lvOptions.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label1.Text" xml:space="preserve">
     <value>该固件的选项：</value>
+  </data>
+  <data name="label1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="btnClose.Text" xml:space="preserve">
     <value>关闭</value>
   </data>
+  <data name="btnClose.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label2.Text" xml:space="preserve">
     <value>固件：</value>
+  </data>
+  <data name="label2.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblFirmware.Location" type="System.Drawing.Point, System.Drawing">
@@ -148,10 +160,25 @@
   <data name="lblFirmware.Text" xml:space="preserve">
     <value>标签3</value>
   </data>
+  <data name="lblFirmware.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="flowLayoutPanel1.Size" type="System.Drawing.Size, System.Drawing">
     <value>88, 12</value>
   </data>
+  <data name="flowLayoutPanel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tableLayoutPanel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="lvmiOptionsContextMenuStrip.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>固件信息</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
 </root>

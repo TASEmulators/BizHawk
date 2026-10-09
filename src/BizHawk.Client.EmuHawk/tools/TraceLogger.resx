@@ -126,9 +126,8 @@
   <data name="&gt;&gt;BrowseBox.Parent" xml:space="preserve">
     <value>groupBox2</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="ToWindowRadio.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 16</value>
+  <data name="TracerBox.Text" xml:space="preserve">
+    <value>Trace log</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="OpenLogFile.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -136,9 +135,6 @@
   </data>
   <data name="&gt;&gt;ToWindowRadio.Parent" xml:space="preserve">
     <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;OpenLogFile.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="&gt;&gt;menuStrip1.Parent" xml:space="preserve">
     <value>$this</value>
@@ -158,26 +154,31 @@
   <data name="&gt;&gt;TraceView.Type" xml:space="preserve">
     <value>BizHawk.Client.EmuHawk.InputRoll, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
+  <data name="&gt;&gt;ClearContextMenu.Type" xml:space="preserve">
+    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
   <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="TracerBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="BrowseBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>54, 21</value>
   </data>
   <data name="FileBox.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
-  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="SelectAllMenuItem.Text" xml:space="preserve">
     <value>Select &amp;All</value>
   </data>
   <data name="TracerBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 25</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;EditSubMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
@@ -209,10 +210,6 @@
   <data name="&gt;&gt;TraceView.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;SaveLogMenuItem.Name" xml:space="preserve">
-    <value>SaveLogMenuItem</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
   </data>
@@ -231,8 +228,8 @@
   <data name="LoggingEnabled.Size" type="System.Drawing.Size, System.Drawing">
     <value>93, 22</value>
   </data>
-  <data name="FileSubMenu.Text" xml:space="preserve">
-    <value>&amp;File</value>
+  <data name="LoggingEnabled.Text" xml:space="preserve">
+    <value>Start &amp;logging</value>
   </data>
   <data name="ToFileRadio.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -240,11 +237,8 @@
   <data name="&gt;&gt;TraceContextMenu.Type" xml:space="preserve">
     <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="TracerBox.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="&gt;&gt;FileBox.Name" xml:space="preserve">
-    <value>FileBox</value>
+  <data name="&gt;&gt;ToFileRadio.Type" xml:space="preserve">
+    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;OpenLogFile.Name" xml:space="preserve">
     <value>OpenLogFile</value>
@@ -252,17 +246,20 @@
   <data name="ToWindowRadio.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
+  <data name="SelectAllContextMenu.ShortcutKeyDisplayString" xml:space="preserve">
+    <value>Ctrl+A</value>
+  </data>
   <data name="&gt;&gt;SelectAllContextMenu.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;SegmentSizeMenuItem.Name" xml:space="preserve">
-    <value>SegmentSizeMenuItem</value>
+  <data name="FileSubMenu.Text" xml:space="preserve">
+    <value>&amp;File</value>
   </data>
   <data name="&gt;&gt;CopyMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="&gt;&gt;BrowseBox.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="SelectAllContextMenu.Text" xml:space="preserve">
+    <value>Select &amp;All</value>
   </data>
   <data name="&gt;&gt;FileBox.Parent" xml:space="preserve">
     <value>groupBox2</value>
@@ -276,23 +273,23 @@
   <data name="FileBox.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
+  <data name="SegmentSizeMenuItem.Text" xml:space="preserve">
+    <value>Set Segment Size...</value>
+  </data>
   <data name="FileBox.Location" type="System.Drawing.Point, System.Drawing">
     <value>223, 18</value>
-  </data>
-  <data name="&gt;&gt;TracerBox.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="LoggingEnabled.Location" type="System.Drawing.Point, System.Drawing">
     <value>9, 18</value>
   </data>
-  <data name="&gt;&gt;TracerBox.Name" xml:space="preserve">
-    <value>TracerBox</value>
+  <data name="BrowseBox.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
-  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>400, 215</value>
+  <data name="&gt;&gt;OpenLogFile.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="LoggingEnabled.Text" xml:space="preserve">
-    <value>Start &amp;logging</value>
+  <data name="TracerBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>620, 410</value>
   </data>
   <data name="&gt;&gt;OpenLogFile.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -300,8 +297,8 @@
   <data name="SelectAllMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+A</value>
   </data>
-  <data name="OpenLogFile.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
+  <data name="&gt;&gt;TracerBox.Name" xml:space="preserve">
+    <value>TracerBox</value>
   </data>
   <data name="OptionsSubMenu.Text" xml:space="preserve">
     <value>&amp;Settings</value>
@@ -318,8 +315,8 @@
   <data name="FileBox.Size" type="System.Drawing.Size, System.Drawing">
     <value>242, 21</value>
   </data>
-  <data name="CopyMenuItem.Text" xml:space="preserve">
-    <value>&amp;Copy</value>
+  <data name="&gt;&gt;BrowseBox.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;MaxLinesMenuItem.Name" xml:space="preserve">
     <value>MaxLinesMenuItem</value>
@@ -342,17 +339,14 @@
   <data name="CopyMenuItem.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>Ctrl+C</value>
   </data>
-  <data name="SelectAllContextMenu.Text" xml:space="preserve">
-    <value>Select &amp;All</value>
+  <data name="&gt;&gt;SaveLogMenuItem.Name" xml:space="preserve">
+    <value>SaveLogMenuItem</value>
   </data>
   <data name="&gt;&gt;FileBox.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="&gt;&gt;MaxLinesMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;SelectAllMenuItem.Name" xml:space="preserve">
-    <value>SelectAllMenuItem</value>
   </data>
   <data name="&gt;&gt;OptionsSubMenu.Name" xml:space="preserve">
     <value>OptionsSubMenu</value>
@@ -366,8 +360,8 @@
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
     <value>644, 498</value>
   </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="CopyMenuItem.Text" xml:space="preserve">
+    <value>&amp;Copy</value>
   </data>
   <data name="ToWindowRadio.Text" xml:space="preserve">
     <value>to window</value>
@@ -390,6 +384,9 @@
   <data name="&gt;&gt;LoggingEnabled.Name" xml:space="preserve">
     <value>LoggingEnabled</value>
   </data>
+  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
+    <value>menuStrip1</value>
+  </data>
   <data name="&gt;&gt;SelectAllContextMenu.Name" xml:space="preserve">
     <value>SelectAllContextMenu</value>
   </data>
@@ -398,6 +395,9 @@
   </data>
   <data name="&gt;&gt;ClearMenuItem.Name" xml:space="preserve">
     <value>ClearMenuItem</value>
+  </data>
+  <data name="OpenLogFile.Text" xml:space="preserve">
+    <value>&amp;Open</value>
   </data>
   <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
     <value>620, 46</value>
@@ -414,35 +414,38 @@
   <data name="MaxLinesMenuItem.Text" xml:space="preserve">
     <value>&amp;Set Max Lines...</value>
   </data>
-  <data name="OpenLogFile.Text" xml:space="preserve">
-    <value>&amp;Open</value>
+  <data name="ToWindowRadio.Size" type="System.Drawing.Size, System.Drawing">
+    <value>77, 16</value>
   </data>
   <data name="TraceContextMenu.Size" type="System.Drawing.Size, System.Drawing">
     <value>174, 70</value>
   </data>
-  <data name="TracerBox.Text" xml:space="preserve">
-    <value>Trace log</value>
+  <data name="&gt;&gt;FileBox.Name" xml:space="preserve">
+    <value>FileBox</value>
   </data>
   <data name="ToFileRadio.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="BrowseBox.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="TracerBox.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;menuStrip1.Name" xml:space="preserve">
-    <value>menuStrip1</value>
+  <data name="OpenLogFile.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
   </data>
   <data name="&gt;&gt;ClearContextMenu.Name" xml:space="preserve">
     <value>ClearContextMenu</value>
   </data>
-  <data name="SegmentSizeMenuItem.Text" xml:space="preserve">
-    <value>Set Segment Size...</value>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="LoggingEnabled.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
   <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
     <value>groupBox2</value>
+  </data>
+  <data name="groupBox2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Left, Right</value>
   </data>
   <data name="&gt;&gt;TraceView.Name" xml:space="preserve">
     <value>TraceView</value>
@@ -456,17 +459,17 @@
   <data name="&gt;&gt;EditSubMenu.Name" xml:space="preserve">
     <value>EditSubMenu</value>
   </data>
+  <data name="&gt;&gt;SegmentSizeMenuItem.Name" xml:space="preserve">
+    <value>SegmentSizeMenuItem</value>
+  </data>
   <data name="FileBox.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
   </data>
-  <data name="&gt;&gt;ToFileRadio.Type" xml:space="preserve">
-    <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="CopyContextMenu.Text" xml:space="preserve">
+    <value>&amp;Copy</value>
   </data>
   <data name="ToFileRadio.Location" type="System.Drawing.Point, System.Drawing">
     <value>170, 20</value>
-  </data>
-  <data name="OpenLogFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>60, 21</value>
   </data>
   <data name="&gt;&gt;menuStrip1.ZOrder" xml:space="preserve">
     <value>2</value>
@@ -477,14 +480,11 @@
   <data name="CopyMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value />
   </data>
-  <data name="CopyContextMenu.Text" xml:space="preserve">
-    <value>&amp;Copy</value>
+  <data name="&gt;&gt;TracerBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="SelectAllContextMenu.ShortcutKeyDisplayString" xml:space="preserve">
-    <value>Ctrl+A</value>
-  </data>
-  <data name="LoggingEnabled.Appearance" type="System.Windows.Forms.Appearance, System.Windows.Forms">
-    <value>Button</value>
+  <data name="&gt;&gt;SelectAllMenuItem.Name" xml:space="preserve">
+    <value>SelectAllMenuItem</value>
   </data>
   <data name="&gt;&gt;LoggingEnabled.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -498,8 +498,8 @@
   <data name="&gt;&gt;ClearMenuItem.Type" xml:space="preserve">
     <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
-  <data name="groupBox2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Left, Right</value>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>BizHawk.Client.EmuHawk.ToolFormBase, BizHawk.Client.EmuHawk, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="BrowseBox.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
@@ -513,20 +513,20 @@
   <data name="&gt;&gt;ToFileRadio.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="TracerBox.Size" type="System.Drawing.Size, System.Drawing">
-    <value>620, 410</value>
+  <data name="OpenLogFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>60, 21</value>
   </data>
   <data name="SelectAllMenuItem.ShortcutKeyDisplayString" xml:space="preserve">
     <value />
   </data>
-  <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="LoggingEnabled.Appearance" type="System.Windows.Forms.Appearance, System.Windows.Forms">
+    <value>Button</value>
   </data>
   <data name="&gt;&gt;FileSubMenu.Name" xml:space="preserve">
     <value>FileSubMenu</value>
   </data>
-  <data name="&gt;&gt;ClearContextMenu.Type" xml:space="preserve">
-    <value>BizHawk.WinForms.Controls.ToolStripMenuItemEx, BizHawk.WinForms.Controls, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>400, 215</value>
   </data>
   <data name="&gt;&gt;ToWindowRadio.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -537,8 +537,8 @@
   <data name="TraceView.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
-  <metadata name="TraceContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>132, 17</value>
+  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -546,7 +546,7 @@
   <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>zh-CN</value>
   </metadata>
-  <metadata name="menuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+  <metadata name="TraceContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>132, 17</value>
   </metadata>
 </root>

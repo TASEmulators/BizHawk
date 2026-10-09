@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="UndoBranchButton.ToolTip" xml:space="preserve">
-    <value />
+    <value>撤销分支</value>
+  </data>
+  <data name="JumpToBranchButton.ToolTip" xml:space="preserve">
+    <value>跳转到分支</value>
+  </data>
+  <data name="UpdateBranchButton.ToolTip" xml:space="preserve">
+    <value>更新分支</value>
+  </data>
+  <data name="AddWithTextBranchButton.ToolTip" xml:space="preserve">
+    <value>添加带文本的分支</value>
   </data>
   <data name="AddBranchButton.ToolTip" xml:space="preserve">
-    <value />
+    <value>添加分支</value>
   </data>
-  <data name="BranchesContextMenu.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="BranchView.ToolTip" xml:space="preserve">
-    <value />
+  <data name="LoadBranchButton.ToolTip" xml:space="preserve">
+    <value>加载分支</value>
   </data>
   <data name="BookmarksBranchesGroupBox.Text" xml:space="preserve">
     <value>分支</value>
-  </data>
-  <data name="BookmarksBranchesGroupBox.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="$this.ToolTip" xml:space="preserve">
-    <value />
   </data>
 </root>

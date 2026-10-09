@@ -98,6 +98,7 @@ namespace BizHawk.Client.EmuHawk
             this.lvFirmware.Name = "lvFirmware";
             this.lvFirmware.ShowItemToolTips = true;
             this.lvFirmware.SmallImageList = this.imageList1;
+            this.toolTip1.SetToolTip(this.lvFirmware, resources.GetString("lvFirmware.ToolTip"));
             this.lvFirmware.UseCompatibleStateImageBehavior = false;
             this.lvFirmware.View = System.Windows.Forms.View.Details;
             this.lvFirmware.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.LvFirmware_ColumnClick);
@@ -147,6 +148,7 @@ namespace BizHawk.Client.EmuHawk
             this.tsmiInfo,
             this.tsmiCopy});
             this.lvFirmwareContextMenuStrip.Name = "lvFirmwareContextMenuStrip";
+            this.toolTip1.SetToolTip(this.lvFirmwareContextMenuStrip, resources.GetString("lvFirmwareContextMenuStrip.ToolTip"));
             this.lvFirmwareContextMenuStrip.Opening += new System.ComponentModel.CancelEventHandler(this.LvFirmwareContextMenuStrip_Opening);
             // 
             // tsmiSetCustomization
@@ -175,6 +177,7 @@ namespace BizHawk.Client.EmuHawk
             this.panel1.Controls.Add(this.lvFirmware);
             this.panel1.Controls.Add(this.toolStrip1);
             this.panel1.Name = "panel1";
+            this.toolTip1.SetToolTip(this.panel1, resources.GetString("panel1.ToolTip"));
             // 
             // toolStrip1
             // 
@@ -191,6 +194,7 @@ namespace BizHawk.Client.EmuHawk
             this.tbbOpenFolder,
             this._cbAllowImport});
             this.toolStrip1.Name = "toolStrip1";
+            this.toolTip1.SetToolTip(this.toolStrip1, resources.GetString("toolStrip1.ToolTip"));
             // 
             // tbbGroup
             // 
@@ -270,6 +274,7 @@ namespace BizHawk.Client.EmuHawk
             this.tableLayoutPanel1.Controls.Add(this.panel2, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.toolTip1.SetToolTip(this.tableLayoutPanel1, resources.GetString("tableLayoutPanel1.ToolTip"));
             // 
             // panel2
             // 
@@ -278,22 +283,26 @@ namespace BizHawk.Client.EmuHawk
             this.panel2.Controls.Add(this.linkBasePath);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Name = "panel2";
+            this.toolTip1.SetToolTip(this.panel2, resources.GetString("panel2.ToolTip"));
             // 
             // linkBasePath
             // 
             resources.ApplyResources(this.linkBasePath, "linkBasePath");
             this.linkBasePath.Name = "linkBasePath";
             this.linkBasePath.TabStop = true;
+            this.toolTip1.SetToolTip(this.linkBasePath, resources.GetString("linkBasePath.ToolTip"));
             // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            this.toolTip1.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
             // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
+            this.toolTip1.SetToolTip(this.label2, resources.GetString("label2.ToolTip"));
             // 
             // FirmwareConfig
             // 
@@ -302,6 +311,7 @@ namespace BizHawk.Client.EmuHawk
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "FirmwareConfig";
             this.ShowIcon = false;
+            this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FirmwareConfig_FormClosed);
             this.Load += new System.EventHandler(this.FirmwareConfig_Load);
             this.lvFirmwareContextMenuStrip.ResumeLayout(false);

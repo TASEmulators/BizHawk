@@ -120,6 +120,9 @@
   <data name="NormalControlsTab.Text" xml:space="preserve">
     <value>普通控制器</value>
   </data>
+  <data name="NormalControlsTab.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="AutofireControlsTab.Size" type="System.Drawing.Size, System.Drawing">
     <value>554, 454</value>
@@ -127,11 +130,17 @@
   <data name="AutofireControlsTab.Text" xml:space="preserve">
     <value>连发控制器</value>
   </data>
+  <data name="AutofireControlsTab.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="AnalogControlsTab.Size" type="System.Drawing.Size, System.Drawing">
     <value>554, 454</value>
   </data>
   <data name="AnalogControlsTab.Text" xml:space="preserve">
     <value>模拟摇杆</value>
+  </data>
+  <data name="AnalogControlsTab.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="FeedbacksTab.Size" type="System.Drawing.Size, System.Drawing">
     <value>554, 454</value>
@@ -139,23 +148,44 @@
   <data name="FeedbacksTab.Text" xml:space="preserve">
     <value>力反馈</value>
   </data>
+  <data name="FeedbacksTab.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabControl1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="checkBoxAutoTab.Location" type="System.Drawing.Point, System.Drawing">
     <value>505, 505</value>
   </data>
   <data name="checkBoxAutoTab.Text" xml:space="preserve">
     <value>自动切换</value>
   </data>
+  <data name="checkBoxAutoTab.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
     <value>保存(&amp;S)</value>
+  </data>
+  <data name="buttonOK.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>取消(&amp;C)</value>
   </data>
+  <data name="buttonCancel.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="pictureBox1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tableLayoutPanel1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="contextMenuStrip1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="label3.Text" xml:space="preserve">
     <value>提示：</value>
-  </data>
-  <data name="label3.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>338, 506</value>
@@ -163,31 +193,22 @@
   <data name="label2.Text" xml:space="preserve">
     <value>禁用自动切换可设置多个按键</value>
   </data>
-  <data name="label2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label38.Location" type="System.Drawing.Point, System.Drawing">
     <value>58, 508</value>
   </data>
   <data name="label38.Text" xml:space="preserve">
     <value>使用 ESC 清除一个按键设置</value>
   </data>
-  <data name="label38.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="btnMisc.Text" xml:space="preserve">
     <value>杂项</value>
   </data>
-  <data name="btnMisc.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="flpUDLR.Location" type="System.Drawing.Point, System.Drawing">
-    <value>390, 578</value>
-  </data>
-  <data name="flpUDLR.ToolTip" xml:space="preserve">
-    <value />
+    <value>348, 654</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>控制器设置</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
   </data>
 </root>

@@ -37,7 +37,6 @@
             this.lblUserFilterName = new BizHawk.WinForms.Controls.LocLabelEx();
             this.btnSelectUserFilter = new System.Windows.Forms.Button();
             this.rbUser = new System.Windows.Forms.RadioButton();
-            this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
             this.rbNone = new System.Windows.Forms.RadioButton();
             this.rbScanlines = new System.Windows.Forms.RadioButton();
             this.rbHq2x = new System.Windows.Forms.RadioButton();
@@ -111,12 +110,12 @@
             this.cbStatusBarWindowed = new System.Windows.Forms.CheckBox();
             this.label9 = new BizHawk.WinForms.Controls.LocLabelEx();
             this.cbMenuWindowed = new System.Windows.Forms.CheckBox();
-            this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
             this.cbCaptionWindowed = new System.Windows.Forms.CheckBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
+            this.trackbarFrameSizeWindowed = new BizHawk.Client.EmuHawk.TransparentTrackBar();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
             this.grpFinalFilter.SuspendLayout();
             this.grpARSelection.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -131,6 +130,7 @@
             this.tabPage1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).BeginInit();
             this.SuspendLayout();
             // 
@@ -192,18 +192,6 @@
             this.rbUser.TabStop = true;
             this.toolTip1.SetToolTip(this.rbUser, resources.GetString("rbUser.ToolTip"));
             this.rbUser.UseVisualStyleBackColor = true;
-            // 
-            // tbScanlineIntensity
-            // 
-            resources.ApplyResources(this.tbScanlineIntensity, "tbScanlineIntensity");
-            this.tbScanlineIntensity.LargeChange = 32;
-            this.tbScanlineIntensity.Maximum = 256;
-            this.tbScanlineIntensity.Name = "tbScanlineIntensity";
-            this.tbScanlineIntensity.TickFrequency = 32;
-            this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-            this.toolTip1.SetToolTip(this.tbScanlineIntensity, resources.GetString("tbScanlineIntensity.ToolTip"));
-            this.tbScanlineIntensity.Scroll += new System.EventHandler(this.TbScanlineIntensity_Scroll);
-            this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.TbScanlineIntensity_Scroll);
             // 
             // rbNone
             // 
@@ -800,16 +788,6 @@
             this.toolTip1.SetToolTip(this.cbMenuWindowed, resources.GetString("cbMenuWindowed.ToolTip"));
             this.cbMenuWindowed.UseVisualStyleBackColor = true;
             // 
-            // trackbarFrameSizeWindowed
-            // 
-            resources.ApplyResources(this.trackbarFrameSizeWindowed, "trackbarFrameSizeWindowed");
-            this.trackbarFrameSizeWindowed.LargeChange = 1;
-            this.trackbarFrameSizeWindowed.Maximum = 2;
-            this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
-            this.toolTip1.SetToolTip(this.trackbarFrameSizeWindowed, resources.GetString("trackbarFrameSizeWindowed.ToolTip"));
-            this.trackbarFrameSizeWindowed.Value = 1;
-            this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.TrackBarFrameSizeWindowed_ValueChanged);
-            // 
             // cbCaptionWindowed
             // 
             resources.ApplyResources(this.cbCaptionWindowed, "cbCaptionWindowed");
@@ -824,6 +802,28 @@
             this.linkLabel1.TabStop = true;
             this.toolTip1.SetToolTip(this.linkLabel1, resources.GetString("linkLabel1.ToolTip"));
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
+            // 
+            // tbScanlineIntensity
+            // 
+            resources.ApplyResources(this.tbScanlineIntensity, "tbScanlineIntensity");
+            this.tbScanlineIntensity.LargeChange = 32;
+            this.tbScanlineIntensity.Maximum = 256;
+            this.tbScanlineIntensity.Name = "tbScanlineIntensity";
+            this.tbScanlineIntensity.TickFrequency = 32;
+            this.tbScanlineIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+            this.toolTip1.SetToolTip(this.tbScanlineIntensity, resources.GetString("tbScanlineIntensity.ToolTip"));
+            this.tbScanlineIntensity.Scroll += new System.EventHandler(this.TbScanlineIntensity_Scroll);
+            this.tbScanlineIntensity.ValueChanged += new System.EventHandler(this.TbScanlineIntensity_Scroll);
+            // 
+            // trackbarFrameSizeWindowed
+            // 
+            resources.ApplyResources(this.trackbarFrameSizeWindowed, "trackbarFrameSizeWindowed");
+            this.trackbarFrameSizeWindowed.LargeChange = 1;
+            this.trackbarFrameSizeWindowed.Maximum = 2;
+            this.trackbarFrameSizeWindowed.Name = "trackbarFrameSizeWindowed";
+            this.toolTip1.SetToolTip(this.trackbarFrameSizeWindowed, resources.GetString("trackbarFrameSizeWindowed.ToolTip"));
+            this.trackbarFrameSizeWindowed.Value = 1;
+            this.trackbarFrameSizeWindowed.ValueChanged += new System.EventHandler(this.TrackBarFrameSizeWindowed_ValueChanged);
             // 
             // DisplayConfig
             // 
@@ -840,7 +840,6 @@
             this.toolTip1.SetToolTip(this, resources.GetString("$this.ToolTip"));
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
             this.grpFinalFilter.ResumeLayout(false);
             this.grpFinalFilter.PerformLayout();
             this.grpARSelection.ResumeLayout(false);
@@ -866,6 +865,7 @@
             this.groupBox4.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tbScanlineIntensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackbarFrameSizeWindowed)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
