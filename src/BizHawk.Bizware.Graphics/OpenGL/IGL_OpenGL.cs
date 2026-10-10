@@ -14,6 +14,8 @@ namespace BizHawk.Bizware.Graphics
 
 		private readonly GL GL;
 
+		internal GL LibrashaderGL => GL;
+
 		// rendering state
 		private OpenGLPipeline _curPipeline;
 		internal bool DefaultRenderTargetBound;

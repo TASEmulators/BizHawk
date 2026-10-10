@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk
+namespace BizHawk.Client.EmuHawk
 {
 	partial class DisplayConfig
 	{
@@ -36,7 +36,8 @@
 			this.lblScanlines = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.lblUserFilterName = new BizHawk.WinForms.Controls.LocLabelEx();
 			this.btnSelectUserFilter = new System.Windows.Forms.Button();
-			this.rbUser = new System.Windows.Forms.RadioButton();
+			this.rbLegacy = new System.Windows.Forms.RadioButton();
+			this.rbLibrashader = new System.Windows.Forms.RadioButton();
 			this.tbScanlineIntensity = new BizHawk.Client.EmuHawk.TransparentTrackBar();
 			this.rbNone = new System.Windows.Forms.RadioButton();
 			this.rbScanlines = new System.Windows.Forms.RadioButton();
@@ -161,14 +162,15 @@
 			this.groupBox1.Controls.Add(this.lblScanlines);
 			this.groupBox1.Controls.Add(this.lblUserFilterName);
 			this.groupBox1.Controls.Add(this.btnSelectUserFilter);
-			this.groupBox1.Controls.Add(this.rbUser);
+			this.groupBox1.Controls.Add(this.rbLibrashader);
+			this.groupBox1.Controls.Add(this.rbLegacy);
 			this.groupBox1.Controls.Add(this.tbScanlineIntensity);
 			this.groupBox1.Controls.Add(this.rbNone);
 			this.groupBox1.Controls.Add(this.rbScanlines);
 			this.groupBox1.Controls.Add(this.rbHq2x);
 			this.groupBox1.Location = new System.Drawing.Point(6, 33);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(193, 132);
+			this.groupBox1.Size = new System.Drawing.Size(193, 155);
 			this.groupBox1.TabIndex = 7;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Scaling Filter";
@@ -182,7 +184,7 @@
 			// 
 			// lblUserFilterName
 			// 
-			this.lblUserFilterName.Location = new System.Drawing.Point(6, 114);
+			this.lblUserFilterName.Location = new System.Drawing.Point(6, 137);
 			this.lblUserFilterName.Name = "lblUserFilterName";
 			this.lblUserFilterName.Text = "Will contain user filter name";
 			// 
@@ -196,16 +198,27 @@
 			this.btnSelectUserFilter.UseVisualStyleBackColor = true;
 			this.btnSelectUserFilter.Click += new System.EventHandler(this.BtnSelectUserFilter_Click);
 			// 
-			// rbUser
+			// rbLegacy
 			// 
-			this.rbUser.AutoSize = true;
-			this.rbUser.Location = new System.Drawing.Point(6, 88);
-			this.rbUser.Name = "rbUser";
-			this.rbUser.Size = new System.Drawing.Size(47, 17);
-			this.rbUser.TabIndex = 4;
-			this.rbUser.TabStop = true;
-			this.rbUser.Text = "User";
-			this.rbUser.UseVisualStyleBackColor = true;
+			this.rbLegacy.AutoSize = true;
+			this.rbLegacy.Location = new System.Drawing.Point(6, 88);
+			this.rbLegacy.Name = "rbLegacy";
+			this.rbLegacy.Size = new System.Drawing.Size(47, 17);
+			this.rbLegacy.TabIndex = 4;
+			this.rbLegacy.TabStop = true;
+			this.rbLegacy.Text = "Legacy";
+			this.rbLegacy.UseVisualStyleBackColor = true;
+			// 
+			// rbLibrashader
+			// 
+			this.rbLibrashader.AutoSize = true;
+			this.rbLibrashader.Location = new System.Drawing.Point(6, 111);
+			this.rbLibrashader.Name = "rbLibrashader";
+			this.rbLibrashader.Size = new System.Drawing.Size(79, 17);
+			this.rbLibrashader.TabIndex = 6;
+			this.rbLibrashader.TabStop = true;
+			this.rbLibrashader.Text = "Librashader";
+			this.rbLibrashader.UseVisualStyleBackColor = true;
 			// 
 			// tbScanlineIntensity
 			// 
@@ -1055,7 +1068,9 @@
 		private System.Windows.Forms.RadioButton rbFinalFilterNone;
 		private System.Windows.Forms.RadioButton rbFinalFilterBilinear;
 		private System.Windows.Forms.Button btnSelectUserFilter;
-		private System.Windows.Forms.RadioButton rbUser;
+		private System.Windows.Forms.RadioButton rbLegacy;
+
+		private System.Windows.Forms.RadioButton rbLibrashader;
 		private BizHawk.WinForms.Controls.LocLabelEx lblUserFilterName;
 		private System.Windows.Forms.RadioButton rbUseRaw;
 		private System.Windows.Forms.RadioButton rbUseSystem;
