@@ -14,10 +14,12 @@ namespace BizHawk.Client.EmuHawk
 			currentFrame_InputLog: Color.FromArgb(0xB5, 0xE7, 0xF7),
 			greenZone_FrameCol: Color.FromArgb(0xDD, 0xFF, 0xDD),
 			greenZone_InputLog: Color.FromArgb(0xD2, 0xF9, 0xD3),
+			greenZone_InputLog_Cheated: Color.FromArgb(0xD2, 0xF9, 0xFF),
 			greenZone_InputLog_Stated: Color.FromArgb(0xC4, 0xF7, 0xC8),
 			greenZone_InputLog_Invalidated: Color.FromArgb(0xE0, 0xFB, 0xE0),
 			lagZone_FrameCol: Color.FromArgb(0xFF, 0xDC, 0xDD),
 			lagZone_InputLog: Color.FromArgb(0xF4, 0xDA, 0xDA),
+			lagZone_InputLog_Cheated: Color.FromArgb(0xF4, 0xDA, 0xFF),
 			lagZone_InputLog_Stated: Color.FromArgb(0xF0, 0xD0, 0xD2),
 			lagZone_InputLog_Invalidated: Color.FromArgb(0xF7, 0xE5, 0xE5),
 			marker_FrameCol: Color.FromArgb(0xF7, 0xFF, 0xC9),
@@ -33,6 +35,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public readonly Color GreenZone_InputLog;
 
+		public readonly Color GreenZone_InputLog_Cheated;
+
 		public readonly Color GreenZone_InputLog_Stated;
 
 		public readonly Color GreenZone_InputLog_Invalidated;
@@ -40,6 +44,8 @@ namespace BizHawk.Client.EmuHawk
 		public readonly Color LagZone_FrameCol;
 
 		public readonly Color LagZone_InputLog;
+
+		public readonly Color LagZone_InputLog_Cheated;
 
 		public readonly Color LagZone_InputLog_Stated;
 
@@ -54,10 +60,12 @@ namespace BizHawk.Client.EmuHawk
 			Color currentFrame_InputLog,
 			Color greenZone_FrameCol,
 			Color greenZone_InputLog,
+			Color greenZone_InputLog_Cheated,
 			Color greenZone_InputLog_Stated,
 			Color greenZone_InputLog_Invalidated,
 			Color lagZone_FrameCol,
 			Color lagZone_InputLog,
+			Color lagZone_InputLog_Cheated,
 			Color lagZone_InputLog_Stated,
 			Color lagZone_InputLog_Invalidated,
 			Color marker_FrameCol,
@@ -68,10 +76,12 @@ namespace BizHawk.Client.EmuHawk
 //			SeekFrame_InputLog = Color.FromArgb(0x70, currentFrame_InputLog);
 			GreenZone_FrameCol = greenZone_FrameCol;
 			GreenZone_InputLog = greenZone_InputLog;
+			GreenZone_InputLog_Cheated = greenZone_InputLog_Cheated;
 			GreenZone_InputLog_Stated = greenZone_InputLog_Stated;
 			GreenZone_InputLog_Invalidated = greenZone_InputLog_Invalidated;
 			LagZone_FrameCol = lagZone_FrameCol;
 			LagZone_InputLog = lagZone_InputLog;
+			LagZone_InputLog_Cheated = lagZone_InputLog_Cheated;
 			LagZone_InputLog_Stated = lagZone_InputLog_Stated;
 			LagZone_InputLog_Invalidated = lagZone_InputLog_Invalidated;
 			Marker_FrameCol = marker_FrameCol;
