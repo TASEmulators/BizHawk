@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -179,8 +181,8 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int x2,
 			int y2,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -202,8 +204,8 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int width,
 			int height,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -310,7 +312,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
-		public void DrawLine(int x1, int y1, int x2, int y2, [LuaColorParam] object color = null)
+		public void DrawLine(int x1, int y1, int x2, int y2, [LuaColorParam] object? color = null)
 		{
 			luaPictureBox.DrawLine(x1, y1, x2, y2, _th.SafeParseColor(color));
 		}
@@ -320,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawAxis",
 			"Draws an axis of the specified size at the coordinate pair.)")]
-		public void DrawAxis(int x, int y, int size, [LuaColorParam] object color = null)
+		public void DrawAxis(int x, int y, int size, [LuaColorParam] object? color = null)
 		{
 			luaPictureBox.DrawAxis(x, y, size, _th.SafeParseColor(color));
 		}
@@ -338,7 +340,7 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startAngle,
 			int sweepAngle,
-			[LuaColorParam] object line = null)
+			[LuaColorParam] object? line = null)
 		{
 			luaPictureBox.DrawArc(x, y, width, height, startAngle, sweepAngle, _th.SafeParseColor(line));
 		}
@@ -355,8 +357,8 @@ namespace BizHawk.Client.EmuHawk
 			int height,
 			int startAngle,
 			int sweepAngle,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			luaPictureBox.DrawPie(x, y, width, height, startAngle, sweepAngle, _th.SafeParseColor(line), _th.SafeParseColor(background));
 		}
@@ -366,7 +368,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"DrawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
-		public void DrawPixel(int x, int y, [LuaColorParam] object color = null)
+		public void DrawPixel(int x, int y, [LuaColorParam] object? color = null)
 		{
 			try
 			{
@@ -392,8 +394,8 @@ namespace BizHawk.Client.EmuHawk
 			LuaTable points,
 			int? x = null,
 			int? y = null,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			try
 			{
@@ -416,8 +418,8 @@ namespace BizHawk.Client.EmuHawk
 			int y,
 			int width,
 			int height,
-			[LuaColorParam] object line = null,
-			[LuaColorParam] object background = null)
+			[LuaColorParam] object? line = null,
+			[LuaColorParam] object? background = null)
 		{
 			luaPictureBox.DrawRectangle(x, y, width, height, _th.SafeParseColor(line), _th.SafeParseColor(background));
 		}
@@ -431,13 +433,13 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			[LuaColorParam] object foreColor = null,
-			[LuaColorParam] object backColor = null,
+			[LuaColorParam] object? foreColor = null,
+			[LuaColorParam] object? backColor = null,
 			int? fontSize = null,
-			string fontFamily = null,
-			string fontStyle = null,
-			string horizontalAlign = null,
-			string verticalAlign = null)
+			string? fontFamily = null,
+			string? fontStyle = null,
+			string? horizontalAlign = null,
+			string? verticalAlign = null)
 		{
 			luaPictureBox.DrawText(x, y, message, _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}
@@ -451,13 +453,13 @@ namespace BizHawk.Client.EmuHawk
 			int x,
 			int y,
 			string message,
-			[LuaColorParam] object foreColor = null,
-			[LuaColorParam] object backColor = null,
+			[LuaColorParam] object? foreColor = null,
+			[LuaColorParam] object? backColor = null,
 			int? fontSize = null,
-			string fontFamily = null,
-			string fontStyle = null,
-			string horizontalAlign = null,
-			string verticalAlign = null)
+			string? fontFamily = null,
+			string? fontStyle = null,
+			string? horizontalAlign = null,
+			string? verticalAlign = null)
 		{
 			luaPictureBox.DrawText(x, y, message, _th.SafeParseColor(foreColor), _th.SafeParseColor(backColor), fontSize, fontFamily, fontStyle, horizontalAlign, verticalAlign);
 		}

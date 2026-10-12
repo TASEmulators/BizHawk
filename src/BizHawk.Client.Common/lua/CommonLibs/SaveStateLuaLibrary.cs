@@ -1,3 +1,5 @@
+#nullable enable
+
 namespace BizHawk.Client.Common
 {
 	public sealed class SaveStateLuaLibrary : LuaLibraryBase
