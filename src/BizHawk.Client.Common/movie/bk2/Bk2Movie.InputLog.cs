@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using BizHawk.Common;
+
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.Common
@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 
 			var stateFramei = stateFrame ?? 0;
 
-			if (stateFramei.StrictlyBoundedBy(0.RangeTo(Log.Count)))
+			if (0 < stateFramei && stateFramei < Log.Count)
 			{
 				if (!Session.Settings.VBAStyleMovieLoadState)
 				{
