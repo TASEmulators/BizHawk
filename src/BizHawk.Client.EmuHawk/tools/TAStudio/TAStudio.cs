@@ -646,8 +646,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SelectCurrentFrame()
 		{
+			_activeInputRoll.SuspendDrawing();
 			_activeInputRoll.DeselectAll();
 			_activeInputRoll.SelectRow(Emulator.Frame, true);
+			_activeInputRoll.ResumeDrawing();
 		}
 
 		public void SeekToSelectedFrame()

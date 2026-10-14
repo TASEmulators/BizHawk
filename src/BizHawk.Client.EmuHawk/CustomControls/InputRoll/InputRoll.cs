@@ -129,6 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			_hBar.ValueChanged += HorizontalBar_ValueChanged;
 
 			RecalculateScrollBars();
+			RepositionScrollbars();
 			_columns.ChangedCallback = ColumnChangedCallback;
 
 			_hoverTimer.Interval = 750;
@@ -1391,6 +1392,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!SuspendHotkeys)
 			{
+				SuspendDrawing(); // prevent any flicker as we deselect rows then select other rows
+
 				if (e.IsPressed(Keys.Escape))
 				{
 					DeselectAll();
@@ -1603,6 +1606,8 @@ namespace BizHawk.Client.EmuHawk
 						//TODO
 					}
 				}
+
+				ResumeDrawing();
 			}
 
 			base.OnKeyDown(e);
@@ -1611,6 +1616,7 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnResize(EventArgs e)
 		{
 			RecalculateScrollBars();
+			RepositionScrollbars();
 			base.OnResize(e);
 			FastDraw();
 		}
@@ -1653,6 +1659,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void VerticalBar_ValueChanged(object sender, EventArgs e)
 		{
+			_scrollbarVNeedsDraw = true;
 			if (!_programmaticallyUpdatingScrollBarValues)
 			{
 				Refresh();
@@ -1671,6 +1678,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
 		{
+			_scrollbarHNeedsDraw = true;
 			if (!_programmaticallyUpdatingScrollBarValues)
 			{
 				Refresh();
@@ -1816,7 +1824,8 @@ namespace BizHawk.Client.EmuHawk
 				_hBar.Value = 0;
 			}
 
-			RepositionScrollbars();
+			_scrollbarVNeedsDraw = _vBar.Visible;
+			_scrollbarHNeedsDraw = _hBar.Visible;
 		}
 
 		public void RepositionScrollbars()
@@ -1826,6 +1835,9 @@ namespace BizHawk.Client.EmuHawk
 
 			edge = Parent != null ? Math.Min(Height, Parent.Height - Top) : Height;
 			_hBar.Location = new Point(0, Math.Max(edge - _hBar.Height, 0));
+
+			_scrollbarVNeedsDraw = _vBar.Visible;
+			_scrollbarHNeedsDraw = _hBar.Visible;
 		}
 
 		private void UpdateDrawSize()

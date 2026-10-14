@@ -276,7 +276,6 @@ namespace BizHawk.Client.EmuHawk
 					roll.Anchor = AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
 					roll.RepositionScrollbars();
 					roll.ResumeDrawing();
-					roll.Refresh();
 				}
 
 				if (_tasViewVBar.Value > desiredMaximum)
@@ -318,7 +317,6 @@ namespace BizHawk.Client.EmuHawk
 					roll.Anchor = AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom;
 					roll.RepositionScrollbars();
 					roll.ResumeDrawing();
-					roll.Refresh();
 				}
 
 				if (_tasViewHBar.Value > desiredMaximum)
