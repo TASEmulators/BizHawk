@@ -370,7 +370,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_activeInputRoll.SelectRow(i, true);
 				}
-				_activeInputRoll.Refresh();
 
 				SetSplicer();
 			}
@@ -383,7 +382,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				_activeInputRoll.SelectRow(item.Frame, true);
 			}
-			_activeInputRoll.Refresh();
 
 			SetSplicer();
 		}

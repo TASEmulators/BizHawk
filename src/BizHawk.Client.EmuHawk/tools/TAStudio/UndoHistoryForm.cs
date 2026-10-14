@@ -105,22 +105,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				RightClickMenu.Show(HistoryView, e.X, e.Y);
 			}
-			else if (e.Button == MouseButtons.Left)
-			{
-				if (SelectedItem == -1)
-				{
-					HistoryView.SelectRow(_hackSelect, true);
-				}
-			}
 		}
 
-		// Hacky way to select a row by clicking the names row
-		private int _hackSelect = -1;
-
-		private void HistoryView_MouseDown(object sender, MouseEventArgs e)
-		{
-			_hackSelect = SelectedItem;
-		}
 
 		private void UndoHereMenuItem_Click(object sender, EventArgs e)
 		{

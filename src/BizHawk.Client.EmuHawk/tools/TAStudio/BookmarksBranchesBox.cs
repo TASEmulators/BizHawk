@@ -456,7 +456,6 @@ namespace BizHawk.Client.EmuHawk
 			if (Branches[slot] != null)
 			{
 				Select(slot, true);
-				BranchView.Refresh();
 			}
 			else
 			{
@@ -471,7 +470,6 @@ namespace BizHawk.Client.EmuHawk
 				if (Branches.Current != -1)
 				{
 					Select(Branches.Current, true);
-					BranchView.Refresh();
 				}
 				return;
 			}
@@ -493,8 +491,6 @@ namespace BizHawk.Client.EmuHawk
 					Select(sel - 1, true);
 				}
 			}
-
-			BranchView.Refresh();
 		}
 
 		private void UpdateButtons()

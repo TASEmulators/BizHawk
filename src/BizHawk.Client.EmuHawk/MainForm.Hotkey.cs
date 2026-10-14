@@ -416,7 +416,6 @@ namespace BizHawk.Client.EmuHawk
 				case "Show Cursor":
 					if (!Tools.IsLoaded<TAStudio>()) return false;
 					Tools.TAStudio.SetVisibleFrame();
-					Tools.TAStudio.RefreshDialog();
 					break;
 				case "Select Current Frame":
 					if (!Tools.IsLoaded<TAStudio>()) return false;

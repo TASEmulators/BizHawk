@@ -649,6 +649,7 @@ namespace BizHawk.Client.EmuHawk
 						_selectedItems.RemoveRange(startIndex, endIndex - startIndex);
 					}
 					_lastSelectedRow = _selectedItems.LastOrDefault()?.RowIndex;
+					InvalidateRow(index);
 				}
 			}
 		}
@@ -665,7 +666,6 @@ namespace BizHawk.Client.EmuHawk
 
 			FullRowSelect = oldFullRowVal;
 			_lastSelectedRow = RowCount;
-			Refresh();
 		}
 
 		public void DeselectAll()
@@ -1394,7 +1394,6 @@ namespace BizHawk.Client.EmuHawk
 				if (e.IsPressed(Keys.Escape))
 				{
 					DeselectAll();
-					Refresh();
 				}
 				else if (e.IsCtrlShift(Keys.F))
 				{
@@ -1421,8 +1420,8 @@ namespace BizHawk.Client.EmuHawk
 					else if (FirstVisibleRow > 0)
 					{
 						LastVisibleRow = FirstVisibleRow;
+						Refresh();
 					}
-					Refresh();
 				}
 				else if (e.IsPressed(Keys.PageDown))
 				{
@@ -1444,15 +1443,14 @@ namespace BizHawk.Client.EmuHawk
 					else if (LastVisibleRow < RowCount)
 					{
 						FirstVisibleRow = LastVisibleRow;
+						Refresh();
 					}
-					Refresh();
 				}
 				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.Home))
 				{
 					DeselectAll();
 					SelectRow(0, true);
 					FirstVisibleRow = 0;
-					Refresh();
 					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else if (AllowMassNavigationShortcuts && e.IsPressed(Keys.End))
@@ -1460,7 +1458,6 @@ namespace BizHawk.Client.EmuHawk
 					DeselectAll();
 					SelectRow(RowCount - 1, true);
 					LastVisibleRow = RowCount;
-					Refresh();
 					SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 				}
 				else if (e.IsPressed(Keys.Up))
@@ -1474,7 +1471,6 @@ namespace BizHawk.Client.EmuHawk
 							DeselectAll();
 							SelectRow(targetSelectedRow, true);
 							ScrollToIndex(targetSelectedRow);
-							Refresh();
 							SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 						}
 					}
@@ -1490,7 +1486,6 @@ namespace BizHawk.Client.EmuHawk
 							DeselectAll();
 							SelectRow(targetSelectedRow, true);
 							ScrollToIndex(targetSelectedRow);
-							Refresh();
 							SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 						}
 					}
@@ -1509,7 +1504,6 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(_lastSelectedRow.Value - 1, true);
 						}
 
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1531,7 +1525,6 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(_lastSelectedRow.Value + 1, true);
 						}
 
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1546,7 +1539,6 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(row, false);
 						}
 
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1560,7 +1552,6 @@ namespace BizHawk.Client.EmuHawk
 							SelectRow(row, false);
 						}
 
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1569,7 +1560,6 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(SelectedRows.Last(), false);
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1578,7 +1568,6 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1587,7 +1576,6 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection && FirstSelectedRowIndex > 0)
 					{
 						SelectRow(FirstSelectedRowIndex - 1, true);
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1596,7 +1584,6 @@ namespace BizHawk.Client.EmuHawk
 					if (AnyRowsSelected && LetKeysModifySelection)
 					{
 						SelectRow(FirstSelectedRowIndex, false);
-						Refresh();
 						SelectedIndexChanged?.Invoke(this, EventArgs.Empty);
 					}
 				}
@@ -1882,6 +1869,7 @@ namespace BizHawk.Client.EmuHawk
 							_lastSelectedRow = row;
 						}
 					}
+					InvalidateRow(row);
 				}
 				else
 				{
@@ -1900,6 +1888,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						_selectedItems.Add(cell);
 					}
+					InvalidateCell(cell);
 				}
 			}
 			else

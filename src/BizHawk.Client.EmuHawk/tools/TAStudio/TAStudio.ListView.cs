@@ -1398,7 +1398,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				SetSplicer();
-				RefreshDialog();
 			}
 			else if (_rightClickFrame != -1)
 			{

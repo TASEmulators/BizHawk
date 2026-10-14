@@ -648,8 +648,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_activeInputRoll.DeselectAll();
 			_activeInputRoll.SelectRow(Emulator.Frame, true);
-
-			RefreshDialog();
 		}
 
 		public void SeekToSelectedFrame()
