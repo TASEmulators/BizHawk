@@ -101,14 +101,14 @@ namespace BizHawk.Client.EmuHawk
 				int length = endIndex - startIndex;
 				CellList selectedCells = length == _selectedItems.Count ? _selectedItems : _selectedItems.Slice(startIndex, length);
 
+				// Background
+				DrawBg(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow, selectedCells);
+
 				if (HorizontalOrientation || e.ClipRectangle.Y <= ColumnHeight)
 				{
 					DrawColumnBg(visibleColumns, e.ClipRectangle);
 					DrawColumnText(visibleColumns);
 				}
-
-				// Background
-				DrawBg(visibleColumns, e.ClipRectangle, firstVisibleRow, lastVisibleRow, selectedCells);
 
 				// Foreground
 				DrawData(visibleColumns, firstVisibleRow, lastVisibleRow, selectedCells);
@@ -612,30 +612,31 @@ namespace BizHawk.Client.EmuHawk
 		private void DrawCellBG(Color color, Cell cell)
 		{
 			int x, y, w, h;
+			int gridWidth = GridLines ? 1 : 0;
 
 			if (HorizontalOrientation)
 			{
-				x = RowsToPixels(cell.RowIndex.Value) + 1;
+				x = RowsToPixels(cell.RowIndex.Value) + gridWidth;
 				if (x < MaxColumnWidth)
 				{
 					return;
 				}
 
-				w = CellWidth - 1;
-				y = cell.Column!.Left - _vBar.Value + 1;
-				h = cell.Column.ScaledWidth - 1;
+				w = CellWidth - gridWidth;
+				y = cell.Column!.Left - _vBar.Value + gridWidth;
+				h = cell.Column.ScaledWidth - gridWidth;
 			}
 			else
 			{
-				y = RowsToPixels(cell.RowIndex.Value) + 1; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
+				y = RowsToPixels(cell.RowIndex.Value) + gridWidth; // We can't draw without row and column, so assume they exist and fail catastrophically if they don't
 				if (y < ColumnHeight)
 				{
 					return;
 				}
 
-				x = cell.Column!.Left - _hBar.Value + 1;
-				w = cell.Column.ScaledWidth - 1;
-				h = CellHeight - 1;
+				x = cell.Column!.Left - _hBar.Value + gridWidth;
+				w = cell.Column.ScaledWidth - gridWidth;
+				h = CellHeight - gridWidth;
 			}
 
 			_renderer.SetBrush(color);
