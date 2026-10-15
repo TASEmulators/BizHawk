@@ -24,6 +24,9 @@ pub fn get_callback_ptr(slot: usize) -> usize{
 
 fn init_interop_area() -> AddressRange {
 	unsafe {
+		#[cfg(target_os = "macos")]
+		let bytes = include_bytes!("interop_macos.bin");
+		#[cfg(not(target_os = "macos"))]
 		let bytes = include_bytes!("interop.bin");
 		let addr = pal::map_anon(
 			AddressRange { start: ORG, size: bytes.len() }.align_expand(),
@@ -108,7 +111,7 @@ impl Context {
 	}
 }
 
-#[cfg(unix)]
+#[cfg(target_os = "linux")]
 thread_local!(static TIB: Box<[usize; 4]> = Box::new([0usize; 4]));
 
 /// Prepares this host thread to be allowed to call guest code.  Noop if already called.
@@ -121,7 +124,7 @@ pub fn prepare_thread() {
 	// We stomp over [gs:0x18] and use it for our own mini-TLS to track the stack marshalling
 	// On windows, that's a (normally unused and free for the plundering?) field in TIB
 	// On linux, that register is not normally in use, so we put some bytes there and then use it
-	#[cfg(unix)]
+	#[cfg(target_os = "linux")]
 	unsafe {
 		use libc::*;
 		let mut gs = 0usize;
@@ -132,5 +135,17 @@ pub fn prepare_thread() {
 				assert_eq!(syscall(SYS_arch_prctl, 0x1001 /*ARCH_SET_GS*/, gs), 0);
 			});
 		}
+	}
+	// TODO[macOS]: Unlike Linux, on macOS/x86-64 the %gs base is already established by the
+	// OS and points at the thread's TSD (thread self data); it must NOT be relocated, and
+	// there is no arch_prctl. The interop assembly stashes its stack-marshalling scratch at
+	// [gs:0x18], which collides with reserved TSD slots on macOS. Making guest entry correct
+	// here requires either claiming a free TSD slot or using an alternate scratch mechanism,
+	// then re-assembling context/interop.s to match and validating under Rosetta 2. Until
+	// that's done this is a no-op: the host builds and non-guest-entry paths work, but
+	// actually entering guest code is not yet correct on macOS.
+	#[cfg(target_os = "macos")]
+	{
+		// intentionally empty; see TODO above
 	}
 }

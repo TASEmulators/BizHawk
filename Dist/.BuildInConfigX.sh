@@ -7,3 +7,6 @@ fi
 config="$1"
 shift
 Dist/.InvokeCLIOnMainSln.sh "build" "$config" "$@"
+if [ "$(uname -s)" = Darwin ]; then
+	sh Dist/stage-macos-dylibs.sh
+fi

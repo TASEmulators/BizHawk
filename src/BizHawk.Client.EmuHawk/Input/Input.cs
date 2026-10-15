@@ -34,6 +34,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private readonly Thread _updateThread;
 
+		private volatile bool _stopRequested;
+
 		public IHostInputAdapter Adapter { get; }
 
 		private Config _currentConfig;
@@ -220,9 +222,15 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public readonly Func<AllowInput> MainFormInputAllowedCallback;
 
+		public void DeInitAll()
+		{
+			_stopRequested = true;
+			_updateThread.Join();
+		}
+
 		private void UpdateThreadProc()
 		{
-			while (true)
+			while (!_stopRequested)
 			{
 				_currentConfig = _getConfigCallback();
 				UpdateModifierKeysEffective();
@@ -311,6 +319,9 @@ namespace BizHawk.Client.EmuHawk
 				//arbitrary selection of polling frequency:
 				Thread.Sleep(2);
 			}
+
+			// SDL joystick cleanup must run on the thread that initialized it.
+			Adapter.DeInitAll();
 		}
 
 		private static bool ShouldSwallow(AllowInput allowInput, HostInputType inputFocus)
