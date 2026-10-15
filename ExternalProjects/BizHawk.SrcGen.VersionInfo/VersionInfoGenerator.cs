@@ -12,6 +12,7 @@ public class VersionInfoGenerator : IIncrementalGenerator
 
 	private static string? ExecuteGitWithArguments(string arguments)
 	{
+#pragma warning disable RS1035 // how else are we supposed to read git rev-list?
 		var startInfo = new ProcessStartInfo("git", arguments)
 		{
 			RedirectStandardOutput = true,
@@ -35,6 +36,7 @@ public class VersionInfoGenerator : IIncrementalGenerator
 			return null;
 		}
 #endif
+#pragma warning restore RS1035
 	}
 
 	private static void Execute(SourceProductionContext context, Compilation compilation)
