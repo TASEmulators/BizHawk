@@ -1091,9 +1091,9 @@ namespace BizHawk.Client.EmuHawk
 				(s) =>
 				{
 					// settings objects are mutated by the settings form, but some still need to be handled
+					_tasViewPanel.SuspendDrawing();
 					for (int i = 0; i < _inputRolls.Count; i++)
 					{
-						_inputRolls[i].SuspendDrawing();
 						_inputRolls[i].AlwaysScroll = Settings.FollowCursorAlwaysScroll;
 						_inputRolls[i].Font = Settings.TasViewFont;
 						_inputRolls[i].HorizontalOrientation = s.MovieSettings.HorizontalOrientation;
@@ -1104,7 +1104,8 @@ namespace BizHawk.Client.EmuHawk
 						UpdateColumnWidths(_inputRolls[i]);
 					}
 					GenerateIcons();
-					foreach (InputRoll roll in _inputRolls) roll.ResumeDrawing();
+					_tasViewPanel.ResumeDrawing();
+					_tasViewPanel.Refresh();
 
 					UpdateAutoFire();
 
