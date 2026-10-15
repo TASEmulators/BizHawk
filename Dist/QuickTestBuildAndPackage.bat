@@ -9,7 +9,7 @@ if "%1"=="" (
 git --version > NUL
 @if errorlevel 1 goto MISSINGGIT
 
-dotnet build ..\BizHawk.sln -c Release --no-incremental
+dotnet build ..\BizHawk.slnx -c Release --no-incremental
 @if not errorlevel 0 goto DOTNETBUILDFAILED
 rem -p:Platform="Any CPU"
 
