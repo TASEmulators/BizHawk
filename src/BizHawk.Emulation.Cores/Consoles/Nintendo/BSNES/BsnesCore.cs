@@ -204,9 +204,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			string ret = "";
 			FirmwareID fwid = new(firmwareSystem, firmwareId);
 			const string MISSING_FIRMWARE_MSG = "Game may function incorrectly without the requested firmware.";
+			// core falls back on built-in cx4 data rom if not provided, so no need to warn here
+			string msg = hint == "cx4" ? null : MISSING_FIRMWARE_MSG;
 			byte[] data = required
 				? CoreComm.CoreFileProvider.GetFirmwareOrThrow(fwid, MISSING_FIRMWARE_MSG)
-				: CoreComm.CoreFileProvider.GetFirmware(fwid, MISSING_FIRMWARE_MSG);
+				: CoreComm.CoreFileProvider.GetFirmware(fwid, msg);
 			if (data != null)
 			{
 				ret = hint;

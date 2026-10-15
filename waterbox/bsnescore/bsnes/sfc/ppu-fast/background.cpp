@@ -49,8 +49,8 @@ auto PPU::Line::renderBackground(PPU::IO::Background& self, uint8 source) -> voi
     if(offsetPerTileMode) {
       uint validBit = 0x2000 << source;
       uint offsetX = x + (hscroll & 7);
-      if(offsetX >= 8) {  //first column is exempt
-        uint hlookup = getTile(io.bg3, (offsetX - 8) + (io.bg3.hoffset & ~7), io.bg3.voffset + 0);
+      if(offsetX >= (1 << tileWidth)) {  //first column is exempt
+        uint hlookup = getTile(io.bg3, offsetX - (1 << tileWidth) + ((io.bg3.hoffset & ~7) << hires), io.bg3.voffset + 0);
         if(io.bgMode == 4) {
           if(hlookup & validBit) {
             if(!(hlookup & 0x8000)) {
@@ -60,7 +60,7 @@ auto PPU::Line::renderBackground(PPU::IO::Background& self, uint8 source) -> voi
             }
           }
         } else {
-          uint vlookup = getTile(io.bg3, (offsetX - 8) + (io.bg3.hoffset & ~7), io.bg3.voffset + 8);
+          uint vlookup = getTile(io.bg3, offsetX - (1 << tileWidth) + ((io.bg3.hoffset & ~7) << hires), io.bg3.voffset + 8);
           if(hlookup & validBit) {
             hoffset = offsetX + (hlookup & ~7);
           }
