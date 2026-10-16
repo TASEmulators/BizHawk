@@ -24,6 +24,12 @@
 		DWord = 4,
 
 		/// <summary>
+		/// 8 bytes (64 bits)
+		/// Use this for <see cref="QWordWatch"/>
+		/// </summary>
+		QWord = 8,
+
+		/// <summary>
 		/// Special case used for a separator in ram tools
 		/// Use this for <see cref="SeparatorWatch"/>
 		/// </summary>
