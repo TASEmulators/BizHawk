@@ -136,15 +136,15 @@ namespace BizHawk.Client.Common
 			return bs.CloseAndDispose(makeBackup ? $"{filename}.bak" : null);
 		}
 
-		public bool Load(string path, IDialogParent dialogParent)
+		private ZipStateLoader/*?*/ OpenAndValidate(string path, IDialogParent dialogParent)
 		{
-			// try to detect binary first
-			using var bl = ZipStateLoader.LoadAndDetect(path);
-			if (bl is null) return false;
-			var succeed = false;
+			var bl = ZipStateLoader.LoadAndDetect(path);
+			if (bl is null) return null;
 
+			// check EmuHawk version
 			if (!VersionInfo.DeveloperBuild)
 			{
+				bool succeed = false;
 				bl.GetLump(BinaryStateLump.BizVersion, true, tr => succeed = tr.ReadLine() == VersionInfo.GetEmuVersion());
 				if (!succeed)
 				{
@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 						"Savestate version mismatch",
 						EMsgBoxIcon.Question,
 						useOKCancel: true);
-					if (!result) return false;
+					if (!result) return null;
 				}
 			}
 
@@ -183,9 +183,45 @@ namespace BizHawk.Client.Common
 							: "This savestate was made with a different core or different sync settings.\nLoadstate cancelled.",
 						"Savestate sync settings mismatch",
 						EMsgBoxIcon.Info);
-					return false;
+					return null;
 				}
 			}
+
+			return bl;
+		}
+
+		public Savestate/*?*/ GetSavestate(string path, IDialogParent dialogParent)
+		{
+			using ZipStateLoader/*?*/ bl = OpenAndValidate(path, dialogParent);
+			if (bl == null) return null;
+
+			byte[] coreData = null;
+			bl.GetLump(BinaryStateLump.Corestate, true, br =>
+			{
+				using MemoryStream ms = new();
+				br.BaseStream.CopyTo(ms);
+				coreData = ms.ToArray();
+			});
+			if (coreData == null) throw new Exception("Could not find or read binary savestate data in file.");
+
+			BitmapBuffer screenshot = null;
+			bl.GetLump(BinaryStateLump.Framebuffer, false, br =>
+			{
+				screenshot = new BitmapBuffer(br.BaseStream, new());
+			});
+
+			return new()
+			{
+				coreData = coreData,
+				screenshot = screenshot,
+			};
+		}
+
+		public bool Load(string path, IDialogParent dialogParent)
+		{
+			using ZipStateLoader bl = OpenAndValidate(path, dialogParent);
+			if (bl is null) return false;
+			var succeed = false;
 
 			// Movie timeline check must happen before the core state is loaded
 			if (_movieSession.Movie.IsActive())
