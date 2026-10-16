@@ -1706,13 +1706,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool _inResizeLoop;
 
 		private readonly double _fpsUpdatesPerSecond = 4.0;
-		private readonly double _fpsSmoothing = 8.0;
+		private readonly double _fpsSmoothing = 0.25;
 		private double _lastFps;
-		private int _lastFpsRounded;
 		private int _framesSinceLastFpsUpdate;
 		private long _timestampLastFpsUpdate;
 
-		public int GetApproxFramerate() => _lastFpsRounded;
+		public int GetApproxFramerate() => (int) Math.Round(_lastFps);
 
 		private readonly Throttle _throttle;
 
@@ -3112,20 +3111,22 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			double rawFps = _framesSinceLastFpsUpdate / elapsedSeconds;
+			double alpha = 1.0 - Math.Exp(-elapsedSeconds/_fpsSmoothing);
+
 			if (_lastFps == 0) // Initial calculation
 			{
-				_lastFps = (_framesSinceLastFpsUpdate - 1) / elapsedSeconds;
+				_lastFps = rawFps;
 			}
 			else
 			{
-				_lastFps = (_lastFps + (_framesSinceLastFpsUpdate * _fpsSmoothing)) / (1.0 + (elapsedSeconds * _fpsSmoothing));
+				_lastFps = (rawFps * alpha) + (_lastFps * (1.0 - alpha));
 			}
-			_lastFpsRounded = (int) Math.Round(_lastFps);
 
 			_framesSinceLastFpsUpdate = 0;
 			_timestampLastFpsUpdate = currentTimestamp;
 
-			var fpsString = $"{_lastFpsRounded} fps";
+			var fpsString = $"{_lastFps:F2} fps";
 			if (isRewinding)
 			{
 				fpsString += IsTurboing || isFastForwarding ?
@@ -3147,7 +3148,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InitializeFpsData()
 		{
-			_lastFps = _lastFpsRounded = 0;
+			_lastFps = 0;
 			_timestampLastFpsUpdate = Stopwatch.GetTimestamp();
 			_framesSinceLastFpsUpdate = 0;
 		}
