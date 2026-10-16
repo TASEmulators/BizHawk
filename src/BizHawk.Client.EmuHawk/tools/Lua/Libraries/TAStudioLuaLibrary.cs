@@ -82,14 +82,14 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("getrecording", "returns whether or not TAStudio is in recording mode")]
 		public bool GetRecording()
 		{
-			return Tastudio.TasPlaybackBox.RecordingMode;
+			return Tastudio.TasPlaybackBox.IsRecording;
 		}
 
 		[LuaMethodExample("tastudio.setrecording( true );")]
 		[LuaMethod("setrecording", "sets the recording mode on/off depending on the parameter")]
 		public void SetRecording(bool val)
 		{
-			if (Tastudio.TasPlaybackBox.RecordingMode != val)
+			if (Tastudio.TasPlaybackBox.IsRecording != val)
 			{
 				Tastudio.ToggleReadOnly();
 			}
