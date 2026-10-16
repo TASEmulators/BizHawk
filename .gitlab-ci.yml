@@ -24,7 +24,7 @@ stages:
     CACHIX_CACHE_NAME: mono-for-bizhawk
 
 .with_dotnet_sdk:
-  image: mcr.microsoft.com/dotnet/sdk:8.0
+  image: mcr.microsoft.com/dotnet/sdk:10.0
 
 build_asms_debug:
   artifacts:

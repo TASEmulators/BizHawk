@@ -312,7 +312,6 @@ namespace BizHawk.Client.Common
 				.ToLowerInvariant();
 		}
 
-		private string/*?*/ field = null;
 		public string ReturnType
 		{
 			get

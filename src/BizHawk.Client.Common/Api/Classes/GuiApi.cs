@@ -16,8 +16,6 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GuiApi : IGuiApi
 	{
-		private static Bitmap/*?*/ field = null;
-
 		private static Bitmap NullGraphicsBitmap
 			=> field ??= new(1, 1);
 
