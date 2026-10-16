@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using System.Text;
+
+using BizHawk.Common.ReflectionExtensions;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -29,7 +32,7 @@ namespace BizHawk.Client.Common
 ** Brackets around a parameter indicate that the parameter is optional. Optional parameters have an equals sign followed by the value that will be used if no value is supplied.
 ** Brackets after a parameter type indicate it is an array
 * ? (question mark)
-** A question mark next to a value indicates that it is nullable i.e. null/nil may be passed instead of a real value. (Confusingly, many .NET types are nullable but omit the '?'. These aren't common in our Lua APIs.)
+** A question mark next to a value indicates that it is nullable i.e. null/nil may be passed instead of a real value.
 * null/nil
 ** null is equivalent to Lua's nil.
 ** Omitting the last parameter is equivalent to passing nil, same with the second-last parameter and so on. However, if you want to pass the last parameter but not one in the middle, you will need to explicitly pass nil.
@@ -255,7 +258,12 @@ namespace BizHawk.Client.Common
 					list.Append('(');
 					foreach (var (i, pi) in parameters.Index())
 					{
-						var p = TypeCleanup(pi.ParameterType);
+						var pType = pi.ParameterType;
+						var p = pi.IsNRTOrNullableT() ?? true
+							? TypeCleanup(pType.IsValueType
+								? pType.GenericTypeArguments[0] // unwrap `Nullable<>`
+								: pType) + "?"
+							: TypeCleanup(pType);
 						if (pi.GetCustomAttribute<LuaColorParamAttribute>() is not null) p = p.Replace("object", "luacolor");
 						if (pi.GetCustomAttribute<LuaZeroIndexedAttribute>() is not null) p = p.Replace("nluatable", "nluatable0Indexed");
 						p += $" {pi.Name.ToLowerInvariant()}";
@@ -318,7 +326,12 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (field is not null) return field;
-				var returnType = TypeCleanup(Method.ReturnType).Trim();
+				var rType = Method.ReturnType;
+				var returnType = rType.IsValueType
+					? rType.IsNullableT()
+						? TypeCleanup(rType.GenericTypeArguments[0]) + "?" // unwrap `Nullable<>`
+						: TypeCleanup(rType)
+					: TypeCleanup(rType) + "?"; //TODO read NRT metadata, see existing methods in `ReflectionExtensions`
 				if (Method.ReturnTypeCustomAttributes.GetCustomAttributes(typeof(LuaZeroIndexedAttribute), inherit: false).Length is not 0)
 				{
 					returnType = returnType.Replace("nluatable", "nluatable0Indexed");
