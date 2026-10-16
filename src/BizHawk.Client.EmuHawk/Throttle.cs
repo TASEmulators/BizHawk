@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 using BizHawk.Client.Common;
@@ -34,8 +35,8 @@ namespace BizHawk.Client.EmuHawk
 				skipNextFrame = false;
 				framesToSkip = 0;
 
-				//keep from burning CPU
-				Thread.Sleep(15);
+				//keep from burning CPU (but dispatch COM so screen-reader accessibility stays serviced)
+				ResponsiveSleep(15);
 				return;
 			}
 
@@ -277,6 +278,34 @@ namespace BizHawk.Client.EmuHawk
 			return rv;
 		}
 
+		[DllImport("ole32.dll")]
+		private static extern int CoWaitForMultipleHandles(uint dwFlags, uint dwTimeout, int cHandles, IntPtr[] pHandles, out uint lpdwindex);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		private static extern IntPtr CreateEventW(IntPtr lpEventAttributes, bool bManualReset, bool bInitialState, IntPtr lpName);
+
+		private const uint COWAIT_DISPATCH_CALLS = 0x8;
+		private static readonly IntPtr[] _responsiveSleepHandles = { CreateEventW(IntPtr.Zero, true, false, IntPtr.Zero) };
+
+		/// <summary>
+		/// Sleeps ~<paramref name="ms"/> ms while still dispatching incoming COM calls. Screen readers'
+		/// UI Automation / MSAA queries are COM calls marshaled to this STA UI thread; a plain Thread.Sleep
+		/// does NOT service them, so during each frame's sleep the thread stops answering screen readers and
+		/// ALL of them (NVDA, Narrator, ...) go laggy while EmuHawk is foreground — even though the app stays
+		/// responsive to its own input. COWAIT_DISPATCH_CALLS dispatches only COM calls (not window
+		/// input/paint), keeping accessibility responsive without reentering the emulation loop.
+		/// </summary>
+		private static void ResponsiveSleep(int ms)
+		{
+			if (ms < 1) ms = 1;
+			if (OSTailoredCode.IsUnixHost)
+			{
+				Thread.Sleep(ms); // CoWaitForMultipleHandles is Windows-only
+				return;
+			}
+			_ = CoWaitForMultipleHandles(COWAIT_DISPATCH_CALLS, (uint)ms, 1, _responsiveSleepHandles, out _);
+		}
+
 		private void SpeedThrottle(Sound sound, bool paused)
 		{
 			AutoFrameSkip_BeforeThrottle();
@@ -326,7 +355,7 @@ namespace BizHawk.Client.EmuHawk
 							break;
 					}
 
-					Thread.Sleep(Math.Max(sleepTime, 1));
+					ResponsiveSleep(Math.Max(sleepTime, 1));
 				}
 				else if (sleepTime > 0) // spin for <1 millisecond waits
 				{
