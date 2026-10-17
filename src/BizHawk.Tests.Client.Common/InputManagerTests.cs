@@ -37,15 +37,34 @@ namespace BizHawk.Tests.Client.Common
 				_hotkeys = hotkeys;
 			}
 
-			public void EmulateFrameAdvance(bool lag = false)
+			public Context(IEmulator emulator, IMovieSession movieSession)
 			{
-				emulator.FrameAdvance(manager.ControllerOutput, false);
-				BasicInputProcessing();
+				this.emulator = emulator;
+				manager.SyncControls(emulator, movieSession, config);
 
-				if (lag) manager.AutoFireController.IncrementStarts();
-				manager.StickyAutofireController.IncrementLoops(lag);
+				_hotkeys = [ ];
+				ControllerDefinition cd = new("fake")
+				{
+					BoolButtons = _hotkeys.ToList(),
+				};
+				manager.ClientControls = new Controller(cd.MakeImmutable());
 			}
 
+			/// <summary>
+			/// After running this, <see cref="InputManager.ControllerOutput"/> will hold the values for the NEXT frame, not the one just simulated.
+			/// </summary>
+			public void EmulateFrameAdvance(bool lag = false)
+			{
+				BasicInputProcessing();
+				emulator.FrameAdvance(manager.ControllerOutput, false);
+				manager.AfterFrame(lag, config);
+				BasicInputProcessing(); // must call this again to ensure asserts on ControllerOutput see all the results of AfterFrame
+			}
+
+			/// <summary>
+			/// Process all the simulated inputs, and update the controllers.
+			/// Call this before (or instead of) <see cref="EmulateFrameAdvance(bool)"/> when you need to test the input that will be given to the next frame.
+			/// </summary>
 			public void BasicInputProcessing()
 			{
 				manager.ProcessInput(source, ProcessHotkey, config, (_, _) => { });
@@ -507,6 +526,164 @@ namespace BizHawk.Tests.Client.Common
 			context.BasicInputProcessing();
 
 			Assert.IsTrue(manager.ControllerOutput.IsPressed("Down"));
+		}
+
+		[TestMethod]
+		public void ClickyController()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.ClickyController.Click("A");
+
+			// act + assert
+			context.BasicInputProcessing();
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
+			context.EmulateFrameAdvance();
+			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
+		}
+
+		[TestMethod]
+		public void StickyHoldControllerButton()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.StickyHoldController.SetButtonHold("A", true);
+
+			// act + assert
+			context.BasicInputProcessing();
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
+			context.EmulateFrameAdvance();
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
+		}
+
+		[TestMethod]
+		public void StickyButtonPlusUserEqualsOff()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			FakeInputSource source = context.source;
+			manager.ActiveController.BindMulti("A", "Q");
+			source.MakePressEvent("Q");
+			manager.StickyHoldController.SetButtonHold("A", true);
+
+			// act
+			context.BasicInputProcessing();
+
+			// assert
+			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
+		}
+
+		[TestMethod]
+		public void StickyHoldControllerAxis()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.StickyHoldController.SetAxisHold("Stick", 2);
+
+			// act + assert
+			context.BasicInputProcessing();
+			Assert.AreEqual(2, manager.ControllerOutput.AxisValue("Stick"));
+			context.EmulateFrameAdvance();
+			Assert.AreEqual(2, manager.ControllerOutput.AxisValue("Stick"));
+		}
+
+		[TestMethod]
+		public void StickyAutofireControllerButton()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.StickyAutofireController.SetButtonAutofire("A", true);
+
+			// act + assert
+			context.BasicInputProcessing();
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
+			context.EmulateFrameAdvance();
+			Assert.IsFalse(manager.ControllerOutput.IsPressed("A"));
+		}
+
+		[TestMethod]
+		public void StickyAutofireControllerAxis()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.StickyAutofireController.SetAxisAutofire("Stick", 2);
+
+			// act + assert
+			context.BasicInputProcessing();
+			Assert.AreEqual(2, manager.ControllerOutput.AxisValue("Stick"));
+			context.EmulateFrameAdvance();
+			Assert.AreEqual(context.emulator.ControllerDefinition.Axes["Stick"].Neutral, manager.ControllerOutput.AxisValue("Stick"));
+		}
+
+		[TestMethod]
+		public void OverrideAdapterButton()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.OverrideAdapter.SetButton("A", true);
+
+			// act
+			context.BasicInputProcessing();
+
+			// assert
+			Assert.IsTrue(manager.ControllerOutput.IsPressed("A"));
+		}
+
+		[TestMethod]
+		public void OverrideAdapterAxis()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			manager.OverrideAdapter.SetAxis("Stick", 2);
+
+			// act
+			context.BasicInputProcessing();
+
+			// assert
+			Assert.AreEqual(2, manager.ControllerOutput.AxisValue("Stick"));
+		}
+
+		[TestMethod]
+		public void RegularAxisInput()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			FakeInputSource source = context.source;
+			manager.ActiveController.BindAxis("Stick", new AnalogBind("", 1f, 0f, "Q", ""));
+			source.MakePressEvent("Q");
+
+			// act
+			context.BasicInputProcessing();
+
+			// assert
+			Assert.AreEqual(100, manager.ControllerOutput.AxisValue("Stick"));
+		}
+
+		[TestMethod]
+		public void OverrideAdapterAxisOverridesNonNeutral()
+		{
+			// arrange
+			Context context = new();
+			InputManager manager = context.manager;
+			FakeInputSource source = context.source;
+			manager.OverrideAdapter.SetAxis("Stick", 2);
+			manager.ActiveController.BindAxis("Stick", new AnalogBind("", 1f, 0f, "Q", ""));
+			source.MakePressEvent("Q");
+
+			// act
+			context.BasicInputProcessing();
+
+			// assert
+			Assert.AreEqual(2, manager.ControllerOutput.AxisValue("Stick"));
 		}
 #pragma warning restore BHI1600
 	}

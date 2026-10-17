@@ -674,7 +674,7 @@ namespace BizHawk.Client.EmuHawk
 		private void FdsEjectDiskMenuItem_Click(object sender, EventArgs e)
 		{
 			if (MovieSession.Movie.IsPlaying()) return;
-			InputManager.ClickyVirtualPadController.Click("FDS Eject");
+			InputManager.ClickyController.Click("FDS Eject");
 			AddOnScreenMessage("FDS disk ejected.");
 		}
 
@@ -694,21 +694,21 @@ namespace BizHawk.Client.EmuHawk
 		private void VsInsertCoinP1MenuItem_Click(object sender, EventArgs e)
 		{
 			if (MovieSession.Movie.IsPlaying() || !LoadedCoreIsNesHawkInVSMode) return;
-			InputManager.ClickyVirtualPadController.Click("Insert Coin P1");
+			InputManager.ClickyController.Click("Insert Coin P1");
 			AddOnScreenMessage("P1 Coin Inserted");
 		}
 
 		private void VsInsertCoinP2MenuItem_Click(object sender, EventArgs e)
 		{
 			if (MovieSession.Movie.IsPlaying() || !LoadedCoreIsNesHawkInVSMode) return;
-			InputManager.ClickyVirtualPadController.Click("Insert Coin P2");
+			InputManager.ClickyController.Click("Insert Coin P2");
 			AddOnScreenMessage("P2 Coin Inserted");
 		}
 
 		private void VsServiceSwitchMenuItem_Click(object sender, EventArgs e)
 		{
 			if (MovieSession.Movie.IsPlaying() || !LoadedCoreIsNesHawkInVSMode) return;
-			InputManager.ClickyVirtualPadController.Click("Service Switch");
+			InputManager.ClickyController.Click("Service Switch");
 			AddOnScreenMessage("Service Switch Pressed");
 		}
 
