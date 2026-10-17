@@ -28,6 +28,8 @@ namespace BizHawk.Client.Common
 
 		public const string EVENT_TYPE_FUTURE = "BeforeFutureFrame";
 
+		public const string EVENT_TYPE_DRAW = "OnDraw";
+
 		private readonly LuaFunction _function;
 
 		private readonly ILuaLibraries _luaImp;

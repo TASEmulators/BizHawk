@@ -33,8 +33,24 @@ namespace BizHawk.Client.Common
 
 		void AddMessage(string message, int? duration = null);
 
+		[Obsolete("use Draw and AddDrawCallback instead")]
 		void ClearGraphics(DisplaySurfaceID? surfaceID = null);
+
+		[Obsolete("use Draw and AddDrawCallback instead")]
 		void ClearText();
+
+		/// <summary>
+		/// Clears all prior drawings and calls any actions given to <see cref="AddDrawCallback(Action)"/>.
+		/// This should only be used when you want to redraw while paused.
+		/// </summary>
+		void Draw();
+
+		/// <summary>
+		/// The given action will be called before each API draw. This means after each frame and any time <see cref="Draw"/> is called.
+		/// </summary>
+		void AddDrawCallback(Action callback);
+		void RemoveDrawCallback(Action callback);
+
 		void SetDefaultForegroundColor(Color color);
 		void SetDefaultBackgroundColor(Color color);
 		Color GetDefaultTextBackground();
