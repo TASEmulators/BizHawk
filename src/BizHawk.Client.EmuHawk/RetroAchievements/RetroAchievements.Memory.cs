@@ -151,15 +151,14 @@ namespace BizHawk.Client.EmuHawk
 					var end = Math.Min(addr + bytes, _domainAddrStart + BankSize);
 					var length = end - addr;
 
-					if (_addressMangler == 0)
+					unsafe
 					{
-						var ret = new byte[length];
-						_domain.BulkPeekByte(((long)addr).RangeToExclusive(end), ret);
-						Marshal.Copy(ret, 0, buffer, (int)length);
-					}
-					else
-					{
-						unsafe
+						if (_addressMangler == 0)
+						{
+							Span<byte> dst = new(buffer.ToPointer(), checked((int)length));
+							_domain.BulkPeekByte(addr, dst);
+						}
+						else
 						{
 							for (var i = addr; i < end; i++)
 							{

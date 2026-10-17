@@ -20,10 +20,6 @@ namespace BizHawk.Emulation.Common
 			Unknown,
 		}
 
-		private const string ERR_MSG_BUFFER_WRONG_SIZE = "Invalid length of values array";
-
-		private const string ERR_MSG_UNALIGNED = "The API contract doesn't define what to do for unaligned reads and writes!";
-
 		public string Name { get; protected set; }
 
 		public long Size { get; protected set; }
@@ -89,58 +85,78 @@ namespace BizHawk.Emulation.Common
 			PokeByte(addr + 3, scratch[3]);
 		}
 
-		public virtual void BulkPeekByte(Range<long> addresses, byte[] values)
+		public virtual void BulkPeekByte(long startAddress, Span<byte> values)
 		{
-			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-			if ((long) addresses.Count() != values.Length) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE);
-
+			long addr = startAddress;
 			using (this.EnterExit())
 			{
-				for (var i = addresses.Start; i <= addresses.EndInclusive; i++)
+				for (int i = 0; i < values.Length; i++, addr += sizeof(byte))
 				{
-					values[i - addresses.Start] = PeekByte(i);
+					values[i] = PeekByte(addr);
 				}
 			}
 		}
 
-		public virtual void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
+		public virtual void BulkPeekUshort(long startAddress, Span<ushort> values, bool bigEndian)
 		{
-			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
-			if ((start & 0b1) is not 0 || (end & 0b1) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
-			if (values.LongLength * sizeof(ushort) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // a longer array could be valid, but nothing needs that so don't support it for now
-
+			long addr = startAddress;
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += sizeof(ushort))
+				for (int i = 0; i < values.Length; i++, addr += sizeof(ushort))
 				{
-					values[i] = PeekUshort(start, bigEndian);
+					values[i] = PeekUshort(addr, bigEndian);
 				}
 			}
 		}
 
-		public virtual void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+		public virtual void BulkPeekUint(long startAddress, Span<uint> values, bool bigEndian)
 		{
-			if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-			if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-			var start = addresses.Start;
-			var end = addresses.EndInclusive + 1;
-			if ((start & 0b11) is not 0 || (end & 0b11) is not 0) throw new InvalidOperationException(ERR_MSG_UNALIGNED);
-			if (values.LongLength * sizeof(uint) != end - start) throw new InvalidOperationException(ERR_MSG_BUFFER_WRONG_SIZE); // `!=` not `<`, per `BulkPeekUshort`
-
+			long addr = startAddress;
 			using (this.EnterExit())
 			{
-				for (var i = 0; i < values.Length; i++, start += sizeof(uint))
+				for (int i = 0; i < values.Length; i++, addr += sizeof(uint))
 				{
-					values[i] = PeekUint(start, bigEndian);
+					values[i] = PeekUint(addr, bigEndian);
 				}
 			}
 		}
+
+		public virtual void BulkPokeByte(long startAddress, ReadOnlySpan<byte> values)
+		{
+			long addr = startAddress;
+			using (this.EnterExit())
+			{
+				for (int i = 0; i < values.Length; i++, addr += sizeof(byte))
+				{
+					PokeByte(addr, values[i]);
+				}
+			}
+		}
+
+		public virtual void BulkPokeUshort(long startAddress, ReadOnlySpan<ushort> values, bool bigEndian)
+		{
+			long addr = startAddress;
+			using (this.EnterExit())
+			{
+				for (int i = 0; i < values.Length; i++, addr += sizeof(ushort))
+				{
+					PokeUshort(addr, values[i], bigEndian);
+				}
+			}
+		}
+
+		public virtual void BulkPokeUint(long startAddress, ReadOnlySpan<uint> values, bool bigEndian)
+		{
+			long addr = startAddress;
+			using (this.EnterExit())
+			{
+				for (int i = 0; i < values.Length; i++, addr += sizeof(uint))
+				{
+					PokeUint(addr, values[i], bigEndian);
+				}
+			}
+		}
+
 
 		public virtual void SendCheatToCore(int addr, byte value, int compare, int compare_type) { }
 

@@ -12,6 +12,26 @@ namespace BizHawk.Tests.Client.Common.lua
 	{
 		private static readonly string BASE_SCRIPT_PATH = Path.Combine(Environment.CurrentDirectory, "lua/scripts");
 
+		/// <summary>
+		/// Run a Lua script that contains the full test code.
+		/// A successful test should print "pass" and nothing else.
+		/// </summary>
+		public static void RunTestFromLuaScript(string path)
+		{
+			LuaTestContext context = new();
+			context.AddScript(path, true);
+			context.RunYielding();
+
+			if (context.loggedMessages.Count == 0)
+			{
+				Assert.Fail("Expected script to print \"pass\", but got nothing.");
+			}
+			if (context.loggedMessages.Count > 1 || context.loggedMessages[0] != "pass")
+			{
+				Assert.Fail(string.Join("\n", context.loggedMessages));
+			}
+		}
+
 		private LuaLibraries lua;
 
 		public List<string> loggedMessages = new();
