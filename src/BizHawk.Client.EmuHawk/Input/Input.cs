@@ -228,6 +228,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateModifierKeysEffective();
 
 				var keyEvents = Adapter.ProcessHostKeyboards();
+				var ipcKeyEvents = Adapter.ProcessHostIPC();
 				var (mouseDeltaX, mouseDeltaY) = Adapter.ProcessHostMice();
 				Adapter.PreprocessHostGamepads();
 
@@ -238,6 +239,10 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var ke in keyEvents)
 					{
 						HandleButton(DistinctKeyNameOverrides.GetName(ke.Key), ke.Pressed, HostInputType.Keyboard);
+					}
+					foreach (var ke in ipcKeyEvents)
+					{
+						HandleButton(DistinctKeyNameOverrides.GetName(ke.Key), ke.Pressed, HostInputType.IPC);
 					}
 
 					lock (_axisValues)
@@ -315,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static bool ShouldSwallow(AllowInput allowInput, HostInputType inputFocus)
 		{
-			return allowInput == AllowInput.None || (allowInput == AllowInput.OnlyController && inputFocus != HostInputType.Pad);
+			return (allowInput is AllowInput.None && inputFocus is not HostInputType.IPC) || (allowInput == AllowInput.OnlyController && inputFocus != HostInputType.Pad);
 		}
 
 		public void StartListeningForAxisEvents()
