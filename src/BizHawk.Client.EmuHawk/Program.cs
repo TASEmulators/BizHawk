@@ -417,9 +417,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			finally
 			{
+				Input.Instance?.DeInitAll();
 				globalSound?.Dispose();
 				workingGL.Dispose();
-				Input.Instance?.Adapter?.DeInitAll();
 			}
 
 			// return 0 assuming things have gone well, non-zero values could be used as error codes or for scripting purposes

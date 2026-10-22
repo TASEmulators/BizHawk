@@ -160,12 +160,25 @@ mod nix {
 	use super::*;
 	use libc::*;
 
+	#[cfg(target_os = "linux")]
+	unsafe fn errno() -> i32 { *__errno_location() }
+	#[cfg(target_os = "macos")]
+	unsafe fn errno() -> i32 { *__error() }
+
 	fn error() -> anyhow::Error {
 		unsafe {
-			let err = *__errno_location();
-			anyhow!("Libc failure code: {}", err)
+			anyhow!("Libc failure code: {}", errno())
 		}
 	}
+
+	/// mmap flags for a fixed-address mapping.
+	/// Linux has `MAP_FIXED_NOREPLACE` (fails instead of clobbering an existing mapping);
+	/// macOS only has `MAP_FIXED` (which silently replaces). Waterbox manages its own
+	/// reserved address space, so a plain `MAP_FIXED` matches the intended behaviour there.
+	#[cfg(target_os = "linux")]
+	fn fixed_flags() -> i32 { MAP_FIXED | MAP_FIXED_NOREPLACE }
+	#[cfg(target_os = "macos")]
+	fn fixed_flags() -> i32 { MAP_FIXED }
 	fn ret(code: i32) -> anyhow::Result<()> {
 		match code {
 			0 => Ok(()),
@@ -175,6 +188,7 @@ mod nix {
 
 	/// Open a file (not backed by the fs) for memory mapping
 	/// Caller must close_handle() later or else leak
+	#[cfg(target_os = "linux")]
 	pub fn open_handle(size: usize) -> anyhow::Result<Handle> {
 		unsafe {
 			let s = std::ffi::CString::new("MemoryBlockUnix").unwrap();
@@ -184,6 +198,32 @@ mod nix {
 			}
 			if ftruncate(fd, size as i64) != 0 {
 				Err(error())
+			} else {
+				Ok(Handle(fd as usize))
+			}
+		}
+	}
+
+	/// macOS has no `memfd_create`. We must NOT use POSIX shared memory (`shm_open`)
+	/// here: macOS refuses to `mprotect` a `MAP_SHARED` shm region to executable
+	/// (EACCES), and waterbox needs to execute guest code from this handle's mapping.
+	/// A regular file CAN be mapped executable (like a dylib) even via `MAP_SHARED`,
+	/// so back the block with an immediately-unlinked temp file (anonymous once
+	/// unlinked; the fd keeps it alive until closed).
+	#[cfg(target_os = "macos")]
+	pub fn open_handle(size: usize) -> anyhow::Result<Handle> {
+		unsafe {
+			let mut template = *b"/tmp/wbxhost-XXXXXX\0";
+			let fd = mkstemp(template.as_mut_ptr() as *mut libc::c_char);
+			if fd == -1 {
+				return Err(error())
+			}
+			// Unlink right away; the open fd alone backs the mapping from here on.
+			unlink(template.as_ptr() as *const libc::c_char);
+			if ftruncate(fd, size as off_t) != 0 {
+				let e = error();
+				close(fd);
+				Err(e)
 			} else {
 				Ok(Handle(fd as usize))
 			}
@@ -211,7 +251,7 @@ mod nix {
 		unsafe {
 			let mut flags = MAP_SHARED;
 			if addr.start != 0 {
-				flags |= MAP_FIXED | MAP_FIXED_NOREPLACE;
+				flags |= fixed_flags();
 			}
 			let ptr = mmap(addr.start as *mut c_void,
 				addr.size,
@@ -251,7 +291,7 @@ mod nix {
 		unsafe {
 			let mut flags = MAP_PRIVATE | MAP_ANONYMOUS;
 			if addr.start != 0 {
-				flags |= MAP_FIXED | MAP_FIXED_NOREPLACE;
+				flags |= fixed_flags();
 			}
 			let ptr = mmap(addr.start as *mut c_void, addr.size, prottoprot(initial_prot), flags, -1, 0);
 			match ptr {
