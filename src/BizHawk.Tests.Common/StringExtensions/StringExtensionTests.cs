@@ -31,7 +31,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[DataRow("ABCDefghIJKLmnopQRSTuvwxYZ", 4, "YZuvwxQRSTmnopIJKLefghABCD")]
 		[TestMethod]
 		public void TestChunk(string initial, int width, string expected)
-			=> Assert.AreEqual(expected, string.Concat(initial.Chunk(width).Reverse()), "matches after transform");
+			=> Assert.AreEqual(expected, string.Concat(initial.Chunk(width).Select(static a => new string(a)).Reverse()), "matches after transform");
 
 		[DataRow(""/*empty string*/, 80, ""/*empty string*/)]
 		[DataRow(FOLD_TEST_SENTENCE, 80, FOLD_TEST_SENTENCE)]
