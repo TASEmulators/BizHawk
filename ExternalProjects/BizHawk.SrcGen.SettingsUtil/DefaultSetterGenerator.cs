@@ -13,6 +13,12 @@ public class DefaultSetterGenerator : IIncrementalGenerator
 {
 	public void Initialize(IncrementalGeneratorInitializationContext context)
 	{
+		context.RegisterPostInitializationOutput(ctx =>
+		{
+			ctx.AddEmbeddedAttributeDefinition();
+			var attributesSource = SourceText.From(typeof(DefaultSetterGenerator).Assembly.GetManifestResourceStream("BizHawk.SrcGen.SettingsUtil.CoreSettingsAttribute.cs")!, Encoding.UTF8, canBeEmbedded: true);
+			ctx.AddSource("CoreSettingsAttribute.cs", attributesSource);
+		});
 		var classDecls = context.SyntaxProvider.CreateSyntaxProvider(
 			predicate: static (syntaxNode, _) => syntaxNode is ClassDeclarationSyntax or RecordDeclarationSyntax,
 			transform: static (ctx, _) => ((TypeDeclarationSyntax) ctx.Node, ctx.SemanticModel));

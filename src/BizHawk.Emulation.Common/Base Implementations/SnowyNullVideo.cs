@@ -3,7 +3,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="NullVideo"/>
 	public sealed class SnowyNullVideo : IVideoProvider
 	{
-		[CoreSettings]
+//		[CoreSettings]
 		public sealed record class Settings(
 			float Bias = -2.0f,
 			int FramerateScalar = 10,

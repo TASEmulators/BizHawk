@@ -6,4 +6,8 @@
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);SA1135</NoWarn> <!-- the Analyzer for SA1135 chokes on the tuple alias syntax -->
 	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="CoreSettingsAttribute.cs" />
+		<EmbeddedResource Include="CoreSettingsAttribute.cs" />
+	</ItemGroup>
 </Project>
