@@ -196,7 +196,7 @@ impl IStateable for WaterboxHost {
 
 fn unimp(nr: SyscallNumber) -> SyscallResult {
 	eprintln!("Stopped on unimplemented syscall {}", lookup_syscall(&nr));
-	std::intrinsics::breakpoint();
+	unsafe { std::intrinsics::breakpoint(); }
 	Err(ENOSYS)
 }
 
