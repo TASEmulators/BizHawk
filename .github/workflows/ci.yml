@@ -62,10 +62,10 @@ jobs:
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: "8"
+          dotnet-version: "10"
 
       - name: Test
-        run: dotnet test BizHawk.sln -c Release -p:TestProjTargetFrameworkOverride=net8.0 -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
+        run: dotnet test BizHawk.sln -c Release -p:TestProjTargetFrameworkOverride=net10.0 -p:ContinuousIntegrationBuild=true -p:RunStyleCop=false
         shell: pwsh
 
   package:
