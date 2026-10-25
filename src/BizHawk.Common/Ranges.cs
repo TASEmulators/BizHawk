@@ -1,253 +1,224 @@
-using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Common.NumberExtensions;
+using System.Runtime.CompilerServices;
 
 namespace BizHawk.Common
 {
-	/// <summary>represents a closed range of <typeparamref name="T"/> (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
-#pragma warning disable CA1715 // breaks IInterface convention
-	public interface Range<out T> where T : unmanaged, IComparable<T>
-#pragma warning restore CA1715
+	/// <summary>
+	/// represents a half-open interval (a.k.a. range) of <typeparamref name="T"/>
+	/// <br/>(class invariant: <see cref="INumericHalfOpenIntervalContra{T}.Start"/> &lt; <see cref="INumericHalfOpenIntervalContra{T}.EndExclusive"/>)
+	/// </summary>
+	public interface INumericHalfOpenInterval<T> : INumericHalfOpenIntervalContra<T>,
+		IEquatable<INumericHalfOpenIntervalContra<T>>
+		where T : IComparable<T>
+	{
+		/// <summary>
+		/// leaves <paramref name="value"/> unchanged if it's contained in the interval,
+		/// or else sets it to whichever bound is closest
+		/// </summary>
+		void Clamp(ref T value);
+
+		/// <returns>
+		/// <see langword="true"/> iff <paramref name="value"/> is contained in this interval
+		/// (<paramref name="value"/> is considered to be in the interval if it's exactly equal to either bound)
+		/// </returns>
+		bool Contains(in T value);
+	}
+
+	/// <summary>see <see cref="INumericHalfOpenInterval{T}"/>; this is a type parameter variance hack</summary>
+	public interface INumericHalfOpenIntervalContra<out T>
 	{
 		T Start { get; }
 
-		T EndInclusive { get; }
+		T EndExclusive { get; }
 	}
 
-	/// <summary>represents a closed range of <typeparamref name="T"/> which can be grown or shrunk (class invariant: <see cref="Start"/> ≤ <see cref="EndInclusive"/>)</summary>
-	public class MutableRange<T> : Range<T> where T : unmanaged, IComparable<T>
+	/// <summary>
+	/// represents a half-open range (a.k.a. interval) of <see cref="int"><c>s32</c>s</see>
+	/// <br/>(class invariant: <see cref="NumericHalfOpenRangeBase{T}.Start"/> &lt; <see cref="NumericHalfOpenRangeBase{T}.EndExclusive"/>)
+	/// </summary>
+#pragma warning disable MA0077 // already implements `IEquatable<TSelf>`
+	public sealed class Int32HalfOpenRange : NumericHalfOpenRangeBase<int>
+#pragma warning restore MA0077
 	{
-		private (T Start, T EndInclusive) r;
+		private string? _ser = null;
 
-		/// <inheritdoc cref="Overwrite"/>
-		internal MutableRange(T start, T endInclusive) => Overwrite(start, endInclusive);
+		public override int EndInclusive
+			=> EndExclusive - 1;
 
-		/// <exception cref="ArgumentOutOfRangeException">(from setter) <paramref name="value"/> > <see cref="EndInclusive"/></exception>
-		public T Start
-		{
-			get => r.Start;
-			set => r.Start = r.EndInclusive.CompareTo(value) < 0
-				? throw new ArgumentOutOfRangeException(nameof(value), value, "attempted to set start > end")
-				: value;
-		}
+		/// <inheritdoc cref="NumericHalfOpenRangeBase{T}(T,T)"/>
+		public Int32HalfOpenRange(int start, int endExclusive)
+			: base(start, endExclusive) {}
 
-		/// <exception cref="ArgumentOutOfRangeException">(from setter) <paramref name="value"/> &lt; <see cref="Start"/></exception>
-		public T EndInclusive
-		{
-			get => r.EndInclusive;
-			set => r.EndInclusive = value.CompareTo(r.Start) < 0
-				? throw new ArgumentOutOfRangeException(nameof(value), value, "attempted to set end < start")
-				: value;
-		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public override bool Contains(in int value)
+			=> Start <= value && value < EndExclusive;
 
-		/// <exception cref="ArgumentException"><typeparamref name="T"/> is <see langword="float"/>/<see langword="double"/> and either bound is <see cref="float.NaN"/></exception>
-		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endInclusive"/> &lt; <paramref name="start"/></exception>
-		public void Overwrite(T start, T endInclusive)
-		{
-			if (endInclusive.CompareTo(start) < 0) throw new ArgumentOutOfRangeException(nameof(endInclusive), endInclusive, "range end < start");
-			if (start is float fs)
-			{
-				if (float.IsNaN(fs)) throw new ArgumentException("range start is NaN", nameof(start));
-				if (endInclusive is float fe && float.IsNaN(fe)) throw new ArgumentException("range end is NaN", nameof(endInclusive));
-			}
-			else if (start is double ds)
-			{
-				if (double.IsNaN(ds)) throw new ArgumentException("range start is NaN", nameof(start));
-				if (endInclusive is double de && double.IsNaN(de)) throw new ArgumentException("range end is NaN", nameof(endInclusive));
-			}
-			r = (start, endInclusive);
-		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool Contains(int value)
+			=> Start <= value && value < EndExclusive;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public uint Count()
+			=> (uint) ((long) EndExclusive - Start);
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool Equals(Int32HalfOpenRange other)
+			=> Start == other.Start && EndExclusive == other.EndExclusive;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public override string ToString()
+			=> _ser ??= $"{Start}..<{EndExclusive}";
 	}
 
-	/// <summary>contains most of the logic for ranges</summary>
-	/// <remarks>
-	/// non-generic overloads are used where the method requires an increment or decrement<br/>
-	/// TODO which Enumerate algorithm is faster - <c>yield return</c> in loop or <see cref="Enumerable.Range"/>?
-	/// </remarks>
-	public static class RangeExtensions
+	/// <summary>
+	/// represents a half-open range (a.k.a. interval) of <see cref="long"><c>s64</c>s</see>
+	/// <br/>(class invariant: <see cref="NumericHalfOpenRangeBase{T}.Start"/> &lt; <see cref="NumericHalfOpenRangeBase{T}.EndExclusive"/>)
+	/// </summary>
+#pragma warning disable MA0077 // already implements `IEquatable<TSelf>`
+	public sealed class Int64HalfOpenRange : NumericHalfOpenRangeBase<long>
+#pragma warning restore MA0077
 	{
 		private const ulong MIN_LONG_NEGATION_AS_ULONG = 9223372036854775808UL;
 
-		private static ArithmeticException ExclusiveRangeMinValExc
-			=> new("exclusive range end is min value of integral type");
+		private ulong? _count = null;
 
-		/// <returns><paramref name="value"/> if it's contained in <paramref name="range"/>, or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/></returns>
-		public static T ConstrainWithin<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => value.CompareTo(range.Start) < 0
-			? range.Start
-			: range.EndInclusive.CompareTo(value) < 0
-				? range.EndInclusive
-				: value;
+		private string? _ser = null;
 
-		/// <returns>true iff <paramref name="value"/> is contained in <paramref name="range"/> (<paramref name="value"/> is considered to be in the range if it's exactly equal to either bound)</returns>
-		public static bool Contains<T>(this Range<T> range, T value) where T : unmanaged, IComparable<T> => !(value.CompareTo(range.Start) < 0 || range.EndInclusive.CompareTo(value) < 0);
+		public override long EndInclusive
+			=> EndExclusive - 1L;
 
-		public static uint Count(this Range<byte> range) => (uint) (range.EndInclusive - range.Start + 1);
+		/// <inheritdoc cref="NumericHalfOpenRangeBase{T}(T,T)"/>
+		public Int64HalfOpenRange(long start, long endExclusive)
+			: base(start, endExclusive) {}
 
-		/// <remarks>beware integer overflow when <paramref name="range"/> contains every value</remarks>
-		public static uint Count(this Range<int> range) => (uint) ((long) range.EndInclusive - range.Start) + 1U;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public override bool Contains(in long value)
+			=> Start <= value && value < EndExclusive;
 
-		/// <inheritdoc cref="Count(Range{int})"/>
-		public static ulong Count(this Range<long> range) => (range.Contains(0L)
-			? (range.Start == long.MinValue ? MIN_LONG_NEGATION_AS_ULONG : (ulong) -range.Start) + (ulong) range.EndInclusive
-			: (ulong) (range.EndInclusive - range.Start)
-		) + 1UL;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool Contains(long value)
+			=> Start <= value && value < EndExclusive;
 
-		public static uint Count(this Range<sbyte> range) => (uint) (range.EndInclusive - range.Start + 1);
+		public ulong Count()
+			=> _count ??= (Contains(0L)
+				? (Start is long.MinValue ? MIN_LONG_NEGATION_AS_ULONG : (ulong) -Start) + (ulong) EndExclusive
+				: (ulong) (EndExclusive - Start));
 
-		public static uint Count(this Range<short> range) => (uint) (range.EndInclusive - range.Start + 1);
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public bool Equals(Int64HalfOpenRange other)
+			=> Start == other.Start && EndExclusive == other.EndExclusive;
 
-		/// <inheritdoc cref="Count(Range{int})"/>
-		public static uint Count(this Range<uint> range) => range.EndInclusive - range.Start + 1U;
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public override string ToString()
+			=> _ser ??= $"{Start}L..<{EndExclusive}L";
+	}
 
-		/// <inheritdoc cref="Count(Range{int})"/>
-		public static ulong Count(this Range<ulong> range) => range.EndInclusive - range.Start + 1UL;
+	/// <seealso cref="Int32HalfOpenRange"/>
+	/// <seealso cref="Int64HalfOpenRange"/>
+	public abstract class NumericHalfOpenRangeBase<T> : INumericHalfOpenInterval<T>
+		where T : IComparable<T>
+	{
+		public T Start { get; }
 
-		public static uint Count(this Range<ushort> range) => (uint) (range.EndInclusive - range.Start + 1);
+		public T EndExclusive { get; }
 
-		public static void Deconstruct<T>(this Range<T> range, out T start, out T endInclusive)
-			where T : unmanaged, IComparable<T>
-		{
-			start = range.Start;
-			endInclusive = range.EndInclusive;
-		}
-
-		public static IEnumerable<byte> Enumerate(this Range<byte> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (byte) i);
-
-		/// <inheritdoc cref="Enumerate(Range{float},float)"/>
-		public static IEnumerable<double> Enumerate(this Range<double> range, double step)
-		{
-			var d = range.Start;
-			while (d < range.EndInclusive)
-			{
-				yield return d;
-				d += step;
-			}
-			if (d.HawkFloatEquality(range.EndInclusive)) yield return d;
-		}
-
-		/// <remarks>beware precision errors</remarks>
-		public static IEnumerable<float> Enumerate(this Range<float> range, float step)
-		{
-			var f = range.Start;
-			while (f < range.EndInclusive)
-			{
-				yield return f;
-				f += step;
-			}
-			if (f.HawkFloatEquality(range.EndInclusive)) yield return f;
-		}
-
-		public static IEnumerable<int> Enumerate(this Range<int> range)
-		{
-			var i = range.Start;
-			while (i < range.EndInclusive) yield return i++;
-			yield return i;
-		}
-
-		public static IEnumerable<long> Enumerate(this Range<long> range)
-		{
-			var l = range.Start;
-			while (l < range.EndInclusive) yield return l++;
-			yield return l;
-		}
-
-		public static IEnumerable<sbyte> Enumerate(this Range<sbyte> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (sbyte) i);
-
-		public static IEnumerable<short> Enumerate(this Range<short> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (short) i);
-
-		public static IEnumerable<uint> Enumerate(this Range<uint> range)
-		{
-			var i = range.Start;
-			while (i < range.EndInclusive) yield return i++;
-			yield return i;
-		}
-
-		public static IEnumerable<ulong> Enumerate(this Range<ulong> range)
-		{
-			var l = range.Start;
-			while (l < range.EndInclusive) yield return l++;
-			yield return l;
-		}
-
-		public static IEnumerable<ushort> Enumerate(this Range<ushort> range) => Enumerable.Range(range.Start, (int) range.Count()).Select(i => (ushort) i);
-
-		public static Range<T> GetImmutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => GetMutableCopy(range);
-
-		public static MutableRange<T> GetMutableCopy<T>(this Range<T> range) where T : unmanaged, IComparable<T> => new MutableRange<T>(range.Start, range.EndInclusive);
-
-		/// <inheritdoc cref="MutableRange{T}(T,T)"/>
-		public static MutableRange<T> MutableRangeTo<T>(this T start, T endInclusive) where T : unmanaged, IComparable<T> => new MutableRange<T>(start, endInclusive);
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<byte> MutableRangeToExclusive(this byte start, byte endExclusive) => endExclusive == byte.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<byte>(start, (byte) (endExclusive - 1U));
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<int> MutableRangeToExclusive(this int start, int endExclusive) => endExclusive == int.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<int>(start, endExclusive - 1);
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<long> MutableRangeToExclusive(this long start, long endExclusive) => endExclusive == long.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<long>(start, endExclusive - 1L);
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<sbyte> MutableRangeToExclusive(this sbyte start, sbyte endExclusive) => endExclusive == sbyte.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<sbyte>(start, (sbyte) (endExclusive - 1));
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<short> MutableRangeToExclusive(this short start, short endExclusive) => endExclusive == short.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<short>(start, (short) (endExclusive - 1));
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<uint> MutableRangeToExclusive(this uint start, uint endExclusive) => endExclusive == uint.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<uint>(start, endExclusive - 1U);
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<ulong> MutableRangeToExclusive(this ulong start, ulong endExclusive) => endExclusive == ulong.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<ulong>(start, endExclusive - 1UL);
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static MutableRange<ushort> MutableRangeToExclusive(this ushort start, ushort endExclusive) => endExclusive == ushort.MinValue
-			? throw ExclusiveRangeMinValExc
-			: new MutableRange<ushort>(start, (ushort) (endExclusive - 1U));
-
-		/// <inheritdoc cref="MutableRange{T}(T,T)"/>
-		public static Range<T> RangeTo<T>(this T start, T endInclusive) where T : unmanaged, IComparable<T> => start.MutableRangeTo(endInclusive);
-
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<byte> RangeToExclusive(this byte start, byte endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public abstract T EndInclusive { get; }
 
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endExclusive"/> ≤ <paramref name="start"/> (empty ranges where <paramref name="start"/> = <paramref name="endExclusive"/> are not permitted)</exception>
-		/// <exception cref="ArithmeticException"><paramref name="endExclusive"/> is min value of integral type (therefore <paramref name="endExclusive"/> ≤ <paramref name="start"/>)</exception>
-		public static Range<int> RangeToExclusive(this int start, int endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		protected NumericHalfOpenRangeBase(T start, T endExclusive)
+		{
+			if (endExclusive.CompareTo(start) <= 0) throw new ArgumentOutOfRangeException(paramName: nameof(endExclusive), actualValue: endExclusive, message: "range end <= start");
+			Start = start;
+			EndExclusive = endExclusive;
+		}
 
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<long> RangeToExclusive(this long start, long endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public virtual void Clamp(ref T value)
+		{
+			if (Start.CompareTo(value) > 0) value = Start;
+			else if (EndExclusive.CompareTo(value) <= 0) value = EndInclusive;
+		}
 
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<sbyte> RangeToExclusive(this sbyte start, sbyte endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public virtual bool Contains(in T value)
+			=> Start.CompareTo(value) <= 0 && EndExclusive.CompareTo(value) > 0;
 
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<short> RangeToExclusive(this short start, short endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public bool Equals(INumericHalfOpenIntervalContra<T> other)
+			=> Start.CompareTo(other.Start) is 0 && EndExclusive.CompareTo(other.EndExclusive) is 0;
 
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<uint> RangeToExclusive(this uint start, uint endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public override bool Equals(object? other)
+			=> other is INumericHalfOpenIntervalContra<T> interval && Equals(interval);
 
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<ulong> RangeToExclusive(this ulong start, ulong endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public override int GetHashCode()
+			=> HashCode.Combine(Start, EndExclusive);
 
-		/// <inheritdoc cref="RangeToExclusive(int,int)"/>
-		public static Range<ushort> RangeToExclusive(this ushort start, ushort endExclusive) => MutableRangeToExclusive(start, endExclusive);
+		public abstract override string ToString();
+	}
 
-		/// <returns>true iff <paramref name="value"/> is strictly contained in <paramref name="range"/> (<paramref name="value"/> is considered to be OUTSIDE the range if it's exactly equal to either bound)</returns>
-		public static bool StrictlyBoundedBy<T>(this T value, Range<T> range) where T : unmanaged, IComparable<T> => range.Start.CompareTo(value) < 0 && value.CompareTo(range.EndInclusive) < 0;
+	public static class RangeExtensions
+	{
+		private const string ERR_MSG_EXCL_END_MIN_VAL = "exclusive range end is min. value of integral type";
+
+		private static OverflowException InclusiveRangeGTMaxValExc
+			=> new("inclusive range end is max. value of integral type");
+
+		/// <returns>
+		/// <paramref name="value"/> unchanged if it's contained in <paramref name="range"/>,
+		/// or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/>
+		/// </returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static T Clamp<T>(this INumericHalfOpenInterval<T> range, T value)
+			where T : IComparable<T>
+		{
+			range.Clamp(ref value);
+			return value;
+		}
+
+		/// <returns>
+		/// <paramref name="value"/> unchanged if it's contained in <paramref name="range"/>,
+		/// or else whichever bound of <paramref name="range"/> is closest to <paramref name="value"/>
+		/// </returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static T ConstrainWithin<T>(this T value, INumericHalfOpenInterval<T> range)
+			where T : IComparable<T>
+		{
+			range.Clamp(ref value);
+			return value;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Deconstruct<T>(this INumericHalfOpenInterval<T> range, out T start, out T endExclusive)
+			where T : IComparable<T>
+		{
+			start = range.Start;
+			endExclusive = range.EndExclusive;
+		}
+
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endInclusive"/> &lt; <paramref name="start"/> (empty ranges are not permitted)</exception>
+		/// <exception cref="OverflowException"><paramref name="endInclusive"/> is <see cref="int.MaxValue"/> (it's incremented to be stored as an exclusive bound)</exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Int32HalfOpenRange RangeTo(this int start, int endInclusive)
+			=> endInclusive is int.MaxValue
+				? throw InclusiveRangeGTMaxValExc
+				: new(start: start, endExclusive: unchecked(endInclusive + 1));
+
+		/// <exception cref="ArgumentOutOfRangeException"><paramref name="endInclusive"/> &lt; <paramref name="start"/> (empty ranges are not permitted)</exception>
+		/// <exception cref="OverflowException"><paramref name="endInclusive"/> is <see cref="long.MaxValue"/> (it's incremented to be stored as an exclusive bound)</exception>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Int64HalfOpenRange RangeTo(this long start, long endInclusive)
+			=> endInclusive is long.MaxValue
+				? throw InclusiveRangeGTMaxValExc
+				: new(start: start, endExclusive: unchecked(endInclusive + 1L));
+
+		/// <inheritdoc cref="Int32HalfOpenRange(int,int)"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Int32HalfOpenRange RangeToExclusive(this int start, int endExclusive)
+			=> endExclusive is int.MinValue
+				? throw new ArgumentOutOfRangeException(paramName: nameof(endExclusive), endExclusive, message: ERR_MSG_EXCL_END_MIN_VAL)
+				: new(start: start, endExclusive: endExclusive);
+
+		/// <inheritdoc cref="Int64HalfOpenRange(long,long)"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Int64HalfOpenRange RangeToExclusive(this long start, long endExclusive)
+			=> endExclusive is long.MinValue
+				? throw new ArgumentOutOfRangeException(paramName: nameof(endExclusive), endExclusive, message: ERR_MSG_EXCL_END_MIN_VAL)
+				: new(start: start, endExclusive: endExclusive);
 	}
 }
