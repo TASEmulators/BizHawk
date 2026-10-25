@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Tests.Client.Common.Movie
