@@ -83,7 +83,7 @@ namespace BizHawk.Tests.Common.ReflectionExtensions
 		public void TestParamIsNRT(string label, string expectedStr)
 		{
 			bool? expected = bool.TryParse(expectedStr, out var b) ? b : null;
-			Assert.AreEqual(expected, DummyClass.GetMethod($"Method_{label}").GetParameters()[0].IsNRTOrNullableT());
+			Assert.AreEqual(expected, DummyClass.GetMethod($"Method_{label}")!.GetParameters()[0].IsNRTOrNullableT());
 		}
 
 #if false
@@ -96,7 +96,7 @@ namespace BizHawk.Tests.Common.ReflectionExtensions
 		public void TestReturnIsNRT(string label, string expectedStr)
 		{
 			bool? expected = bool.TryParse(expectedStr, out var b) ? b : null;
-			Assert.AreEqual(expected, DummyClass.GetMethod($"Method_{label}").ReturnTypeIsNRT());
+			Assert.AreEqual(expected, DummyClass.GetMethod($"Method_{label}")!.ReturnTypeIsNRT());
 		}
 #endif
 	}
