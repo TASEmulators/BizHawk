@@ -28,9 +28,7 @@ namespace BizHawk.Tests.Client.Common.config
 					subset: appliesTo,
 					message: appliesTo.Length is 1
 						? $"core picker has submenu for {appliesTo[0]}, but that system doesn't have alternate cores"
-#pragma warning disable MA0089 // CI build this for .NET Core where there's a `char` overload for `string.Join`
-						: $"core picker has submenu for {appliesTo[0]} ({string.Join("/", appliesTo)}), but none of those systems have alternate cores");
-#pragma warning restore MA0089
+						: $"core picker has submenu for {appliesTo[0]} ({string.Join('/', appliesTo)}), but none of those systems have alternate cores");
 			}
 		}
 

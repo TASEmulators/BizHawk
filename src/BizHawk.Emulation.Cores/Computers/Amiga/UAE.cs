@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.Amiga
 			]);
 
 			Console.WriteLine();
-			Console.WriteLine(string.Join(" ", _args));
+			Console.WriteLine(string.Join(' ', _args));
 			Console.WriteLine();
 
 			if (!uae.Init(_args.Count, _args.ToArray()))

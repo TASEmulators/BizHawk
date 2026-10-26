@@ -47,6 +47,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public string[] Options;
 		public string DefaultOption => Options[0];
 
-		public override string ToString() => $"{Name} ({Description}) = ({string.Join("|", Options)})";
+		public override string ToString() => $"{Name} ({Description}) = ({string.Join('|', Options)})";
 	}
 }

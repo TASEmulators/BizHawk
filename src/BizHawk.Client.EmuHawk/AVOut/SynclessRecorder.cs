@@ -156,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 			return index.ToString();
 #else // not sure of the original purpose here, but the subfolders it makes don't seem to work right, just return frame number for now
 			var chunks = StringChunkSplit(index.ToString(), 2);
-			string subPath = string.Join("/", chunks);
+			string subPath = string.Join('/', chunks);
 			return subPath;
 #endif
 		}

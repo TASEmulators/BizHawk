@@ -221,7 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				new ExceptionBox(string.Join("\n",
+				new ExceptionBox(string.Join('\n',
 					"It appears your config file (config.ini) is corrupted; an exception was thrown while loading it.",
 					"On closing this warning, EmuHawk will delete your config file and generate a new one. You can go make a backup now if you'd like to look into diffs.",
 					"The caught exception was:",

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 			Tracer.Put(new(
 				disassembly: $"{pc:X4}:  {opcodeStr}".PadRight(26),
-				registerInfo: string.Join(" ",
+				registerInfo: string.Join(' ',
 					$"A:{a:X2}",
 					$"X:{x:X2}",
 					$"Y:{y:X2}",

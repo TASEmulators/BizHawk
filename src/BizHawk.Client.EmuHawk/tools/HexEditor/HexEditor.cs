@@ -36,8 +36,8 @@ namespace BizHawk.Client.EmuHawk
 					column: x);
 				SzButtonEx btnCopyTSV = new() { Size = new(128, 23), Text = ".tsv --> Clipboard" };
 				btnCopyTSV.Click += (_, _) => Clipboard.SetText(string.Join(
-					"\n",
-					strings.Select(static l => string.Join("\t", l))));
+					'\n',
+					strings.Select(static l => string.Join('\t', l))));
 				ClientSize = new(352, 144);
 				SuspendLayout();
 				Controls.Add(new SingleColumnFLP { Controls = { tlp, btnCopyTSV } });
