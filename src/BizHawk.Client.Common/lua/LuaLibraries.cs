@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 					if (instance is ClientLuaLibrary clientLib)
 					{
 						clientLib.MainForm = _mainForm;
-						clientLib.AllAPINames = new(() => string.Join("\n", Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
+						clientLib.AllAPINames = new(() => string.Join('\n', Docs.Select(static lf => lf.Name)) + "\n"); // Docs may not be fully populated now, depending on order of ReflectionCache.Types, but definitely will be when this is read
 					}
 					else if (instance is EventsLuaLibrary eventsLib)
 					{

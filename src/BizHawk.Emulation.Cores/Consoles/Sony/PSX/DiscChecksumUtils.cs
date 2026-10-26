@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		private static readonly ConditionalWeakTable<Disc, string> _redumpHashCache = new();
 
 		public static string CalculateDiscHashesImpl(IReadOnlyList<Disc> discs)
-			=> string.Join("\n", discs.Select(static disc =>
+			=> string.Join('\n', discs.Select(static disc =>
 			{
 				if (_redumpHashCache.TryGetValue(disc, out var hash)) return hash;
 				try
@@ -46,7 +46,7 @@ Compare it with the full hash calculated by the PSX menu's Hash Discs tool";
 			}
 			return discs.Count is 0
 				? "PSX exe"
-				: string.Join("\n", discs.SelectMany(static disc => new[]
+				: string.Join('\n', discs.SelectMany(static disc => new[]
 				{
 					Path.GetFileName(disc.DiscName),
 					DiscHashWarningText(new DiscHasher(disc.DiscData).Calculate_PSX_BizIDHash()),

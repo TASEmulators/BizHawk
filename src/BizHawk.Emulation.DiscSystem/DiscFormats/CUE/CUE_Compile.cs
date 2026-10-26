@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 		{
 			var idx = Indexes.FirstOrNull(static cci => cci.Number is 1);
 			if (idx is null) return $"T#{Number:D2} NO INDEX 1";
-			var indexlist = string.Join("|", Indexes);
+			var indexlist = string.Join('|', Indexes);
 			return $"T#{Number:D2} {BlobIndex}:{idx.Value.FileMSF} ({indexlist})";
 		}
 	}

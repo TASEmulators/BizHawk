@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 
 		public CommApi(IMainFormForApi mainForm) => _networkingHelpers = mainForm.NetworkingHelpers;
 
-		public string? HttpTest() => HTTP == null ? null : string.Join("\n", HttpTestGet(), HTTP.SendScreenshot(), "done testing");
+		public string? HttpTest() => HTTP == null ? null : string.Join('\n', HttpTestGet(), HTTP.SendScreenshot(), "done testing");
 
 		public string? HttpTestGet() => HTTP?.Get(HTTP.GetUrl)?.Result;
 	}
