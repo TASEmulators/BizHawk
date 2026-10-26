@@ -3991,7 +3991,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (result.Errors.Count is not 0)
 			{
-				ShowMessageBox(owner: null, string.Join("\n", result.Errors), "Conversion error", EMsgBoxIcon.Error);
+				ShowMessageBox(owner: null, string.Join('\n', result.Errors), "Conversion error", EMsgBoxIcon.Error);
 				return;
 			}
 
@@ -4645,7 +4645,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				namedPipeClientStream.Connect(0);
 				//do this a bit cryptically to avoid loading up another big assembly (especially ones as frail as http and/or web ones)
-				var payloadString = string.Join("|", args.Select(a => Encoding.UTF8.GetBytes(a).BytesToHexString()));
+				var payloadString = string.Join('|', args.Select(a => Encoding.UTF8.GetBytes(a).BytesToHexString()));
 				var payloadBytes = Encoding.ASCII.GetBytes(payloadString);
 				namedPipeClientStream.Write(payloadBytes, 0, payloadBytes.Length);
 			}

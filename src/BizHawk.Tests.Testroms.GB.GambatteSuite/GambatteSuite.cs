@@ -132,7 +132,7 @@ namespace BizHawk.Tests.Testroms.GB
 				}
 				allFilenames.Remove(hexStrFilename);
 			}
-//			Console.WriteLine($"unused files:\n>>>\n{string.Join("\n", allFilenames.OrderBy(static s => s))}\n<<<");
+//			Console.WriteLine($"unused files:\n>>>\n{string.Join('\n', allFilenames.OrderBy(static s => s))}\n<<<");
 			return (refImageCases, hexStrCases);
 		}
 

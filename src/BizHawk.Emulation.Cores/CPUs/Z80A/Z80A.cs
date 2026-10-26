@@ -831,7 +831,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			return new(
 				disassembly: $"{RegPC:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
-				registerInfo: string.Join(" ",
+				registerInfo: string.Join(' ',
 					$"AF:{(Regs[A] << 8) + Regs[F]:X4}",
 					$"BC:{(Regs[B] << 8) + Regs[C]:X4}",
 					$"DE:{(Regs[D] << 8) + Regs[E]:X4}",

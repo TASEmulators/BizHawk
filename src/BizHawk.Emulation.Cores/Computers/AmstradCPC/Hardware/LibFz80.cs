@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
 			return new(
 				disassembly: $"{Z80.pc:X4}: {byte_code.PadRight(12)} {disasm.PadRight(26)}",
-				registerInfo: string.Join(" ",
+				registerInfo: string.Join(' ',
 					$"AF:{Z80.af:X4}",
 					$"BC:{Z80.bc:X4}",
 					$"DE:{Z80.de:X4}",

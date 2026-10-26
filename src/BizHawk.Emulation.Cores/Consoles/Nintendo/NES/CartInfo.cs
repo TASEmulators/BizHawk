@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public string Palette { get; set; } // Palette override for VS system
 		public byte VsSecurity { get; set; } // for VS system games that do a ppu check
 
-		public override string ToString() => string.Join(",",
+		public override string ToString() => string.Join(',',
 			$"pr={PrgSize}",
 			$"ch={ChrSize}",
 			$"wr={WramSize}",
