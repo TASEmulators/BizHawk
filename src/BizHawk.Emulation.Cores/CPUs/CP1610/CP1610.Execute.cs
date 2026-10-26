@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public TraceInfo CP1610State(bool disassemble = true)
 			=> new(
 				disassembly: $"{RegisterPC - 1:X4}:  {opcode:X2}  {(disassemble ? Disassemble((ushort)(RegisterPC - 1), out _) : "---")} ".PadRight(26),
-				registerInfo: string.Join(" ",
+				registerInfo: string.Join(' ',
 					new[]
 					{
 						$"Cy:{TotalExecutedCycles}",

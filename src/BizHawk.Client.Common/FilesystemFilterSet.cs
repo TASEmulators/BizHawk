@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 					combinedEntryDesc,
 					filters.SelectMany(static filter => filter.Extensions).Distinct().Order().ToList()));
 				if (appendAllFilesEntry) entries.Add(FilesystemFilter.AllFilesEntry);
-				return string.Join("|", entries);
+				return string.Join('|', entries);
 			});
 
 		public IReadOnlyList<FilesystemFilter> Filters
