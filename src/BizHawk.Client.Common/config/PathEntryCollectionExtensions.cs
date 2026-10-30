@@ -8,6 +8,10 @@ namespace BizHawk.Client.Common
 {
 	public static class PathEntryExtensions
 	{
+		private const string VAR_EXE = "%exe%";
+
+		private const string VAR_ROM = "%rom%";
+
 		/// <summary>
 		/// Returns the base path of the given system.
 		/// If the system can not be found, an empty string is returned
@@ -24,9 +28,9 @@ namespace BizHawk.Client.Common
 			var globalBase = collection[PathEntryCollection.GLOBAL, "Base"].Path;
 
 			// if %exe% prefixed then substitute exe path and repeat
-			if (globalBase.StartsWithIgnoreCase("%exe%"))
+			if (globalBase.StartsWithIgnoreCase(VAR_EXE))
 			{
-				globalBase = PathUtils.ExeDirectoryPath + globalBase.Substring(5);
+				globalBase = string.Concat(PathUtils.ExeDirectoryPath, globalBase.AsSpan(start: VAR_EXE.Length));
 			}
 
 			// absolute paths get returned without change
@@ -89,14 +93,14 @@ namespace BizHawk.Client.Common
 
 			if (path == "%recent%") return PathUtils.SpecialRecentsDir;
 
-			if (path.StartsWithOrdinal("%exe%"))
+			if (path.StartsWithOrdinal(VAR_EXE))
 			{
-				return PathUtils.ExeDirectoryPath + path.Substring(5);
+				return string.Concat(PathUtils.ExeDirectoryPath, path.AsSpan(start: VAR_EXE.Length));
 			}
 
-			if (path.StartsWithOrdinal("%rom%"))
+			if (path.StartsWithOrdinal(VAR_ROM))
 			{
-				return collection.LastRomPath + path.Substring(5);
+				return string.Concat(collection.LastRomPath, path.AsSpan(start: VAR_ROM.Length));
 			}
 
 			if (path[0] == '.')
