@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"MotW remover failed: {e}");
+				Console.WriteLine("MotW remover failed: " + e);
 			}
 		}
 
