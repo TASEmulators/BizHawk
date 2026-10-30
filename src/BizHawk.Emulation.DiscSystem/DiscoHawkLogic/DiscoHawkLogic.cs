@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.DiscSystem
 					sw.Write("                          ");
 					for (int i = 0; i < count; i++)
 					{
-						sw.Write("{0:X3} ", dispAddr + i, (i == count - 1) ? " " : "  ");
+						sw.Write("{0:X3}{1}", dispAddr + i, (i == count - 1) ? " " : "  ");
 					}
 
 					sw.WriteLine();
