@@ -3,6 +3,11 @@
 		<SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
 		<TargetFramework>$(ExecProjTargetFrameworkOverride)</TargetFramework>
 	</PropertyGroup>
+	<PropertyGroup Condition=" '$(TestProjTargetFrameworkOverride)' != '' ">
+		<NoWarn>$(NoWarn);CA1416</NoWarn> <!-- warns about references to GDI+ not guarded by OS -->
+		<NoWarn>$(NoWarn);NU1510</NoWarn> <!-- unnecessary package -->
+		<TargetFramework>$(TestProjTargetFrameworkOverride)</TargetFramework>
+	</PropertyGroup>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>

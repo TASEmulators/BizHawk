@@ -1,5 +1,6 @@
 using System.Globalization;
 
+#pragma warning disable CA1847
 namespace BizHawk.Client.Common.cheats
 {
 	public static class GbGameSharkDecoder
@@ -43,3 +44,4 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore CA1847
