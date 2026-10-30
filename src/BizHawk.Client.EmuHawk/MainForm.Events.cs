@@ -1600,6 +1600,9 @@ namespace BizHawk.Client.EmuHawk
 			HandlePlatformMenus();
 		}
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosed(EventArgs e)
 		{
 			_windowClosedAndSafeToExitProcess = true;

@@ -69,6 +69,9 @@ namespace BizHawk.Client.EmuHawk
 			pictureBox1.Image = bmp;
 		}
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);

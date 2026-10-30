@@ -474,6 +474,9 @@ namespace BizHawk.Client.EmuHawk
 			CodeDataLogger.SetCDL(null);
 		}
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
 		{
 			if (!AskSaveChanges())
@@ -491,6 +494,9 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosed(EventArgs e)
 			=> CodeDataLogger.SetCDL(null);
 
