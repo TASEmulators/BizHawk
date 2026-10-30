@@ -474,11 +474,11 @@ namespace BizHawk.Client.EmuHawk
 			CodeDataLogger.SetCDL(null);
 		}
 
-		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
 			if (!AskSaveChanges())
 				e.Cancel = true;
-			base.OnClosing(e);
+			base.OnFormClosing(e);
 		}
 
 		protected override void OnShown(EventArgs e)
@@ -491,12 +491,12 @@ namespace BizHawk.Client.EmuHawk
 			base.OnShown(e);
 		}
 
-		protected override void OnClosed(EventArgs e)
+		protected override void OnFormClosed(FormClosedEventArgs e)
 			=> CodeDataLogger.SetCDL(null);
 
 		private void CDL_Load(object sender, EventArgs e)
 		{
-			Closing += (o, e) => ShutdownCDL();
+			FormClosing += (o, e) => ShutdownCDL();
 			if (CDLAutoResume)
 			{
 				try

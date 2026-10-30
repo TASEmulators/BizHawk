@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			LoadGameGenieToolbarItem.Image = Resources.Placeholder;
 			Settings = new CheatsSettings();
 
-			Closing += (o, e) =>
+			FormClosing += (o, e) =>
 			{
 				Settings.Columns = CheatListView.AllColumns;
 			};

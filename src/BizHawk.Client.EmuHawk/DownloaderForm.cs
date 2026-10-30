@@ -162,7 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		protected override void OnClosed(EventArgs e)
+		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
 			//inform the worker thread that it needs to try terminating without doing anything else
 			//(it will linger on in background for a bit til it can service this)
