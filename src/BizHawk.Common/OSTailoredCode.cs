@@ -14,15 +14,15 @@ namespace BizHawk.Common
 
 		static OSTailoredCode()
 		{
-			if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			if (OperatingSystem.IsLinux())
 			{
 				CurrentOS = DistinctOS.Linux;
 			}
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+			else if (OperatingSystem.IsMacOS())
 			{
 				CurrentOS = DistinctOS.macOS;
 			}
-			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			else if (OperatingSystem.IsWindows())
 			{
 				CurrentOS = DistinctOS.Windows;
 			}

@@ -29,7 +29,7 @@ namespace BizHawk.Client.DiscoHawk
 			// in case assembly resolution fails, such as if we moved them into the dll subdirectory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-			if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			if (!OperatingSystem.IsWindows())
 			{
 				// Windows needs extra considerations for the dll directory
 				// we can skip all this on non-Windows platforms
