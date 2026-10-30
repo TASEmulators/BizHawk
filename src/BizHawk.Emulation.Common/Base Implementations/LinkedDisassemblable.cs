@@ -23,7 +23,8 @@ namespace BizHawk.Emulation.Common
 
 		public override IEnumerable<string> AvailableCpus { get; }
 
-		public override string PCRegisterName => Cpu.Substring(0, 2) + " PC";
+		public override string PCRegisterName
+			=> string.Concat(Cpu.AsSpan(start: 0, length: 2), " PC");
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length) => _baseDisassembler.Disassemble(m, addr, out length);
 	}
