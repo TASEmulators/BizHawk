@@ -97,8 +97,8 @@ namespace BizHawk.Common
 
 				// this is actually pretty fast; it allows using fast ldelem and stelem opcodes on
 				// arbitrary array types without emitting custom IL
-				var method = ArrayEqualsGeneric.MakeGenericMethod(new Type[] { t1.GetElementType() });
-				return (bool)method.Invoke(null, new[] { o1, o2 });
+				var method = ArrayEqualsGeneric.MakeGenericMethod(new Type[] { t1.GetElementType()! });
+				return (bool) method.Invoke(null, new[] { o1, o2 })!;
 			}
 
 			if (t1.IsPrimitive)
