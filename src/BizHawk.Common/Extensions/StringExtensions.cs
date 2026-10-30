@@ -11,7 +11,9 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
+#if !NET6_0_OR_GREATER
 		/// <inheritdoc cref="CollectionExtensions.CollectionExtensions.Chunk"/>
+#endif
 		public static IEnumerable<string> Chunk(this string source, int size)
 			=> source.AsEnumerable().Chunk(size).Select(static chars => new string(chars)); //TODO super inefficient since Chunk allocates N arrays and then this allocates another N strings
 
