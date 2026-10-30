@@ -136,7 +136,6 @@
             this.Name = "FFmpegWriterForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Choose Video Format";
             this.ResumeLayout(false);
             this.PerformLayout();
 
