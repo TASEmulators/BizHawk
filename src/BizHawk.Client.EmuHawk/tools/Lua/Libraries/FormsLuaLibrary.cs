@@ -103,7 +103,9 @@ namespace BizHawk.Client.EmuHawk
 			const string FUNC_NAME = "forms.button";
 			ProcessPositionArguments(x: x, y: y, button, functionName: FUNC_NAME);
 			ProcessSizeArguments(width: width, height: height, button, functionName: FUNC_NAME);
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)button.Handle;
+#pragma warning restore IDE0004
 		}
 
 		[LuaMethodExample("""
@@ -127,7 +129,9 @@ namespace BizHawk.Client.EmuHawk
 			SetText(checkbox, caption);
 			const string FUNC_NAME = "forms.checkbox";
 			ProcessPositionArguments(x: x, y: y, checkbox, functionName: FUNC_NAME);
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)checkbox.Handle;
+#pragma warning restore IDE0004
 		}
 
 		[LuaMethodExample("forms.clearclicks( 332 );")]
@@ -194,7 +198,9 @@ namespace BizHawk.Client.EmuHawk
 			const string FUNC_NAME = "forms.dropdown";
 			ProcessPositionArguments(x: x, y: y, dropdown, functionName: FUNC_NAME);
 			ProcessSizeArguments(width: width, height: height, dropdown, functionName: FUNC_NAME);
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)dropdown.Handle;
+#pragma warning restore IDE0004
 		}
 
 		[LuaMethodExample("local stforget = forms.getproperty(332, \"Property\");")]
@@ -272,7 +278,9 @@ namespace BizHawk.Client.EmuHawk
 			const string FUNC_NAME = "forms.label";
 			ProcessPositionArguments(x: x, y: y, label, functionName: FUNC_NAME);
 			ProcessSizeArguments(width: width, height: height, label, functionName: FUNC_NAME);
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)label.Handle;
+#pragma warning restore IDE0004
 		}
 
 		[LuaMethodExample("""
@@ -306,7 +314,9 @@ namespace BizHawk.Client.EmuHawk
 			form.Icon = SystemIcons.Application;
 			form.Show(ownerForm);
 
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)form.Handle;
+#pragma warning restore IDE0004
 		}
 
 		[LuaMethodExample(@"local filename = forms.openfile(""C:\filename.bin"", ""C:\"", ""Raster Images (*.bmp;*.gif;*.jpg;*.png)|*.bmp;*.gif;*.jpg;*.png|All Files (*.*)|*.*"")")]
@@ -355,7 +365,9 @@ namespace BizHawk.Client.EmuHawk
 				WarnForMismatchedPair(functionName: FUNC_NAME, kind: "width and height");
 			}
 
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)pictureBox.Handle;
+#pragma warning restore IDE0004
 		}
 
 		[LuaMethodExample("forms.clear( 334, 0x000000FF );")]
@@ -1320,7 +1332,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			form.Controls.Add(textbox);
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 			return (long)textbox.Handle;
+#pragma warning restore IDE0004
 		}
 
 		private void WarnForMismatchedPair(string functionName, string kind)
