@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -22,7 +21,7 @@ namespace BizHawk.Common
 #pragma warning disable RS0030 // this is to ensure no collisions
 			var uuid = Util.GetRandomUUIDStr();
 #pragma warning restore RS0030
-			var fname = $"biz-{Process.GetCurrentProcess().Id}-{friendlyName}-{uuid}{dotAndExtension ?? ""}";
+			var fname = $"biz-{Environment.ProcessId}-{friendlyName}-{uuid}{dotAndExtension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);
