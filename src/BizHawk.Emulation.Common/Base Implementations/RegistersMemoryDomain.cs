@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 			Name = cpuName.Length is 0 ? "CPU registers" : $"{new string(cpuName)/*trailing space*/}registers";
 			Size = _lookup.Sum(static entry => entry.RegWidthBytes);
 			WordSize = sizeof(byte);
-			Writable = !debuggableCore.GetType().GetMethod("SetCpuRegister").CustomAttributes
+			Writable = !debuggableCore.GetType().GetMethod("SetCpuRegister")!.CustomAttributes
 				.Any(ad => ad.AttributeType == typeof(FeatureNotImplementedAttribute));
 		}
 

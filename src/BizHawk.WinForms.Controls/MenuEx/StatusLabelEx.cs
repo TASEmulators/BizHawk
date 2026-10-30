@@ -10,7 +10,7 @@ namespace BizHawk.WinForms.Controls
 		public new Size Size => base.Size;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new string Name
+		public new string? Name
 			=> base.Name;
 	}
 }

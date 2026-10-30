@@ -15,12 +15,12 @@ namespace BizHawk.Common
 			return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
+		public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
 		{
-			var range = context!.Instance
+			var range = context!.Instance!
 				.GetType()
 				.GetProperty(context.PropertyDescriptor!.Name)!
-				.GetCustomAttribute<RangeAttribute>();
+				.GetCustomAttribute<RangeAttribute>()!;
 			range.Validate(value, context.PropertyDescriptor.Name);
 
 			if (value == null)
@@ -36,7 +36,7 @@ namespace BizHawk.Common
 			throw new FormatException($"Invalid value: {value}, {context.PropertyDescriptor.Name} must be a float.");
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
+		public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType)
 		{
 			if (destinationType == null)
 			{
@@ -49,7 +49,7 @@ namespace BizHawk.Common
 				return num.ToString(NumberFormatInfo.InvariantInfo);
 			}
 
-			return base.ConvertTo(context, culture, value, destinationType)!;
+			return base.ConvertTo(context, culture, value, destinationType);
 		}
 	}
 }

@@ -30,10 +30,9 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// </summary>
 		public static string GetDescription(this object obj)
 		{
+			var str = obj.ToString()!;
 			var type = obj.GetType();
-
-			var memInfo = type.GetMember(obj.ToString());
-
+			var memInfo = type.GetMember(str);
 			if (memInfo.Length > 0)
 			{
 				var attrs = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
@@ -43,8 +42,7 @@ namespace BizHawk.Common.ReflectionExtensions
 					return ((DescriptionAttribute)attrs[0]).Description;
 				}
 			}
-
-			return obj.ToString();
+			return str;
 		}
 
 		/// <returns><see cref="DisplayNameAttribute">[DisplayName]</see>, falling back to <see cref="MemberInfo.Name"/></returns>
@@ -71,7 +69,7 @@ namespace BizHawk.Common.ReflectionExtensions
 				var memberDesc = fi.GetCustomAttribute<DescriptionAttribute>() is DescriptionAttribute descAttr
 					? descAttr.Description
 					: fi.Name;
-				if (memberDesc == description) return (T) fi.GetValue(null);
+				if (memberDesc == description) return (T) fi.GetValue(null)!;
 			}
 
 			return default(T);
@@ -101,17 +99,17 @@ namespace BizHawk.Common.ReflectionExtensions
 			// Check [Nullable] on the parameter first
 			const byte AnnotatedNotNull = 1; // https://github.com/dotnet/roslyn/blob/main/docs/features/nullable-metadata.md
 			var nrtAttr = parameter.GetCustomAttributes().FirstOrDefault(attr => attr.GetType().FullName is "System.Runtime.CompilerServices.NullableAttribute"); // reflection required because the type is Source Generated for each assembly
-			if (nrtAttr?.GetType().GetField("NullableFlags").GetValue(nrtAttr) is byte[] flags) // have to use reflection here for the same reason
+			if (nrtAttr is not null && nrtAttr.GetType().GetField("NullableFlags")!.GetValue(nrtAttr) is byte[] flags) // have to use reflection here for the same reason
 			{
 				return flags[0] is not AnnotatedNotNull;
 			}
 
 			// Check [NullableContext] on the method and containing type(s)
-			MemberInfo parent = parameter.Member;
+			MemberInfo? parent = parameter.Member;
 			while (parent is not null)
 			{
 				var contextAttr = parent.GetCustomAttributes().FirstOrDefault(attr => attr.GetType().FullName is "System.Runtime.CompilerServices.NullableContextAttribute"); // ditto
-				if (contextAttr?.GetType().GetField("Flag").GetValue(contextAttr) is byte flag)
+				if (contextAttr is not null && contextAttr.GetType().GetField("Flag")!.GetValue(contextAttr) is byte flag)
 				{
 					return flag is not AnnotatedNotNull;
 				}

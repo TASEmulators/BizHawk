@@ -41,11 +41,11 @@ namespace BizHawk.Client.Common
 
 		public object GetSettings()
 			=> _config.GetCoreSettings(typeof(T), _typeS)
-				?? Activator.CreateInstance(_typeS);
+				?? Activator.CreateInstance(_typeS)!;
 
 		public object GetSyncSettings()
 			=> _config.GetCoreSyncSettings(typeof(T), _typeSS)
-				?? Activator.CreateInstance(_typeSS);
+				?? Activator.CreateInstance(_typeSS)!;
 
 		public void PutCoreSettings(object s)
 			=> _config.PutCoreSettings(s, typeof(T));
