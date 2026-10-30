@@ -89,7 +89,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string DownloadURLAsString(string url)
 		{
+#pragma warning disable SYSLIB0014 // deprecated API
 			var request = (HttpWebRequest)WebRequest.Create(url);
+#pragma warning restore SYSLIB0014
 			request.UserAgent = "BizHawk";
 			request.KeepAlive = false;
 			using var response = (HttpWebResponse)request.GetResponse();

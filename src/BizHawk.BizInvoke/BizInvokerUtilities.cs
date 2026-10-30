@@ -130,7 +130,9 @@ namespace BizHawk.BizInvoke
 				throw new NotImplementedException("Only supported for class fields right now");
 			}
 
+#pragma warning disable SYSLIB0050 // deprecated API
 			var obj = FormatterServices.GetUninitializedObject(fi.DeclaringType);
+#pragma warning restore SYSLIB0050
 			var method = new DynamicMethod("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
 			var il = method.GetILGenerator();
 			var local = il.DeclareLocal(fi.DeclaringType, true);

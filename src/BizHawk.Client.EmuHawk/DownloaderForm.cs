@@ -71,8 +71,10 @@ namespace BizHawk.Client.EmuHawk
 				using var fs = File.Create(DownloadTo);
 				using (var evt = new ManualResetEvent(false))
 				{
+#pragma warning disable SYSLIB0014 // deprecated API
 					using var client = new WebClient();
 					ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+#pragma warning restore SYSLIB0014
 					client.DownloadFileAsync(new Uri(DownloadFrom), DownloadTemp);
 					client.DownloadProgressChanged += (_, progressArgs) => _pct = progressArgs.ProgressPercentage;
 					client.DownloadFileCompleted += (_, _) => evt.Set(); // we don't really need a status, we'll just try to unzip it when it's done
