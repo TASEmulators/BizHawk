@@ -107,6 +107,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IBSNESForGfxDebugger currentSnesCore;
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosed(EventArgs e)
 		{
 			base.OnClosed(e);

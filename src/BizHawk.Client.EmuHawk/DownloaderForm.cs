@@ -164,6 +164,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosed(EventArgs e)
 		{
 			//inform the worker thread that it needs to try terminating without doing anything else
