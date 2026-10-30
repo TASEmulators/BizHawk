@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using BizHawk.Common;
@@ -200,15 +201,16 @@ namespace BizHawk.Client.Common
 		private unsafe void RefillMaster(ZwinderBuffer.StateInformation state)
 		{
 			var lengthHolder = 0;
-			var lengthHolderSpan = new Span<byte>(&lengthHolder, 4);
+			var lengthHolderSpan = new Span<byte>(&lengthHolder, sizeof(int));
 			using var rs = state.GetReadStream();
 			var zeldas = SpanStream.GetOrBuild(rs);
-			zeldas.Read(lengthHolderSpan);
+			var readBytes = zeldas.Read(lengthHolderSpan);
+			Debug.Assert(readBytes is sizeof(int), "unexpectedly short; couldn't even read the length");
 			_masterLength = lengthHolder;
 			fixed (byte* buffer_ = _master)
 			{
 				int* buffer = (int*)buffer_;
-				while (zeldas.Read(lengthHolderSpan) == 4)
+				while (zeldas.Read(lengthHolderSpan) is sizeof(int))
 				{
 					if ((lengthHolder & IS_GAP) != 0)
 					{
@@ -216,7 +218,9 @@ namespace BizHawk.Client.Common
 					}
 					else
 					{
-						zeldas.Read(new Span<byte>(buffer, lengthHolder * 4));
+						var countToRead = lengthHolder * 4;
+						readBytes = zeldas.Read(new Span<byte>(buffer, countToRead));
+						Debug.Assert(readBytes == countToRead, "unexpectedly short, or incorrect length");
 						buffer += lengthHolder;
 					}
 				}
