@@ -330,7 +330,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				NativeImpl.wbx_get_page_len(_host._nativeHost, out var retobj);
 
 				Name = "Waterbox PageData";
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				Size = (long)retobj.GetDataOrThrow();
+#pragma warning restore IDE0004
 				WordSize = 1;
 				EndianType = Endian.Unknown;
 				Writable = false;

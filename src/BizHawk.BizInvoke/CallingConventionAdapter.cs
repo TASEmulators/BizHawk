@@ -319,11 +319,13 @@ namespace BizHawk.BizInvoke
 				// mov r10, thunkFunctionAddress
 				bw.Write((byte)0x49);
 				bw.Write((byte)0xba);
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				bw.Write((long)thunkFunctionAddress);
 				// mov rax, calleeAddress
 				bw.Write((byte)0x48);
 				bw.Write((byte)0xb8);
 				bw.Write((long)calleeAddress);
+#pragma warning restore IDE0004
 				// jmp r10
 				bw.Write((byte)0x41);
 				bw.Write((byte)0xff);

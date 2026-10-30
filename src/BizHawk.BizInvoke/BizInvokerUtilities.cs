@@ -68,7 +68,9 @@ namespace BizHawk.BizInvoke
 			fixed(char* fx = s)
 			{
 				U u = new(new(s));
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				ret = (int) ((ulong) (UIntPtr) fx - (ulong) u.First!.P);
+#pragma warning restore IDE0004
 			}
 			return ret;
 		}
@@ -83,7 +85,9 @@ namespace BizHawk.BizInvoke
 			fixed (int* p = arr)
 			{
 				U u = new(new(arr));
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				ret = (int)((ulong)(UIntPtr) p - (ulong) u.First!.P);
+#pragma warning restore IDE0004
 			}
 			return ret;
 		}
