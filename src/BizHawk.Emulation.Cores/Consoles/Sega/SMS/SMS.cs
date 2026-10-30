@@ -1,3 +1,4 @@
+using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
@@ -272,17 +273,17 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			if (gameRegion == null)
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("USA", StringComparison.Ordinal) >= 0)
+			if (gameRegion.ContainsOrdinal("USA"))
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Europe", StringComparison.Ordinal) >= 0)
+			if (gameRegion.ContainsOrdinal("Europe"))
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("World", StringComparison.Ordinal) >= 0)
+			if (gameRegion.ContainsOrdinal("World"))
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Brazil", StringComparison.Ordinal) >= 0)
+			if (gameRegion.ContainsOrdinal("Brazil"))
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Australia", StringComparison.Ordinal) >= 0)
+			if (gameRegion.ContainsOrdinal("Australia"))
 				return SmsSyncSettings.Regions.Export;
-			if (gameRegion.IndexOf("Korea", StringComparison.Ordinal) >= 0)
+			if (gameRegion.ContainsOrdinal("Korea"))
 				return SmsSyncSettings.Regions.Korea;
 			return SmsSyncSettings.Regions.Japan;
 		}
