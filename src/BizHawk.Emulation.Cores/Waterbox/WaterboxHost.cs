@@ -85,7 +85,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private class ReadWriteWrapper : IDisposable
 		{
 			private GCHandle _handle;
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			private readonly Stream _backingSpanStream;
+#else
 			private readonly ISpanStream _backingSpanStream;
+#endif
+
 			private readonly Stream _backingStream;
 			private readonly bool _disposeStreamAfterUse;
 
