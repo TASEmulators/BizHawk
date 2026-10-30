@@ -54,8 +54,6 @@
 		<CompilerVisibleProperty Include="MSBuildProjectName" />
 		<InternalsVisibleTo Include="$(MSBuildProjectName.Replace('BizHawk.', 'BizHawk.Tests.'))" />
 		<Using Include="System" />
-	</ItemGroup>
-	<ItemGroup Condition=" !$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0')) ">
 		<Using Include="System.Threading.Lock" Alias="Lock" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">
