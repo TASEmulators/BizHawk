@@ -463,7 +463,9 @@ namespace BizHawk.BizInvoke
 			}
 			else
 			{
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				il.Emit(OpCodes.Ldc_I8, (long)p);
+#pragma warning restore IDE0004
 			}
 
 			il.Emit(OpCodes.Conv_I);

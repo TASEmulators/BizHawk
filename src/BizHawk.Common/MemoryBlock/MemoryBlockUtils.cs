@@ -89,6 +89,7 @@ namespace BizHawk.Common
 
 	public static class Z
 	{
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 		public static IntPtr US(ulong l)
 		{
 			if (IntPtr.Size == 8)
@@ -120,5 +121,6 @@ namespace BizHawk.Common
 			else
 				return (UIntPtr)(uint)l;
 		}
+#pragma warning restore IDE0004
 	}
 }

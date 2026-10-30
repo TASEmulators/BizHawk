@@ -220,6 +220,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
 			}
 		}
@@ -229,6 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!OSTailoredCode.IsUnixHost)
 			{
 				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+#pragma warning restore IDE0004
 			}
 		}
 	}
