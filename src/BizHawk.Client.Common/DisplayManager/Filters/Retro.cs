@@ -27,7 +27,7 @@ namespace BizHawk.Client.Common.Filters
 				var fname = match.Groups[4].Value;
 				fname = Path.Combine(baseDirectory,fname);
 				var includedContent = ResolveIncludes(File.ReadAllText(fname),Path.GetDirectoryName(fname));
-				content = content.Substring(0, match.Index) + includedContent + content.Substring(match.Index + match.Length);
+				content = string.Concat(content.AsSpan(start: 0, length: match.Index), includedContent, content.AsSpan(start: match.Index + match.Length));
 			}
 		}
 
