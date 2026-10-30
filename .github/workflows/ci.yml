@@ -47,6 +47,7 @@ jobs:
         shell: pwsh
 
   test-netcore:
+    if: false # temporarily disabled; see https://github.com/TASEmulators/BizHawk/issues/4867
     name: Unit tests (.NET Core Runtime)
     runs-on: ${{matrix.os.fullname}}
     strategy:
