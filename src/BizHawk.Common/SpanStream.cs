@@ -1,5 +1,7 @@
 using System.IO;
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
 using System.Runtime.InteropServices;
+#endif
 
 namespace BizHawk.Common
 {
@@ -8,11 +10,17 @@ namespace BizHawk.Common
 	/// </summary>
 	public interface ISpanStream
 	{
+#if !(NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER)
 		void Write(ReadOnlySpan<byte> buffer);
 		int Read(Span<byte> buffer);
+#endif
 	}
 	public static class SpanStream
 	{
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+		public static Stream GetOrBuild(Stream s)
+			=> s;
+#else
 		/// <returns>a stream in spanstream mode, or a newly-created wrapper which provides that functionality</returns>
 		public static ISpanStream GetOrBuild(Stream s)
 		{
@@ -56,5 +64,6 @@ namespace BizHawk.Common
 				_stream.Write(_buffer, 0, buffer.Length);
 			}
 		}
+#endif
 	}
 }

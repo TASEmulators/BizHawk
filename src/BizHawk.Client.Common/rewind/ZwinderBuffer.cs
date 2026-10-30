@@ -389,7 +389,13 @@ namespace BizHawk.Client.Common
 			}
 
 			private readonly Stream _backingStore;
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			private readonly Stream _backingStoreSS;
+#else
 			private readonly ISpanStream _backingStoreSS;
+#endif
+
 			private readonly long _offset;
 			private readonly long _mask;
 			private long _position;
@@ -477,7 +483,13 @@ namespace BizHawk.Client.Common
 			}
 
 			private readonly Stream _backingStore;
+
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_1_OR_GREATER
+			private readonly Stream _backingStoreSS;
+#else
 			private readonly ISpanStream _backingStoreSS;
+#endif
+
 			private readonly long _offset;
 			private readonly long _size;
 			private long _position;
