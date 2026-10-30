@@ -44,6 +44,7 @@ namespace BizHawk.Client.EmuHawk
 			box.ShowDialog();
 		}
 
+		[NoInterpInterception]
 		static Program()
 		{
 			// Quickly check if the user is running this as a 32 bit process somehow

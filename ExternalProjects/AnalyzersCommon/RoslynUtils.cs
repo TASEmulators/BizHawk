@@ -229,6 +229,12 @@ public static class RoslynUtils
 	public static IEnumerable<AttributeSyntax> Matching(
 		this SyntaxList<AttributeListSyntax> list,
 		INamedTypeSymbol targetAttrSym,
+		OperationAnalysisContext oac)
+			=> list.Matching(targetAttrSym, oac.Operation.SemanticModel!, oac.CancellationToken);
+
+	public static IEnumerable<AttributeSyntax> Matching(
+		this SyntaxList<AttributeListSyntax> list,
+		INamedTypeSymbol targetAttrSym,
 		SyntaxNodeAnalysisContext snac)
 			=> list.Matching(targetAttrSym, snac.SemanticModel, snac.CancellationToken);
 

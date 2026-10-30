@@ -22,6 +22,7 @@ namespace BizHawk.Client.DiscoHawk
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private static extern bool DeleteFileW(string lpFileName);
 
+		[NoInterpInterception]
 		static Program()
 		{
 			// http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
@@ -53,7 +54,7 @@ namespace BizHawk.Client.DiscoHawk
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"MotW remover failed: {e}");
+				Console.WriteLine("MotW remover failed: " + e);
 			}
 		}
 
