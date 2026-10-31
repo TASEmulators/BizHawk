@@ -8,6 +8,7 @@ using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
+using BizHawk.Common.IOExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 
@@ -648,9 +649,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (CurrentTasMovie.TasStateManager.HasState(Emulator.Frame))
 				{
-					Stream greenStream = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(Emulator.Frame).Value;
-					byte[] greenZone = new byte[greenStream.Length];
-					greenStream.Read(greenZone);
+					var greenZone = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(Emulator.Frame).Value.ReadAllBytes();
 					byte[] state = StatableEmulator.CloneSavestate();
 
 					if (!state.SequenceEqual(greenZone))
