@@ -6,7 +6,7 @@
 	<PropertyGroup>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<ApplicationIcon>images/logo.ico</ApplicationIcon>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<ApplicationManifest Condition=" '$(IsTargetingNetFramework)' ">app.manifest</ApplicationManifest>
 		<Description>Multi-system emulator frontend</Description>
 		<Nullable>disable</Nullable>
 		<NoWarn>$(NoWarn);MA0162</NoWarn> <!-- MA0162 is helpful for migration to .NET Core -->
@@ -14,7 +14,7 @@
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
-		<Reference Include="PresentationFramework" />
+		<Reference Include="PresentationFramework" Condition=" '$(IsTargetingNetFramework)' " />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="SharpCompress" PrivateAssets="all" NoWarn="NU1902" />
