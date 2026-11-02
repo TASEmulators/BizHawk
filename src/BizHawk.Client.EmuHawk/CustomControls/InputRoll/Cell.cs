@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			RowIndex = cell.RowIndex;
 		}
 
-		public int CompareTo(Cell other)
+		public int CompareTo(Cell? other)
 			=> SortCell.Compare(this, other);
 
 		public bool Equals(Cell? other)

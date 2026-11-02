@@ -11,7 +11,11 @@ namespace BizHawk.Common.StringExtensions
 {
 	public static class StringExtensions
 	{
+#if NET6_0_OR_GREATER
+		/// <inheritdoc cref="Enumerable.Chunk"/>
+#else
 		/// <inheritdoc cref="CollectionExtensions.CollectionExtensions.Chunk"/>
+#endif
 		public static IEnumerable<string> Chunk(this string source, int size)
 			=> source.AsEnumerable().Chunk(size).Select(static chars => new string(chars)); //TODO super inefficient since Chunk allocates N arrays and then this allocates another N strings
 
@@ -151,7 +155,7 @@ namespace BizHawk.Common.StringExtensions
 		public static string RemoveSuffix(this string str, string suffix, string notFoundValue) => str.EndsWith(suffix, StringComparison.Ordinal) ? str.Substring(0, str.Length - suffix.Length) : notFoundValue;
 
 		/// <summary>a simple checksum of string contents, using MSBuild's "legacy" algorithm</summary>
-		public static int StableStringHash(this string str)
+		public static int StableStringHash(this string? str)
 		{
 			if (str is null) return 0;
 

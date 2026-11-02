@@ -107,9 +107,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private IBSNESForGfxDebugger currentSnesCore;
 
-		protected override void OnClosed(EventArgs e)
+		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
-			base.OnClosed(e);
+			base.OnFormClosed(e);
 			currentSnesCore?.ScanlineHookManager?.Unregister(this);
 			currentSnesCore = null;
 			gd = null;

@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Icon = ToolIcon;
-			Closing += (o, e) => DisengageDebugger();
+			FormClosing += (o, e) => DisengageDebugger();
 
 #if false
 			var blockScroll = false;
