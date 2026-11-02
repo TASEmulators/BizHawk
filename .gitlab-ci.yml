@@ -26,6 +26,12 @@ stages:
 .with_dotnet_sdk:
   image: mcr.microsoft.com/dotnet/sdk:10.0
 
+.with_dotnet_sdk_and_mono:
+  before_script:
+  - nix-env -iA nixpkgs.dotnet-sdk_10
+  - nix-env -iA nixpkgs.mono
+  image: ${CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX}/nixos/nix:latest
+
 build_asms_debug:
   artifacts:
     expire_in: "30 minutes"
@@ -217,13 +223,13 @@ run_tests:
     reports:
       junit:
       - test_output/*.coverage.xml
-  extends: .with_dotnet_sdk
+  extends: .with_dotnet_sdk_and_mono
   needs:
   - job: build_asms_release
     artifacts: false
   script:
   - apt-get update && apt-get install liblua5.4-0
-  - Dist/BuildTestRelease.sh -v normal -p:TestProjTargetFrameworkOverride=net10.0
+  - Dist/BuildTestRelease.sh -v normal
   stage: test
 
 .disabled_job_sast:
