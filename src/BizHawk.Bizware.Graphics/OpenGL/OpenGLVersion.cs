@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using Silk.NET.OpenGL;
 
+using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 
 namespace BizHawk.Bizware.Graphics
@@ -41,7 +42,10 @@ namespace BizHawk.Bizware.Graphics
 		}
 
 		public static bool SupportsVersion(int major, int minor)
-			=> _glSupport.GetValueOrPut(PackGLVersion(major, minor),
+			// XQuartz is limited to GL 2.1 and probing it can abort under Rosetta.
+			// Report no host GL so the frontend and cores use software rendering on macOS.
+			=> OSTailoredCode.CurrentOS != OSTailoredCode.DistinctOS.macOS
+				&& _glSupport.GetValueOrPut(PackGLVersion(major, minor),
 				static version => CheckVersion(version / 10, version % 10));
 	}
 }

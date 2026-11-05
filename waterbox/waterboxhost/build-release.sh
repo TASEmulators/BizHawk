@@ -1,5 +1,10 @@
 #!/bin/sh
 if [ -z "$BIZHAWKBUILD_HOME" ]; then export BIZHAWKBUILD_HOME="$(realpath "$(dirname "$0")/../..")"; fi
+case "$(uname -s)" in
+Darwin)
+	exec "$(dirname "$0")/build-release-macos.sh"
+	;;
+esac
 
 cargo b --release
 
