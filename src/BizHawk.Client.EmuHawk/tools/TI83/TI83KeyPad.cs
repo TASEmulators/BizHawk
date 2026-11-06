@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void KeyClick(string name)
 		{
-			InputManager.ClickyVirtualPadController.Click(name);
+			InputManager.ClickyController.Click(name);
 		}
 
 		private void SetToolTips()
