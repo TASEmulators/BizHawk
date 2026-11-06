@@ -2,7 +2,10 @@
 
 using System.Collections.Generic;
 using System.CommandLine;
+using System.CommandLine.Help;
+using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 
@@ -15,10 +18,30 @@ namespace BizHawk.Client.Common
 	/// <summary>Parses command-line flags into a <see cref="ParsedCLIFlags"/> struct.</summary>
 	public static class ArgParser
 	{
-		private static readonly Argument<string?> ArgumentRomFilePath = new("rom")
+		private sealed class HelpSedAction(HelpAction stockAction) : SynchronousCommandLineAction
 		{
-			DefaultValueFactory = _ => null,
-			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`; this argument can and should be given LAST despite what it says at the top of --help",
+			public override int Invoke(ParseResult parseResult)
+			{
+				var outerOutput = parseResult.InvocationConfiguration.Output;
+				using StringWriter innerOutput = new();
+				parseResult.InvocationConfiguration.Output = innerOutput;
+				var result = stockAction.Invoke(parseResult);
+				var dollarZero = OSTailoredCode.IsUnixHost
+#if true
+					? "./EmuHawkMono.sh"
+#else //TODO for .NET Core: see https://github.com/dotnet/runtime/issues/101837
+					? Environment.GetCommandLineArgs()[0].SubstringAfterLast('/')
+#endif
+					: Environment.GetCommandLineArgs()[0].SubstringAfterLast('\\');
+				outerOutput.Write(innerOutput.ToString().Replace("EmuHawk", dollarZero)
+					.Replace("[<rom>...] [options]", "[option...] [rom]"));
+				return result;
+			}
+		}
+
+		private static readonly Argument<string[]> ArgumentRomFilePath = new("rom")
+		{
+			Description = "path; if specified, the file will be loaded the same way as it would be from `File` > `Open...`",
 		};
 
 		private static readonly Option<string?> OptionAVDumpAudioSync = new("--audiosync")
@@ -134,8 +157,9 @@ namespace BizHawk.Client.Common
 			RootCommand root = new($"{
 				(string.IsNullOrEmpty(VersionInfo.CustomBuildString) ? "EmuHawk" : VersionInfo.CustomBuildString)
 			}, a multi-system emulator frontend\n{VersionInfo.GetEmuVersion()}");
-			root.Add(ArgumentRomFilePath);
 			root.Options.RemoveAll(option => option is VersionOption); // we have our own version command
+			var helpOption = root.Options.OfType<HelpOption>().First();
+			helpOption.Action = new HelpSedAction((HelpAction) helpOption.Action!);
 
 			// `--help` uses this order, so keep alphabetised by flag
 			root.Add(/* --audiosync */ OptionAVDumpAudioSync);
@@ -163,6 +187,7 @@ namespace BizHawk.Client.Common
 			root.Add(/* --userdata */ OptionUserdataUnparsedPairs);
 			root.Add(/* --version */ OptionQueryAppVersion);
 
+			root.Add(ArgumentRomFilePath);
 			return root;
 		}
 
@@ -177,17 +202,17 @@ namespace BizHawk.Client.Common
 
 		/// <return>exit code, or <see langword="null"/> if should not exit</return>
 		/// <exception cref="ArgParserException">parsing failure, or invariant broken</exception>
-		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args)
+		public static int? ParseArguments(out ParsedCLIFlags parsed, string[] args, bool fromUnitTest = false)
 		{
 			parsed = default;
-			if (args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
+			if (!fromUnitTest && args.Length is not 0) Console.Error.WriteLine($"parsing command-line flags: {string.Join(" ", args)}");
 			var rootCommand = GetRootCommand();
 			var result = CommandLineParser.Parse(rootCommand, args);
 			if (result.Errors.Count is not 0)
 			{
 				// generate useful commandline error output
 				EnsureConsole();
-				result.Invoke();
+				if (!fromUnitTest) result.Invoke();
 				// show first error in modal dialog (done in `catch` block in `Program`)
 				throw new ArgParserException($"failed to parse command-line arguments: {result.Errors[0].Message}");
 			}
@@ -195,14 +220,23 @@ namespace BizHawk.Client.Common
 			{
 				// means e.g. `./EmuHawkMono.sh --help` was passed, run whatever behaviour it normally has
 				EnsureConsole();
-				return result.Invoke();
+				return fromUnitTest ? 0 : result.Invoke();
 			}
 			if (result.GetValue(OptionQueryAppVersion))
 			{
 				// means e.g. `./EmuHawkMono.sh --version` was passed, so print that and exit immediately
 				EnsureConsole();
-				Console.WriteLine(VersionInfo.GetEmuVersion());
+				if (!fromUnitTest) Console.WriteLine(VersionInfo.GetEmuVersion());
 				return 0;
+			}
+
+			var unmatchedArguments = result.GetValue(ArgumentRomFilePath) ?? [ ];
+			if (unmatchedArguments.Length >= 2)
+			{
+				var foundFlagLike = unmatchedArguments.FirstOrDefault(static s => s.StartsWith("--"));
+				throw new ArgParserException(foundFlagLike is null
+					? "Multiple rom paths provided. (Did you delete half of a flag? Or forget the \"--\" of one?)"
+					: $"Unrecognised flag(s): \"{foundFlagLike}\"");
 			}
 
 			var autoDumpLength = result.GetValue(OptionAVDumpEndAtFrame);
@@ -268,9 +302,15 @@ namespace BizHawk.Client.Common
 				openExtToolDll: result.GetValue(OptionOpenExternalTool),
 				socketProtocol: result.GetValue(OptionSocketServerUseUDP) ? ProtocolType.Udp : ProtocolType.Tcp,
 				userdataUnparsedPairs: userdataUnparsedPairs,
-				cmdRom: result.GetValue(ArgumentRomFilePath)
-			);
+				cmdRom: unmatchedArguments.LastOrDefault()); // `unmatchedArguments.Length` must be 0 or 1 at this point, but in case we change how that's handled, 'last' here preserves the behaviour from the old hand-rolled parser
 			return null;
+		}
+
+		internal static void RunHelpActionForUnitTest(TextWriter output)
+		{
+			var result = CommandLineParser.Parse(GetRootCommand(), [ "--help" ]);
+			result.InvocationConfiguration.Output = output;
+			result.Invoke();
 		}
 
 		public sealed class ArgParserException : Exception
