@@ -47,12 +47,6 @@ namespace BizHawk.Bizware.Graphics
 				var creationFlags = DeviceCreationFlags.Singlethreaded | DeviceCreationFlags.BgraSupport;
 #endif
 
-				// GL interop doesn't support the single threaded flag
-				if (D3D11GLInterop.IsAvailable)
-				{
-					creationFlags &= ~DeviceCreationFlags.Singlethreaded;
-				}
-
 				D3D11.D3D11CreateDevice(
 					adapter: null,
 					DriverType.Hardware,

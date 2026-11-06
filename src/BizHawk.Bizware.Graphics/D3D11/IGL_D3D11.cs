@@ -308,5 +308,9 @@ namespace BizHawk.Bizware.Graphics
 			Context.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
 			Context.DrawIndexed(indexCount, indexStart, vertexStart);
 		}
+
+		internal ID3D11Device LibrashaderDevice => Device;
+		internal ID3D11DeviceContext LibrashaderContext => Context;
+		internal ID3D11RenderTargetView LibrashaderBackBufferRTV => _controlSwapChain?.RTV;
 	}
 }
