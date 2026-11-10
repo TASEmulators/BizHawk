@@ -51,7 +51,6 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SynclessRecordingTools";
-			this.Text = "Syncless Recording";
 			this.ResumeLayout(false);
 
 		}

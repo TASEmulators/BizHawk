@@ -225,7 +225,6 @@
 			this.Name = "ArchiveChooser";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Choose File From Archive";
 			this.Load += new System.EventHandler(this.ArchiveChooser_Load);
 			this.flowLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);

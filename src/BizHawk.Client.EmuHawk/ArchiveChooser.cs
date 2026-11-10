@@ -9,8 +9,10 @@ using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class ArchiveChooser : Form
+	public partial class ArchiveChooser : FormBase
 	{
+		protected override string WindowTitleStatic => "Choose File From Archive";
+
 		private readonly IList<ListViewItem> _archiveItems = new List<ListViewItem>();
 		private readonly ToolTip _errorBalloon = new ToolTip();
 
