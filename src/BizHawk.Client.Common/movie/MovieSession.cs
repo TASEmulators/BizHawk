@@ -224,6 +224,8 @@ namespace BizHawk.Client.Common
 		{
 			MovieController = new Bk2Controller(emulator.ControllerDefinition, _queuedMovie.LogKey);
 
+			(Movie as IDisposable)?.Dispose();
+
 			Movie = _queuedMovie;
 			Movie.Attach(emulator);
 			_queuedMovie = null;
