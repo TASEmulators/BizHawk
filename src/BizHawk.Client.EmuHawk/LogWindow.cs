@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Icon = ToolIcon;
 			AddToGameDbBtn.Image = Properties.Resources.Add;
-			Closing += (o, e) =>
+			FormClosing += (o, e) =>
 			{
 				Detach();
 			};

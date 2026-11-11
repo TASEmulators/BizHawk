@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+#if NET9_0_OR_GREATER
+using System.Linq;
+#endif
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 

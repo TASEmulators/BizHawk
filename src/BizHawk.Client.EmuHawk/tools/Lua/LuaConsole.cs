@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			RecentScriptsSubMenu.Image = Resources.Recent;
 			Icon = ToolIcon;
 
-			Closing += (o, e) =>
+			FormClosing += (o, e) =>
 			{
 				if (AskSaveChanges())
 				{

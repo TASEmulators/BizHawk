@@ -1600,10 +1600,10 @@ namespace BizHawk.Client.EmuHawk
 			HandlePlatformMenus();
 		}
 
-		protected override void OnClosed(EventArgs e)
+		protected override void OnFormClosed(FormClosedEventArgs e)
 		{
 			_windowClosedAndSafeToExitProcess = true;
-			base.OnClosed(e);
+			base.OnFormClosed(e);
 		}
 
 		private void MainformMenu_MenuActivate(object sender, EventArgs e)

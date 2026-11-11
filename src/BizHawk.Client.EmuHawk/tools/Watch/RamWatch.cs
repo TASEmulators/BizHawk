@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.QueryItemText += WatchListView_QueryItemText;
 			WatchListView.QueryItemBkColor += WatchListView_QueryItemBkColor;
-			Closing += (o, e) =>
+			FormClosing += (o, e) =>
 			{
 				if (AskSaveChanges())
 				{
