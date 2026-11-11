@@ -44,4 +44,14 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	[AttributeUsage(AttributeTargets.ReturnValue | AttributeTargets.Parameter)]
 	public sealed class LuaZeroIndexedAttribute : Attribute { }
+
+	/// <summary>
+	/// Specifies a custom type to be used in LuaCATS annotations, for documentation purposes only.
+	/// See <see cref="LuaCatsGenerator.Classes" /> and <see href="https://luals.github.io/wiki/annotations/#documenting-types" /> for possible values.
+	/// </summary>
+	[AttributeUsage(AttributeTargets.ReturnValue | AttributeTargets.Parameter)]
+	public sealed class LuaCatsTypeAttribute(string Type) : Attribute
+	{
+		public string Type { get; } = Type;
+	}
 }
