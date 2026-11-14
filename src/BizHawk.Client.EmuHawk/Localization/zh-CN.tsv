@@ -1132,3 +1132,23 @@ A7800 Controller Settings	A7800 控制器设置
 Amstrad CPC Audio Settings	Amstrad CPC 音频设置
 Amstrad CPC Emulation Settings	Amstrad CPC 模拟设置
 ColecoVision Controller Settings	ColecoVision 控制器设置
+Radial	径向
+GB Palette...	GB 调色板...
+GBC Palette...	GBC 调色板...
+RGBDS Syntax	RGBDS 语法
+Mute	静音
+Show Border	显示边框
+This tool hashes your discs in a standard way.	此工具会以标准方式计算光盘哈希值。
+PSG Waveform Capture	PSG 波形捕获
+Hit Count	命中次数
+Channel Enable	启用通道
+PSG Channels	PSG 通道
+Channel	通道
+Vol	音量
+Pitch	音高
+Status	状态
+Scroll To	滚动到
+Edit Frame (Alt + Drag)	编辑帧（Alt + 拖动）
+Markers	标记点
+Priority 1	优先级 1
+Priority 0	优先级 0
