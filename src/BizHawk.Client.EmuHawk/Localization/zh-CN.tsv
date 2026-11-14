@@ -271,3 +271,318 @@ Customize...	自定义...
 Close ROM	关闭 ROM
 Close and Clear SRAM	关闭并清除 SRAM
 Show Menu	显示菜单
+Normal Controls	普通控制
+Autofire Controls	连发控制
+Analog Controls	模拟摇杆控制
+Feedbacks	反馈
+Auto Tab	自动切换选项卡
+&Cancel	取消(&C)
+Save Defaults	保存默认设置
+Load Defaults	加载默认设置
+Clear	清除
+Tips:	提示：
+* Disable Auto Tab to multiply bind	* 关闭自动切换选项卡可进行多重绑定
+* Escape clears a key mapping	* 按 Esc 清除按键映射
+Misc...	其他...
+U+D/L+R:	上+下/左+右：
+Forbid	禁止
+Priority	优先级
+Allow	允许
+Controller Config	控制器配置
+Find:	查找：
+Restore Defaults	恢复默认设置
+Restore Current Tab Defaults	恢复当前选项卡默认设置
+Clear All	全部清除
+Clear Current Tab	清除当前选项卡
+Configure Hotkeys	配置快捷键
+Scaling Filter	缩放滤镜
+Will contain user filter name	将显示用户滤镜名称
+Select	选择
+User	用户
+Scanlines	扫描线
+Hq2x	HQ2x
+Maintain aspect ratio (letterbox)	保持宽高比（黑边）
+Expand pixels by integers only (e.g. no 1.3333x)	仅按整数倍放大像素（例如不使用 1.3333 倍）
+Final Filter	最终滤镜
+Bicubic (shader. buggy?)	双三次（着色器，可能有问题）
+Bilinear	双线性
+Use 1:1 pixel size (for crispness or debugging)	使用 1:1 像素尺寸（用于清晰显示或调试）
+Use system\'s recommendation	使用系统推荐设置
+Aspect Ratio Selection	宽高比选择
+Use custom AR:	使用自定义宽高比：
+Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):	允许像素变形（例如 2×1 像素，以更好地匹配宽高比）：
+Use custom size:	使用自定义尺寸：
+Scaling & Filtering	缩放与滤镜
+Cropping	裁剪
+Bottom:	底部：
+Top:	顶部：
+Right:	右侧：
+Left:	左侧：
+Defaults	默认值
+Auto Prescale	自动预缩放
+User Prescale:	用户预缩放：
+Display Method	显示方式
+Changes require restart of program to take effect.\r\n	更改需要重启程序才能生效。\r\n
+Direct3D11	Direct3D 11
+GDI+	GDI+
+Misc	其他
+Keep window titles static	保持窗口标题固定
+Display Features (for speeding up replays)	显示功能（用于加快回放）
+Absolute Zero - Display Nothing	完全关闭 - 不显示任何内容
+Minimal - Display HUD Only (TBD)	最简 - 仅显示 HUD（待定）
+Full - Display Everything	完整 - 显示全部内容
+Window	窗口
+Auto-Hide Mouse Cursor	自动隐藏鼠标指针
+Enable Windows Fullscreen Hacks	启用 Windows 全屏兼容处理
+Status Bar	状态栏
+Menu	菜单
+Windowed	窗口模式
+Mouse Capture Forces Stay on Top	捕获鼠标时强制窗口置顶
+Stay on Top	窗口置顶
+Save Window Position	保存窗口位置
+Frame:	帧：
+Caption	标题
+Documentation	文档
+Scale OSD text with system scale	根据系统缩放比例调整 OSD 文字
+Display Configuration	显示配置
+Ena.	启用
+Volume	音量
+RW && FF	倒带和快进
+Normal	正常
+Sound Device:	声音设备：
+Buffer Size:	缓冲区大小：
+milliseconds	毫秒
+Output Method	输出方式
+Mute Frame Advance	逐帧前进时静音
+Sound Master Enable	启用主声音输出
+Controls whether cores\neven generate audio.	控制模拟核心是否生成音频。
+Sound Configuration	声音配置
+Special Commands	特殊命令
+Always use recent path for ROMs	ROM 始终使用最近访问的路径
+&Defaults	默认值(&D)
+Global	全局
+by System	按系统
+System:	系统：
+Path Configuration	路径配置
+Id	ID
+Description	描述
+Resolved With	解析方式
+Location	位置
+Hash	哈希值
+&Set Customization	设置自定义项(&S)
+C&lear Customization	清除自定义项(&L)
+&Info	信息(&I)
+&Copy	复制(&C)
+Group	分组
+Scan	扫描
+Organize	整理
+Import	导入
+Close and reload ROM	关闭并重新加载 ROM
+Open Firmware Folder	打开固件文件夹
+Allow Importing of Unknown Files	允许导入未知文件
+Scan will look under (change in Config > Paths... > Global):	扫描位置（可在 配置 > 路径... > 全局 中更改）：
+Firmware such as BIOS files are copyrighted material and not provided by BizHawk	BIOS 等固件受版权保护，BizHawk 不提供这些文件
+Message Type	消息类型
+Message Colors	消息颜色
+Stack Messages	堆叠消息
+Configure On Screen Messages	配置屏幕消息
+on,	开启，
+off	关闭
+Pattern:	模式：
+Take lag frames into account	将延迟帧计入
+Autofire Configuration	连发配置
+Enabled	已启用
+Use zstd compression (economizes buffer usage at cost of CPU)	使用 zstd 压缩（节省缓冲区空间，但增加 CPU 开销）
+Max buffer size:	最大缓冲区大小：
+Avg. State Size:	平均状态大小：
+Full:	完整：
+Use delta compression (economizes buffer usage at cost of CPU)	使用差分压缩（节省缓冲区空间，但增加 CPU 开销）
+Est. Time:	预计时间：
+Est. storage:	预计存储空间：
+Frames Stored:	已存储帧数：
+Type	类型
+Text	文本
+Binary	二进制
+Savestate Options	状态选项
+Use a low resolution screenshot for better save/load performance	使用低分辨率截图以提升保存/读取性能
+Low Res Screenshots on buffers >=	缓冲区大于等于此值时使用低分辨率截图
+black screen on the frame it is loaded.	加载状态时该帧会显示黑屏。
+Saves a screenshot and loads it on loadstate so there isn\'t a	保存截图，并在读取状态时加载，以避免出现
+Save a screenshot in savestates	在状态文件中保存截图
+before overwriting it.	覆盖之前。
+When set, the client will make a backup copy of a savestate	启用后，客户端会在覆盖状态文件前
+Backup Savestates	备份状态文件
+Compression Level	压缩等级
+Desired minimum rewind range in frames:	所需的最小倒带帧数：
+Rewinds every fixed number of frames: 	每隔固定帧数创建一个倒带点：
+Rewind & Savestate Configuration	倒带与状态配置
+Profile Options	配置档选项
+Other Options	其他选项
+Automatically check for and notify me of newer versions of BizHawk	自动检查 BizHawk 新版本并通知我
+Profile Config	配置档配置
+&Toggle	切换(&T)
+&Remove	移除(&R)
+&Disable All	全部禁用(&D)
+View in Hex Editor	在十六进制编辑器中查看
+&New	新建(&N)
+&Open...	打开(&O)...
+Save &As...	另存为(&A)...
+Append File	追加文件
+&Cheats	金手指(&C)
+&Remove Cheat	移除金手指(&R)
+Insert Separator	插入分隔线
+Move &Up	上移(&U)
+Move &Down	下移(&D)
+Select &All	全选(&A)
+Disable all	全部禁用
+Code Converter	代码转换器
+&Settings	设置(&S)
+Restore Session when Switching Game	切换游戏时恢复会话
+Save Session when Closing or Switching Game	关闭或切换游戏时保存会话
+Restore Cheats' States (when loading from disk, enable cheats which were saved enabled)	恢复金手指状态（从磁盘加载时，重新启用保存时处于启用状态的金手指）
+Move Up	上移
+Move Down	下移
+0 Cheats	0 条金手指
+New Cheat	新建金手指
+Name	名称
+Address	地址
+Value	数值
+Compare	比较值
+Domain	内存区域
+Display As	显示为
+Big Endian	大端序
+Ov&erwrite	覆盖(&E)
+Compare Type	比较类型
+&Debug	调试(&D)
+Step &Into	单步进入(&I)
+Step O&ver	单步跳过(&O)
+Step Ou&t	单步跳出(&T)
+Refresh	刷新
+Registers	寄存器
+Breakpoints	断点
+Disassembler	反汇编器
+To PC	转到 PC
+Add Breakpoint	添加断点
+Step Out	单步跳出
+Step Into	单步进入
+Step Over	单步跳过
+Seek To:	跳转到：
+Run	运行
+Execute	执行
+Write	写入
+Read	读取
+Address 0x	地址 0x
+Mask 0x	掩码 0x
+Controllers	控制器
+Sticky	粘滞
+&Pads	手柄(&P)
+&Clear All	全部清除(&C)
+&Clear also clears Analog Input	清除时同时清除模拟输入(&C)
+Export	导出
+Syncless Recording	无同步录制
+Sync Settings	同步设置
+Save as binary...	另存为二进制...
+Save as text...	另存为文本...
+Import as binary...	以二进制方式导入...
+&Load .tbl file	加载 .tbl 文件(&L)
+Close .tbl file	关闭 .tbl 文件
+&Find...	查找(&F)...
+Find Next	查找下一个
+Find Prev	查找上一个
+&Memory Domains	内存区域(&M)
+Data Size	数据大小
+1 Byte	1 字节
+2 Byte	2 字节
+4 Byte	4 字节
+&Go to Address...	转到地址(&G)...
+Add to RAM Watch	添加到内存监视
+&Freeze Address	冻结地址(&F)
+Unfreeze All	解除全部冻结
+&Poke Address	写入地址(&P)
+Custom Colors	自定义颜色
+Set Colors	设置颜色
+Reset to Default	恢复默认值
+&Increment	递增(&I)
+&Decrement	递减(&D)
+View N64 Matrix	查看 N64 矩阵
+Addresses	地址
+Values	数值
+&Undo	撤销(&U)
+&Redo	重做(&R)
+Show Undo History	显示撤销历史
+Deselect	取消选择
+Select between Markers	选择标记之间的内容
+Go to Frame...	转到帧...
+&Paste Insert	插入粘贴(&P)
+&Cut	剪切(&C)
+&Delete	删除(&D)
+&Insert	插入(&I)
+Insert # of Frames	插入帧数
+&Clone	克隆(&C)
+Clone # Times	克隆次数
+&Truncate Movie	截断影片(&T)
+&Clear Savestate History	清除状态历史(&C)
+State History Integrity Check	状态历史完整性检查
+&Metadata	元数据(&M)
+&Header...	头信息(&H)...
+&Comments...	注释(&C)...
+&Subtitles...	字幕(&S)...
+Open settings...	打开设置...
+&Columns	列(&C)
+TAS Editor Manual Online...	在线 TAS 编辑器手册...
+Forum Thread...	论坛主题...
+&About	关于(&A)
+TAStudio engaged	TAStudio 已启用
+Set Markers	设置标记
+Set Marker with Text	设置带文本的标记
+Remove Markers	移除标记
+Clear Greenzone	清除绿区
+Cancel Seek	取消跳转
+Paste Insert	插入粘贴
+Truncate Movie	截断影片
+&Branch	分支(&B)
+Start a new project from Now	从当前时刻开始新项目
+Start a new project from SaveRam	从 SaveRAM 开始新项目
+Auto-hold	自动保持
+Hide column	隐藏列
+Show columns	显示列
+New input roll	新建输入记录
+Delete input roll	删除输入记录
+Pause or Resume	暂停或继续
+Insert Seperator	插入分隔线
+Stop All Scripts	停止所有脚本
+Clear Registered Functions	清除已注册函数
+&New Session	新建会话(&N)
+&Open Session...	打开会话(&O)...
+&Save Session	保存会话(&S)
+Save Session &As...	会话另存为(&A)...
+Recent Sessions	最近的会话
+Recent Scripts	最近的脚本
+&Script	脚本(&S)
+New Script	新建脚本
+&Open Script...	打开脚本(&O)...
+&Re&fresh	刷新(&F)
+&Edit Script	编辑脚本(&E)
+&Remove Script	移除脚本(&R)
+&Duplicate Script	复制脚本(&D)
+&Clear Output	清空输出(&C)
+&Registered Functions...	已注册函数(&R)...
+Disable Scripts on Load	加载时禁用脚本
+Toggle All if None Selected	未选择时切换全部脚本
+Reload When Script File Changes	脚本文件更改时重新加载
+Register To Text Editors	注册到文本编辑器
+&Sublime Text 2	Sublime Text 2(&S)
+Notepad++	Notepad++
+&Lua Functions List	Lua 函数列表(&L)
+Documentation online...	在线文档...
+&Clear	清除(&C)
+&Registered Functions	已注册函数(&R)
+Output	输出
+New Lua Script	新建 Lua 脚本
+Open Script	打开脚本
+Toggle Script	切换脚本
+Edit Script	编辑脚本
+Remove Script	移除脚本
+Duplicate Script	复制脚本
+Clear Output	清空输出
+Erase Stale/Stuck Lua Drawing Layers	清除过期/卡住的 Lua 绘图图层
