@@ -61,3 +61,143 @@ Apply	应用
 Close	关闭
 Yes	是
 No	否
+&Save State	保存状态(&S)
+&Load State	读取状态(&L)
+Save S&lot	保存槽位(&L)
+Save &RAM	保存 RAM(&R)
+&Flush Save Ram	写入保存 RAM(&F)
+&Movie	影片(&M)
+Recent	最近使用
+&Record Movie...	录制影片(&R)...
+&Play Movie...	播放影片(&P)...
+&Save Movie	保存影片(&S)
+Stop Movie without Saving	停止影片但不保存
+Import Movies...	导入影片...
+Automatically Backup Movies	自动备份影片
+Full Movie Loadstates	完整影片状态载入
+On Movie End	影片结束时
+Switch to Finished	切换到完成状态
+Switch to Record	切换到录制状态
+&A/V Writer	音视频录制(&A)
+&Record A/V	录制音视频(&R)
+Config and Record A/V...	配置并录制音视频...
+&Stop A/V Writer	停止音视频录制(&S)
+Capture OSD	捕获屏幕显示
+Capture Lua	捕获 Lua
+S&yncless Recording Tools	无同步录制工具(&Y)
+Scree&nshot	截图(&N)
+Screenshot As...	截图另存为...
+Screenshot (raw) -> Clipboard	原始截图复制到剪贴板
+Screenshot (client) -> Clipboard	客户端截图复制到剪贴板
+E&xit	退出(&X)
+&Window Size	窗口大小(&W)
+&Static Size	固定尺寸(&S)
+Switch to Fullscreen	切换到全屏
+Display FPS	显示 FPS
+Display Frame Count	显示帧数
+Display Lag Frame Count	显示延迟帧数
+Display Input	显示输入
+Display Rerecord Count	显示重录次数
+Display Subtitles	显示字幕
+Display Status Bar	显示状态栏
+Display Messages	显示消息
+Open &Log Window...	打开日志窗口(&L)...
+&Controllers...	控制器设置(&C)...
+&Hotkeys...	快捷键设置(&H)...
+Display...	显示设置...
+&Sound...	声音设置(&S)...
+Paths...	路径设置...
+&Firmware...	固件设置(&F)...
+&Messages...	消息设置(&M)...
+&Autofire...	连发设置(&A)...
+&Rewind && States...	倒带与状态(&R)...
+File Extensions...	文件扩展名...
+&Customize...	自定义(&C)...
+&Profiles...	配置档(&P)...
+Speed/Skip	速度/跳帧
+Clock Throttle	时钟限速
+Audio Throttle	音频限速
+VSync Throttle	垂直同步限速
+VSync Enabled	启用垂直同步
+Unthrottled	不限制速度
+Auto-minimize skipping	自动减少跳帧
+Skip 0 (never)	跳过 0 帧（从不）
+Skip 1..9	跳过 1..9 帧
+Key Priority	按键优先级
+Both Hotkeys and Controllers	快捷键和控制器均可
+Input overrides Hotkeys	控制器输入优先于快捷键
+Hotkeys override Input	快捷键优先于控制器输入
+Preferred Cores	首选模拟核心
+Save Config	保存配置
+Save Config As...	配置另存为...
+Load Config	加载配置
+Load Config From...	从文件加载配置...
+&Tool Box	工具箱(&T)
+RAM &Watch	内存监视(&W)
+RAM &Search	内存搜索(&S)
+&TAStudio	TAStudio(&T)
+&Hex Editor	十六进制编辑器(&H)
+Trace &Logger	指令跟踪日志(&L)
+&Debugger	调试器(&D)
+Code-Data Logger	代码/数据记录器
+&Macro Tool	宏工具(&M)
+Basic Bot	基础机器人
+Cheat Code Converter	金手指代码转换器
+Multi-disk Bundler	多磁盘打包工具
+Batch Runner...	批量运行...
+External Tool	外部工具
+None	无
+&RetroAchievements	RetroAchievements(&R)
+&Start RetroAchievements	启动 RetroAchievements(&S)
+&PPU Viewer	PPU 查看器(&P)
+&Nametable Viewer	名称表查看器(&N)
+Music Ripper	音乐提取器
+Controller Settings...	控制器设置...
+Graphics Settings...	图像设置...
+Sound Channels...	声音通道...
+VS Settings...	VS 设置...
+Advanced Settings...	高级设置...
+&Eject Disk	弹出磁盘(&E)
+Insert Coin P1	玩家 1 投币
+Insert Coin P2	玩家 2 投币
+Service Switch	服务开关
+Barcode Reader	条码读取器
+Keypad	键盘
+Load TI-83 File...	加载 TI-83 文件...
+Palette...	调色板...
+Filter Settings	滤镜设置
+Settings...	设置...
+&Choose Custom Palette...	选择自定义调色板(&C)...
+GPU Viewer	GPU 查看器
+&Printer Viewer	打印机查看器(&P)
+Controller / Memcard Settings	控制器/记忆卡设置
+&Options	选项(&O)
+&Disc Controls	光盘控制(&D)
+&Hash Discs	计算光盘哈希(&H)
+Controller Configuration	控制器配置
+Graphics Debugger	图像调试器
+&Controller Settings...	控制器设置(&C)...
+&Skip BIOS intro (When Applicable)	跳过 BIOS 片头（适用时）(&S)
+&Use the Super Game Module	使用 Super Game Module(&U)
+Plugins	插件
+Circular Analog Range	圆形摇杆范围
+&Mupen Style Lag Frames	Mupen 风格延迟帧(&M)
+&Use Expansion Slot	使用扩展槽(&U)
+&Settings...	设置(&S)...
+Disks	磁盘
+ZX Spectrum	ZX Spectrum
+Core Emulation Settings	核心仿真设置
+Joystick Configuration	摇杆配置
+Audio Settings	音频设置
+Non-Sync Settings	非同步设置
+Media	媒体
+Tapes	磁带
+Export Snapshot	导出快照
+&Core	核心(&C)
+Amstrad CPC	Amstrad CPC
+Open TASVideos Wiki in Browser	在浏览器中打开 TASVideos Wiki
+Open Forums in Browser	在浏览器中打开论坛
+&Features	功能(&F)
+&About...	关于(&A)...
+No ROM loaded	未加载 ROM
+No movie is active	当前没有活动影片
