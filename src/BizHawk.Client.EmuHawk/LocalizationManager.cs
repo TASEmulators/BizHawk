@@ -24,6 +24,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var result = new Dictionary<string, string>(StringComparer.Ordinal);
 			var path = Path.Combine(AppContext.BaseDirectory, "Localization", "zh-CN.tsv");
+			// Packaged BizHawk keeps managed application files under the dll directory.
+			if (!File.Exists(path)) path = Path.Combine(AppContext.BaseDirectory, "dll", "Localization", "zh-CN.tsv");
 			if (!File.Exists(path)) return result;
 			foreach (var line in File.ReadAllLines(path))
 			{
