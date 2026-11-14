@@ -645,3 +645,45 @@ Size:	大小：
 Always use this platform	始终使用此平台
 for this extension	处理此扩展名的文件
 Hash:	哈希值：
+2 Bytes	2 字节
+4 Bytes	4 字节
+Turbo While Botting	机器人运行时加速
+&Run	运行(&R)
+Controls	控制项
+Best	最佳
+&Play	播放(&P)
+Attempt:	尝试次数：
+Tiebreak 3:	第三决胜条件：
+Tiebreak 2:	第二决胜条件：
+Tiebreak 1:	第一决胜条件：
+Main Value:	主要数值：
+Attempts:	尝试次数：
+Frames:	帧数：
+frames	帧
+End after	结束于
+&Stop	停止(&S)
+Start From:	起始位置：
+Control	控制
+Help	帮助
+Filter	筛选
+Wiki markup to Clipboard	将 Wiki 标记复制到剪贴板
+Return	返回
+Library	函数库
+Parameters	参数
+Lua Functions	Lua 函数
+Insert number of frames:	插入帧数：
+Insert Frames	插入帧
+Author	作者
+Default	默认
+Make default	设为默认值
+Emu Version	模拟器版本
+Core	核心
+Board name	板卡名称
+Game name	游戏名称
+Header Info	头信息
+Start	开始
+APU Divider (trace interval)	APU 分频值（跟踪间隔）
+Export XRNS File	导出 XRNS 文件
+(Contents)	（内容）
+Pattern Length (512 max)	模式长度（最大 512）
+Log Control	日志控制
