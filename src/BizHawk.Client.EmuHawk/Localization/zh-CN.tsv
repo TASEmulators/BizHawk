@@ -1194,3 +1194,29 @@ VCD&2	VDC 2(&2)
 VDC 2	VDC 2
 Save BG Screenshot...	保存背景截图...
 Save Palettes Screnshot...	保存调色板截图...
+Rewinder is capturing states	倒带功能正在捕获状态
+GB in SGB	在 SGB 中运行 GB
+Set Libretro Core...	设置 Libretro 核心...
+(N/A)	（不可用）
+For Consoles	游戏主机
+For Handhelds	掌机
+For Computers	计算机
+Export Hard Disk Drive...	导出硬盘映像...
+(Dismiss Menu)	（关闭菜单）
+Cheats are currently active	金手指当前已启用
+Emulator Paused	模拟器已暂停
+Key priority: Allow both hotkeys and controller buttons	按键优先级：快捷键和控制器按键均可使用
+Key priority: Controller buttons will override hotkeys	按键优先级：控制器按键优先于快捷键
+Key priority: Hotkeys will override controller buttons	按键优先级：快捷键优先于控制器按键
+A/V capture in progress	正在录制音视频
+Copy All Logged Messages to Terminal/stdout	将所有日志消息复制到终端/stdout
+Sublime Text 2 (installed)	Sublime Text 2（已安装）
+Sublime Text 2 (detected)	Sublime Text 2（已检测到）
+Notepad++ (installed)	Notepad++（已安装）
+Notepad++ (detected)	Notepad++（已检测到）
+Saving backup...	正在保存备份...
+Saving...	正在保存...
+File saved.	文件已保存。
+Failed to save movie.	保存影片失败。
+Failed to save.	保存失败。
+Failed to save Lua session.	保存 Lua 会话失败。
