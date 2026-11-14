@@ -640,7 +640,6 @@ This Rom was not found in the database.  Furthermore, the extension leaves no cl
 Choose a Platform	选择平台
 Rom Details:	ROM 详情：
 Please choose the intended platform to use for this Rom	请选择此 ROM 应使用的平台
-Extension:	扩展名：
 Size:	大小：
 Always use this platform	始终使用此平台
 for this extension	处理此扩展名的文件
@@ -881,15 +880,8 @@ Ray	半径
 θ (°)	θ（°）
 Open the Cheat Code Converter	打开金手指代码转换器
 Use system's recommendation	使用系统推荐设置
- • May malfunction on some systems.
  • May have increased performance for OpenGL-based cores (	• 在某些系统上可能无法正常工作。
-• 对基于 OpenGL 的核心可能有性能提升（
-Changes require restart of program to take effect.
-	更改需要重新启动程序才能生效。
-
-Allow Tearing: Allows fullscreen to tear when VSync is disabled.
 This is required	允许画面撕裂：禁用垂直同步时允许全屏画面撕裂。
-此选项是必需的
 General	常规
 Enable Wii U/Switch GameCube Adapter Support	启用 Wii U / Switch GameCube 转接器支持
 Merge L+R modifier keys e.g. Shift instead of LShift and RShift	合并左右修饰键，例如使用 Shift 代替 LShift 和 RShift
@@ -914,9 +906,7 @@ Key Priority Toggle - Remove Mixed Key Priority Options	按键优先级切换 - 
 AutoSaveRAM	自动保存 RAM
 every	每隔
 Save SaveRAM to .AutoSaveRAM.SaveRAM	将存档 RAM 保存到 .AutoSaveRAM.SaveRAM
-Skips some integrity check exceptions in waterbox cores.
 Useful for romhackers. 	跳过 Waterbox 核心中的部分完整性检查异常。
-对 ROM 改版制作者有用。
 Skip waterbox integrity checks	跳过 Waterbox 完整性检查
 Store movie working data on disk instead of RAM	将影片工作数据存储到磁盘而不是内存
 Run lua scripts when turboing	加速运行时执行 Lua 脚本
@@ -934,7 +924,6 @@ GenericCoreConfig	通用核心设置
 Position	位置
 RewindSettings	倒带设置
 Saves a screenshot and loads it on loadstate so there isn't a	保存截图并在加载即时存档时恢复，以避免出现
-Controls whether cores
 even generate audio.	控制模拟核心是否生成音频。
 Resolution Management	分辨率管理
 About Me	关于
@@ -954,9 +943,7 @@ Bob Offset	Bob 偏移
 Bob	Bob
 Deinterlacing	去隔行
 Emulation Sync Settings	模拟同步设置
-Emulate Sector Error Correction
 (usually unneeded; breaks some patches)	模拟扇区错误校正
-（通常不需要，且会导致部分补丁失效）
 Determine Lag from GPU Frames	根据 GPU 帧判断延迟
 Emulation User Settings	模拟用户设置
 PSX Options	PSX 设置
@@ -987,3 +974,6 @@ Display BG	显示背景
 Display Sprites	显示精灵
 &Restore Defaults	恢复默认值(&R)
 (The QuickNES palette is the default)	（默认使用 QuickNES 调色板）
+Changes require restart of program to take effect.\r\n	更改需要重新启动程序才能生效。\r\n
+Controls whether cores\neven generate audio.	控制模拟核心是否生成音频。
+Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)	模拟扇区错误校正\r\n（通常不需要，且会导致部分补丁失效）
