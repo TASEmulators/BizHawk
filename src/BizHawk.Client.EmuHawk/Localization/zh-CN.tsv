@@ -687,3 +687,162 @@ Export XRNS File	导出 XRNS 文件
 (Contents)	（内容）
 Pattern Length (512 max)	模式长度（最大 512）
 Log Control	日志控制
+Mask	掩码
+Cpu:  Use '[' or ']' to change address, hold 'shift' for speed.	CPU：使用 '[' 或 ']' 更改地址，按住 Shift 可加速。
+&Export	导出(&E)
+&Paste	粘贴(&P)
+&Freeze	冻结(&F)
+&Add to RAM Watch	添加到 RAM 监视(&A)
+&Unfreeze All	全部解除冻结(&U)
+Header	头信息
+0 script     	0 个脚本     
+Lua Dialog	Lua 对话框
+Enter the digits of the barcode here:	在此输入条形码数字：
+THIS IS AN EXPERIMENTAL FEATURE AND WILL DESYNC MOVIES.  DO NOT USE WITH MOVIES.	这是实验性功能，会导致影片不同步。请勿在影片录制/播放时使用。
+Send!	发送！
+&Save Image...	保存图像(&S)...
+&Copy Image to clipboard	复制图像到剪贴板(&C)
+&Refresh Image	刷新图像(&R)
+Save Screenshot &As...	截图另存为(&A)...
+Screenshot to &Clipboard	将截图复制到剪贴板(&C)
+Nametable	名称表
+Scanline	扫描线
+Properties	属性
+Palette:	调色板：
+Table:	表：
+PPU Addr:	PPU 地址：
+X / Y:	X / Y：
+Tile ID:	图块 ID：
+More	更多
+Less	更少
+Pattern Tables	图案表
+Palette: 0	调色板：0
+&Refresh	刷新(&R)
+Palettes	调色板
+Details	详细信息
+Shift-click to remember selection	按住 Shift 单击以记住选择
+Value 5	数值 5
+Value 4	数值 4
+Hover over item to view details	将鼠标悬停在项目上以查看详细信息
+Value 3	数值 3
+Value 2	数值 2
+Value 1	数值 1
+Sprites	精灵
+Save Palette Screenshot...	保存调色板截图...
+Save Pattern Screenshot...	保存图案截图...
+Save Sprite Screenshot...	保存精灵截图...
+Copy Palette to Clipboard	复制调色板到剪贴板
+Copy Pattern to Clipboard	复制图案到剪贴板
+Copy Sprite to Clipboard	复制精灵到剪贴板
+&Pattern	图案(&P)
+Table 0 Palette	表 0 调色板
+Table 1 Palette	表 1 调色板
+CHR ROM Tile Viewer	CHR ROM 图块查看器
+Use CTRL+C to copy the pane under the mouse to the clipboard.	使用 Ctrl+C 将鼠标下方的窗格复制到剪贴板。
+CHR ROM Tiles	CHR ROM 图块
+Bank:	存储组：
+Branches	分支
+Add with Text	添加并填写文本
+Load	加载
+&Update	更新(&U)
+Update with Text	更新并填写文本
+Edit Text	编辑文本
+Jump To	跳转到
+Undo	撤销
+Playback	播放
+Recording mode	录制模式
+Auto-restore last position	自动恢复上次位置
+Turbo seek	加速定位
+Follow cursor	跟随光标
+Appearance	外观
+Lag frames to hide:	要隐藏的延迟帧数：
+Movie settings	影片设置
+Denote markers with color on frame column	在帧列中用颜色标记标记点
+Denote markers with icons	使用图标标记标记点
+Denote states with background color	使用背景颜色标记状态
+Denote states with icons	使用图标标记状态
+Hide "was lag" frames	隐藏“曾发生延迟”的帧
+Rotate input roll	旋转输入记录
+Set Font	设置字体
+Autosave	自动保存
+Set to 0 to disable autosave	设为 0 以禁用自动保存
+When manually saving, also save .backup	手动保存时同时保存 .backup 文件
+Save as .backup (no greenzone)	保存为 .backup（不含绿区）
+Save as .bk2	保存为 .bk2
+seconds	秒
+Autosave frequency:	自动保存间隔：
+Savestates	即时存档
+Each movie contains its own savestate settings	每个影片都包含独立的即时存档设置
+applied	已应用
+Use these settings as default	将这些设置设为默认值
+Use default settings	使用默认设置
+Management strategy:	管理策略：
+Paint Patterns	绘制模式
+Set custom patterns (per movie)	设置自定义模式（每个影片独立）
+Count:	数量：
+LagBox	延迟帧
+Account for lag frames	计算延迟帧
+Delete	删除
+Insert	插入
+Choose pattern	选择模式
+Custom	自定义
+Hold	按住
+Auto-Fire	连发
+Use pattern for painting	绘制时使用的模式
+Always	始终
+Auto-Fire columns only	仅连发列
+Never	从不
+Old control scheme for branches	分支使用旧控制方案
+Load branch by double clicking	双击加载分支
+Fast rewind step:	快速倒带步长：
+Rewind step:	倒带步长：
+Bind markers to input	将标记点绑定到输入
+Include frame numbers when copying input.	复制输入时包含帧编号。
+Max Undo Count:	最大撤销次数：
+Automatically pause at end of movie.	影片结束时自动暂停。
+Markers keep states by default	标记点默认保留状态
+Input Roll	输入记录
+Scroll to cursor method	滚动到光标的方式
+scroll to center	滚动到中央
+scroll to bottom	滚动到底部
+scroll to top	滚动到顶部
+scroll to view	滚动到可见区域
+When following cursor, scroll at every frame	跟随光标时每帧滚动
+frames per tick	每刻度帧数
+Wheel scroll speed:	滚轮滚动速度：
+Allow editing hidden columns (with clear, record, paste, etc.)	允许编辑隐藏列（清除、录制、粘贴等操作）
+Sync scroll across all input rolls	同步滚动所有输入记录
+TAStudio Settings	TAStudio 设置
+Redo	重做
+Undo To Selection	撤销到所选位置
+Redo To Selection	重做到所选位置
+Clear History To Selection	清除所选位置之前的历史记录
+Auto Scroll	自动滚动
+Max:	最大值：
+Undo History	撤销历史
+Trace log	跟踪日志
+&Save Log	保存日志(&S)
+Set Max Lines...	设置最大行数...
+Set Segment Size...	设置分段大小...
+&Browse	浏览(&B)
+to file	输出到文件
+to window	输出到窗口
+Start &logging	开始记录(&L)
+Number of Threads	线程数
+JMD Compression Options	JMD 压缩选项
+Subtitles	字幕
+Comments	注释
+Read only	只读
+Include Subdirectories	包含子目录
+Match current game hash	匹配当前游戏哈希值
+Stop on frame:	在指定帧停止：
+File	文件
+SysID	系统 ID
+Game	游戏
+Length (est.)	长度（估计）
+Last frame	最后一帧
+Turbo	加速
+X position	X 坐标
+Y position	Y 坐标
+Duration	持续时间
+Subtitle Maker	字幕制作器
