@@ -1152,3 +1152,45 @@ Edit Frame (Alt + Drag)	编辑帧（Alt + 拖动）
 Markers	标记点
 Priority 1	优先级 1
 Priority 0	优先级 0
+Bank 1	存储组 1
+Bank 2 (CGB)	存储组 2（CGB）
+Background && Window	背景和窗口
+Sprite	精灵
+Tilemaps	图块地图
+Tiles	图块
+Left-click a palette to use it for drawing the tiles display.	左键单击调色板，以便在图块显示中使用它。
+Objects	对象
+OAM	对象属性存储器（OAM）
+Refresh Control	刷新控制
+Refresh Now	立即刷新
+Manual	手动
+Details - Memory	详细信息 - 内存
+Right-click an item to display it here.	右键单击项目以在此处显示。
+Copy to Clipboard	复制到剪贴板
+CTRL+C copies the pane under the mouse pointer to the clipboard.	按 Ctrl+C 将鼠标指针下方的窗格复制到剪贴板。
+Sprite Backdrop	精灵背景
+Change Color...	更改颜色...
+Details (memory)	详细信息（内存）
+Details (mouseover)	详细信息（鼠标悬停）
+Background palettes	背景调色板
+Sprite palettes	精灵调色板
+Tiles 1	图块 1
+Tiles 2	图块 2
+Note: the printer is only connected while this window is open.	注意：只有在此窗口打开时，打印机才会连接。
+Available widgets:	可用组件：
+Show >>	显示 >>
+CTRL + C: Copy under mouse to clipboard.	Ctrl+C：将鼠标下方的内容复制到剪贴板。
+MobileBmpView	移动图像视图
+MobileDetailView	移动详细视图
+Cheat Code	金手指代码
+Convert	转换
+Save BG A Screenshot...	保存背景 A 截图...
+Save BG B Screenshot...	保存背景 B 截图...
+Save Tiles Screenshot...	保存图块截图...
+Save Window Screenshot...	保存窗口截图...
+&Viewer	查看器(&V)
+VDC&1	VDC 1(&1)
+VCD&2	VDC 2(&2)
+VDC 2	VDC 2
+Save BG Screenshot...	保存背景截图...
+Save Palettes Screnshot...	保存调色板截图...
