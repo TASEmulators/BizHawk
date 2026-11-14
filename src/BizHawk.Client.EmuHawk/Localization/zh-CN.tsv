@@ -586,3 +586,62 @@ Remove Script	移除脚本
 Duplicate Script	复制脚本
 Clear Output	清空输出
 Erase Stale/Stuck Lua Drawing Layers	清除过期/卡住的 Lua 绘图图层
+Size	大小
+Add	添加
+&Add	添加(&A)
+Find	查找
+Hex	十六进制
+Save and &Run	保存并运行(&R)
+&Close	关闭(&C)
+Output Bundle Path	输出打包文件路径
+Browse...	浏览...
+Remove	移除
+Drag Files Here:	将文件拖放到此处：
+Number of Files: 0	文件数量：0
+Clear!	清空！
+Go!	开始！
+Status:	状态：
+Frames to run:	运行帧数：
+Dump...	导出...
+BatchRun	批量运行
+Comment	注释
+Edit Comments	编辑注释
+Frame	帧
+The first frame the subtitle will be displayed (integer)	字幕开始显示的第一帧（整数）
+Screen coordinate (absolute)	屏幕坐标（绝对值）
+Length	持续时间
+How long subtitle will be displayed	字幕显示的持续时间
+Color	颜色
+Color of subtitle text	字幕文字颜色
+Message	消息
+What will be displayed	显示的内容
+&Export to SubRip	导出为 SubRip(&E)
+Concat multilines	合并多行文本
+Add color tag	添加颜色标签
+On export:	导出时：
+Edit Subtitles	编辑字幕
+GIF Writer Options	GIF 录制选项
+Number of frames to skip for each frame written:	每写入一帧要跳过的帧数：
+Frame delay:	帧延迟：
+Formats:	格式：
+Description:	说明：
+Command:	命令：
+Extension:	扩展名：
+Choose Video Format	选择视频格式
+Resize Video	调整视频尺寸
+Resize:	调整尺寸：
+/\ Set As Resize	设为调整尺寸
+Size:\r\nTestxTest	尺寸：\r\nTestxTest
+Pad	补边
+Sync to Audio	与音频同步
+Choose A/V Writer	选择音视频录制器
+Resolution is not a multiple of 4! Odd or non-x4 resolutions breaks many codecs. 	分辨率不是 4 的倍数！奇数或非 4 倍数的分辨率会导致许多编码器无法正常工作。 
+This Rom was not found in the database.  Furthermore, the extension leaves no clue as to which platform should be chosen.	数据库中找不到此 ROM，而且文件扩展名也无法判断应选择哪个平台。
+Choose a Platform	选择平台
+Rom Details:	ROM 详情：
+Please choose the intended platform to use for this Rom	请选择此 ROM 应使用的平台
+Extension:	扩展名：
+Size:	大小：
+Always use this platform	始终使用此平台
+for this extension	处理此扩展名的文件
+Hash:	哈希值：
