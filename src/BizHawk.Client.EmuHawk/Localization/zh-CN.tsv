@@ -975,3 +975,98 @@ Display Sprites	显示精灵
 Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)	模拟扇区错误校正\r\n（通常不需要，且会导致部分补丁失效）
 Changes require restart of program to take effect.\r\n	更改需要重新启动程序才能生效。\r\n
 Controls whether cores\neven generate audio.	控制模拟核心是否生成音频。
+Bindname	绑定名称
+Sensitivity: 5 billion	灵敏度：50 亿
+Bind!	绑定！
+Deadzone: 5 billion	死区：50 亿
+Flip Axis	反转轴
+Unbind!	取消绑定！
+Standard Filename	标准文件名
+Options for this firmware:	此固件的选项：
+Firmware Info	固件信息
+Sets the path to the Windows Recent Path	将路径设置为 Windows“最近使用”路径
+Sets the path of the executable (EmuHawk.exe)	将路径设置为可执行文件（EmuHawk.exe）所在位置
+Sets the path to the base path	将路径设置为基础路径
+Sets the path to the folder above the base path	将路径设置为基础路径的上一级文件夹
+Frame Counter	帧计数器
+Height:	高度：
+Width:	宽度：
+Rsp Plugin	Rsp 插件
+Core Type	核心类型
+(GLideN64 is good for performance, while Angrylion has the best compatibility)	（GLideN64 性能较好，而 Angrylion 兼容性最佳）
+Video Resolution	视频分辨率
+Active Video Plugin	当前视频插件
+Resolution Height	分辨率高度
+Resolution Width	分辨率宽度
+Direct3D Clear Mode	Direct3D 清除模式
+Copy framebuffer	复制帧缓冲区
+Force Z Compare	强制 Z 比较
+Direct3D trans pipeline	Direct3D 透明管线
+Force alpha blending	强制 Alpha 混合
+Use legacy pixel pipeline	使用旧版像素管线
+to match yours	以匹配你的设置
+Adjust game aspect ratio	调整游戏宽高比
+Antialiasing Level	抗锯齿级别
+Always use texture filter	始终使用纹理滤镜
+Super 2xsal	Super 2xSaI
+Brightness	亮度
+Anisotropic filtering level	各向异性过滤级别
+Plugin Settings	插件设置
+APU Volume	APU 音量
+Region Override:	区域覆盖：
+Custom Board Properties	自定义主板属性
+Region Override will be ignored when playing Famicom Disk System games.	游玩 Famicom 磁碟系统游戏时，区域覆盖设置将被忽略。
+The current board has no custom properties	当前主板没有自定义属性
+Initial Ram pattern override	初始 RAM 模式覆盖
+Provides an override to the initial WRAM startup pattern	覆盖初始 WRAM 启动模式
+NES Advanced Settings	NES 高级设置
+Dipswitch 1	拨码开关 1
+Dipswitch 2	拨码开关 2
+Dipswitch 3	拨码开关 3
+Dipswitch 4	拨码开关 4
+Dipswitch 5	拨码开关 5
+Dipswitch 6	拨码开关 6
+Dipswitch 7	拨码开关 7
+Dipswitch 8	拨码开关 8
+NES VS Settings	NES VS 设置
+Famicom	红白机
+NES Right Port:	NES 右侧接口：
+NES Left Port:	NES 左侧接口：
+Famicom Expansion:	红白机扩展接口：
+NES Controller Settings	NES 控制器设置
+Multitap	多重手柄适配器
+Port 1	接口 1
+Port 2	接口 2
+Memcard	记忆卡
+Controller / Memcard Configuration	控制器/记忆卡设置
+Sorry, this is gonna freeze while it hashes	抱歉，计算哈希时程序会暂时卡住
+Limit Analog Change Sensitivity	限制模拟输入变化灵敏度
+Port 2:	接口 2：
+Port 1:	接口 1：
+Game hotfixes	游戏修复
+Use fast PPU	使用快速 PPU
+Use SGB2	使用 SGB2
+DSP Fast Mode	DSP 快速模式
+Coprocessor Fast Mode	协处理器快速模式
+No PPU sprite limit	取消 PPU 精灵数量限制
+Show Overscan	显示过扫描区域
+Show Lightgun Cursor	显示光枪光标
+Satellaview cartridge	卫星通信系统卡带
+Aspect Ratio Correction	宽高比校正
+Region	区域
+Entropy	熵
+Use Real Time	使用实时时钟
+Initial Time	初始时间
+Background	背景
+Foreground	前景
+Enter a value:	输入一个值：
+Input Prompt	输入提示
+Save Selected As...	将所选内容另存为...
+Load Macro...	加载宏...
+Replace	替换
+macro start      macro end	宏开始      宏结束
+Place Zone	放置区域
+Set Macro	设置宏
+Macro Name:	宏名称：
+Current	当前
+Overlay	叠加显示
