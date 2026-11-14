@@ -1313,3 +1313,12 @@ Poke Address	写入地址
 &Show Hotkeys	显示快捷键(&S)
 Save Image...	保存图像...
 CTRL + C copies the pane under the mouse to the clipboard.	按 Ctrl+C 将鼠标下方的窗格复制到剪贴板。
+OpenGL	OpenGL
+Changes require restart of program to take effect.	更改需要重启程序才能生效。
+Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case you have a multi-monitor setup)	允许双击切换全屏（多显示器环境下，可按住 Shift 强制切换）
+&OK	确定(&O)
+Window title suffix (static and not):	窗口标题后缀（固定标题模式）：
+During Christmas (Dec. 20th through 26th)	仅圣诞节期间（12 月 20 日至 26 日）
+When no rom loaded, draw "snow" (white noise):	未加载 ROM 时显示“雪花”（白噪声）：
+Brightness multiplier:	亮度倍率：
+RNG bias:	随机数偏置：
