@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 			HookedControls.Add(control, new object());
-			if (!(control is FormBase))
+			if (control is not FormBase)
 			{
 				control.TextChanged += (_, _) =>
 				{
