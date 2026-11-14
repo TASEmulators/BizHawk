@@ -30,10 +30,18 @@ namespace BizHawk.Client.EmuHawk
 				if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#", StringComparison.Ordinal)) continue;
 				var separator = line.IndexOf('\t');
 				if (separator <= 0) continue;
-				result[line.Substring(0, separator)] = line.Substring(separator + 1);
+				result[Unescape(line.Substring(0, separator))] = Unescape(line.Substring(separator + 1));
 			}
 			return result;
 		}
+
+		private static string Unescape(string value)
+			=> value
+				.Replace("\\r\\n", "\r\n")
+				.Replace("\\n", "\n")
+				.Replace("\\t", "\t")
+				.Replace("\\'", "'")
+				.Replace("\\\\", "\\");
 
 		public static void Apply(Control root)
 		{
