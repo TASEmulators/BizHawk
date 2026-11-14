@@ -1220,3 +1220,96 @@ File saved.	文件已保存。
 Failed to save movie.	保存影片失败。
 Failed to save.	保存失败。
 Failed to save Lua session.	保存 Lua 会话失败。
+Address: 0x	地址：0x
+&Poke	写入(&P)
+Enter an address to poke:	输入要写入的地址：
+Value:	数值：
+Unsigned	无符号
+Byte	字节
+Endian:	字节序：
+Display Type:	显示类型：
+Domain:	内存域：
+Main Memory	主内存
+RAM Poke	RAM 写入
+0 addresses	0 个地址
+&Start New Search	开始新搜索(&S)
+Remove Selected	移除所选项目
+&Clear Preview	清除预览(&C)
+&Append File...	追加文件(&A)...
+&Truncate from File...	从文件截断(&T)...
+&Mode	模式(&M)
+&Detailed	详细(&D)
+&Fast	快速(&F)
+&Size	大小(&S)
+&1 Byte	1 字节(&1)
+&2 Byte	2 字节(&2)
+&4 Byte	4 字节(&4)
+Check Mis-aligned	检查未对齐地址
+&Big Endian	大端序(&B)
+&Display Type	显示类型(&D)
+Define Previous Value	定义先前数值
+Last &Search	上次搜索(&S)
+&Previous Frame	上一帧(&P)
+&Original	原始值(&O)
+Last &Change	上次更改(&C)
+&New Search	新搜索(&N)
+Copy Value to Prev	将数值复制到上次值
+&Clear Change Counts	清除更改计数(&C)
+&Remove selected	移除所选项目(&R)
+Select All	全选
+Clear Undo History	清除撤销历史
+&Preview Mode	预览模式(&P)
+&Auto-Search	自动搜索(&A)
+&Auto-Search Account for Lag	自动搜索并考虑延迟(&A)
+Always E&xclude RAM Watch List	始终排除 RAM 监视列表(&X)
+&Use Undo History	使用撤销历史(&U)
+Compare To / By	比较对象/方式
+Difference of:	差值：
+Specific Changes:	指定更改次数：
+Specific Address:	指定地址：
+Specific Value:	指定数值：
+Previous Value	先前数值
+Search 	搜索 
+Copy Value to Previous	将数值复制到先前值
+Clear Change Counts	清除更改计数
+Eliminate Selected Items	移除所选项目
+Comparison Operator	比较运算符
+Different by:	差异值：
+Not Equal To	不等于
+Equal To	等于
+Greater Than or Equal To	大于或等于
+Less Than or Equal To	小于或等于
+Greater Than	大于
+Less Than	小于
+WatchCountLabel	监视项数量
+0 watches	0 个监视项
+&New Watch	新建监视项(&N)
+&Edit	编辑(&E)
+&Duplicate	复制(&D)
+Sp&lit	拆分(&L)
+Set Read Breakpoint	设置读取断点
+Set Write Breakpoint	设置写入断点
+&Insert Separator	插入分隔符(&I)
+Move &Top	移到顶部(&T)
+Move &Bottom	移到底部(&B)
+New Watch	新建监视项
+Edit Watch	编辑监视项
+Remove Watch	移除监视项
+Duplicate Watch	复制监视项
+Split Watch	拆分监视项
+Poke address	写入地址
+&Files	文件(&F)
+&New List	新建列表(&N)
+A&ppend File...	追加文件(&P)...
+&Watches	监视项(&W)
+Default Domain	默认内存域
+&Edit Watch	编辑监视项(&E)
+&Remove Watch	移除监视项(&R)
+&Duplicate Watch	复制监视项(&D)
+Sp&lit Watch	拆分监视项(&L)
+Display Watches On Screen	在屏幕上显示监视项
+On Double-Clicking a Watch	双击监视项时
+Poke Address	写入地址
+&Show Hotkeys	显示快捷键(&S)
+Save Image...	保存图像...
+CTRL + C copies the pane under the mouse to the clipboard.	按 Ctrl+C 将鼠标下方的窗格复制到剪贴板。
