@@ -102,9 +102,12 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		public void UpdateWindowTitle()
-			=> base.Text = Config?.UseStaticWindowTitles == true
+		{
+			var title = Config?.UseStaticWindowTitles == true
 				? (_windowTitleStatic ??= WindowTitleStatic)
 				: WindowTitle;
+			base.Text = LocalizationManager.TranslateText(title);
+		}
 
 		// Alt key hacks. We need this in order for hotkey bindings with alt to work.
 		private const int WM_SYSCOMMAND = 0x0112;
