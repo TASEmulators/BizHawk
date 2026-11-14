@@ -98,11 +98,6 @@ namespace BizHawk.Client.EmuHawk
 					var translated = Translate(item.Text);
 					if (translated != item.Text) item.Text = translated;
 				};
-				item.ToolTipTextChanged += (_, _) =>
-				{
-					var translated = Translate(item.ToolTipText);
-					if (translated != item.ToolTipText) item.ToolTipText = translated;
-				};
 				if (item is ToolStripDropDownItem dropDownItem)
 					dropDownItem.DropDownOpening += (_, _) => ApplyItems(dropDownItem.DropDownItems);
 			}
