@@ -90,6 +90,7 @@ namespace BizHawk.Client.EmuHawk
 				Close();
 				return;
 			}
+			LocalizationManager.Apply(this);
 			if (OSTailoredCode.IsUnixHost) FixBackColorOnControls(this);
 			UpdateWindowTitle();
 
