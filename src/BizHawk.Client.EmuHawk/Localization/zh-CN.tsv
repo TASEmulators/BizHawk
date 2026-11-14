@@ -201,3 +201,73 @@ Open Forums in Browser	在浏览器中打开论坛
 &About...	关于(&A)...
 No ROM loaded	未加载 ROM
 No movie is active	当前没有活动影片
+Save Named State...	保存命名状态...
+Autosave Last Slot	自动保存到上次使用的槽位
+Load Named State...	读取命名状态...
+Autoload Last Slot	自动读取上次使用的槽位
+Select Slot 1	选择槽位 1
+Select Slot 2	选择槽位 2
+Select Slot 3	选择槽位 3
+Select Slot 4	选择槽位 4
+Select Slot 5	选择槽位 5
+Select Slot 6	选择槽位 6
+Select Slot 7	选择槽位 7
+Select Slot 8	选择槽位 8
+Select Slot 9	选择槽位 9
+Select Slot 10	选择槽位 10
+Previous Slot	上一个槽位
+Next Slot	下一个槽位
+Read-only	只读
+Stop	停止
+Pause	暂停
+Play Sound	播放声音
+Loaded core: <core name> (sysID)	已加载核心：<core name>（sysID）
+Speed 50%	速度 50%
+Speed 75%	速度 75%
+Speed 100%	速度 100%
+Speed 150%	速度 150%
+Speed 200%	速度 200%
+Speed 400%	速度 400%
+&NES	NES(&N)
+FDS Controls	FDS 控制
+VS Controls	VS 控制
+TI83	TI-83
+&A7800	A7800(&A)
+Controller Settings	控制器设置
+&GB	Game Boy(&G)
+PSX	PlayStation
+&SNES	超级任天堂(&S)
+&Coleco	Coleco(&C)
+N64	Nintendo 64
+&GB Link	Game Boy 联机(&G)
+Apple	Apple
+&C64	Commodore 64(&C)
+&Intv	Intellivision(&I)
+zxt1	磁带 1
+zxt2	磁带 2
+cpct1	磁带 1
+cpcd1	磁盘 1
+A7800Hawk	A7800Hawk
+Reboot	重新启动
+A/V Capture	音视频捕获
+Save slots	保存槽位
+KeyPriority	按键优先级
+ProfileFirstBootLabel	首次启动配置档
+Link connection is currently enabled	联机连接当前已启用
+New version available!	有新版本可用！
+Open Rom	打开 ROM
+Load Last ROM	加载上次使用的 ROM
+Stop A/V Writer	停止音视频录制
+Restart Movie	重新开始影片
+Load Last Movie	加载上次使用的影片
+Backup Movie	备份影片
+View Subtitles	查看字幕
+Add Subtitle	添加字幕
+View Comments	查看评论
+Undo Savestate	撤销状态
+Config	配置
+&Rewind...	倒带设置(&R)...
+Customize...	自定义...
+Close ROM	关闭 ROM
+Close and Clear SRAM	关闭并清除 SRAM
+Show Menu	显示菜单
