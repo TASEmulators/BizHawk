@@ -1070,3 +1070,65 @@ Set Macro	设置宏
 Macro Name:	宏名称：
 Current	当前
 Overlay	叠加显示
+All	全部
+Good Dump	良好转储
+Homebrew	自制软件
+Hack	修改版
+Translated ROM	已翻译 ROM
+Bad Dump	错误转储
+Over Dump	过量转储
+Pick a status	选择状态
+Filter: 	滤镜：
+A7800 Filter Settings: Needed For Tower Toppler and Jinks	A7800 滤镜设置：Tower Toppler 和 Jinks 需要此设置
+AY-3-8912 Panning Config:	AY-3-8912 声像配置：
+Tape Volume:	磁带音量：
+AY-3-8912 Volume:	AY-3-8912 音量：
+Emulated Machine:	模拟机器：
+Deterministic Emulation	确定性模拟
+Auto Tape Start/Stop	自动启动/停止磁带
+Rendered Border Type:	渲染边框类型：
+Amstrad CPC Misc Non-Sync Settings	Amstrad CPC 其他非同步设置
+OSD Message Verbosity:	OSD 消息详细程度：
+Other Non-Sync Settings	其他非同步设置
+Preset Select	预设选择
+Preview	预览
+Vivid	鲜艳
+VBA Vivid	VBA 鲜艳
+VBA Accurate	VBA 精确
+VBA Accurate (Old)	VBA 精确（旧版）
+Libretro GBC	Libretro GBC
+Game Boy Color Palette Config	Game Boy Color 调色板设置
+BG	背景
+SP1	精灵 1
+SP2	精灵 2
+Interpolate	插值
+&Load...	加载(&L)...
+&Save...	保存(&S)...
+&Default Green	默认绿色(&D)
+Default &Grey	默认灰色(&G)
+Game Boy Palette Config	Game Boy 调色板设置
+Player 1 Gameboy	玩家 1 Game Boy
+Player 2 Gameboy	玩家 2 Game Boy
+Player 3 Gameboy	玩家 3 Game Boy
+Player 4 Gameboy	玩家 4 Game Boy
+Gameboy Link Settings	Game Boy 联机设置
+Game Boy Settings	Game Boy 设置
+SameBoy Palette Config	SameBoy 调色板设置
+Intellivision Controller Settings	Intellivision 控制器设置
+Connected	已连接
+Controller 1	控制器 1
+ZX Spectrum Audio Settings	ZX Spectrum 音频设置
+Buzzer Volume:	蜂鸣器音量：
+ZX Spectrum Emulation Settings	ZX Spectrum 模拟设置
+Auto-Load Tape	自动加载磁带
+ZX Spectrum Joystick Settings	ZX Spectrum 摇杆设置
+Joystick 1:	摇杆 1：
+Joystick 2:	摇杆 2：
+Joystick 3:	摇杆 3：
+Joystick Settings	摇杆设置
+Default Background Color:	默认背景颜色：
+Use last Core border color for background	使用上一次核心边框颜色作为背景
+A7800 Controller Settings	A7800 控制器设置
+Amstrad CPC Audio Settings	Amstrad CPC 音频设置
+Amstrad CPC Emulation Settings	Amstrad CPC 模拟设置
+ColecoVision Controller Settings	ColecoVision 控制器设置
