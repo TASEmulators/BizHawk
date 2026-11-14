@@ -322,7 +322,6 @@ Defaults	默认值
 Auto Prescale	自动预缩放
 User Prescale:	用户预缩放：
 Display Method	显示方式
-Changes require restart of program to take effect.\r\n	更改需要重启程序才能生效。\r\n
 Direct3D11	Direct3D 11
 GDI+	GDI+
 Misc	其他
@@ -355,7 +354,6 @@ milliseconds	毫秒
 Output Method	输出方式
 Mute Frame Advance	逐帧前进时静音
 Sound Master Enable	启用主声音输出
-Controls whether cores\neven generate audio.	控制模拟核心是否生成音频。
 Sound Configuration	声音配置
 Special Commands	特殊命令
 Always use recent path for ROMs	ROM 始终使用最近访问的路径
@@ -974,6 +972,6 @@ Display BG	显示背景
 Display Sprites	显示精灵
 &Restore Defaults	恢复默认值(&R)
 (The QuickNES palette is the default)	（默认使用 QuickNES 调色板）
+Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)	模拟扇区错误校正\r\n（通常不需要，且会导致部分补丁失效）
 Changes require restart of program to take effect.\r\n	更改需要重新启动程序才能生效。\r\n
 Controls whether cores\neven generate audio.	控制模拟核心是否生成音频。
-Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)	模拟扇区错误校正\r\n（通常不需要，且会导致部分补丁失效）
