@@ -40,8 +40,8 @@ namespace BizHawk.Client.EmuHawk
 			EMsgBoxIcon? icon)
 				=> MessageBox.Show(
 					owner?.AsWinFormsHandle(),
-					text,
-					caption ?? string.Empty,
+					LocalizationManager.TranslateText(text),
+					LocalizationManager.TranslateText(caption ?? string.Empty),
 					buttons,
 					icon switch
 					{
