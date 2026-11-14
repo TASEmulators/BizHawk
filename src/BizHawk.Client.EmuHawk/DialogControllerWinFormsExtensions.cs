@@ -14,13 +14,19 @@ namespace BizHawk.Client.EmuHawk
 			=> dialog.ShowDialog(dialogParent.AsWinFormsHandle());
 
 		public static DialogResult ShowDialogAsChild(this IDialogParent dialogParent, Form dialog)
-			=> dialog.ShowDialog(dialogParent.AsWinFormsHandle());
+		{
+			LocalizationManager.Apply(dialog);
+			return dialog.ShowDialog(dialogParent.AsWinFormsHandle());
+		}
 
 		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, CommonDialog dialog)
 			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
 
 		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, Form dialog)
-			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
+		{
+			LocalizationManager.Apply(dialog);
+			return dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
+		}
 
 		public static DialogResult ShowDialogWithTempMute(this IDialogParent dialogParent, FolderBrowserEx dialog)
 			=> dialogParent.DialogController.DoWithTempMute(() => dialog.ShowDialog(dialogParent.AsWinFormsHandle()));
