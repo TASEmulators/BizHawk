@@ -1,0 +1,63 @@
+# BizHawk Simplified Chinese UI translations
+# Format: exact English source text<TAB>简体中文
+&File	文件(&F)
+&Open ROM...	打开 ROM(&O)...
+&Recent ROM	最近打开的 ROM
+Open Ad&vanced...	高级打开(&V)...
+&Close ROM	关闭 ROM(&C)
+&Emulation	仿真(&E)
+&Pause	暂停(&P)
+&Reboot Core	重新启动核心
+&Soft Reset	软重置
+&Hard Reset	硬重置
+&View	视图(&V)
+&Config	配置(&C)
+&Tools	工具(&T)
+&Help	帮助(&H)
+Save State	保存状态
+Load State	读取状态
+Save Slot	保存槽位
+Save to Current Slot	保存到当前槽位
+Load Current Slot	读取当前槽位
+Save RAM	保存 RAM
+Flush Save RAM	写入保存 RAM
+Movie	影片
+Record Movie	录制影片
+Play Movie	播放影片
+Stop Movie	停止影片
+Play from Beginning	从头播放
+Save Movie	保存影片
+Save Movie As...	影片另存为...
+Stop Movie Without Saving	停止影片但不保存
+Screenshot	截图
+Exit	退出
+Window Size	窗口大小
+Fullscreen	全屏
+Core Settings	核心设置
+Recent Core Settings	最近的核心设置
+Controller	控制器
+Hotkeys	快捷键
+Display	显示
+Sound	声音
+Paths	路径
+Firmware	固件
+Messages	消息
+Rewind	倒带
+Tools	工具
+Cheats	金手指
+Hex Editor	十六进制编辑器
+Debugger	调试器
+Trace Logger	跟踪日志
+Lua Console	Lua 控制台
+Virtual Pad	虚拟手柄
+TAStudio	TAStudio
+Tool Box	工具箱
+About	关于
+&Open	打开(&O)
+&Save	保存(&S)
+Cancel	取消
+OK	确定
+Apply	应用
+Close	关闭
+Yes	是
+No	否
