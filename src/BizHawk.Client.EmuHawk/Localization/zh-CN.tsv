@@ -846,3 +846,37 @@ X position	X 坐标
 Y position	Y 坐标
 Duration	持续时间
 Subtitle Maker	字幕制作器
+New From	新建自
+&Now	当前时刻(&N)
+&Current SaveRam	当前存档内存(&C)
+Save As	另存为
+Save Backup	保存备份
+Save Bk2 Backup	保存 BK2 备份
+Save Selection to Macro	将所选内容保存为宏
+Place Macro at Selection	在所选位置插入宏
+Recent Macros	最近使用的宏
+&Export to Bk2	导出为 BK2(&E)
+Selection Undo	撤销选择操作
+Selection Redo	重做选择操作
+Reselect Clipboard	重新选择剪贴板内容
+Freeze Highlight Color	冻结高亮颜色
+Freeze Color	冻结颜色
+Highlight Color	高亮颜色
+Background Color	背景颜色
+Menubar Color	菜单栏颜色
+Font Color	字体颜色
+Colors	颜色
+Event	事件
+Guid	GUID
+&Call	调用(&C)
+Remove &All	全部移除(&A)
+Active Registered Functions	当前已注册函数
+Discs	光盘
+Tray :	光盘托盘：
+Open	打开
+(T=0: Freely set initial state)	（T=0：可自由设置初始状态）
+Slider	滑块
+Range%	范围%
+Ray	半径
+θ (°)	θ（°）
+Open the Cheat Code Converter	打开金手指代码转换器
