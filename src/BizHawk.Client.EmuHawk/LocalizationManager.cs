@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -45,11 +44,13 @@ namespace BizHawk.Client.EmuHawk
 		private static string Translate(string text)
 			=> text != null && Translations.TryGetValue(text, out var translated) ? translated : text;
 
+		internal static string TranslateText(string text) => Translate(text);
+
 		private static void ApplyControl(Control control)
 		{
 			if (HookedControls.TryGetValue(control, out _))
 			{
-				if (!(control is FormBase) && !string.IsNullOrEmpty(control.Text))
+				if (control is not FormBase && !string.IsNullOrEmpty(control.Text))
 					control.Text = Translate(control.Text);
 				return;
 			}
