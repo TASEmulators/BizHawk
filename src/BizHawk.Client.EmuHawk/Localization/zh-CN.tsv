@@ -880,3 +880,110 @@ Range%	范围%
 Ray	半径
 θ (°)	θ（°）
 Open the Cheat Code Converter	打开金手指代码转换器
+Use system's recommendation	使用系统推荐设置
+ • May malfunction on some systems.
+ • May have increased performance for OpenGL-based cores (	• 在某些系统上可能无法正常工作。
+• 对基于 OpenGL 的核心可能有性能提升（
+Changes require restart of program to take effect.
+	更改需要重新启动程序才能生效。
+
+Allow Tearing: Allows fullscreen to tear when VSync is disabled.
+This is required	允许画面撕裂：禁用垂直同步时允许全屏画面撕裂。
+此选项是必需的
+General	常规
+Enable Wii U/Switch GameCube Adapter Support	启用 Wii U / Switch GameCube 转接器支持
+Merge L+R modifier keys e.g. Shift instead of LShift and RShift	合并左右修饰键，例如使用 Shift 代替 LShift 和 RShift
+Handle alternate keyboard layouts (e.g. Dvorak) [experimental]	处理其他键盘布局（例如 Dvorak）[实验性]
+When EmuHawk is closing, skip "unsaved changes" prompts and discard all.	关闭 EmuHawk 时跳过“未保存更改”提示并放弃所有更改。
+"Eavesdrops" on keyboard and gamepad input while other programs are focused.	当其他程序处于焦点时，仍监听键盘和手柄输入。
+Accept background input	接受后台输入
+From controller only	仅接受控制器输入
+When this is set, the client will continue to run when it loses focus.	启用后，客户端失去焦点时仍会继续运行。
+Run in background	在后台运行
+Enable Context Menu	启用上下文菜单
+Pause when menu activated	激活菜单时暂停
+Startup Options	启动选项
+Note: Only a tiny subset of commandline args work (incl. rom path)	注意：只有少量命令行参数有效（包括 ROM 路径）
+Start paused	启动时暂停
+Note: Requires closing and reopening EmuHawk to take effect.	注意：需要关闭并重新打开 EmuHawk 才能生效。
+Start in Fullscreen	以全屏模式启动
+Enable to force only one instance of EmuHawk at a time.	启用后，EmuHawk 同时只能运行一个实例。
+Single instance mode	单实例模式
+Advanced	高级
+Key Priority Toggle - Remove Mixed Key Priority Options	按键优先级切换 - 移除混合按键优先级选项
+AutoSaveRAM	自动保存 RAM
+every	每隔
+Save SaveRAM to .AutoSaveRAM.SaveRAM	将存档 RAM 保存到 .AutoSaveRAM.SaveRAM
+Skips some integrity check exceptions in waterbox cores.
+Useful for romhackers. 	跳过 Waterbox 核心中的部分完整性检查异常。
+对 ROM 改版制作者有用。
+Skip waterbox integrity checks	跳过 Waterbox 完整性检查
+Store movie working data on disk instead of RAM	将影片工作数据存储到磁盘而不是内存
+Run lua scripts when turboing	加速运行时执行 Lua 脚本
+frames in which no input was polled (lag frames)	未检测到输入的帧（延迟帧）
+When enabled, the frame advance button will skip over	启用后，逐帧前进按钮将跳过
+Frame advance button skips non-input frames	逐帧前进按钮跳过无输入帧
+Backup SaveRAM to .SaveRAM.bak	将存档 RAM 备份到 .SaveRAM.bak
+Customization Options	自定义选项
+Select a preferred Platform to run for the given file extensions.	为指定文件扩展名选择首选运行平台。
+Note: The game database overrides these options.  They only take effect	注意：游戏数据库中的设置优先级高于此处选项。只有在
+when a Rom is unable to be found in the database	数据库中找不到 ROM 时，这些选项才会生效。
+File Extension Preferences	文件扩展名首选项
+System	系统
+GenericCoreConfig	通用核心设置
+Position	位置
+RewindSettings	倒带设置
+Saves a screenshot and loads it on loadstate so there isn't a	保存截图并在加载即时存档时恢复，以避免出现
+Controls whether cores
+even generate audio.	控制模拟核心是否生成音频。
+Resolution Management	分辨率管理
+About Me	关于
+Tweaked Mednafen Mode (4:3 AR)	调整版 Mednafen 模式（4:3 宽高比）
+Hardcore Debug Mode	硬核调试模式
+Change My Display Options	更改显示选项
+Mednafen Mode (4:3 AR)	Mednafen 模式（4:3 宽高比）
+Pixel Pro Mode	像素专业模式
+Drawing Area	绘制区域
+Horizontal Overscan Clipping	水平过扫描裁剪
+Clip To Framebuffer	裁剪到帧缓冲区
+Basic Clipping	基本裁剪
+Last line:	最后一行：
+First line:	第一行：
+Weave	交错
+Bob Offset	Bob 偏移
+Bob	Bob
+Deinterlacing	去隔行
+Emulation Sync Settings	模拟同步设置
+Emulate Sector Error Correction
+(usually unneeded; breaks some patches)	模拟扇区错误校正
+（通常不需要，且会导致部分补丁失效）
+Determine Lag from GPU Frames	根据 GPU 帧判断延迟
+Emulation User Settings	模拟用户设置
+PSX Options	PSX 设置
+Always Double-Size Framebuffer	始终将帧缓冲区放大两倍
+Performance (only for casual gaming!)	性能模式（仅适用于休闲游戏！）
+Crop SGB Frame	裁剪 SGB 画面
+BG 4	背景 4
+BG 3	背景 3
+BG 2	背景 2
+BG 1	背景 1
+Randomized Initial State	随机初始状态
+BSNES Options	BSNES 设置
+Palette Preview:	调色板预览：
+Reset to QuickNES Default	恢复 QuickNES 默认值
+NES Graphics Settings	NES 图像设置
+Allow more than 8 sprites per scanline	允许每条扫描线显示超过 8 个精灵
+Palette Config	调色板配置
+Change to this palette	切换到此调色板
+Use palette from file	使用文件中的调色板
+&Browse...	浏览(&B)...
+Standard [8,231]	标准 [8,231]
+Clip Left and Right Sides (8 pixels)	裁剪左右两侧（8 像素）
+BG and Sprites	背景和精灵
+Enable	启用
+Change	更改
+Backdrop color when BG is disabled	背景层禁用时的底色
+Display BG	显示背景
+Display Sprites	显示精灵
+&Restore Defaults	恢复默认值(&R)
+(The QuickNES palette is the default)	（默认使用 QuickNES 调色板）
