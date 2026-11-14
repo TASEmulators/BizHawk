@@ -26,7 +26,7 @@ Jump to:
 * Installing
 	* [Windows](#windows)
 	* [Unix](#unix)
-		* [macOS](#macos-legacy-bizhawk)
+		* [macOS](#macos-experimental-x86_64-port)
 		* [Nix/NixOS](#nixnixos)
 	* [Development builds](#development-builds)
 * [Building](#building)
@@ -172,14 +172,49 @@ As with Apple silicon Macs, not available.
 
 If you were looking to emulate iOS apps, see [#3956](https://github.com/TASEmulators/BizHawk/issues/3956).
 
-#### macOS (legacy BizHawk)
+#### macOS (experimental x86_64 port)
 
-EmuHawk depends on certain libraries for graphics, and these don't work on macOS. Users on macOS have three options:
-* Use another machine with Windows or Linux, or install either in an x86_64 VM (Wine is not a VM).
-* Use an older 1.x release, which was ported to macOS by @Sappharad (with replacements for the missing libraries), via Rosetta. Links and more details are in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659) (jump to last page for latest binaries). See [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) for details.
-* For the technically-minded, download the [source](https://github.com/Sappharad/BizHawk/tree/MacUnixMonoCompat) of an older 2.x release. @Sappharad put a lot of work into it but ultimately decided to stop.
-	* ...or use the Nix expression as a starting point instead.
-	* Either way, this probably won't work on Apple silicon without a lot more effort. You'll probably want to build for x86_64 and run Mono via Rosetta. See [#4052](https://github.com/TASEmulators/BizHawk/issues/4052) re: Linux AArch64.
+> [!WARNING]
+> **This macOS port is EXPERIMENTAL and community-maintained — it is *not* officially supported by the BizHawk team.**
+> It runs the **x86_64** build under Mono + XQuartz (natively on Intel Macs, via Rosetta 2 on Apple silicon). Expect rough edges: software (GdiPlus) video only, no hardware OpenGL (so no HD/upscaled rendering or GL shader filters), and it needs a manual dependency setup.
+> **Please do not open issues about this port on the main tracker** unless you can also reproduce them on Windows/Linux — most of the dev team is on Windows and cannot support it. Discuss macOS-specific problems in the relevant macOS thread instead.
+
+Requirements: **macOS 14 (Sonoma) or newer**, x86_64 Mono, and XQuartz. On Apple silicon, EmuHawk runs through **Rosetta 2**.
+
+Setup (all the brew commands must be the **x86_64** Homebrew under `/usr/local`):
+
+1. Apple silicon only: install Rosetta 2 — `softwareupdate --install-rosetta --agree-to-license`.
+2. Install an **x86_64 Homebrew** at `/usr/local`. On Intel Macs the normal Homebrew is already x86_64. On Apple silicon, install a second one under Rosetta:
+   `arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
+   (prefix every command below with `arch -x86_64` and use `/usr/local/bin/brew`).
+3. Install the runtime dependencies:
+   `brew install mono openal-soft lua@5.4 zstd sqlite cairo pango glib libexif libjpeg-turbo giflib libtiff libx11 libxext libxrender libxcursor libxinerama libxi libxrandr libxtst libxfixes libxscrnsaver libxau libxdmcp libxcb`
+   `brew install --cask xquartz` (then log out/in so the X server is registered)
+4. Install the .NET 8 SDK and build from the repository root:
+
+   ```sh
+   sh Dist/BuildRelease.sh
+   ```
+
+   The native libraries are included in `Assets/dll`. See [macOS native libraries](Assets/native-licenses/README.md) for their sources and licenses.
+5. Start XQuartz, then launch the build:
+
+   ```sh
+   sh output/EmuHawkMono.sh
+   ```
+
+The launcher takes the same command-line arguments as on Windows: see [*Passing command-line arguments*](#passing-command-line-arguments).
+
+To rebuild the native assets, install Xcode Command Line Tools (`xcode-select --install`), Rust via rustup, and x86_64 Homebrew build dependencies (`brew install cmake pkg-config libusb`). NASM is optional when using the checked-in interop blobs (`brew install nasm` to regenerate them). Then run:
+
+```sh
+git submodule update --init ExternalProjects/SDL2/SDL
+sh Dist/BuildMacOS.sh
+```
+
+Software rendering only. N64, the libretro bridge, and other GL-only paths are not supported. Other cores may need their macOS native libraries built separately.
+
+If you need an older 1.x macOS build instead, @Sappharad's Rosetta port is described in [this TASVideos forum thread](https://tasvideos.org/Forum/Topics/12659); see also [#3697](https://github.com/TASEmulators/BizHawk/issues/3697) and [#1430](https://github.com/TASEmulators/BizHawk/issues/1430).
 
 #### Nix/NixOS
 
