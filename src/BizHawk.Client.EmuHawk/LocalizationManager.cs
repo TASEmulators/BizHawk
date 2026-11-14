@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 		private static string Translate(string text)
 			=> text != null && Translations.TryGetValue(text, out var translated) ? translated : text;
 
-		internal static string TranslateText(string text) => Translate(text);
+		internal static string TranslateText(string text) => IsEnabled ? Translate(text) : text;
 
 		private static void ApplyControl(Control control)
 		{
