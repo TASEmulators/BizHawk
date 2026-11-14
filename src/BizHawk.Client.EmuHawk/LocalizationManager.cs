@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		private static string GetLanguage()
 		{
 			var requested = Environment.GetEnvironmentVariable("BIZHAWK_LANGUAGE");
-			return string.IsNullOrWhiteSpace(requested) ? CultureInfo.CurrentUICulture.Name : requested;
+			return string.IsNullOrWhiteSpace(requested) ? "zh-CN" : requested;
 		}
 
 		private static Dictionary<string, string> LoadTranslations()
