@@ -47,11 +47,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void ApplyControl(Control control)
 		{
-			if (!(control is FormBase) && !string.IsNullOrEmpty(control.Text))
-				control.Text = Translate(control.Text);
-
-			if (HookedControls.TryGetValue(control, out _)) return;
+			if (HookedControls.TryGetValue(control, out _))
+			{
+				if (!(control is FormBase) && !string.IsNullOrEmpty(control.Text))
+					control.Text = Translate(control.Text);
+				return;
+			}
 			HookedControls.Add(control, new object());
+			if (!(control is FormBase))
+			{
+				control.TextChanged += (_, _) =>
+				{
+					var translated = Translate(control.Text);
+					if (translated != control.Text) control.Text = translated;
+				};
+				if (!string.IsNullOrEmpty(control.Text)) control.Text = Translate(control.Text);
+			}
 			control.ControlAdded += (_, e) => ApplyControl(e.Control);
 
 			if (control is ToolStrip strip)
@@ -70,18 +81,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void ApplyItem(ToolStripItem item)
 		{
+			if (!HookedItems.TryGetValue(item, out _))
+			{
+				HookedItems.Add(item, new object());
+				item.TextChanged += (_, _) =>
+				{
+					var translated = Translate(item.Text);
+					if (translated != item.Text) item.Text = translated;
+				};
+				if (item is ToolStripDropDownItem dropDownItem)
+					dropDownItem.DropDownOpening += (_, _) => ApplyItems(dropDownItem.DropDownItems);
+			}
 			if (!string.IsNullOrEmpty(item.Text)) item.Text = Translate(item.Text);
 			if (!string.IsNullOrEmpty(item.ToolTipText)) item.ToolTipText = Translate(item.ToolTipText);
 
-			if (item is ToolStripDropDownItem dropDownItem)
-			{
-				if (!HookedItems.TryGetValue(item, out _))
-				{
-					HookedItems.Add(item, new object());
-					dropDownItem.DropDownOpening += (_, _) => ApplyItems(dropDownItem.DropDownItems);
-				}
-				ApplyItems(dropDownItem.DropDownItems);
-			}
+			if (item is ToolStripDropDownItem nestedDropDown)
+				ApplyItems(nestedDropDown.DropDownItems);
 		}
 	}
 }
