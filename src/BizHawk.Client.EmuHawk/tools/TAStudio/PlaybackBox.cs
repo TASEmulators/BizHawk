@@ -35,26 +35,34 @@ namespace BizHawk.Client.EmuHawk
 			set => FollowCursorCheckbox.Checked = value;
 		}
 
-		[Browsable(true)]
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public bool RecordingMode
+		public enum RecordingModeState
 		{
-			get => Tastudio.CurrentTasMovie.IsRecording();
-			set
-			{
-				RecordingModeCheckbox.Checked = value;
-				Tastudio.MovieSession.ReadOnly = !value;
-				if (RecordingModeCheckbox.Checked)
-				{
-					Tastudio.CurrentTasMovie.SwitchToRecord();
-				}
-				else
-				{
-					Tastudio.CurrentTasMovie.SwitchToPlay();
-				}
+			Off,
+			On,
+			Suspended,
+		}
 
-				Tastudio.MainForm.SetMainformMovieInfo();
+		public bool IsRecording => Tastudio.CurrentTasMovie.IsRecording();
+		public void SetRecordingState(RecordingModeState value)
+		{
+			RecordingModeCheckbox.CheckState = value switch
+			{
+				RecordingModeState.On => CheckState.Checked,
+				RecordingModeState.Off => CheckState.Unchecked,
+				RecordingModeState.Suspended => CheckState.Indeterminate,
+				_ => CheckState.Unchecked,
+			};
+			Tastudio.MovieSession.ReadOnly = value == RecordingModeState.Off;
+			if (value == RecordingModeState.On)
+			{
+				Tastudio.CurrentTasMovie.SwitchToRecord();
 			}
+			else
+			{
+				Tastudio.CurrentTasMovie.SwitchToPlay();
+			}
+
+			Tastudio.MainForm.SetMainformMovieInfo();
 		}
 
 		public PlaybackBox()
@@ -113,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 			TurboSeekCheckbox.Checked = Tastudio.Config?.TurboSeek ?? false;
 			AutoRestoreCheckbox.Checked = Tastudio.Settings.AutoRestoreLastPosition;
 			FollowCursorCheckbox.Checked = Tastudio.Settings.FollowCursor;
-			RecordingModeCheckbox.Checked = RecordingMode;
+			RecordingModeCheckbox.Checked = IsRecording;
 
 			_loading = false;
 		}
@@ -158,8 +166,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
 		{
-			RecordingMode = !RecordingMode;
-			Tastudio.WasRecording = RecordingMode; // hard reset at manual click and hotkey
+			SetRecordingState(RecordingModeCheckbox.Checked ? RecordingModeState.On : RecordingModeState.Off);
+			Tastudio.WasRecording = RecordingModeCheckbox.Checked; // hard reset at manual click and hotkey
 		}
 
 		private void RewindButton_MouseDown(object sender, MouseEventArgs e)
