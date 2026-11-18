@@ -99,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+				OnPoked();
 			}
 		}
 
@@ -216,6 +217,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					throw new ArgumentOutOfRangeException(nameof(addr));
 				}
+				OnPoked();
 			}
 		}
 
@@ -295,6 +297,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if ((ulong)addr >= (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr), message: AddressRangeError);
 
 			_write8.Access((IntPtr)(&val), addr, 1);
+			OnPoked();
 		}
 
 		public override ushort PeekUshort(long addr, bool bigEndian)
@@ -311,6 +314,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if ((ulong)addr + 1 >= (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr), message: AddressRangeError);
 
 			_write16.Access((IntPtr)(&val), addr, 1);
+			OnPoked();
 		}
 
 		public override uint PeekUint(long addr, bool bigEndian)
@@ -327,6 +331,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if ((ulong)addr + 3 >= (ulong)Size || addr < 0) throw new ArgumentOutOfRangeException(nameof(addr), message: AddressRangeError);
 
 			_write32.Access((IntPtr)(&val), addr, 1);
+			OnPoked();
 		}
 
 		public override void BulkPeekByte(Range<long> addresses, byte[] values)
@@ -344,6 +349,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			fixed (byte* p = values)
 				_write8.Access((IntPtr)p, addr, values.Length);
+			OnPoked();
 		}
 
 		public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
@@ -362,6 +368,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			fixed (ushort* p = values)
 				_write16.Access((IntPtr)p, addr, values.Length);
+			OnPoked();
 		}
 
 		public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
@@ -380,6 +387,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			fixed (uint* p = values)
 				_write32.Access((IntPtr)p, addr, values.Length);
+			OnPoked();
 		}
 	}
 }
