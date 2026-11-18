@@ -25,7 +25,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.BSNES
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
+#pragma warning disable CS0618
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringBefore('|'), null);
+#pragma warning restore CS0618
 			CoreComm = loadParameters.Comm;
 			_syncSettings = loadParameters.SyncSettings ?? new SnesSyncSettings();
 			SystemId = loadParameters.Game.System;

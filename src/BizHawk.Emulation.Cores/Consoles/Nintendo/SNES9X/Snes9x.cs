@@ -30,7 +30,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SystemId = VSystemID.Raw.SNES,
 			})
 		{
+#pragma warning disable CS0618
 			this._romPath = Path.ChangeExtension(loadParameters.Roms[0].RomPath.SubstringBefore('|'), null);
+#pragma warning restore CS0618
 			this._currentMsuTrack = new ProxiedFile();
 
 			LibSnes9x.OpenAudio openAudioCb = MsuOpenAudio;
