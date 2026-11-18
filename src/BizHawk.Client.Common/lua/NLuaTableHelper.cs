@@ -77,6 +77,13 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
+		public LuaTable SpanToTable<T>(Span<T> list, int indexFrom = 1)
+		{
+			var table = CreateTable();
+			for (int i = 0, l = list.Length; i != l; i++) table[indexFrom + i] = list[i];
+			return table;
+		}
+
 		public LuaTable MemoryBlockToTable(IReadOnlyList<byte> bytes, long startAddr)
 		{
 			var length = bytes.Count;
