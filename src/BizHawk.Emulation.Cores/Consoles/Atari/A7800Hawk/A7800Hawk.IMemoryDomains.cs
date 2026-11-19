@@ -61,7 +61,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					(addr, value) => PokeSystemBus(addr, value),
 					1)
 			};
-
+			if (_hsbios is not null) domains.Add(new MemoryDomainByteArray(
+				"High Score Cartridge",
+				MemoryDomain.Endian.Little,
+				_hsram,
+				writable: true,
+				wordSize: 1));
 			_memoryDomains = new MemoryDomainList(domains, this);
 			((BasicServiceProvider) ServiceProvider).Register(_memoryDomains);
 		}
