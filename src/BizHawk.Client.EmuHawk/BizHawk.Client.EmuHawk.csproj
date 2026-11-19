@@ -14,6 +14,9 @@
 		<UseWindowsForms>true</UseWindowsForms>
 	</PropertyGroup>
 	<ItemGroup>
+		<Content Include="Localization/zh-CN.tsv" CopyToOutputDirectory="PreserveNewest" />
+	</ItemGroup>
+	<ItemGroup>
 		<Reference Include="PresentationFramework" />
 	</ItemGroup>
 	<ItemGroup>
