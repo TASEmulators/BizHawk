@@ -22,7 +22,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//(nestopia splits it into NVWRAM and WRAM but i didnt like that at first.. but it may player better with this architecture)
 			}
 		}
+		public override void WriteWram(int addr, byte value)
+		{
+			if (!mmc3.wram_enable || mmc3.wram_write_protect) return;
+			base.WriteWram(addr, value);
+		}
 
+		public override byte ReadWram(int addr)
+		{
+			if (!mmc3.wram_enable) return NES.DB;
+			return base.ReadWram(addr);
+		}
 		public override bool Configure(EDetectionOrigin origin)
 		{
 			//analyze board type
