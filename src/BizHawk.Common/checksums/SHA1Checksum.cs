@@ -1,9 +1,13 @@
+#if !NET5_0_OR_GREATER
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+#endif
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
+#if !NET5_0_OR_GREATER
 using BizHawk.Common.CollectionExtensions;
+#endif
 
 namespace BizHawk.Common
 {

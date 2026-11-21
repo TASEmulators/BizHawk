@@ -56,7 +56,7 @@ namespace BizHawk.BizInvoke
 		/// Computes the byte offset of the first field of any class relative to a class pointer.
 		/// </summary>
 		public static int ComputeClassFirstFieldOffset()
-			=> ComputeFieldOffset(typeof(CF).GetField("FirstField"));
+			=> ComputeFieldOffset(typeof(CF).GetField("FirstField")!);
 
 		/// <summary>
 		/// Compute the byte offset of the first byte of string data (UTF16) relative to a pointer to the string.
@@ -68,7 +68,9 @@ namespace BizHawk.BizInvoke
 			fixed(char* fx = s)
 			{
 				U u = new(new(s));
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				ret = (int) ((ulong) (UIntPtr) fx - (ulong) u.First!.P);
+#pragma warning restore IDE0004
 			}
 			return ret;
 		}
@@ -83,7 +85,9 @@ namespace BizHawk.BizInvoke
 			fixed (int* p = arr)
 			{
 				U u = new(new(arr));
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				ret = (int)((ulong)(UIntPtr) p - (ulong) u.First!.P);
+#pragma warning restore IDE0004
 			}
 			return ret;
 		}
@@ -126,7 +130,9 @@ namespace BizHawk.BizInvoke
 				throw new NotImplementedException("Only supported for class fields right now");
 			}
 
+#pragma warning disable SYSLIB0050 // deprecated API
 			var obj = FormatterServices.GetUninitializedObject(fi.DeclaringType);
+#pragma warning restore SYSLIB0050
 			var method = new DynamicMethod("ComputeFieldOffsetHelper", typeof(int), new[] { typeof(object) }, typeof(string).Module, true);
 			var il = method.GetILGenerator();
 			var local = il.DeclareLocal(fi.DeclaringType, true);

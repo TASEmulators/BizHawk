@@ -71,17 +71,17 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 		public void TestChunkConsecutive(int[] numbers, string expectedStr)
 			=> Assert.AreEqual(
 				expectedStr,
-#pragma warning disable MA0089 // CI builds this for .NET Core where there's a `char` overload for `string.Join`
-				string.Join(";", numbers.ChunkConsecutive().Select(
-					static range => string.Join(",", Enumerable.Range(start: range.Start, count: range.Count)))));
-#pragma warning restore MA0089
+				string.Join(';', numbers.ChunkConsecutive().Select(
+					static range => string.Join(',', Enumerable.Range(start: range.Start, count: range.Count)))));
 
+#if !NET6_0_OR_GREATER
 		[TestMethod]
 		public void TestChunk()
 			=> CollectionAssert.AreEqual(
 				new[] { "1234", "5678", "910" },
 				CE.Chunk(new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 4).Select(static a => string.Concat(a)).ToArray(),
 				"simple test of ints as decimal strings"); // since it's a BCL backport
+#endif
 
 		[TestMethod]
 		public void TestConcatArray()

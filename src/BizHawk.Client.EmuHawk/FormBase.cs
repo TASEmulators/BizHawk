@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -11,6 +12,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class FormBase : Form
 	{
+		internal const string ERR_CLOSED_DEPR = "Form.OnClosing, Form.OnClosed and the corresponding events are obsolete. Use Form.OnFormClosing, Form.OnFormClosed, Form.FormClosing and Form.FormClosed instead.";
+
 		private const string PLACEHOLDER_TITLE = "(will take value from WindowTitle/WindowTitleStatic)";
 
 		/// <summary>removes transparency from an image by combining it with a solid background</summary>
@@ -50,6 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public Config? Config { get; set; }
 
+		[AllowNull]
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public override string Text
 		{

@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Components.M68000
 			//string a = $"{PC:X6}: {ReadWord(PC):X4}".PadRight(64);
 			var dRegStrings = D.Select((r, i) => $"D{i}:{r.u32:X8}");
 			var aRegStrings = A.Select((r, i) => $"A{i}:{r.u32:X8}");
-			return a + string.Join(" ", dRegStrings
+			return a + string.Join(' ', dRegStrings
 				.Concat(aRegStrings)
 				.Concat(new[]
 				{

@@ -56,8 +56,9 @@ namespace BizHawk.Client.EmuHawk
 
 				menuItem.CheckedChanged += (o, ev) =>
 				{
-					var sender = (ToolStripMenuItem)o;
-					columns.Find(c => c.Name == (string)sender.Tag).Visible = sender.Checked;
+					var sender = (ToolStripMenuItem) o!;
+					var tag = (string) sender.Tag!;
+					columns.Find(c => c.Name == tag)!.Visible = sender.Checked;
 					columns.ColumnsChanged();
 					changeCallback();
 					inputRoll.Refresh();
@@ -115,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
 			Type t = controlToClone.GetType();
-			var instance = (T) Activator.CreateInstance(t);
+			var instance = (T) Activator.CreateInstance(t)!;
 
 			t.GetProperty("AutoSize")?.SetMethod?.Invoke(instance, new object[] {false});
 
@@ -219,6 +220,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (!OSTailoredCode.IsUnixHost)
 			{
+#pragma warning disable IDE0004 // redundant cast after expansion of nint in .NET Core
 				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 0, IntPtr.Zero);
 			}
 		}
@@ -228,6 +230,7 @@ namespace BizHawk.Client.EmuHawk
 			if (!OSTailoredCode.IsUnixHost)
 			{
 				WmImports.SendMessageW(control.Handle, WM_SETREDRAW, (IntPtr) 1, IntPtr.Zero);
+#pragma warning restore IDE0004
 			}
 		}
 	}
@@ -323,7 +326,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static void Set(this DragEventArgs e, DragDropEffects effect)
 		{
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+			e.Effect = e.Data!.GetDataPresent(DataFormats.FileDrop)
 				? effect
 				: DragDropEffects.None;
 		}
@@ -400,7 +403,7 @@ namespace BizHawk.Client.EmuHawk
 				int maxLength = 0;
 				string desc = "";
 
-				foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
+				foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject!))
 				{
 					var s = property.Description;
 					if (s != null && s.Length > maxLength)
@@ -431,7 +434,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void EnableCategoriesIfUsed(this PropertyGrid grid)
 		{
-			foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
+			foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject!))
 			{
 				if (property.Category is not null)
 				{

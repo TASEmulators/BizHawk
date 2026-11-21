@@ -71,8 +71,10 @@ namespace BizHawk.Client.EmuHawk
 				using var fs = File.Create(DownloadTo);
 				using (var evt = new ManualResetEvent(false))
 				{
+#pragma warning disable SYSLIB0014 // deprecated API
 					using var client = new WebClient();
 					ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+#pragma warning restore SYSLIB0014
 					client.DownloadFileAsync(new Uri(DownloadFrom), DownloadTemp);
 					client.DownloadProgressChanged += (_, progressArgs) => _pct = progressArgs.ProgressPercentage;
 					client.DownloadFileCompleted += (_, _) => evt.Set(); // we don't really need a status, we'll just try to unzip it when it's done
@@ -162,6 +164,9 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
+#if !NETFRAMEWORK
+		[Obsolete(FormBase.ERR_CLOSED_DEPR)]
+#endif
 		protected override void OnClosed(EventArgs e)
 		{
 			//inform the worker thread that it needs to try terminating without doing anything else

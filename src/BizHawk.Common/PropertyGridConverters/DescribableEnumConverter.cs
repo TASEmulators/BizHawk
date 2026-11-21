@@ -19,7 +19,7 @@ namespace BizHawk.Common
 
 		public override bool CanConvertTo(ITypeDescriptorContext? context, Type? destType) => destType == typeof(string);
 
-		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
+		public override object? ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
 		{
 			var valueStr = value?.ToString() ?? throw new ArgumentNullException(paramName: nameof(value));
 			return Enum.Parse(
@@ -30,7 +30,7 @@ namespace BizHawk.Common
 			);
 		}
 
-		public override object ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destType)
+		public override object? ConvertTo(ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destType)
 		{
 			var fieldName = Enum.GetName(enumType, value ?? throw new ArgumentNullException(paramName: nameof(value)));
 			if (fieldName != null)

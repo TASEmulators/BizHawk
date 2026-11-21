@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			_foreColor = Color.Black;
 		}
 
-		private void HoverTimerEventProcessor(object sender, EventArgs e)
+		private void HoverTimerEventProcessor(object? sender, EventArgs e)
 		{
 			_hoverTimer.Stop();
 
@@ -1657,7 +1657,7 @@ namespace BizHawk.Client.EmuHawk
 			return true;
 		}
 
-		private void VerticalBar_ValueChanged(object sender, EventArgs e)
+		private void VerticalBar_ValueChanged(object? sender, EventArgs e)
 		{
 			_scrollbarVNeedsDraw = true;
 			if (!_programmaticallyUpdatingScrollBarValues)
@@ -1676,7 +1676,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void HorizontalBar_ValueChanged(object sender, EventArgs e)
+		private void HorizontalBar_ValueChanged(object? sender, EventArgs e)
 		{
 			_scrollbarHNeedsDraw = true;
 			if (!_programmaticallyUpdatingScrollBarValues)

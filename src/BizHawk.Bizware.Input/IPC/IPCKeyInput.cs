@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
@@ -24,7 +23,7 @@ namespace BizHawk.Bizware.Input
 
 		private static void IPCThread()
 		{
-			var pipeName = $"bizhawk-pid-{Process.GetCurrentProcess().Id}-IPCKeyInput";
+			var pipeName = $"bizhawk-pid-{Environment.ProcessId}-IPCKeyInput";
 
 			while (true)
 			{

@@ -721,7 +721,7 @@ namespace BizHawk.Emulation.Cores.Components.LR35902
 		public TraceInfo State(bool useRGBDSSyntax, bool disassemble = true)
 			=> new(
 				disassembly: $"{(disassemble ? Disassemble(RegPC, ReadMemory, useRGBDSSyntax, out _) : "---")} ".PadRight(40),
-				registerInfo: string.Join(" ",
+				registerInfo: string.Join(' ',
 					$"A:{Regs[A]:X2}",
 					$"F:{Regs[F]:X2}",
 					$"B:{Regs[B]:X2}",

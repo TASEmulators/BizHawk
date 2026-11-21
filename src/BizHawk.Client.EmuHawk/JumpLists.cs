@@ -1,12 +1,17 @@
+#if NETFRAMEWORK
 using System.Reflection;
+#endif
 using System.Text.RegularExpressions;
+#if NETFRAMEWORK
 using System.Windows;
 using System.Windows.Shell;
+#endif
 
 namespace BizHawk.Client.EmuHawk
 {
 	public static class JumpLists
 	{
+#if NETFRAMEWORK
 		static JumpLists()
 		{
 			var app = new Application();
@@ -16,6 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 			JumpList.SetJumpList(app, jmp);
 		}
+#endif
 
 		/// <summary>
 		/// add an item to the W7+ jumplist
@@ -24,6 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="title">The text displayed in the jumplist entry</param>
 		public static void AddRecentItem(string fullPath, string title)
 		{
+#if NETFRAMEWORK
 			string exepath = Assembly.GetEntryAssembly()!.Location;
 
 			var ji = new JumpTask
@@ -33,6 +40,7 @@ namespace BizHawk.Client.EmuHawk
 				Title = title,
 			};
 			JumpList.AddToRecentCategory(ji);
+#endif
 		}
 
 		/// <summary>

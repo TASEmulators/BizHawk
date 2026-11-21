@@ -77,7 +77,7 @@ namespace BizHawk.Common
 						}
 
 						different = -different; // negative is a signal that these are different bytes
-						MemoryMarshal.Write(ret.Slice(retSize, 4), ref different);
+						MemoryMarshal.Write(ret.Slice(retSize, 4), in different);
 						retSize += 4;
 						for (var i = blockStart; i < index - same; i++)
 						{
@@ -98,13 +98,13 @@ namespace BizHawk.Common
 						}
 
 						same = index - blockStart;
-						MemoryMarshal.Write(ret.Slice(retSize, 4), ref same);
+						MemoryMarshal.Write(ret.Slice(retSize, 4), in same);
 						retSize += 4;
 					}
 				}
 				else // count amount of same bytes in this block
 				{
-					MemoryMarshal.Write(ret.Slice(retSize, 4), ref same);
+					MemoryMarshal.Write(ret.Slice(retSize, 4), in same);
 					retSize += 4;
 				}
 			}
