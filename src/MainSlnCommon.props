@@ -37,6 +37,7 @@
 		</MeziantouPolyfill_ExcludedPolyfills>
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CS1573</NoWarn>
+		<NoWarn>$(NoWarn);NU1510</NoWarn> <!-- nag about removing old `System.*` reference packages -->
 		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
 		<Product>BizHawk</Product>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
