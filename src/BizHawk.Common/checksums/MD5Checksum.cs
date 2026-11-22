@@ -1,4 +1,6 @@
+#if !NET5_0_OR_GREATER
 using System.Diagnostics;
+#endif
 using System.Security.Cryptography;
 
 using BizHawk.Common.BufferExtensions;
