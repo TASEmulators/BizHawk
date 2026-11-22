@@ -27,7 +27,7 @@ namespace BizHawk.WinForms.Controls
 			tracker.Add(this);
 			CheckedChanged += (changedSender, changedArgs) =>
 			{
-				if (((RadioButtonExBase) changedSender).Checked) tracker.UpdateDeselected(Name);
+				if (((RadioButtonExBase) changedSender!).Checked) tracker.UpdateDeselected(Name);
 			};
 		}
 
