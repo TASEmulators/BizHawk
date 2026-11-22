@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -45,7 +46,7 @@ namespace BizHawk.Emulation.Cores
 				}
 				.Where(p => p != PceControllerType.Unplugged)
 				.Select((p, i) => PceHawkGenerateSchemaForPort(p, i + 1, showMessageBox))
-				.Where(s => s != null);
+				.WhereNotNull();
 
 			return padSchemas;
 		}

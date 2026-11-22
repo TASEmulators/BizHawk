@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.StringExtensions;
 
 namespace BizHawk.Common
@@ -117,7 +118,7 @@ namespace BizHawk.Common
 			}
 			catch (ReflectionTypeLoadException e)
 			{
-				return e.Types.Where(t => t != null);
+				return e.Types.WhereNotNull();
 			}
 		}
 
