@@ -38,6 +38,7 @@
 		<NeutralLanguage>en-US</NeutralLanguage>
 		<NoWarn>$(NoWarn);CA1416</NoWarn> <!-- wants `[SupportedOSPlatform(...)]` -->
 		<NoWarn>$(NoWarn);CS1573</NoWarn>
+		<NoWarn>$(NoWarn);MA0110</NoWarn> <!-- wants `[GeneratedRegex]` -->
 		<NoWarn>$(NoWarn);NU1510</NoWarn> <!-- nag about removing old `System.*` reference packages -->
 		<ProduceReferenceAssembly>true</ProduceReferenceAssembly> <!-- extra assemblies in obj containing only API surface, used to quickly check for changed projects -->
 		<Product>BizHawk</Product>
