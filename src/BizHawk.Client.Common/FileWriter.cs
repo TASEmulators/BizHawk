@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common
 		private static void MoveFile(string source, string destination)
 		{
 			FileInfo file = new(destination);
-			file.Directory.Create();
+			file.Directory!.Create();
 			File.Move(source, destination);
 		}
 
