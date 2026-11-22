@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+#pragma warning disable CA1847
+#pragma warning disable MA0089
 namespace BizHawk.Client.Common.cheats
 {
 	public static class SnesGameGenieDecoder
@@ -109,3 +111,5 @@ namespace BizHawk.Client.Common.cheats
 		}
 	}
 }
+#pragma warning restore MA0089
+#pragma warning restore CA1847
