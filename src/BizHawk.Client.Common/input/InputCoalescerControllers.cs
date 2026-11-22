@@ -1,5 +1,8 @@
 #nullable enable
 
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP2_0_OR_GREATER
+using System.Collections.Generic;
+#endif
 using System.Linq;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
