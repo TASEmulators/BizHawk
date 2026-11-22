@@ -1,6 +1,5 @@
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
@@ -304,7 +303,7 @@ namespace BizHawk.Emulation.DiscSystem.CUE
 			//score the cost of loading the file
 			var needsCodec = false;
 			OUT_LoadTime = 0;
-			foreach (var cfi in OUT_CompiledCueFiles.Where(cfi => cfi is not null))
+			foreach (var cfi in OUT_CompiledCueFiles.WhereNotNull())
 			{
 				switch (cfi.Type)
 				{

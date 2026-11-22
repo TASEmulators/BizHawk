@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 using Newtonsoft.Json;
@@ -251,16 +253,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public ControllerNES(bool famicomP2)
 		{
-			if (famicomP2)
-			{
-				ControllerDefFragment = new("(NES Controller fragment)") { BoolButtons = FamicomP2Buttons.Where(static s => s is not null).OrderBy(x => _buttonOrdinals[x]).ToList() };
-			}
-			else
-			{
-				ControllerDefFragment = new("(NES Controller fragment)") { BoolButtons = Buttons.OrderBy(x => _buttonOrdinals[x]).ToList() };
-			}
-
 			_famicomP2Hack = famicomP2;
+			ControllerDefFragment = new("(NES Controller fragment)")
+			{
+				BoolButtons = (famicomP2 ? FamicomP2Buttons.WhereNotNull() : Buttons)
+					.OrderBy(x => _buttonOrdinals[x]).ToList(),
+			};
 		}
 
 		// reset is not edge triggered; so long as it's high, the latch is continuously reloading
@@ -312,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		};
 
 		public ControllerDefinition ControllerDefFragment { get; }
-			= new("(NES Controller fragment)") { BoolButtons = Buttons.Where(static s => s is not null).ToList() };
+			= new("(NES Controller fragment)") { BoolButtons = Buttons.WhereNotNull().ToList() };
 
 		// reset is not edge triggered; so long as it's high, the latch is continuously reloading
 		// so we need to latch in two places:

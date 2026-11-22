@@ -623,6 +623,20 @@ namespace BizHawk.Common.CollectionExtensions
 		public static bool? Unanimity(this ReadOnlySpan<bool> span)
 			=> span is [ var first, .. ] && !span.Slice(start: 1).Contains(!first) ? first : null;
 
+		public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> source)
+			where T : class
+#if true //TODO benchmark; the latter is how Roslyn's internal helper is implemented
+			=> source.OfType<T>();
+#else
+			=> source.Where((Func<T?, bool>) notNullTest)!;
+
+			private static readonly Func<object?, bool> notNullTest = static o => o is not null;
+#endif
+
+		public static IEnumerable<T> WhereNotNullValT<T>(this IEnumerable<T?> source)
+			where T : struct
+			=> source.Where(static n => n is not null).Select(static n => n!.Value);
+
 		public static bool IsSortedAsc<T>(this IReadOnlyList<T> list)
 			where T : IComparable<T>
 		{

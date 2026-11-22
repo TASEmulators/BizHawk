@@ -173,5 +173,32 @@ namespace BizHawk.Tests.Common.CollectionExtensions
 			Assert.AreEqual(expected, array.ToList().Unanimity(), "List");
 			Assert.AreEqual(expected, ImmutableArray.Create(array).Unanimity(), "IROColl not List");
 		}
+
+		[TestMethod]
+		public void TestWhereNotNull()
+		{
+			CollectionAssert.AreEqual(
+				new[] { "A", "B", "D", "F" },
+				new[] { "A", "B", null, "D", null, "F" }.WhereNotNull().ToArray(),
+				"string?[]");
+			CollectionAssert.AreEqual(
+				new[] { 1, 2, 4, 6 },
+				new int?[] { 1, 2, null, 4, null, 6 }.WhereNotNullValT().ToArray(),
+				"int?[]");
+			CollectionAssert.AreEqual(
+				new List<string> { "A", "B", "D", "F" },
+				new List<string?> { "A", "B", null, "D", null, "F" }.WhereNotNull().ToList(),
+				"List<string?>");
+			CollectionAssert.AreEqual(
+				new List<int> { 1, 2, 4, 6 },
+				new List<int?> { 1, 2, null, 4, null, 6 }.WhereNotNullValT().ToList(),
+				"List<int?>");
+
+			// and check it doesn't choke on empty input, and that it doesn't return null I guess
+			Assert.IsEmpty(Array.Empty<string?>().WhereNotNull().ToArray(), "empty string?[]");
+			Assert.IsEmpty(Array.Empty<int?>().WhereNotNullValT().ToArray(), "empty int?[]");
+			Assert.IsEmpty(new List<string?>().WhereNotNull().ToList(), "empty List<string?>");
+			Assert.IsEmpty(new List<int?>().WhereNotNullValT().ToList(), "empty List<int?>");
+		}
 	}
 }
