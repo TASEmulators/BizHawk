@@ -65,8 +65,8 @@ namespace BizHawk.Bizware.Input
 				if (uMsg == WM_CLOSE)
 				{
 					SetWindowLongPtrW(hWnd, GWLP_USERDATA, IntPtr.Zero);
-					handle = GCHandle.FromIntPtr(ud);
-					rawKeyMouseInput = (RawKeyMouseInput)handle.Target;
+					handle = GCHandle.FromIntPtr(ud)!;
+					rawKeyMouseInput = (RawKeyMouseInput) handle.Target!;
 					Marshal.FreeCoTaskMem(rawKeyMouseInput.RawInputBuffer);
 					handle.Free();
 				}
@@ -86,12 +86,12 @@ namespace BizHawk.Bizware.Input
 				? new IntPtr[(size + sizeof(IntPtr) - 1) / sizeof(IntPtr)]
 				: stackalloc IntPtr[(size + sizeof(IntPtr) - 1) / sizeof(IntPtr)];
 
-			handle = GCHandle.FromIntPtr(ud);
-			rawKeyMouseInput = (RawKeyMouseInput)handle.Target;
+			handle = GCHandle.FromIntPtr(ud)!;
+			rawKeyMouseInput = (RawKeyMouseInput) handle.Target!;
 
 			fixed (IntPtr* p = buffer)
 			{
-				var input = (RAWINPUT*)p;
+				var input = (RAWINPUT*) p!;
 				if (GetRawInputData(lParam, RID.INPUT, input,
 						ref size, sizeof(RAWINPUTHEADER)) == -1)
 				{
@@ -111,7 +111,7 @@ namespace BizHawk.Bizware.Input
 
 			while (true)
 			{
-				var rawInputBuffer = (RAWINPUT*)rawKeyMouseInput.RawInputBuffer;
+				var rawInputBuffer = (RAWINPUT*) rawKeyMouseInput.RawInputBuffer!;
 				size = rawKeyMouseInput.RawInputBufferSize;
 				var count = GetRawInputBuffer(rawInputBuffer, ref size, sizeof(RAWINPUTHEADER));
 				if (count == 0)
