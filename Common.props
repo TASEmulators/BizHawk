@@ -13,6 +13,7 @@
 		<DebugSymbols>true</DebugSymbols>
 		<DebugType>portable</DebugType>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 		<ErrorReport>prompt</ErrorReport>
 		<Features>strict</Features>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile> <!-- it would be nice to rename these to *.api_reference.xml or something, but it seems https://github.com/dotnet/standard/issues/614 was never fixed -->
