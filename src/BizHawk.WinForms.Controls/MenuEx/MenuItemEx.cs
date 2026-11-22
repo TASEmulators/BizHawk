@@ -10,7 +10,7 @@ namespace BizHawk.WinForms.Controls
 		public new Size Size => base.Size;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new string Name
+		public new string? Name
 			=> base.Name;
 
 		public void SetStyle(FontStyle style) => Font = new Font(Font.FontFamily, Font.Size, style);
@@ -22,7 +22,7 @@ namespace BizHawk.WinForms.Controls
 		public new Size Size => base.Size;
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new string Name
+		public new string? Name
 			=> base.Name;
 	}
 }
