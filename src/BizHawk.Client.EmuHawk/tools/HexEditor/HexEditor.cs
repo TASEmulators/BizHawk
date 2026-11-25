@@ -198,7 +198,7 @@ namespace BizHawk.Client.EmuHawk
 
 			AddressesLabel.BackColor = Color.Transparent;
 			SetHeader();
-			Closing += (o, e) => CloseHexFind();
+			FormClosing += (o, e) => CloseHexFind();
 
 			Header.Font = font;
 			AddressesLabel.Font = font;

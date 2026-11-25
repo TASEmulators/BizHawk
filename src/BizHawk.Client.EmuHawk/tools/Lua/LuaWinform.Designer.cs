@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Client.EmuHawk
+﻿using System.Windows.Forms;
+
+namespace BizHawk.Client.EmuHawk
 {
 	partial class LuaWinform
 	{
@@ -16,7 +18,7 @@
 			if (disposing)
 			{
 				// Should we be calling the Lua close callback? Debatable, but we must call the closing event so our list of active forms can be updated.
-				this.OnClosing(new());
+				this.OnFormClosing((FormClosingEventArgs)EventArgs.Empty);
 				components?.Dispose();
 			}
 			base.Dispose(disposing);
@@ -31,9 +33,9 @@
 		private void InitializeComponent()
 		{
             this.SuspendLayout();
-            // 
+            //
             // LuaWinform
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);

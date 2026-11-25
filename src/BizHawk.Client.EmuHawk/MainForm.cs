@@ -586,7 +586,7 @@ namespace BizHawk.Client.EmuHawk
 				DragDrop += FormDragDrop;
 			};
 
-			Closing += CheckMayCloseAndCleanup;
+			FormClosing += CheckMayCloseAndCleanup;
 
 			ResizeBegin += (o, e) =>
 			{

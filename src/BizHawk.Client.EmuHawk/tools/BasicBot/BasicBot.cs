@@ -141,7 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			if (OSTailoredCode.IsUnixHost) ClientSize = new(707, 587);
 
 			_previousDisplayMessage = Config.DisplayMessages;
-			Closing += (_, _) => StopBot();
+			FormClosing += (_, _) => StopBot();
 		}
 
 		private Dictionary<string, double> ControlProbabilities =>

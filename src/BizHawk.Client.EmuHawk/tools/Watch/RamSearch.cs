@@ -88,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 
 			WatchListView.QueryItemText += ListView_QueryItemText;
 			WatchListView.QueryItemBkColor += ListView_QueryItemBkColor;
-			Closing += (o, e) => { Settings.Columns = WatchListView.AllColumns; };
+			FormClosing += (o, e) => { Settings.Columns = WatchListView.AllColumns; };
 
 			_sortedColumn = "";
 			_sortReverse = false;

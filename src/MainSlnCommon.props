@@ -5,7 +5,6 @@
 	</PropertyGroup>
 	<Import Project="../Common.props" />
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<DebugType>embedded</DebugType>
 		<DefineConstants>$(DefineConstants);AVI_SUPPORT;BIZHAWKBUILD_SUPERHAWK</DefineConstants>
 		<MeziantouPolyfill_AllowUnsafeBlocks>false</MeziantouPolyfill_AllowUnsafeBlocks>
@@ -54,8 +53,6 @@
 		<CompilerVisibleProperty Include="MSBuildProjectName" />
 		<InternalsVisibleTo Include="$(MSBuildProjectName.Replace('BizHawk.', 'BizHawk.Tests.'))" />
 		<Using Include="System" />
-	</ItemGroup>
-	<ItemGroup Condition=" !$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net9.0')) ">
 		<Using Include="System.Threading.Lock" Alias="Lock" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(Configuration)' != 'Debug' ">

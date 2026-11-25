@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TraceView.QueryItemText += TraceView_QueryItemText;
 
-			Closing += (o, e) =>
+			FormClosing += (o, e) =>
 			{
 				SaveConfigSettings();
 				Tracer.Sink = null;

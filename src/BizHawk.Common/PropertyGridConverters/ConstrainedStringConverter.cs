@@ -15,7 +15,7 @@ namespace BizHawk.Common
 			return sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
 		}
 
-		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object? value)
+		public override object ConvertFrom(ITypeDescriptorContext? context, CultureInfo? culture, object value)
 		{
 			var maxLength = context!.Instance
 				.GetType()
@@ -28,7 +28,7 @@ namespace BizHawk.Common
 				throw new FormatException($"{context.PropertyDescriptor.Name} can not be null");
 			}
 
-			return value.ToString();
+			return value.ToString()!;
 		}
 	}
 }

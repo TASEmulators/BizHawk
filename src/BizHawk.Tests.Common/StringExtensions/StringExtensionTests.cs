@@ -87,7 +87,7 @@ namespace BizHawk.Tests.Common.StringExtensions
 		[TestMethod]
 		public void TestStableStringHashCases(int expected, string? str)
 #pragma warning disable BHI1600 //TODO disambiguate assert call
-			=> Assert.AreEqual(expected, str!.StableStringHash());
+			=> Assert.AreEqual(expected, str.StableStringHash());
 #pragma warning restore BHI1600
 
 		[TestMethod]
