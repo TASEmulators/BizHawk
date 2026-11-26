@@ -9,11 +9,15 @@ namespace BizHawk.WinForms.Controls
 	/// </summary>
 	public class StatusStripEx : StatusStrip
 	{
+		public StatusStripEx()
+		{
+			AccessibleRole = AccessibleRole.StatusBar;
+		}
+
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public new Size Size => base.Size;
 
-		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public new string Text => "";
+		// Removed: Text override that returned empty string - breaks screen readers
 
 		protected override void WndProc(ref Message m)
 		{
