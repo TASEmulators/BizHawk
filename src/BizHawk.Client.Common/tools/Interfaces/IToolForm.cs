@@ -28,6 +28,12 @@
 		void UpdateValues(ToolFormUpdateType type);
 
 		/// <summary>
+		/// Stop the tool, in preparation for a game or core change.
+		/// A tool should expect that either <see cref="Restart"/> or <see cref="Close"/> will be called after this.
+		/// </summary>
+		void Stop();
+
+		/// <summary>
 		/// Will be called anytime the dialog needs to be restarted, such as when a new ROM is loaded
 		/// The tool implementing this needs to account for a Game and Core change
 		/// </summary>
