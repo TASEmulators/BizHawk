@@ -181,8 +181,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			private void BulkPeekByte(uint startAddr, Span<byte> values)
+			public override void BulkPeekByte(long startAddress, Span<byte> values)
 			{
+				uint startAddr = (uint)startAddress;
 				while (!values.IsEmpty)
 				{
 					var page = GetPage(startAddr);
@@ -201,37 +202,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			public override void BulkPeekByte(Range<long> addresses, byte[] values)
+			public override void BulkPeekUshort(long startAddress, Span<ushort> values, bool bigEndian)
 			{
-				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-				if ((long)addresses.Count() != values.Length)
-				{
-					throw new InvalidOperationException("Invalid length of values array");
-				}
-
-				BulkPeekByte((uint)addresses.Start, values);
-			}
-
-			public override void BulkPeekUshort(Range<long> addresses, bool bigEndian, ushort[] values)
-			{
-				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-				var start = addresses.Start;
-				var end = addresses.EndInclusive + 1;
-
-				if ((start & 1) != 0 || (end & 1) != 0)
-					throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-				if (values.LongLength * 2 != end - start)
-				{
-					// a longer array could be valid, but nothing needs that so don't support it for now
-					throw new InvalidOperationException("Invalid length of values array");
-				}
-
-				BulkPeekByte((uint) addresses.Start, values.BytesSpan());
+				BulkPeekByte(startAddress, values.BytesSpan());
 
 				if (bigEndian)
 				{
@@ -242,24 +215,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.N3DS
 				}
 			}
 
-			public override void BulkPeekUint(Range<long> addresses, bool bigEndian, uint[] values)
+			public override void BulkPeekUint(long startAddress, Span<uint> values, bool bigEndian)
 			{
-				if (addresses is null) throw new ArgumentNullException(paramName: nameof(addresses));
-				if (values is null) throw new ArgumentNullException(paramName: nameof(values));
-
-				var start = addresses.Start;
-				var end = addresses.EndInclusive + 1;
-
-				if ((start & 3) != 0 || (end & 3) != 0)
-					throw new InvalidOperationException("The API contract doesn't define what to do for unaligned reads and writes!");
-
-				if (values.LongLength * 4 != end - start)
-				{
-					// a longer array could be valid, but nothing needs that so don't support it for now
-					throw new InvalidOperationException("Invalid length of values array");
-				}
-
-				BulkPeekByte((uint) addresses.Start, values.BytesSpan());
+				BulkPeekByte(startAddress, values.BytesSpan());
 
 				if (bigEndian)
 				{
