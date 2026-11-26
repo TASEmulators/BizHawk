@@ -635,6 +635,7 @@ namespace BizHawk.Emulation.DiscSystem
 		/// <exception cref="MDSParseException">path reference no longer points to file</exception>
 		private static Dictionary<int, IBlob> MountBlobs(AFile mdsf, Disc disc)
 		{
+			Debug.Assert(disc.DisposableResources.Count is 0, "no other method should be adding to DisposableResources");
 			var BlobIndex = new Dictionary<int, IBlob>();
 
 			var count = 0;
@@ -646,17 +647,10 @@ namespace BizHawk.Emulation.DiscSystem
 						throw new MDSParseException($"Malformed MDS format: nonexistent image file: {file}");
 
 					//mount the file
-					var mdfBlob = new Blob_RawFile { PhysicalPath = file };
-
-					var dupe = false;
-					foreach (var re in disc.DisposableResources)
+					if (!disc.DisposableResources.Cast<Blob_RawFile>()
+						.Select(static re => re.PhysicalPath).Contains(file))
 					{
-						if (re.ToString() == mdfBlob.ToString())
-							dupe = true;
-					}
-
-					if (!dupe)
-					{
+						Blob_RawFile mdfBlob = new() { PhysicalPath = file };
 						// wrap in zeropadadapter
 						disc.DisposableResources.Add(mdfBlob);
 						BlobIndex[count++] = mdfBlob;
