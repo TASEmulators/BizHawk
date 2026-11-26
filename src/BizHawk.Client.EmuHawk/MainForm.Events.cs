@@ -318,6 +318,70 @@ namespace BizHawk.Client.EmuHawk
 			ShowMessageIfError(() => FlushSaveRAM(), "Failed to flush saveram!");
 		}
 
+		private void SaveSramAsMenuItem_Click(object sender, EventArgs e)
+		{
+			string sramFolderPath = Config.PathEntries.SaveRamAbsolutePath(Game.System);
+
+			// Create folder if it doesn't already exist
+			try
+			{
+				Directory.CreateDirectory(sramFolderPath);
+			}
+			catch (IOException) { /* ignored */ }
+			catch (UnauthorizedAccessException) { /* ignored */ }
+
+			FilesystemFilterSet filterset = new(FilesystemFilter.SaveRams);
+			var shouldSaveResult = this.ShowFileSaveDialog(
+				initDir: sramFolderPath,
+				discardCWDChange: true,
+				fileExt: $".{filterset.Filters[0].Extensions.First()}",
+				filter: filterset);
+			if (shouldSaveResult is not null)
+			{
+				string normalPath = CurrentlyOpenRomArgs.SaveRamPath ?? Config.PathEntries.SaveRamAbsolutePath(Game);
+				string oldAutoPath = MakeSaveRamAutosavePath(normalPath);
+				CurrentlyOpenRomArgs = CurrentlyOpenRomArgs with { SaveRamPath = shouldSaveResult };
+				FlushSaveRAMMenuItem_Click(sender, e);
+				try { File.Delete(oldAutoPath); } catch { /* nothing */ }
+			}
+		}
+
+		private void LoadSramMenuItem_Click(object sender, EventArgs e)
+		{
+			if (Config.WarnLoadSramReboots)
+			{
+				MsgBox box = new(
+					message: "Loading Save RAM requires a core reboot. Proceed?",
+					title: "Reboot?",
+					boxIcon: MessageBoxIcon.Warning,
+					showCheckbox: true);
+				box.SetButtons([ "Yes", "No" ], [ DialogResult.Yes, DialogResult.Cancel ]);
+				DialogResult result = box.ShowDialog();
+				if (box.UserSaysDontShowAgain) Config.WarnLoadSramReboots = false;
+				if (result == DialogResult.Cancel) return;
+			}
+
+			// get the file
+			string sramFolderPath = Config.PathEntries.SaveRamAbsolutePath(Game.System);
+			// Create folder if it doesn't already exist
+			try
+			{
+				Directory.CreateDirectory(sramFolderPath);
+			}
+			catch (IOException) { /* ignored */ }
+			catch (UnauthorizedAccessException) { /* ignored */ }
+
+			FilesystemFilterSet filterset = new(FilesystemFilter.SaveRams);
+			string fileToLoad = this.ShowFileOpenDialog(
+				initDir: sramFolderPath,
+				discardCWDChange: true,
+				filter: filterset);
+			if (fileToLoad == null) return;
+
+			// reboot
+			RebootCore(fileToLoad);
+		}
+
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
 		{
 			ToggleReadOnly();
@@ -1270,7 +1334,7 @@ namespace BizHawk.Client.EmuHawk
 
 			ConfigContextMenuItem.Visible = _inFullscreen;
 
-			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game, MovieSession.Movie));
+			ClearSRAMContextMenuItem.Visible = File.Exists(Config.PathEntries.SaveRamAbsolutePath(Game));
 
 			ContextSeparator_AfterROM.Visible = OpenRomContextMenuItem.Visible || LoadLastRomContextMenuItem.Visible;
 
