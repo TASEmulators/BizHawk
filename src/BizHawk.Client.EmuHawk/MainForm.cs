@@ -779,6 +779,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+			//TODO should we be calling `OnRomChanged` from this ctor? it handles this and a bunch of other things also done here
+			_trackingAutoSaveRAM = Config.AutosaveSaveRAM && MovieSession.Movie is null;
 
 			if (_argParser.startFullscreen || Config.StartFullscreen)
 			{
@@ -1739,6 +1741,8 @@ namespace BizHawk.Client.EmuHawk
 		// countdown for saveram autoflushing
 		public int AutoFlushSaveRamIn { get; set; }
 		private bool AutoFlushSaveRamFailed;
+
+		private bool _trackingAutoSaveRAM;
 
 		private void SetStatusBar()
 		{
@@ -2977,7 +2981,7 @@ namespace BizHawk.Client.EmuHawk
 
 				RA?.OnFrameAdvance();
 
-				if (Config.AutosaveSaveRAM)
+				if (_trackingAutoSaveRAM)
 				{
 					AutoFlushSaveRamIn--;
 					if (AutoFlushSaveRamIn <= 0)
@@ -3855,6 +3859,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateCoreStatusBarButton();
 			UpdateDumpInfo();
 			SetMainformMovieInfo();
+			_trackingAutoSaveRAM = Config.AutosaveSaveRAM && MovieSession.Movie is null;
 			RA?.Restart();
 		}
 
