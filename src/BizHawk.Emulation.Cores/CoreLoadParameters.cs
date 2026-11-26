@@ -12,6 +12,7 @@ namespace BizHawk.Emulation.Cores
 
 		string Extension { get; }
 
+		[Obsolete("you should never have to use this property, Game.Name and Extension should be sufficient")] // not deprecated, do not remove
 		string RomPath { get; }
 
 		/// <summary>
