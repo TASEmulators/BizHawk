@@ -18,10 +18,12 @@ namespace BizHawk.Client.EmuHawk
 				colours["currentFrame_InputLog"] = fromPalette.CurrentFrame_InputLog;
 				colours["greenZone_FrameCol"] = fromPalette.GreenZone_FrameCol;
 				colours["greenZone_InputLog"] = fromPalette.GreenZone_InputLog;
+				colours["greenZone_InputLog_Cheated"] = fromPalette.GreenZone_InputLog_Cheated;
 				colours["greenZone_InputLog_Stated"] = fromPalette.GreenZone_InputLog_Stated;
 				colours["greenZone_InputLog_Invalidated"] = fromPalette.GreenZone_InputLog_Invalidated;
 				colours["lagZone_FrameCol"] = fromPalette.LagZone_FrameCol;
 				colours["lagZone_InputLog"] = fromPalette.LagZone_InputLog;
+				colours["lagZone_InputLog_Cheated"] = fromPalette.LagZone_InputLog_Cheated;
 				colours["lagZone_InputLog_Stated"] = fromPalette.LagZone_InputLog_Stated;
 				colours["lagZone_InputLog_Invalidated"] = fromPalette.LagZone_InputLog_Invalidated;
 				colours["marker_FrameCol"] = fromPalette.Marker_FrameCol;
@@ -49,10 +51,12 @@ namespace BizHawk.Client.EmuHawk
 					Row("currentFrame_InputLog", "Emulated Frame Cursor"),
 					Row("greenZone_FrameCol", "Frame# Column"),
 					Row("greenZone_InputLog", "Input Log"),
+					Row("greenZone_InputLog_Cheated", "Savestate (After Poked/cheated)"),
 					Row("greenZone_InputLog_Stated", "Savestate"),
 					Row("greenZone_InputLog_Invalidated", "Invalidated"),
 					Row("lagZone_FrameCol", "Frame# Column (Lag)"),
 					Row("lagZone_InputLog", "Input Log (Lag)"),
+					Row("lagZone_InputLog_Cheated", "Savestate (Lag, After Poked/cheated)"),
 					Row("lagZone_InputLog_Stated", "Savestate (Lag)"),
 					Row("lagZone_InputLog_Invalidated", "Invalidated (Lag)"),
 					Row("marker_FrameCol", "Marker"),
@@ -69,10 +73,12 @@ namespace BizHawk.Client.EmuHawk
 					currentFrame_InputLog: colours["currentFrame_InputLog"],
 					greenZone_FrameCol: colours["greenZone_FrameCol"],
 					greenZone_InputLog: colours["greenZone_InputLog"],
+					greenZone_InputLog_Cheated: colours["greenZone_InputLog_Cheated"],
 					greenZone_InputLog_Stated: colours["greenZone_InputLog_Stated"],
 					greenZone_InputLog_Invalidated: colours["greenZone_InputLog_Invalidated"],
 					lagZone_FrameCol: colours["lagZone_FrameCol"],
 					lagZone_InputLog: colours["lagZone_InputLog"],
+					lagZone_InputLog_Cheated: colours["lagZone_InputLog_Cheated"],
 					lagZone_InputLog_Stated: colours["lagZone_InputLog_Stated"],
 					lagZone_InputLog_Invalidated: colours["lagZone_InputLog_Invalidated"],
 					marker_FrameCol: colours["marker_FrameCol"],

@@ -110,6 +110,7 @@ namespace BizHawk.Emulation.Common
 				default:
 					throw new InvalidOperationException();
 			}
+			OnPoked();
 		}
 	}
 }

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Common.CollectionExtensions;
 using BizHawk.Common.IOExtensions;
 using BizHawk.Emulation.Common;
 
@@ -128,10 +129,36 @@ namespace BizHawk.Client.Common
 
 		private struct StateInfo: IComparable<StateInfo>
 		{
+			private const int SIZE_MASK = 0x7FFFFFFF;
+
 			public int FirstPage;
 			public int LastPage;
-			public int Size;
+
+			/// <summary>most-significant (sign) bit: <see cref="IsCheated"/>; remaining bits: <see cref="Size"/></summary>
+			private int _size;
+
 			public int Frame = -1;
+
+			public bool IsCheated
+			{
+				readonly get => (_size >> 31) is not 0;
+				set
+				{
+					if (value) _size |= ~SIZE_MASK;
+					else _size &= SIZE_MASK;
+				}
+			}
+
+			public int Size
+			{
+				readonly get => _size & SIZE_MASK;
+				set
+				{
+					Debug.Assert(value >= 0, "size cannot be negative");
+					_size &= ~SIZE_MASK;
+					_size |= value;
+				}
+			}
 
 			public StateInfo() { }
 
@@ -168,6 +195,8 @@ namespace BizHawk.Client.Common
 		private int _midPagesUsed = 0;
 
 		private int _lastForceCapture = -1;
+
+		private int _cheatedFrom = int.MaxValue;
 
 		private class PagedStream : Stream
 		{
@@ -441,6 +470,7 @@ namespace BizHawk.Client.Common
 			{
 				Frame = frame,
 				FirstPage = _firstFree,
+				IsCheated = _cheatedFrom <= frame,
 			};
 
 			using PagedStream stream = new(newState, this, false);
@@ -567,6 +597,9 @@ namespace BizHawk.Client.Common
 
 		public bool HasState(int frame) => _states.Contains(new(frame));
 
+		public bool HasCheatedState(int frame)
+			=> _states.GetViewBetween(new(frame), new(frame)).Min is { Frame: not 0, IsCheated: true };
+
 		private void RemoveState(StateInfo state)
 		{
 			Debug.Assert(_states.Contains(state), "Do not attempt to remove a non-existent state.");
@@ -582,6 +615,18 @@ namespace BizHawk.Client.Common
 
 			_bufferIsFull = false;
 		}
+
+		public void SetCheatedFlagStarting(int frame)
+		{
+			_cheatedFrom = Math.Min(frame, _cheatedFrom);
+			if (_states.GetViewBetween(new(frame), new(frame)).Min.Frame is 0) return;
+			// is there a simpler way to do this?
+			var copies = _states.GetViewBetween(new(frame), _states.Max).ToArray();
+			for (var i = 0; i < copies.Length; i++) copies[i].IsCheated = true;
+			_states.RemoveWhere(state => state.Frame >= frame);
+			_states.AddRange(copies);
+		}
+
 		public bool InvalidateAfter(int frame)
 		{
 			// must keep state on frame 0
@@ -596,7 +641,9 @@ namespace BizHawk.Client.Common
 				RemoveState(newestState);
 				newestState = _states.Max;
 			}
-			return Count < oldStateCount;
+			var anyRemoved = Count < oldStateCount;
+			if (anyRemoved && newestState.Frame < _cheatedFrom) _cheatedFrom = int.MaxValue;
+			return anyRemoved;
 		}
 
 		public void Unreserve(int frame)
