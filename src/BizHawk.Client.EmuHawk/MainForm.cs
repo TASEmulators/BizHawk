@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly StatusLabelEx StatusBarRewindIndicator = new()
 		{
 			Image = Properties.Resources.RewindRecord,
-			ToolTipText = "Rewinder is capturing states",
+			ToolTipText = LocalizationManager.TranslateText("Rewinder is capturing states"),
 		};
 
 		private void MainForm_Load(object sender, EventArgs e)
@@ -1647,7 +1647,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (CheatList.AnyActive)
 			{
-				CheatStatusButton.ToolTipText = "Cheats are currently active";
+				CheatStatusButton.ToolTipText = LocalizationManager.TranslateText("Cheats are currently active");
 				CheatStatusButton.Image = Properties.Resources.Cheat;
 				CheatStatusButton.Visible = true;
 			}
@@ -2082,7 +2082,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseStatusButton.Image = Properties.Resources.Pause;
 				PauseStatusButton.Visible = true;
-				PauseStatusButton.ToolTipText = "Emulator Paused";
+				PauseStatusButton.ToolTipText = LocalizationManager.TranslateText("Emulator Paused");
 			}
 			else if (IsTurboSeeking)
 			{
@@ -2691,15 +2691,15 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case Config.InputPriority.BOTH:
 					KeyPriorityStatusLabel.Image = Properties.Resources.Both;
-					KeyPriorityStatusLabel.ToolTipText = "Key priority: Allow both hotkeys and controller buttons";
+					KeyPriorityStatusLabel.ToolTipText = LocalizationManager.TranslateText("Key priority: Allow both hotkeys and controller buttons");
 					break;
 				case Config.InputPriority.INPUT:
 					KeyPriorityStatusLabel.Image = Properties.Resources.GameController;
-					KeyPriorityStatusLabel.ToolTipText = "Key priority: Controller buttons will override hotkeys";
+					KeyPriorityStatusLabel.ToolTipText = LocalizationManager.TranslateText("Key priority: Controller buttons will override hotkeys");
 					break;
 				case Config.InputPriority.HOTKEY:
 					KeyPriorityStatusLabel.Image = Properties.Resources.HotKeys;
-					KeyPriorityStatusLabel.ToolTipText = "Key priority: Hotkeys will override controller buttons";
+					KeyPriorityStatusLabel.ToolTipText = LocalizationManager.TranslateText("Key priority: Hotkeys will override controller buttons");
 					break;
 			}
 		}
@@ -3262,7 +3262,7 @@ namespace BizHawk.Client.EmuHawk
 				_currAviWriter = aw;
 				AddOnScreenMessage("A/V capture started");
 				AVStatusLabel.Image = Properties.Resources.Avi;
-				AVStatusLabel.ToolTipText = "A/V capture in progress";
+				AVStatusLabel.ToolTipText = LocalizationManager.TranslateText("A/V capture in progress");
 				AVStatusLabel.Visible = true;
 			}
 			catch

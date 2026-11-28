@@ -1,0 +1,1327 @@
+# BizHawk Simplified Chinese UI translations
+# Format: exact English source text<TAB>简体中文
+&File	文件(&F)
+&Open ROM...	打开 ROM(&O)...
+&Recent ROM	最近打开的 ROM
+Open Ad&vanced...	高级打开(&V)...
+&Close ROM	关闭 ROM(&C)
+&Emulation	仿真(&E)
+&Pause	暂停(&P)
+&Reboot Core	重新启动核心
+&Soft Reset	软重置
+&Hard Reset	硬重置
+&View	视图(&V)
+&Config	配置(&C)
+&Tools	工具(&T)
+&Help	帮助(&H)
+Save State	保存状态
+Load State	读取状态
+Save Slot	保存槽位
+Save to Current Slot	保存到当前槽位
+Load Current Slot	读取当前槽位
+Save RAM	保存 RAM
+Flush Save RAM	写入保存 RAM
+Movie	影片
+Record Movie	录制影片
+Play Movie	播放影片
+Stop Movie	停止影片
+Play from Beginning	从头播放
+Save Movie	保存影片
+Save Movie As...	影片另存为...
+Stop Movie Without Saving	停止影片但不保存
+Screenshot	截图
+Exit	退出
+Window Size	窗口大小
+Fullscreen	全屏
+Core Settings	核心设置
+Recent Core Settings	最近的核心设置
+Controller	控制器
+Hotkeys	快捷键
+Display	显示
+Sound	声音
+Paths	路径
+Firmware	固件
+Messages	消息
+Rewind	倒带
+Tools	工具
+Cheats	金手指
+Hex Editor	十六进制编辑器
+Debugger	调试器
+Trace Logger	跟踪日志
+Lua Console	Lua 控制台
+Virtual Pad	虚拟手柄
+TAStudio	TAStudio
+Tool Box	工具箱
+About	关于
+&Open	打开(&O)
+&Save	保存(&S)
+Cancel	取消
+OK	确定
+Apply	应用
+Close	关闭
+Yes	是
+No	否
+&Save State	保存状态(&S)
+&Load State	读取状态(&L)
+Save S&lot	保存槽位(&L)
+Save &RAM	保存 RAM(&R)
+&Flush Save Ram	写入保存 RAM(&F)
+&Movie	影片(&M)
+Recent	最近使用
+&Record Movie...	录制影片(&R)...
+&Play Movie...	播放影片(&P)...
+&Save Movie	保存影片(&S)
+Stop Movie without Saving	停止影片但不保存
+Import Movies...	导入影片...
+Automatically Backup Movies	自动备份影片
+Full Movie Loadstates	完整影片状态载入
+On Movie End	影片结束时
+Switch to Finished	切换到完成状态
+Switch to Record	切换到录制状态
+&A/V Writer	音视频录制(&A)
+&Record A/V	录制音视频(&R)
+Config and Record A/V...	配置并录制音视频...
+&Stop A/V Writer	停止音视频录制(&S)
+Capture OSD	捕获屏幕显示
+Capture Lua	捕获 Lua
+S&yncless Recording Tools	无同步录制工具(&Y)
+Scree&nshot	截图(&N)
+Screenshot As...	截图另存为...
+Screenshot (raw) -> Clipboard	原始截图复制到剪贴板
+Screenshot (client) -> Clipboard	客户端截图复制到剪贴板
+E&xit	退出(&X)
+&Window Size	窗口大小(&W)
+&Static Size	固定尺寸(&S)
+Switch to Fullscreen	切换到全屏
+Display FPS	显示 FPS
+Display Frame Count	显示帧数
+Display Lag Frame Count	显示延迟帧数
+Display Input	显示输入
+Display Rerecord Count	显示重录次数
+Display Subtitles	显示字幕
+Display Status Bar	显示状态栏
+Display Messages	显示消息
+Open &Log Window...	打开日志窗口(&L)...
+&Controllers...	控制器设置(&C)...
+&Hotkeys...	快捷键设置(&H)...
+Display...	显示设置...
+&Sound...	声音设置(&S)...
+Paths...	路径设置...
+&Firmware...	固件设置(&F)...
+&Messages...	消息设置(&M)...
+&Autofire...	连发设置(&A)...
+&Rewind && States...	倒带与状态(&R)...
+File Extensions...	文件扩展名...
+&Customize...	自定义(&C)...
+&Profiles...	配置档(&P)...
+Speed/Skip	速度/跳帧
+Clock Throttle	时钟限速
+Audio Throttle	音频限速
+VSync Throttle	垂直同步限速
+VSync Enabled	启用垂直同步
+Unthrottled	不限制速度
+Auto-minimize skipping	自动减少跳帧
+Skip 0 (never)	跳过 0 帧（从不）
+Skip 1..9	跳过 1..9 帧
+Key Priority	按键优先级
+Both Hotkeys and Controllers	快捷键和控制器均可
+Input overrides Hotkeys	控制器输入优先于快捷键
+Hotkeys override Input	快捷键优先于控制器输入
+Preferred Cores	首选模拟核心
+Save Config	保存配置
+Save Config As...	配置另存为...
+Load Config	加载配置
+Load Config From...	从文件加载配置...
+&Tool Box	工具箱(&T)
+RAM &Watch	内存监视(&W)
+RAM &Search	内存搜索(&S)
+&TAStudio	TAStudio(&T)
+&Hex Editor	十六进制编辑器(&H)
+Trace &Logger	指令跟踪日志(&L)
+&Debugger	调试器(&D)
+Code-Data Logger	代码/数据记录器
+&Macro Tool	宏工具(&M)
+Basic Bot	基础机器人
+Cheat Code Converter	金手指代码转换器
+Multi-disk Bundler	多磁盘打包工具
+Batch Runner...	批量运行...
+External Tool	外部工具
+None	无
+&RetroAchievements	RetroAchievements(&R)
+&Start RetroAchievements	启动 RetroAchievements(&S)
+&PPU Viewer	PPU 查看器(&P)
+&Nametable Viewer	名称表查看器(&N)
+Music Ripper	音乐提取器
+Controller Settings...	控制器设置...
+Graphics Settings...	图像设置...
+Sound Channels...	声音通道...
+VS Settings...	VS 设置...
+Advanced Settings...	高级设置...
+&Eject Disk	弹出磁盘(&E)
+Insert Coin P1	玩家 1 投币
+Insert Coin P2	玩家 2 投币
+Service Switch	服务开关
+Barcode Reader	条码读取器
+Keypad	键盘
+Load TI-83 File...	加载 TI-83 文件...
+Palette...	调色板...
+Filter Settings	滤镜设置
+Settings...	设置...
+&Choose Custom Palette...	选择自定义调色板(&C)...
+GPU Viewer	GPU 查看器
+&Printer Viewer	打印机查看器(&P)
+Controller / Memcard Settings	控制器/记忆卡设置
+&Options	选项(&O)
+&Disc Controls	光盘控制(&D)
+&Hash Discs	计算光盘哈希(&H)
+Controller Configuration	控制器配置
+Graphics Debugger	图像调试器
+&Controller Settings...	控制器设置(&C)...
+&Skip BIOS intro (When Applicable)	跳过 BIOS 片头（适用时）(&S)
+&Use the Super Game Module	使用 Super Game Module(&U)
+Plugins	插件
+Circular Analog Range	圆形摇杆范围
+&Mupen Style Lag Frames	Mupen 风格延迟帧(&M)
+&Use Expansion Slot	使用扩展槽(&U)
+&Settings...	设置(&S)...
+Disks	磁盘
+ZX Spectrum	ZX Spectrum
+Core Emulation Settings	核心仿真设置
+Joystick Configuration	摇杆配置
+Audio Settings	音频设置
+Non-Sync Settings	非同步设置
+Media	媒体
+Tapes	磁带
+Export Snapshot	导出快照
+&Core	核心(&C)
+Amstrad CPC	Amstrad CPC
+Open TASVideos Wiki in Browser	在浏览器中打开 TASVideos Wiki
+Open Forums in Browser	在浏览器中打开论坛
+&Features	功能(&F)
+&About...	关于(&A)...
+No ROM loaded	未加载 ROM
+No movie is active	当前没有活动影片
+Save Named State...	保存命名状态...
+Autosave Last Slot	自动保存到上次使用的槽位
+Load Named State...	读取命名状态...
+Autoload Last Slot	自动读取上次使用的槽位
+Select Slot 1	选择槽位 1
+Select Slot 2	选择槽位 2
+Select Slot 3	选择槽位 3
+Select Slot 4	选择槽位 4
+Select Slot 5	选择槽位 5
+Select Slot 6	选择槽位 6
+Select Slot 7	选择槽位 7
+Select Slot 8	选择槽位 8
+Select Slot 9	选择槽位 9
+Select Slot 10	选择槽位 10
+Previous Slot	上一个槽位
+Next Slot	下一个槽位
+Read-only	只读
+Stop	停止
+Pause	暂停
+Play Sound	播放声音
+Loaded core: <core name> (sysID)	已加载核心：<core name>（sysID）
+Speed 50%	速度 50%
+Speed 75%	速度 75%
+Speed 100%	速度 100%
+Speed 150%	速度 150%
+Speed 200%	速度 200%
+Speed 400%	速度 400%
+&NES	NES(&N)
+FDS Controls	FDS 控制
+VS Controls	VS 控制
+TI83	TI-83
+&A7800	A7800(&A)
+Controller Settings	控制器设置
+&GB	Game Boy(&G)
+PSX	PlayStation
+&SNES	超级任天堂(&S)
+&Coleco	Coleco(&C)
+N64	Nintendo 64
+&GB Link	Game Boy 联机(&G)
+Apple	Apple
+&C64	Commodore 64(&C)
+&Intv	Intellivision(&I)
+zxt1	磁带 1
+zxt2	磁带 2
+cpct1	磁带 1
+cpcd1	磁盘 1
+A7800Hawk	A7800Hawk
+Reboot	重新启动
+A/V Capture	音视频捕获
+Save slots	保存槽位
+KeyPriority	按键优先级
+ProfileFirstBootLabel	首次启动配置档
+Link connection is currently enabled	联机连接当前已启用
+New version available!	有新版本可用！
+Open Rom	打开 ROM
+Load Last ROM	加载上次使用的 ROM
+Stop A/V Writer	停止音视频录制
+Restart Movie	重新开始影片
+Load Last Movie	加载上次使用的影片
+Backup Movie	备份影片
+View Subtitles	查看字幕
+Add Subtitle	添加字幕
+View Comments	查看评论
+Undo Savestate	撤销状态
+Config	配置
+&Rewind...	倒带设置(&R)...
+Customize...	自定义...
+Close ROM	关闭 ROM
+Close and Clear SRAM	关闭并清除 SRAM
+Show Menu	显示菜单
+Normal Controls	普通控制
+Autofire Controls	连发控制
+Analog Controls	模拟摇杆控制
+Feedbacks	反馈
+Auto Tab	自动切换选项卡
+&Cancel	取消(&C)
+Save Defaults	保存默认设置
+Load Defaults	加载默认设置
+Clear	清除
+Tips:	提示：
+* Disable Auto Tab to multiply bind	* 关闭自动切换选项卡可进行多重绑定
+* Escape clears a key mapping	* 按 Esc 清除按键映射
+Misc...	其他...
+U+D/L+R:	上+下/左+右：
+Forbid	禁止
+Priority	优先级
+Allow	允许
+Controller Config	控制器配置
+Find:	查找：
+Restore Defaults	恢复默认设置
+Restore Current Tab Defaults	恢复当前选项卡默认设置
+Clear All	全部清除
+Clear Current Tab	清除当前选项卡
+Configure Hotkeys	配置快捷键
+Scaling Filter	缩放滤镜
+Will contain user filter name	将显示用户滤镜名称
+Select	选择
+User	用户
+Scanlines	扫描线
+Hq2x	HQ2x
+Maintain aspect ratio (letterbox)	保持宽高比（黑边）
+Expand pixels by integers only (e.g. no 1.3333x)	仅按整数倍放大像素（例如不使用 1.3333 倍）
+Final Filter	最终滤镜
+Bicubic (shader. buggy?)	双三次（着色器，可能有问题）
+Bilinear	双线性
+Use 1:1 pixel size (for crispness or debugging)	使用 1:1 像素尺寸（用于清晰显示或调试）
+Use system\'s recommendation	使用系统推荐设置
+Aspect Ratio Selection	宽高比选择
+Use custom AR:	使用自定义宽高比：
+Allow pixel distortion (e.g. 2x1 pixels, for better AR fit):	允许像素变形（例如 2×1 像素，以更好地匹配宽高比）：
+Use custom size:	使用自定义尺寸：
+Scaling & Filtering	缩放与滤镜
+Cropping	裁剪
+Bottom:	底部：
+Top:	顶部：
+Right:	右侧：
+Left:	左侧：
+Defaults	默认值
+Auto Prescale	自动预缩放
+User Prescale:	用户预缩放：
+Display Method	显示方式
+Direct3D11	Direct3D 11
+GDI+	GDI+
+Misc	其他
+Keep window titles static	保持窗口标题固定
+Display Features (for speeding up replays)	显示功能（用于加快回放）
+Absolute Zero - Display Nothing	完全关闭 - 不显示任何内容
+Minimal - Display HUD Only (TBD)	最简 - 仅显示 HUD（待定）
+Full - Display Everything	完整 - 显示全部内容
+Window	窗口
+Auto-Hide Mouse Cursor	自动隐藏鼠标指针
+Enable Windows Fullscreen Hacks	启用 Windows 全屏兼容处理
+Status Bar	状态栏
+Menu	菜单
+Windowed	窗口模式
+Mouse Capture Forces Stay on Top	捕获鼠标时强制窗口置顶
+Stay on Top	窗口置顶
+Save Window Position	保存窗口位置
+Frame:	帧：
+Caption	标题
+Documentation	文档
+Scale OSD text with system scale	根据系统缩放比例调整 OSD 文字
+Display Configuration	显示配置
+Ena.	启用
+Volume	音量
+RW && FF	倒带和快进
+Normal	正常
+Sound Device:	声音设备：
+Buffer Size:	缓冲区大小：
+milliseconds	毫秒
+Output Method	输出方式
+Mute Frame Advance	逐帧前进时静音
+Sound Master Enable	启用主声音输出
+Sound Configuration	声音配置
+Special Commands	特殊命令
+Always use recent path for ROMs	ROM 始终使用最近访问的路径
+&Defaults	默认值(&D)
+Global	全局
+by System	按系统
+System:	系统：
+Path Configuration	路径配置
+Id	ID
+Description	描述
+Resolved With	解析方式
+Location	位置
+Hash	哈希值
+&Set Customization	设置自定义项(&S)
+C&lear Customization	清除自定义项(&L)
+&Info	信息(&I)
+&Copy	复制(&C)
+Group	分组
+Scan	扫描
+Organize	整理
+Import	导入
+Close and reload ROM	关闭并重新加载 ROM
+Open Firmware Folder	打开固件文件夹
+Allow Importing of Unknown Files	允许导入未知文件
+Scan will look under (change in Config > Paths... > Global):	扫描位置（可在 配置 > 路径... > 全局 中更改）：
+Firmware such as BIOS files are copyrighted material and not provided by BizHawk	BIOS 等固件受版权保护，BizHawk 不提供这些文件
+Message Type	消息类型
+Message Colors	消息颜色
+Stack Messages	堆叠消息
+Configure On Screen Messages	配置屏幕消息
+on,	开启，
+off	关闭
+Pattern:	模式：
+Take lag frames into account	将延迟帧计入
+Autofire Configuration	连发配置
+Enabled	已启用
+Use zstd compression (economizes buffer usage at cost of CPU)	使用 zstd 压缩（节省缓冲区空间，但增加 CPU 开销）
+Max buffer size:	最大缓冲区大小：
+Avg. State Size:	平均状态大小：
+Full:	完整：
+Use delta compression (economizes buffer usage at cost of CPU)	使用差分压缩（节省缓冲区空间，但增加 CPU 开销）
+Est. Time:	预计时间：
+Est. storage:	预计存储空间：
+Frames Stored:	已存储帧数：
+Type	类型
+Text	文本
+Binary	二进制
+Savestate Options	状态选项
+Use a low resolution screenshot for better save/load performance	使用低分辨率截图以提升保存/读取性能
+Low Res Screenshots on buffers >=	缓冲区大于等于此值时使用低分辨率截图
+black screen on the frame it is loaded.	加载状态时该帧会显示黑屏。
+Saves a screenshot and loads it on loadstate so there isn\'t a	保存截图，并在读取状态时加载，以避免出现
+Save a screenshot in savestates	在状态文件中保存截图
+before overwriting it.	覆盖之前。
+When set, the client will make a backup copy of a savestate	启用后，客户端会在覆盖状态文件前
+Backup Savestates	备份状态文件
+Compression Level	压缩等级
+Desired minimum rewind range in frames:	所需的最小倒带帧数：
+Rewinds every fixed number of frames: 	每隔固定帧数创建一个倒带点：
+Rewind & Savestate Configuration	倒带与状态配置
+Profile Options	配置档选项
+Other Options	其他选项
+Automatically check for and notify me of newer versions of BizHawk	自动检查 BizHawk 新版本并通知我
+Profile Config	配置档配置
+&Toggle	切换(&T)
+&Remove	移除(&R)
+&Disable All	全部禁用(&D)
+View in Hex Editor	在十六进制编辑器中查看
+&New	新建(&N)
+&Open...	打开(&O)...
+Save &As...	另存为(&A)...
+Append File	追加文件
+&Cheats	金手指(&C)
+&Remove Cheat	移除金手指(&R)
+Insert Separator	插入分隔线
+Move &Up	上移(&U)
+Move &Down	下移(&D)
+Select &All	全选(&A)
+Disable all	全部禁用
+Code Converter	代码转换器
+&Settings	设置(&S)
+Restore Session when Switching Game	切换游戏时恢复会话
+Save Session when Closing or Switching Game	关闭或切换游戏时保存会话
+Restore Cheats' States (when loading from disk, enable cheats which were saved enabled)	恢复金手指状态（从磁盘加载时，重新启用保存时处于启用状态的金手指）
+Move Up	上移
+Move Down	下移
+0 Cheats	0 条金手指
+New Cheat	新建金手指
+Name	名称
+Address	地址
+Value	数值
+Compare	比较值
+Domain	内存区域
+Display As	显示为
+Big Endian	大端序
+Ov&erwrite	覆盖(&E)
+Compare Type	比较类型
+&Debug	调试(&D)
+Step &Into	单步进入(&I)
+Step O&ver	单步跳过(&O)
+Step Ou&t	单步跳出(&T)
+Refresh	刷新
+Registers	寄存器
+Breakpoints	断点
+Disassembler	反汇编器
+To PC	转到 PC
+Add Breakpoint	添加断点
+Step Out	单步跳出
+Step Into	单步进入
+Step Over	单步跳过
+Seek To:	跳转到：
+Run	运行
+Execute	执行
+Write	写入
+Read	读取
+Address 0x	地址 0x
+Mask 0x	掩码 0x
+Controllers	控制器
+Sticky	粘滞
+&Pads	手柄(&P)
+&Clear All	全部清除(&C)
+&Clear also clears Analog Input	清除时同时清除模拟输入(&C)
+Export	导出
+Syncless Recording	无同步录制
+Sync Settings	同步设置
+Save as binary...	另存为二进制...
+Save as text...	另存为文本...
+Import as binary...	以二进制方式导入...
+&Load .tbl file	加载 .tbl 文件(&L)
+Close .tbl file	关闭 .tbl 文件
+&Find...	查找(&F)...
+Find Next	查找下一个
+Find Prev	查找上一个
+&Memory Domains	内存区域(&M)
+Data Size	数据大小
+1 Byte	1 字节
+2 Byte	2 字节
+4 Byte	4 字节
+&Go to Address...	转到地址(&G)...
+Add to RAM Watch	添加到内存监视
+&Freeze Address	冻结地址(&F)
+Unfreeze All	解除全部冻结
+&Poke Address	写入地址(&P)
+Custom Colors	自定义颜色
+Set Colors	设置颜色
+Reset to Default	恢复默认值
+&Increment	递增(&I)
+&Decrement	递减(&D)
+View N64 Matrix	查看 N64 矩阵
+Addresses	地址
+Values	数值
+&Undo	撤销(&U)
+&Redo	重做(&R)
+Show Undo History	显示撤销历史
+Deselect	取消选择
+Select between Markers	选择标记之间的内容
+Go to Frame...	转到帧...
+&Paste Insert	插入粘贴(&P)
+&Cut	剪切(&C)
+&Delete	删除(&D)
+&Insert	插入(&I)
+Insert # of Frames	插入帧数
+&Clone	克隆(&C)
+Clone # Times	克隆次数
+&Truncate Movie	截断影片(&T)
+&Clear Savestate History	清除状态历史(&C)
+State History Integrity Check	状态历史完整性检查
+&Metadata	元数据(&M)
+&Header...	头信息(&H)...
+&Comments...	注释(&C)...
+&Subtitles...	字幕(&S)...
+Open settings...	打开设置...
+&Columns	列(&C)
+TAS Editor Manual Online...	在线 TAS 编辑器手册...
+Forum Thread...	论坛主题...
+&About	关于(&A)
+TAStudio engaged	TAStudio 已启用
+Set Markers	设置标记
+Set Marker with Text	设置带文本的标记
+Remove Markers	移除标记
+Clear Greenzone	清除绿区
+Cancel Seek	取消跳转
+Paste Insert	插入粘贴
+Truncate Movie	截断影片
+&Branch	分支(&B)
+Start a new project from Now	从当前时刻开始新项目
+Start a new project from SaveRam	从 SaveRAM 开始新项目
+Auto-hold	自动保持
+Hide column	隐藏列
+Show columns	显示列
+New input roll	新建输入记录
+Delete input roll	删除输入记录
+Pause or Resume	暂停或继续
+Insert Seperator	插入分隔线
+Stop All Scripts	停止所有脚本
+Clear Registered Functions	清除已注册函数
+&New Session	新建会话(&N)
+&Open Session...	打开会话(&O)...
+&Save Session	保存会话(&S)
+Save Session &As...	会话另存为(&A)...
+Recent Sessions	最近的会话
+Recent Scripts	最近的脚本
+&Script	脚本(&S)
+New Script	新建脚本
+&Open Script...	打开脚本(&O)...
+&Re&fresh	刷新(&F)
+&Edit Script	编辑脚本(&E)
+&Remove Script	移除脚本(&R)
+&Duplicate Script	复制脚本(&D)
+&Clear Output	清空输出(&C)
+&Registered Functions...	已注册函数(&R)...
+Disable Scripts on Load	加载时禁用脚本
+Toggle All if None Selected	未选择时切换全部脚本
+Reload When Script File Changes	脚本文件更改时重新加载
+Register To Text Editors	注册到文本编辑器
+&Sublime Text 2	Sublime Text 2(&S)
+Notepad++	Notepad++
+&Lua Functions List	Lua 函数列表(&L)
+Documentation online...	在线文档...
+&Clear	清除(&C)
+&Registered Functions	已注册函数(&R)
+Output	输出
+New Lua Script	新建 Lua 脚本
+Open Script	打开脚本
+Toggle Script	切换脚本
+Edit Script	编辑脚本
+Remove Script	移除脚本
+Duplicate Script	复制脚本
+Clear Output	清空输出
+Erase Stale/Stuck Lua Drawing Layers	清除过期/卡住的 Lua 绘图图层
+Size	大小
+Add	添加
+&Add	添加(&A)
+Find	查找
+Hex	十六进制
+Save and &Run	保存并运行(&R)
+&Close	关闭(&C)
+Output Bundle Path	输出打包文件路径
+Browse...	浏览...
+Remove	移除
+Drag Files Here:	将文件拖放到此处：
+Number of Files: 0	文件数量：0
+Clear!	清空！
+Go!	开始！
+Status:	状态：
+Frames to run:	运行帧数：
+Dump...	导出...
+BatchRun	批量运行
+Comment	注释
+Edit Comments	编辑注释
+Frame	帧
+The first frame the subtitle will be displayed (integer)	字幕开始显示的第一帧（整数）
+Screen coordinate (absolute)	屏幕坐标（绝对值）
+Length	持续时间
+How long subtitle will be displayed	字幕显示的持续时间
+Color	颜色
+Color of subtitle text	字幕文字颜色
+Message	消息
+What will be displayed	显示的内容
+&Export to SubRip	导出为 SubRip(&E)
+Concat multilines	合并多行文本
+Add color tag	添加颜色标签
+On export:	导出时：
+Edit Subtitles	编辑字幕
+GIF Writer Options	GIF 录制选项
+Number of frames to skip for each frame written:	每写入一帧要跳过的帧数：
+Frame delay:	帧延迟：
+Formats:	格式：
+Description:	说明：
+Command:	命令：
+Extension:	扩展名：
+Choose Video Format	选择视频格式
+Resize Video	调整视频尺寸
+Resize:	调整尺寸：
+/\ Set As Resize	设为调整尺寸
+Size:\r\nTestxTest	尺寸：\r\nTestxTest
+Pad	补边
+Sync to Audio	与音频同步
+Choose A/V Writer	选择音视频录制器
+Resolution is not a multiple of 4! Odd or non-x4 resolutions breaks many codecs. 	分辨率不是 4 的倍数！奇数或非 4 倍数的分辨率会导致许多编码器无法正常工作。 
+This Rom was not found in the database.  Furthermore, the extension leaves no clue as to which platform should be chosen.	数据库中找不到此 ROM，而且文件扩展名也无法判断应选择哪个平台。
+Choose a Platform	选择平台
+Rom Details:	ROM 详情：
+Please choose the intended platform to use for this Rom	请选择此 ROM 应使用的平台
+Size:	大小：
+Always use this platform	始终使用此平台
+for this extension	处理此扩展名的文件
+Hash:	哈希值：
+2 Bytes	2 字节
+4 Bytes	4 字节
+Turbo While Botting	机器人运行时加速
+&Run	运行(&R)
+Controls	控制项
+Best	最佳
+&Play	播放(&P)
+Attempt:	尝试次数：
+Tiebreak 3:	第三决胜条件：
+Tiebreak 2:	第二决胜条件：
+Tiebreak 1:	第一决胜条件：
+Main Value:	主要数值：
+Attempts:	尝试次数：
+Frames:	帧数：
+frames	帧
+End after	结束于
+&Stop	停止(&S)
+Start From:	起始位置：
+Control	控制
+Help	帮助
+Filter	筛选
+Wiki markup to Clipboard	将 Wiki 标记复制到剪贴板
+Return	返回
+Library	函数库
+Parameters	参数
+Lua Functions	Lua 函数
+Insert number of frames:	插入帧数：
+Insert Frames	插入帧
+Author	作者
+Default	默认
+Make default	设为默认值
+Emu Version	模拟器版本
+Core	核心
+Board name	板卡名称
+Game name	游戏名称
+Header Info	头信息
+Start	开始
+APU Divider (trace interval)	APU 分频值（跟踪间隔）
+Export XRNS File	导出 XRNS 文件
+(Contents)	（内容）
+Pattern Length (512 max)	模式长度（最大 512）
+Log Control	日志控制
+Mask	掩码
+Cpu:  Use '[' or ']' to change address, hold 'shift' for speed.	CPU：使用 '[' 或 ']' 更改地址，按住 Shift 可加速。
+&Export	导出(&E)
+&Paste	粘贴(&P)
+&Freeze	冻结(&F)
+&Add to RAM Watch	添加到 RAM 监视(&A)
+&Unfreeze All	全部解除冻结(&U)
+Header	头信息
+0 script     	0 个脚本     
+Lua Dialog	Lua 对话框
+Enter the digits of the barcode here:	在此输入条形码数字：
+THIS IS AN EXPERIMENTAL FEATURE AND WILL DESYNC MOVIES.  DO NOT USE WITH MOVIES.	这是实验性功能，会导致影片不同步。请勿在影片录制/播放时使用。
+Send!	发送！
+&Save Image...	保存图像(&S)...
+&Copy Image to clipboard	复制图像到剪贴板(&C)
+&Refresh Image	刷新图像(&R)
+Save Screenshot &As...	截图另存为(&A)...
+Screenshot to &Clipboard	将截图复制到剪贴板(&C)
+Nametable	名称表
+Scanline	扫描线
+Properties	属性
+Palette:	调色板：
+Table:	表：
+PPU Addr:	PPU 地址：
+X / Y:	X / Y：
+Tile ID:	图块 ID：
+More	更多
+Less	更少
+Pattern Tables	图案表
+Palette: 0	调色板：0
+&Refresh	刷新(&R)
+Palettes	调色板
+Details	详细信息
+Shift-click to remember selection	按住 Shift 单击以记住选择
+Value 5	数值 5
+Value 4	数值 4
+Hover over item to view details	将鼠标悬停在项目上以查看详细信息
+Value 3	数值 3
+Value 2	数值 2
+Value 1	数值 1
+Sprites	精灵
+Save Palette Screenshot...	保存调色板截图...
+Save Pattern Screenshot...	保存图案截图...
+Save Sprite Screenshot...	保存精灵截图...
+Copy Palette to Clipboard	复制调色板到剪贴板
+Copy Pattern to Clipboard	复制图案到剪贴板
+Copy Sprite to Clipboard	复制精灵到剪贴板
+&Pattern	图案(&P)
+Table 0 Palette	表 0 调色板
+Table 1 Palette	表 1 调色板
+CHR ROM Tile Viewer	CHR ROM 图块查看器
+Use CTRL+C to copy the pane under the mouse to the clipboard.	使用 Ctrl+C 将鼠标下方的窗格复制到剪贴板。
+CHR ROM Tiles	CHR ROM 图块
+Bank:	存储组：
+Branches	分支
+Add with Text	添加并填写文本
+Load	加载
+&Update	更新(&U)
+Update with Text	更新并填写文本
+Edit Text	编辑文本
+Jump To	跳转到
+Undo	撤销
+Playback	播放
+Recording mode	录制模式
+Auto-restore last position	自动恢复上次位置
+Turbo seek	加速定位
+Follow cursor	跟随光标
+Appearance	外观
+Lag frames to hide:	要隐藏的延迟帧数：
+Movie settings	影片设置
+Denote markers with color on frame column	在帧列中用颜色标记标记点
+Denote markers with icons	使用图标标记标记点
+Denote states with background color	使用背景颜色标记状态
+Denote states with icons	使用图标标记状态
+Hide "was lag" frames	隐藏“曾发生延迟”的帧
+Rotate input roll	旋转输入记录
+Set Font	设置字体
+Autosave	自动保存
+Set to 0 to disable autosave	设为 0 以禁用自动保存
+When manually saving, also save .backup	手动保存时同时保存 .backup 文件
+Save as .backup (no greenzone)	保存为 .backup（不含绿区）
+Save as .bk2	保存为 .bk2
+seconds	秒
+Autosave frequency:	自动保存间隔：
+Savestates	即时存档
+Each movie contains its own savestate settings	每个影片都包含独立的即时存档设置
+applied	已应用
+Use these settings as default	将这些设置设为默认值
+Use default settings	使用默认设置
+Management strategy:	管理策略：
+Paint Patterns	绘制模式
+Set custom patterns (per movie)	设置自定义模式（每个影片独立）
+Count:	数量：
+LagBox	延迟帧
+Account for lag frames	计算延迟帧
+Delete	删除
+Insert	插入
+Choose pattern	选择模式
+Custom	自定义
+Hold	按住
+Auto-Fire	连发
+Use pattern for painting	绘制时使用的模式
+Always	始终
+Auto-Fire columns only	仅连发列
+Never	从不
+Old control scheme for branches	分支使用旧控制方案
+Load branch by double clicking	双击加载分支
+Fast rewind step:	快速倒带步长：
+Rewind step:	倒带步长：
+Bind markers to input	将标记点绑定到输入
+Include frame numbers when copying input.	复制输入时包含帧编号。
+Max Undo Count:	最大撤销次数：
+Automatically pause at end of movie.	影片结束时自动暂停。
+Markers keep states by default	标记点默认保留状态
+Input Roll	输入记录
+Scroll to cursor method	滚动到光标的方式
+scroll to center	滚动到中央
+scroll to bottom	滚动到底部
+scroll to top	滚动到顶部
+scroll to view	滚动到可见区域
+When following cursor, scroll at every frame	跟随光标时每帧滚动
+frames per tick	每刻度帧数
+Wheel scroll speed:	滚轮滚动速度：
+Allow editing hidden columns (with clear, record, paste, etc.)	允许编辑隐藏列（清除、录制、粘贴等操作）
+Sync scroll across all input rolls	同步滚动所有输入记录
+TAStudio Settings	TAStudio 设置
+Redo	重做
+Undo To Selection	撤销到所选位置
+Redo To Selection	重做到所选位置
+Clear History To Selection	清除所选位置之前的历史记录
+Auto Scroll	自动滚动
+Max:	最大值：
+Undo History	撤销历史
+Trace log	跟踪日志
+&Save Log	保存日志(&S)
+Set Max Lines...	设置最大行数...
+Set Segment Size...	设置分段大小...
+&Browse	浏览(&B)
+to file	输出到文件
+to window	输出到窗口
+Start &logging	开始记录(&L)
+Number of Threads	线程数
+JMD Compression Options	JMD 压缩选项
+Subtitles	字幕
+Comments	注释
+Read only	只读
+Include Subdirectories	包含子目录
+Match current game hash	匹配当前游戏哈希值
+Stop on frame:	在指定帧停止：
+File	文件
+SysID	系统 ID
+Game	游戏
+Length (est.)	长度（估计）
+Last frame	最后一帧
+Turbo	加速
+X position	X 坐标
+Y position	Y 坐标
+Duration	持续时间
+Subtitle Maker	字幕制作器
+New From	新建自
+&Now	当前时刻(&N)
+&Current SaveRam	当前存档内存(&C)
+Save As	另存为
+Save Backup	保存备份
+Save Bk2 Backup	保存 BK2 备份
+Save Selection to Macro	将所选内容保存为宏
+Place Macro at Selection	在所选位置插入宏
+Recent Macros	最近使用的宏
+&Export to Bk2	导出为 BK2(&E)
+Selection Undo	撤销选择操作
+Selection Redo	重做选择操作
+Reselect Clipboard	重新选择剪贴板内容
+Freeze Highlight Color	冻结高亮颜色
+Freeze Color	冻结颜色
+Highlight Color	高亮颜色
+Background Color	背景颜色
+Menubar Color	菜单栏颜色
+Font Color	字体颜色
+Colors	颜色
+Event	事件
+Guid	GUID
+&Call	调用(&C)
+Remove &All	全部移除(&A)
+Active Registered Functions	当前已注册函数
+Discs	光盘
+Tray :	光盘托盘：
+Open	打开
+(T=0: Freely set initial state)	（T=0：可自由设置初始状态）
+Slider	滑块
+Range%	范围%
+Ray	半径
+θ (°)	θ（°）
+Open the Cheat Code Converter	打开金手指代码转换器
+Use system's recommendation	使用系统推荐设置
+ • May have increased performance for OpenGL-based cores (	• 在某些系统上可能无法正常工作。
+This is required	允许画面撕裂：禁用垂直同步时允许全屏画面撕裂。
+General	常规
+Enable Wii U/Switch GameCube Adapter Support	启用 Wii U / Switch GameCube 转接器支持
+Merge L+R modifier keys e.g. Shift instead of LShift and RShift	合并左右修饰键，例如使用 Shift 代替 LShift 和 RShift
+Handle alternate keyboard layouts (e.g. Dvorak) [experimental]	处理其他键盘布局（例如 Dvorak）[实验性]
+When EmuHawk is closing, skip "unsaved changes" prompts and discard all.	关闭 EmuHawk 时跳过“未保存更改”提示并放弃所有更改。
+"Eavesdrops" on keyboard and gamepad input while other programs are focused.	当其他程序处于焦点时，仍监听键盘和手柄输入。
+Accept background input	接受后台输入
+From controller only	仅接受控制器输入
+When this is set, the client will continue to run when it loses focus.	启用后，客户端失去焦点时仍会继续运行。
+Run in background	在后台运行
+Enable Context Menu	启用上下文菜单
+Pause when menu activated	激活菜单时暂停
+Startup Options	启动选项
+Note: Only a tiny subset of commandline args work (incl. rom path)	注意：只有少量命令行参数有效（包括 ROM 路径）
+Start paused	启动时暂停
+Note: Requires closing and reopening EmuHawk to take effect.	注意：需要关闭并重新打开 EmuHawk 才能生效。
+Start in Fullscreen	以全屏模式启动
+Enable to force only one instance of EmuHawk at a time.	启用后，EmuHawk 同时只能运行一个实例。
+Single instance mode	单实例模式
+Advanced	高级
+Key Priority Toggle - Remove Mixed Key Priority Options	按键优先级切换 - 移除混合按键优先级选项
+AutoSaveRAM	自动保存 RAM
+every	每隔
+Save SaveRAM to .AutoSaveRAM.SaveRAM	将存档 RAM 保存到 .AutoSaveRAM.SaveRAM
+Useful for romhackers. 	跳过 Waterbox 核心中的部分完整性检查异常。
+Skip waterbox integrity checks	跳过 Waterbox 完整性检查
+Store movie working data on disk instead of RAM	将影片工作数据存储到磁盘而不是内存
+Run lua scripts when turboing	加速运行时执行 Lua 脚本
+frames in which no input was polled (lag frames)	未检测到输入的帧（延迟帧）
+When enabled, the frame advance button will skip over	启用后，逐帧前进按钮将跳过
+Frame advance button skips non-input frames	逐帧前进按钮跳过无输入帧
+Backup SaveRAM to .SaveRAM.bak	将存档 RAM 备份到 .SaveRAM.bak
+Customization Options	自定义选项
+Select a preferred Platform to run for the given file extensions.	为指定文件扩展名选择首选运行平台。
+Note: The game database overrides these options.  They only take effect	注意：游戏数据库中的设置优先级高于此处选项。只有在
+when a Rom is unable to be found in the database	数据库中找不到 ROM 时，这些选项才会生效。
+File Extension Preferences	文件扩展名首选项
+System	系统
+GenericCoreConfig	通用核心设置
+Position	位置
+RewindSettings	倒带设置
+Saves a screenshot and loads it on loadstate so there isn't a	保存截图并在加载即时存档时恢复，以避免出现
+even generate audio.	控制模拟核心是否生成音频。
+Resolution Management	分辨率管理
+About Me	关于
+Tweaked Mednafen Mode (4:3 AR)	调整版 Mednafen 模式（4:3 宽高比）
+Hardcore Debug Mode	硬核调试模式
+Change My Display Options	更改显示选项
+Mednafen Mode (4:3 AR)	Mednafen 模式（4:3 宽高比）
+Pixel Pro Mode	像素专业模式
+Drawing Area	绘制区域
+Horizontal Overscan Clipping	水平过扫描裁剪
+Clip To Framebuffer	裁剪到帧缓冲区
+Basic Clipping	基本裁剪
+Last line:	最后一行：
+First line:	第一行：
+Weave	交错
+Bob Offset	Bob 偏移
+Bob	Bob
+Deinterlacing	去隔行
+Emulation Sync Settings	模拟同步设置
+(usually unneeded; breaks some patches)	模拟扇区错误校正
+Determine Lag from GPU Frames	根据 GPU 帧判断延迟
+Emulation User Settings	模拟用户设置
+PSX Options	PSX 设置
+Always Double-Size Framebuffer	始终将帧缓冲区放大两倍
+Performance (only for casual gaming!)	性能模式（仅适用于休闲游戏！）
+Crop SGB Frame	裁剪 SGB 画面
+BG 4	背景 4
+BG 3	背景 3
+BG 2	背景 2
+BG 1	背景 1
+Randomized Initial State	随机初始状态
+BSNES Options	BSNES 设置
+Palette Preview:	调色板预览：
+Reset to QuickNES Default	恢复 QuickNES 默认值
+NES Graphics Settings	NES 图像设置
+Allow more than 8 sprites per scanline	允许每条扫描线显示超过 8 个精灵
+Palette Config	调色板配置
+Change to this palette	切换到此调色板
+Use palette from file	使用文件中的调色板
+&Browse...	浏览(&B)...
+Standard [8,231]	标准 [8,231]
+Clip Left and Right Sides (8 pixels)	裁剪左右两侧（8 像素）
+BG and Sprites	背景和精灵
+Enable	启用
+Change	更改
+Backdrop color when BG is disabled	背景层禁用时的底色
+Display BG	显示背景
+Display Sprites	显示精灵
+&Restore Defaults	恢复默认值(&R)
+(The QuickNES palette is the default)	（默认使用 QuickNES 调色板）
+Emulate Sector Error Correction\r\n(usually unneeded; breaks some patches)	模拟扇区错误校正\r\n（通常不需要，且会导致部分补丁失效）
+Changes require restart of program to take effect.\r\n	更改需要重新启动程序才能生效。\r\n
+Controls whether cores\neven generate audio.	控制模拟核心是否生成音频。
+Bindname	绑定名称
+Sensitivity: 5 billion	灵敏度：50 亿
+Bind!	绑定！
+Deadzone: 5 billion	死区：50 亿
+Flip Axis	反转轴
+Unbind!	取消绑定！
+Standard Filename	标准文件名
+Options for this firmware:	此固件的选项：
+Firmware Info	固件信息
+Sets the path to the Windows Recent Path	将路径设置为 Windows“最近使用”路径
+Sets the path of the executable (EmuHawk.exe)	将路径设置为可执行文件（EmuHawk.exe）所在位置
+Sets the path to the base path	将路径设置为基础路径
+Sets the path to the folder above the base path	将路径设置为基础路径的上一级文件夹
+Frame Counter	帧计数器
+Height:	高度：
+Width:	宽度：
+Rsp Plugin	Rsp 插件
+Core Type	核心类型
+(GLideN64 is good for performance, while Angrylion has the best compatibility)	（GLideN64 性能较好，而 Angrylion 兼容性最佳）
+Video Resolution	视频分辨率
+Active Video Plugin	当前视频插件
+Resolution Height	分辨率高度
+Resolution Width	分辨率宽度
+Direct3D Clear Mode	Direct3D 清除模式
+Copy framebuffer	复制帧缓冲区
+Force Z Compare	强制 Z 比较
+Direct3D trans pipeline	Direct3D 透明管线
+Force alpha blending	强制 Alpha 混合
+Use legacy pixel pipeline	使用旧版像素管线
+to match yours	以匹配你的设置
+Adjust game aspect ratio	调整游戏宽高比
+Antialiasing Level	抗锯齿级别
+Always use texture filter	始终使用纹理滤镜
+Super 2xsal	Super 2xSaI
+Brightness	亮度
+Anisotropic filtering level	各向异性过滤级别
+Plugin Settings	插件设置
+APU Volume	APU 音量
+Region Override:	区域覆盖：
+Custom Board Properties	自定义主板属性
+Region Override will be ignored when playing Famicom Disk System games.	游玩 Famicom 磁碟系统游戏时，区域覆盖设置将被忽略。
+The current board has no custom properties	当前主板没有自定义属性
+Initial Ram pattern override	初始 RAM 模式覆盖
+Provides an override to the initial WRAM startup pattern	覆盖初始 WRAM 启动模式
+NES Advanced Settings	NES 高级设置
+Dipswitch 1	拨码开关 1
+Dipswitch 2	拨码开关 2
+Dipswitch 3	拨码开关 3
+Dipswitch 4	拨码开关 4
+Dipswitch 5	拨码开关 5
+Dipswitch 6	拨码开关 6
+Dipswitch 7	拨码开关 7
+Dipswitch 8	拨码开关 8
+NES VS Settings	NES VS 设置
+Famicom	红白机
+NES Right Port:	NES 右侧接口：
+NES Left Port:	NES 左侧接口：
+Famicom Expansion:	红白机扩展接口：
+NES Controller Settings	NES 控制器设置
+Multitap	多重手柄适配器
+Port 1	接口 1
+Port 2	接口 2
+Memcard	记忆卡
+Controller / Memcard Configuration	控制器/记忆卡设置
+Sorry, this is gonna freeze while it hashes	抱歉，计算哈希时程序会暂时卡住
+Limit Analog Change Sensitivity	限制模拟输入变化灵敏度
+Port 2:	接口 2：
+Port 1:	接口 1：
+Game hotfixes	游戏修复
+Use fast PPU	使用快速 PPU
+Use SGB2	使用 SGB2
+DSP Fast Mode	DSP 快速模式
+Coprocessor Fast Mode	协处理器快速模式
+No PPU sprite limit	取消 PPU 精灵数量限制
+Show Overscan	显示过扫描区域
+Show Lightgun Cursor	显示光枪光标
+Satellaview cartridge	卫星通信系统卡带
+Aspect Ratio Correction	宽高比校正
+Region	区域
+Entropy	熵
+Use Real Time	使用实时时钟
+Initial Time	初始时间
+Background	背景
+Foreground	前景
+Enter a value:	输入一个值：
+Input Prompt	输入提示
+Save Selected As...	将所选内容另存为...
+Load Macro...	加载宏...
+Replace	替换
+macro start      macro end	宏开始      宏结束
+Place Zone	放置区域
+Set Macro	设置宏
+Macro Name:	宏名称：
+Current	当前
+Overlay	叠加显示
+All	全部
+Good Dump	良好转储
+Homebrew	自制软件
+Hack	修改版
+Translated ROM	已翻译 ROM
+Bad Dump	错误转储
+Over Dump	过量转储
+Pick a status	选择状态
+Filter: 	滤镜：
+A7800 Filter Settings: Needed For Tower Toppler and Jinks	A7800 滤镜设置：Tower Toppler 和 Jinks 需要此设置
+AY-3-8912 Panning Config:	AY-3-8912 声像配置：
+Tape Volume:	磁带音量：
+AY-3-8912 Volume:	AY-3-8912 音量：
+Emulated Machine:	模拟机器：
+Deterministic Emulation	确定性模拟
+Auto Tape Start/Stop	自动启动/停止磁带
+Rendered Border Type:	渲染边框类型：
+Amstrad CPC Misc Non-Sync Settings	Amstrad CPC 其他非同步设置
+OSD Message Verbosity:	OSD 消息详细程度：
+Other Non-Sync Settings	其他非同步设置
+Preset Select	预设选择
+Preview	预览
+Vivid	鲜艳
+VBA Vivid	VBA 鲜艳
+VBA Accurate	VBA 精确
+VBA Accurate (Old)	VBA 精确（旧版）
+Libretro GBC	Libretro GBC
+Game Boy Color Palette Config	Game Boy Color 调色板设置
+BG	背景
+SP1	精灵 1
+SP2	精灵 2
+Interpolate	插值
+&Load...	加载(&L)...
+&Save...	保存(&S)...
+&Default Green	默认绿色(&D)
+Default &Grey	默认灰色(&G)
+Game Boy Palette Config	Game Boy 调色板设置
+Player 1 Gameboy	玩家 1 Game Boy
+Player 2 Gameboy	玩家 2 Game Boy
+Player 3 Gameboy	玩家 3 Game Boy
+Player 4 Gameboy	玩家 4 Game Boy
+Gameboy Link Settings	Game Boy 联机设置
+Game Boy Settings	Game Boy 设置
+SameBoy Palette Config	SameBoy 调色板设置
+Intellivision Controller Settings	Intellivision 控制器设置
+Connected	已连接
+Controller 1	控制器 1
+ZX Spectrum Audio Settings	ZX Spectrum 音频设置
+Buzzer Volume:	蜂鸣器音量：
+ZX Spectrum Emulation Settings	ZX Spectrum 模拟设置
+Auto-Load Tape	自动加载磁带
+ZX Spectrum Joystick Settings	ZX Spectrum 摇杆设置
+Joystick 1:	摇杆 1：
+Joystick 2:	摇杆 2：
+Joystick 3:	摇杆 3：
+Joystick Settings	摇杆设置
+Default Background Color:	默认背景颜色：
+Use last Core border color for background	使用上一次核心边框颜色作为背景
+A7800 Controller Settings	A7800 控制器设置
+Amstrad CPC Audio Settings	Amstrad CPC 音频设置
+Amstrad CPC Emulation Settings	Amstrad CPC 模拟设置
+ColecoVision Controller Settings	ColecoVision 控制器设置
+Radial	径向
+GB Palette...	GB 调色板...
+GBC Palette...	GBC 调色板...
+RGBDS Syntax	RGBDS 语法
+Mute	静音
+Show Border	显示边框
+This tool hashes your discs in a standard way.	此工具会以标准方式计算光盘哈希值。
+PSG Waveform Capture	PSG 波形捕获
+Hit Count	命中次数
+Channel Enable	启用通道
+PSG Channels	PSG 通道
+Channel	通道
+Vol	音量
+Pitch	音高
+Status	状态
+Scroll To	滚动到
+Edit Frame (Alt + Drag)	编辑帧（Alt + 拖动）
+Markers	标记点
+Priority 1	优先级 1
+Priority 0	优先级 0
+Bank 1	存储组 1
+Bank 2 (CGB)	存储组 2（CGB）
+Background && Window	背景和窗口
+Sprite	精灵
+Tilemaps	图块地图
+Tiles	图块
+Left-click a palette to use it for drawing the tiles display.	左键单击调色板，以便在图块显示中使用它。
+Objects	对象
+OAM	对象属性存储器（OAM）
+Refresh Control	刷新控制
+Refresh Now	立即刷新
+Manual	手动
+Details - Memory	详细信息 - 内存
+Right-click an item to display it here.	右键单击项目以在此处显示。
+Copy to Clipboard	复制到剪贴板
+CTRL+C copies the pane under the mouse pointer to the clipboard.	按 Ctrl+C 将鼠标指针下方的窗格复制到剪贴板。
+Sprite Backdrop	精灵背景
+Change Color...	更改颜色...
+Details (memory)	详细信息（内存）
+Details (mouseover)	详细信息（鼠标悬停）
+Background palettes	背景调色板
+Sprite palettes	精灵调色板
+Tiles 1	图块 1
+Tiles 2	图块 2
+Note: the printer is only connected while this window is open.	注意：只有在此窗口打开时，打印机才会连接。
+Available widgets:	可用组件：
+Show >>	显示 >>
+CTRL + C: Copy under mouse to clipboard.	Ctrl+C：将鼠标下方的内容复制到剪贴板。
+MobileBmpView	移动图像视图
+MobileDetailView	移动详细视图
+Cheat Code	金手指代码
+Convert	转换
+Save BG A Screenshot...	保存背景 A 截图...
+Save BG B Screenshot...	保存背景 B 截图...
+Save Tiles Screenshot...	保存图块截图...
+Save Window Screenshot...	保存窗口截图...
+&Viewer	查看器(&V)
+VDC&1	VDC 1(&1)
+VCD&2	VDC 2(&2)
+VDC 2	VDC 2
+Save BG Screenshot...	保存背景截图...
+Save Palettes Screnshot...	保存调色板截图...
+Rewinder is capturing states	倒带功能正在捕获状态
+GB in SGB	在 SGB 中运行 GB
+Set Libretro Core...	设置 Libretro 核心...
+(N/A)	（不可用）
+For Consoles	游戏主机
+For Handhelds	掌机
+For Computers	计算机
+Export Hard Disk Drive...	导出硬盘映像...
+(Dismiss Menu)	（关闭菜单）
+Cheats are currently active	金手指当前已启用
+Emulator Paused	模拟器已暂停
+Key priority: Allow both hotkeys and controller buttons	按键优先级：快捷键和控制器按键均可使用
+Key priority: Controller buttons will override hotkeys	按键优先级：控制器按键优先于快捷键
+Key priority: Hotkeys will override controller buttons	按键优先级：快捷键优先于控制器按键
+A/V capture in progress	正在录制音视频
+Copy All Logged Messages to Terminal/stdout	将所有日志消息复制到终端/stdout
+Sublime Text 2 (installed)	Sublime Text 2（已安装）
+Sublime Text 2 (detected)	Sublime Text 2（已检测到）
+Notepad++ (installed)	Notepad++（已安装）
+Notepad++ (detected)	Notepad++（已检测到）
+Saving backup...	正在保存备份...
+Saving...	正在保存...
+File saved.	文件已保存。
+Failed to save movie.	保存影片失败。
+Failed to save.	保存失败。
+Failed to save Lua session.	保存 Lua 会话失败。
+Address: 0x	地址：0x
+&Poke	写入(&P)
+Enter an address to poke:	输入要写入的地址：
+Value:	数值：
+Unsigned	无符号
+Byte	字节
+Endian:	字节序：
+Display Type:	显示类型：
+Domain:	内存域：
+Main Memory	主内存
+RAM Poke	RAM 写入
+0 addresses	0 个地址
+&Start New Search	开始新搜索(&S)
+Remove Selected	移除所选项目
+&Clear Preview	清除预览(&C)
+&Append File...	追加文件(&A)...
+&Truncate from File...	从文件截断(&T)...
+&Mode	模式(&M)
+&Detailed	详细(&D)
+&Fast	快速(&F)
+&Size	大小(&S)
+&1 Byte	1 字节(&1)
+&2 Byte	2 字节(&2)
+&4 Byte	4 字节(&4)
+Check Mis-aligned	检查未对齐地址
+&Big Endian	大端序(&B)
+&Display Type	显示类型(&D)
+Define Previous Value	定义先前数值
+Last &Search	上次搜索(&S)
+&Previous Frame	上一帧(&P)
+&Original	原始值(&O)
+Last &Change	上次更改(&C)
+&New Search	新搜索(&N)
+Copy Value to Prev	将数值复制到上次值
+&Clear Change Counts	清除更改计数(&C)
+&Remove selected	移除所选项目(&R)
+Select All	全选
+Clear Undo History	清除撤销历史
+&Preview Mode	预览模式(&P)
+&Auto-Search	自动搜索(&A)
+&Auto-Search Account for Lag	自动搜索并考虑延迟(&A)
+Always E&xclude RAM Watch List	始终排除 RAM 监视列表(&X)
+&Use Undo History	使用撤销历史(&U)
+Compare To / By	比较对象/方式
+Difference of:	差值：
+Specific Changes:	指定更改次数：
+Specific Address:	指定地址：
+Specific Value:	指定数值：
+Previous Value	先前数值
+Search 	搜索 
+Copy Value to Previous	将数值复制到先前值
+Clear Change Counts	清除更改计数
+Eliminate Selected Items	移除所选项目
+Comparison Operator	比较运算符
+Different by:	差异值：
+Not Equal To	不等于
+Equal To	等于
+Greater Than or Equal To	大于或等于
+Less Than or Equal To	小于或等于
+Greater Than	大于
+Less Than	小于
+WatchCountLabel	监视项数量
+0 watches	0 个监视项
+&New Watch	新建监视项(&N)
+&Edit	编辑(&E)
+&Duplicate	复制(&D)
+Sp&lit	拆分(&L)
+Set Read Breakpoint	设置读取断点
+Set Write Breakpoint	设置写入断点
+&Insert Separator	插入分隔符(&I)
+Move &Top	移到顶部(&T)
+Move &Bottom	移到底部(&B)
+New Watch	新建监视项
+Edit Watch	编辑监视项
+Remove Watch	移除监视项
+Duplicate Watch	复制监视项
+Split Watch	拆分监视项
+Poke address	写入地址
+&Files	文件(&F)
+&New List	新建列表(&N)
+A&ppend File...	追加文件(&P)...
+&Watches	监视项(&W)
+Default Domain	默认内存域
+&Edit Watch	编辑监视项(&E)
+&Remove Watch	移除监视项(&R)
+&Duplicate Watch	复制监视项(&D)
+Sp&lit Watch	拆分监视项(&L)
+Display Watches On Screen	在屏幕上显示监视项
+On Double-Clicking a Watch	双击监视项时
+Poke Address	写入地址
+&Show Hotkeys	显示快捷键(&S)
+Save Image...	保存图像...
+CTRL + C copies the pane under the mouse to the clipboard.	按 Ctrl+C 将鼠标下方的窗格复制到剪贴板。
+OpenGL	OpenGL
+Changes require restart of program to take effect.	更改需要重启程序才能生效。
+Allow Double-Click Fullscreen (hold shift to force fullscreen to toggle in case you have a multi-monitor setup)	允许双击切换全屏（多显示器环境下，可按住 Shift 强制切换）
+&OK	确定(&O)
+Window title suffix (static and not):	窗口标题后缀（固定标题模式）：
+During Christmas (Dec. 20th through 26th)	仅圣诞节期间（12 月 20 日至 26 日）
+When no rom loaded, draw "snow" (white noise):	未加载 ROM 时显示“雪花”（白噪声）：
+Brightness multiplier:	亮度倍率：
+RNG bias:	随机数偏置：
+Save	保存
+Copy	复制
+Full [0,239]	完整 [0,239]
