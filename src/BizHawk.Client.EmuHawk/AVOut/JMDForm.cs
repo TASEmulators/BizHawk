@@ -5,8 +5,10 @@ namespace BizHawk.Client.EmuHawk
 	/// <summary>
 	/// implements a minimal dialog for configuring JMDWriter
 	/// </summary>
-	public partial class JmdForm : Form
+	public partial class JmdForm : FormBase
 	{
+		protected override string WindowTitleStatic => "JMD Compression Options";
+
 		public JmdForm()
 		{
 			InitializeComponent();
