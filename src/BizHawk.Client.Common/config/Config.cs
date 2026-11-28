@@ -264,7 +264,9 @@ namespace BizHawk.Client.Common
 
 		public int DispPrescale { get; set; } = 1;
 
-		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D11 ? EDispMethod.D3D11 : EDispMethod.OpenGL;
+		public EDispMethod DispMethod { get; set; } = HostCapabilityDetector.HasD3D11
+			? EDispMethod.D3D11
+			: OSTailoredCode.CurrentOS is OSTailoredCode.DistinctOS.macOS ? EDispMethod.GdiPlus : EDispMethod.OpenGL;
 
 		public int DispChromeFrameWindowed { get; set; } = 2;
 		public bool DispChromeStatusBarWindowed { get; set; } = true;
